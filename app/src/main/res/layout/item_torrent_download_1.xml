@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+
+    <FrameLayout
+        android:background="?colorForeground"
+        android:id="@+id/mainFrame"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="50dp"
+        android:layout_height="70dp">
+        <ImageView
+            app:tint="?attr/colorBackground"
+            android:layout_gravity="center"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:src="@drawable/ic_play_circle"/>
+        <ImageView
+            android:transitionName="banner_photo"
+            android:id="@+id/item_image"
+            android:scaleType="centerCrop"
+            android:layout_width="50dp"
+            android:layout_height="70dp"/>
+    </FrameLayout>
+
+
+    <TextView
+        android:id="@+id/item_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:text="@string/af_title"
+        android:textColor="?attr/colorTextLight"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@id/item_progressBar"
+        app:layout_constraintEnd_toStartOf="@id/item_close"
+        app:layout_constraintStart_toEndOf="@id/mainFrame"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/item_progressBar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:indeterminate="true"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/item_close"
+        app:layout_constraintStart_toEndOf="@id/mainFrame"
+        app:layout_constraintTop_toBottomOf="@id/item_title" />
+
+    <ImageView
+        android:id="@+id/item_close"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:padding="5dp"
+        android:src="@drawable/ic_close"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="?attr/colorText" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

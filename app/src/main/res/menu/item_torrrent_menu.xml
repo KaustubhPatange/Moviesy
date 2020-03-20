@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:title="Copy Magnet Url"
+        app:showAsAction="never"
+        android:id="@+id/action_copy_magnet" />
+
+    <item
+        android:title="Cancel"
+        app:showAsAction="never"
+        android:id="@+id/action_cancel" />
+
+</menu>

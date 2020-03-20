@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:padding="10dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.card.MaterialCardView
+        android:animateLayoutChanges="false"
+        android:id="@+id/afc_card"
+        app:cardBackgroundColor="?attr/colorForeground"
+        app:elevation="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:orientation="vertical"
+            android:padding="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:transitionName="contentTitle"
+                android:textColor="?attr/colorText"
+                android:id="@+id/af_title"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/af_title"/>
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:textColor="?attr/colorPrimary"
+                android:id="@+id/af_subtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/ad_year"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_marginTop="15dp"
+                android:id="@+id/recyclerView_genre"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <LinearLayout
+                android:layout_marginTop="15dp"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:fontFamily="@font/google_sans_regular"
+                    android:id="@+id/af_summary"
+                    android:ellipsize="end"
+                    android:maxLines="3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/short_text"/>
+                <TextView
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:id="@+id/af_moreTxt"
+                    android:layout_marginTop="3dp"
+                    android:gravity="end"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/af_more"
+                    android:textColor="?attr/colorAccent" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp">
+                <Button
+                    android:id="@+id/af_imdb_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/imdb"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
+                    android:text="@string/af_imdb_text"
+                    android:textAllCaps="false"
+                    android:textSize="13sp" />
+                <Button
+                    android:id="@+id/af_pg_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:backgroundTint="@color/pg"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
+                    android:text="@string/af_pg_text"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+            <TableLayout
+                android:stretchColumns="0,1"
+                android:layout_marginTop="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TableRow>
+                    <Button
+                        android:id="@+id/af_watch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/watch"
+                        android:textAllCaps="false"
+                        android:textSize="13sp" />
+                    <Button
+                        android:id="@+id/af_download"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:text="@string/download"
+                        android:textAllCaps="false"
+                        android:textSize="13sp" />
+                </TableRow>
+            </TableLayout>
+
+           <!-- <GridLayout
+                android:layout_marginTop="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:rowCount="1"
+                android:columnCount="2">
+                <Button
+
+                    android:id="@+id/af_watch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/watch"
+                    android:textAllCaps="false"
+                    android:textSize="13sp" />
+                <Button
+
+                    android:id="@+id/af_download"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:text="@string/download"
+                    android:textAllCaps="false"
+                    android:textSize="13sp" />
+            </GridLayout>-->
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>

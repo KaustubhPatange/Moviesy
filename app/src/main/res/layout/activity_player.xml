@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:transitionName="youtubeView"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/youtube_player_view"
+    android:layout_width="match_parent"
+    app:showFullScreenButton="false"
+    app:enableAutomaticInitialization="false"
+    android:layout_height="match_parent"
+    tools:context=".activities.PlayerActivity"/>

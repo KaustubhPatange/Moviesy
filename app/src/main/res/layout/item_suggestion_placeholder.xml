@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <com.google.android.material.card.MaterialCardView
+        android:layout_marginEnd="10dp"
+        app:cardBackgroundColor="?colorTextInverse"
+        android:id="@+id/mainCard"
+        android:foreground="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_width="wrap_content"
+        app:cardCornerRadius="5dp"
+        android:layout_height="wrap_content">
+        <FrameLayout
+            android:layout_width="120dp"
+            android:layout_height="180dp">
+            <ImageView
+                app:tint="?colorBackground"
+                android:layout_gravity="center"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_play_circle"/>
+            <ImageView
+                android:transitionName="banner_photo"
+                android:id="@+id/mainImage"
+                android:scaleType="centerCrop"
+                android:layout_width="120dp"
+                android:layout_height="180dp"/>
+        </FrameLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+    <TextView
+        android:fontFamily="@font/google_sans_regular"
+        android:transitionName="contentTitle"
+        android:id="@+id/mainText"
+        android:layout_marginTop="5dp"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:textSize="13sp"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content" />
+</LinearLayout>

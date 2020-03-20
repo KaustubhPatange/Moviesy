@@ -1,0 +1,82 @@
+<resources>
+    <string name="app_name">Moviesy</string>
+
+
+    <string name="long_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porta urna fermentum neque venenatis pellentesque. Nunc nec massa elit. Praesent pulvinar purus id semper pulvinar. Aliquam eget libero ac libero bibendum tempor. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Suspendisse potenti. Vivamus cursus sit amet turpis id imperdiet. Donec nec ligula eget diam laoreet vulputate sit amet in sapien. Aenean iaculis nibh et purus rutrum hendrerit quis imperdiet ipsum. Vivamus elementum lobortis auctor. Aliquam pretium nisl vel lectus consectetur viverra. Praesent iaculis magna diam, nec sodales dui bibendum quis. Donec a felis ligula. Suspendisse potenti. In nec magna magna. Etiam sit amet convallis ipsum.
+
+Nunc nec orci efficitur, sollicitudin magna ut, hendrerit ligula. Aenean fringilla enim in ex laoreet ornare. Maecenas tempor eget diam et sodales. Pellentesque ornare porttitor placerat. Vestibulum rutrum nulla lectus, non gravida metus euismod sed. Phasellus lacinia, magna rutrum elementum mollis, turpis lectus venenatis metus, vitae auctor urna nibh at tellus. Morbi laoreet fermentum nulla id tempor.
+
+Fusce eu iaculis ex. In vitae pulvinar lorem. Vivamus commodo et enim quis elementum. Aliquam erat volutpat. Proin cursus massa nec eros viverra, nec lacinia urna tempus. Suspendisse iaculis lorem eu ullamcorper consequat. Vivamus id aliquam massa. Sed et diam ultricies, elementum elit et, porttitor sem. Aenean a enim pharetra, tempus nunc at, porta leo. Mauris ornare velit orci, eu suscipit sapien elementum a. Nulla arcu nisl, consequat nec nulla in, pretium dictum ipsum. Nullam in tempor tellus, id efficitur leo.
+
+Donec ut justo turpis. Integer ultrices ex in feugiat feugiat. Vivamus quis laoreet odio. Nam lorem tellus, volutpat nec risus et, interdum malesuada dui. Pellentesque consequat augue arcu, ac pellentesque metus interdum feugiat. Proin enim risus, elementum nec molestie vel, ultricies eget ipsum. Pellentesque semper nisi id lacus eleifend accumsan. Quisque auctor, magna sit amet volutpat vulputate, est ante eleifend lorem, eu commodo urna mauris at quam. Nam eu tellus suscipit, vehicula enim sit amet, porta urna. Phasellus vitae erat libero. Phasellus in metus metus. Etiam vestibulum lacinia quam a pulvinar.
+
+Mauris nec est quis lectus luctus blandit. Mauris tincidunt, neque sit amet auctor sodales, dolor nulla condimentum turpis, a eleifend felis lorem at est. Vestibulum faucibus luctus libero nec iaculis. Donec iaculis dui leo, id laoreet augue efficitur sit amet. Vivamus eget ornare lectus. Aliquam erat volutpat. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Morbi sit amet nulla a leo pellentesque aliquam. Quisque eu nunc rutrum eros sollicitudin maximus vel a risus. Curabitur id venenatis odio. Vestibulum aliquet urna a mi volutpat, vel vestibulum sapien dictum. Mauris ullamcorper ligula non lacinia convallis. Fusce tempor ultrices ligula et pellentesque.
+
+Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus dapibus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Integer tristique felis sit amet enim ullamcorper tincidunt. Ut eu aliquam lectus. Sed fringilla lorem purus, sed rhoncus velit eleifend at. Mauris blandit blandit enim, at cursus risus volutpat a. Mauris faucibus, diam at congue egestas, massa nibh vulputate sapien, vitae dictum libero ex in turpis. Etiam condimentum interdum vulputate. Nulla vitae enim eleifend, efficitur arcu nec, feugiat odio.</string>
+
+    <string name="short_text">Through a series of flashbacks, four young chinese women born in America and their respective mothers born in feudal China, explore their past. This search will help them understand their difficult mother/daughter relationship.</string>
+    <string name="af_title">The Joy Luck Club</string>
+    <string name="ad_year">English • 1993</string>
+    <string name="item_genre_title">Sci-Fi</string>
+    <string name="af_more">More</string>
+    <string name="af_imdb_text">imdb 7.7</string>
+    <string name="af_pg_text">R</string>
+    <string name="suggest">Suggested</string>
+    <string name="similar">Similar to</string>
+    <string name="watch">Watch Now</string>
+
+    <string name="quality">720p</string>
+    <string name="seeds">32 seeds</string>
+    <string name="peers">19 peers</string>
+    <string name="size">1.2 GB</string>
+    <string name="select_type">Select Type:</string>
+    <string name="bluray">BluRay</string>
+    <string name="webrip">WebRip</string>
+    <string name="CHANNEL_ID_1">yts_01</string>
+    <string name="CHANNEL_ID_2">yts_02</string>
+    <string name="current">Current</string>
+    <string name="pending">Pending Jobs</string>
+    <string name="ask_delete">Delete files in storage?</string>
+    <string name="yes">Do It</string>
+    <string name="no">Nope</string>
+    <string name="ask_title">Ask</string>
+    <string name="download_queue">Download queue is empty :(</string>
+    <string name="title">Title</string>
+    <string name="positive">Positive</string>
+    <string name="cancel">CANCEL</string>
+    <string name="local_storage">Click to download the subtitle into your local device storage.</string>
+    <string name="alright">Alright</string>
+    <string name="learn">Learn More</string>
+    <string name="filter">Filter:</string>
+    <string name="timeout_error_text">It seems that your device does not support torrent downloading. It would be better to use an external torrent client eg: Bit-Torrent.</string>
+    <string name="timeout_error_title">Timeout Error</string>
+    <string name="item_tip_text">Click to immediately start download in app or press and hold to see other download options.</string>
+    <string name="previous_text">Previous torrent download files are detected, do you want to delete it? Deleting it will cause re-downloading of whole stream. Could be useful when switching from quality 720p to 1080p.</string>
+    <string name="previous_title">Delete Download?</string>
+    <string name="delete">Delete</string>
+    <string name="noSubs">No subtitle found</string>
+    <string name="select_sub">Select Subtitle:</string>
+    <string name="sort_by">Sort by</string>
+    <string name="date">Date</string>
+    <string name="download">Download</string>
+    <string name="popular">Popular</string>
+    <string name="rating">Rating</string>
+    <string name="year">Year</string>
+    <string name="seeders">Seeders</string>
+    <string name="order_by">Order</string>
+    <string name="asc">Ascending</string>
+    <string name="desc">Descending</string>
+    <string name="searchmovies">Search for movies</string>
+    <string name="err_movie_not_found_text">Hint: Try searching by title, actor/director name, imdb code containing it.</string>
+    <string name="err_movie_not_found_title">Error: Movie not found</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="crime">Crime</string>
+    <string name="settings">Settings</string>
+    <string name="home">Home</string>
+    <string name="watchlist">Watchlist</string>
+    <string name="library">Library</string>
+    <string name="charts">Charts</string>
+    <string name="categories">Categories</string>
+</resources>

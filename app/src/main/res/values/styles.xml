@@ -1,0 +1,129 @@
+<resources>
+
+    <style name="AppTheme.Light" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <item name="android:windowActivityTransitions">true</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:statusBarColor">@color/colorPrimary</item>
+        <item name="android:fontFamily">@font/google_sans_medium</item>
+        <item name="colorBackground">@color/background_light</item>
+        <item name="colorForeground">@color/light_white</item>
+        <item name="colorText">@color/black</item>
+        <item name="colorTextLight">@color/light_black</item>
+        <item name="colorSeparator">@color/separator_light</item>
+        <item name="colorTextInverse">@color/inverse_light</item>
+    </style>
+
+    <style name="AppTheme.Light.NoAction" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowActivityTransitions">true</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:statusBarColor">@color/colorPrimary</item>
+        <item name="android:fontFamily">@font/google_sans_medium</item>
+        <item name="colorBackground">@color/background_light</item>
+        <item name="colorForeground">@color/light_white</item>
+        <item name="colorText">@color/black</item>
+        <item name="colorTextLight">@color/light_black</item>
+        <item name="colorSeparator">@color/separator_light</item>
+        <item name="colorTextInverse">@color/inverse_light</item>
+    </style>
+
+    <style name="AppTheme.Dark" parent="Theme.MaterialComponents">
+        <item name="android:windowActivityTransitions">true</item>
+        <item name="colorAccent">@color/colorAccent_Dark</item>
+        <item name="colorBackground">#121212</item>
+        <item name="colorForeground">#1E1E1E</item>
+        <item name="android:fontFamily">@font/google_sans_medium</item>
+        <item name="colorText">@color/white</item>
+        <item name="colorTextInverse">@color/inverse_dark</item>
+        <item name="colorTextLight">@color/light_white</item>
+        <item name="colorSeparator">@color/separator_dark</item>
+    </style>
+
+    <style name="AppTheme.Dark.NoAction" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowActivityTransitions">true</item>
+        <item name="colorAccent">@color/colorAccent_Dark</item>
+        <item name="colorBackground">#121212</item>
+        <item name="colorForeground">#1E1E1E</item>
+        <item name="android:fontFamily">@font/google_sans_medium</item>
+        <item name="colorText">@color/white</item>
+        <item name="colorTextInverse">@color/inverse_dark</item>
+        <item name="colorTextLight">@color/light_white</item>
+        <item name="colorSeparator">@color/separator_dark</item>
+    </style>
+
+    <style name="AppTheme.Dark.Main" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="colorPrimaryDark">@color/foreground</item>
+        <item name="android:windowActivityTransitions">true</item>
+        <item name="colorAccent">@color/colorAccent_Dark</item>
+        <item name="android:fontFamily">@font/google_sans_medium</item>
+        <item name="android:navigationBarColor">?attr/colorSeparator</item>
+        <item name="colorBackground">#121212</item>
+        <item name="colorForeground">#1E1E1E</item>
+        <item name="colorText">@color/white</item>
+        <item name="colorTextInverse">@color/inverse_dark</item>
+        <item name="colorTextLight">@color/light_white</item>
+        <item name="colorSeparator">@color/separator_dark</item>
+    </style>
+
+    <style name="DialogTheme.Dark" parent="@style/CommonDialogTheme">
+        <item name="colorBackground">#121212</item>
+        <item name="colorForeground">#1E1E1E</item>
+        <item name="colorText">@color/white</item>
+        <item name="colorTextLight">@color/light_white</item>
+        <item name="colorTextInverse">@color/inverse_dark</item>
+        <item name="colorSeparator">@color/separator_dark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="DialogTheme.Light" parent="@style/CommonDialogTheme">
+        <item name="colorBackground">@color/background_light</item>
+        <item name="colorForeground">@color/light_white</item>
+        <item name="colorText">@color/black</item>
+        <item name="colorTextLight">@color/light_black</item>
+        <item name="colorTextInverse">@color/inverse_light</item>
+        <item name="colorSeparator">@color/separator_light</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="CommonDialogTheme" parent="Theme.MaterialComponents.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="AppDialogTheme" parent="Theme.MaterialComponents.Dialog">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">5dp</item>
+    </style>
+
+    <style name="TorrentPlayerTheme" parent="Theme.AppCompat.DayNight.Dialog">
+
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">fill_parent</item>
+
+        <item name="android:windowNoTitle">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowIsFloating">false</item>
+    </style>
+
+    <style name="customChipStyle" parent="Widget.MaterialComponents.Chip.Action">
+        <item name="chipBackgroundColor">?attr/colorTextInverse</item>
+        <item name="android:textColor">?attr/colorForeground</item>
+        <item name="android:checkable">true</item>
+        <item name="chipStartPadding">10dp</item>
+        <item name="chipEndPadding">10dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+</resources>

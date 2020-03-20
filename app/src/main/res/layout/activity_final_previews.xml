@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<HorizontalScrollView
+    android:id="@+id/afp_scroll"
+    android:scrollbars="none"
+    android:clipChildren="true"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:animateLayoutChanges="false"
+        android:layout_marginStart="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/af_yt_preview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="7dp">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <FrameLayout
+                    android:layout_width="300dp"
+                    android:layout_height="180dp"
+                    android:foreground="@drawable/preview_background">
+
+                    <ImageView
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:id="@+id/af_yt_preview_image"
+                        android:layout_width="300dp"
+                        android:layout_height="180dp"
+                        android:scaleType="centerCrop" />
+                </FrameLayout>
+
+                <ImageView
+                    android:id="@+id/af_yt_preview_play"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_play_circle"
+                    app:tint="@color/light_white" />
+            </RelativeLayout>
+
+            <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+                android:transitionName="youtubeView"
+                android:visibility="gone"
+                android:id="@+id/youtube_player_view"
+                android:layout_width="300dp"
+                android:layout_height="180dp"
+                app:showFullScreenButton="false" />
+
+            <ImageView
+                android:id="@+id/button_fullscreen"
+                android:visibility="gone"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_gravity="end"
+                android:padding="5dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_fullscreen"
+                app:tint="@color/white"/>
+
+            <ProgressBar
+                android:visibility="gone"
+                android:id="@+id/af_yt_preview_progressBar"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="7dp">
+
+            <RelativeLayout
+                android:layout_width="130dp"
+                android:layout_height="180dp">
+                <FrameLayout
+                    android:layout_width="130dp"
+                    android:layout_height="180dp">
+
+                    <ImageView
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:outlineProvider="background"
+                        android:transitionName="banner_photo"
+                        android:id="@+id/af_yt_banner_image"
+                        android:scaleType="centerCrop"
+                        android:layout_width="130dp"
+                        android:layout_height="180dp" />
+                </FrameLayout>
+                <com.facebook.shimmer.ShimmerFrameLayout
+                    app:shimmer_auto_start="true"
+                    android:id="@+id/shimmerFrame"
+                    android:background="?colorTextInverse"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <ImageView
+                        app:tint="?attr/colorBackground"
+                        android:layout_gravity="center"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/ic_play_circle"/>
+                </com.facebook.shimmer.ShimmerFrameLayout>
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
+
+</HorizontalScrollView>

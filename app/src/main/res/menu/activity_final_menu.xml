@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/action_favourite"
+        android:title="Favourites"
+        android:icon="@drawable/ic_favorite_no"
+        app:showAsAction="always"/>
+
+    <item android:id="@+id/action_subtitles"
+        android:title="Get Subtitles"
+        android:icon="@drawable/ic_subtitles"
+        app:showAsAction="always"/>
+
+</menu>
