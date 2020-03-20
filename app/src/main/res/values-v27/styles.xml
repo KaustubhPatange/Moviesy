@@ -17,6 +17,7 @@
         <item name="colorTextInverse">@color/inverse_light</item>
         <item name="colorTextLight">@color/light_black</item>
         <item name="colorSeparator">@color/separator_light</item>
+        <item name="colorNavSeparator">@color/separator_light</item>
     </style>
 
     <style name="AppTheme.Light.NoAction" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -35,6 +36,7 @@
         <item name="colorTextInverse">@color/inverse_light</item>
         <item name="colorTextLight">@color/light_black</item>
         <item name="colorSeparator">@color/separator_light</item>
+        <item name="colorNavSeparator">@color/separator_light</item>
     </style>
 
     <style name="AppTheme.Dark" parent="Theme.MaterialComponents">
@@ -51,6 +53,7 @@
         <item name="colorTextInverse">@color/inverse_dark</item>
         <item name="colorText">@color/white</item>
         <item name="colorSeparator">@color/separator_dark</item>
+        <item name="colorNavSeparator">@color/separator_dark</item>
     </style>
 
     <style name="AppTheme.Dark.NoAction" parent="Theme.MaterialComponents.NoActionBar">
@@ -67,6 +70,7 @@
         <item name="colorTextInverse">@color/inverse_dark</item>
         <item name="colorTextLight">@color/light_white</item>
         <item name="colorSeparator">@color/separator_dark</item>
+        <item name="colorNavSeparator">@color/separator_dark</item>
     </style>
 
 </resources>

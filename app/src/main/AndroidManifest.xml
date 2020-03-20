@@ -21,10 +21,20 @@
         tools:ignore="LockedOrientationActivity"
         tools:replace="android:allowBackup">
         <activity
+            android:name=".activities.SplashActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateVisible"
+            android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activities.SearchActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Dark.NoAction"
-            android:name=".activities.SearchActivity"/>
+            android:windowSoftInputMode="stateVisible" />
         <activity
             android:name=".activities.MoreActivity"
             android:screenOrientation="portrait"
@@ -51,15 +61,9 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Dark.NoAction" />
         <activity
-            android:screenOrientation="portrait"
             android:name=".activities.MainActivity"
-            android:theme="@style/AppTheme.Dark.Main" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Dark.Main"/>
         <activity
             android:name=".activities.FinalActivity"
             android:screenOrientation="portrait"

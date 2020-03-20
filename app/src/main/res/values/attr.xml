@@ -7,5 +7,6 @@
     <attr name="colorSeparator" format="reference|color"/>
     <attr name="colorBackground" format="reference|color"/>
     <attr name="colorForeground" format="reference|color"/>
+    <attr name="colorNavSeparator" format="reference|color"/>
 
 </resources>

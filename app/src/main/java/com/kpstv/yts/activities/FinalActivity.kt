@@ -334,7 +334,7 @@ class FinalActivity : AppCompatActivity(), MovieListener, KodeinAware {
 
         if (!movie.cast.isNullOrEmpty()) {
             val builder = StringBuilder()
-            for (i in 0 until movie.cast?.size!!) {
+            for (i in 0 until movie.cast?.size!! -1) {
                 builder.append(movie.cast?.get(i)?.name).append("  &#8226;  ")
             }
             builder.append(movie.cast?.get(movie.cast?.size!! - 1)?.name)

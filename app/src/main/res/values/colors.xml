@@ -30,8 +30,14 @@
     <color name="light_white">#EBEBEB</color>
     <color name="light_black">#1C1C1C</color>
 
+    <color name="splash_text">#E4E4E4</color>
+
+
     <color name="separator_light">#979696</color>
     <color name="separator_dark">#2C2C2C</color>
+
+    <color name="nav_separator_dark">#575656</color>
+    <color name="nav_separator_light">#CFCECE</color>
 
     <color name="inverse_dark">#7E7E7E</color>
     <color name="inverse_light">#323131</color>

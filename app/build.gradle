@@ -114,6 +114,9 @@ dependencies {
     // Toasty
     implementation 'com.github.GrenderG:Toasty:1.4.2'
 
+    // AwesomeSplash
+    implementation 'com.github.ViksaaSkool:AwesomeSplash:v1.0.0'
+
     implementation 'jp.wasabeef:blurry:3.0.0'
     implementation 'org.jsoup:jsoup:1.12.1'
     implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:10.0.5'

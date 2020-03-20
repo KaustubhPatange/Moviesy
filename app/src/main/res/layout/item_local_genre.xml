@@ -9,7 +9,7 @@
 
     <FrameLayout
         android:id="@+id/frameLayout"
-        android:background="@drawable/item_genre_background"
+        android:background="@drawable/item_local_genre_background"
         android:backgroundTint="@color/colorAccent"
         android:layout_marginStart="15dp"
         app:layout_constraintStart_toStartOf="parent"
