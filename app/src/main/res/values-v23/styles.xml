@@ -66,8 +66,4 @@
         <item name="colorNavSeparator">@color/separator_dark</item>
     </style>
 
-    <style name="AppTheme.Light.Main" parent="AppTheme.Light.NoAction">
-        <item name="colorPrimaryDark">@color/colorPrimary</item>
-        <item name="colorNavSeparator">@color/separator_light</item>
-    </style>
 </resources>

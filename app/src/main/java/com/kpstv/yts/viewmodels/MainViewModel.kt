@@ -12,13 +12,16 @@ import com.kpstv.yts.AppInterface.Companion.getPopularUtils
 import com.kpstv.yts.data.converters.QueryConverter
 import com.kpstv.yts.data.db.repository.FavouriteRepository
 import com.kpstv.yts.data.db.repository.MainRepository
+import com.kpstv.yts.data.db.repository.PauseRepository
 import com.kpstv.yts.extensions.Coroutines
+import com.kpstv.yts.extensions.lazyDeferred
 import com.kpstv.yts.interfaces.api.YTSPlaceholderApi
 import com.kpstv.yts.interfaces.listener.MoviesListener
 import com.kpstv.yts.interfaces.listener.ObservableListener
 import com.kpstv.yts.models.Movie
 import com.kpstv.yts.models.MovieShort
 import com.kpstv.yts.models.data.data_main
+import com.kpstv.yts.models.response.Model
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
@@ -30,11 +33,28 @@ class MainViewModel(
     application: Application,
     private val ytsPlaceholderApi: YTSPlaceholderApi,
     private val repository: MainRepository,
-    private val favouriteRepository: FavouriteRepository
+    private val favouriteRepository: FavouriteRepository,
+    private val pauseRepository: PauseRepository
 ) : AndroidViewModel(application) {
     private val TAG = "MainViewModel"
 
     private val context = application.applicationContext
+
+    val favouriteMovieIds by lazyDeferred {
+        favouriteRepository.getAllMovieId()
+    }
+
+    val pauseMovieJob by lazyDeferred {
+        pauseRepository.getAllPauseJob()
+    }
+
+    fun removeFavourite(movieId: Int) {
+        favouriteRepository.deleteMovie(movieId)
+    }
+
+    fun addToFavourite(model: Model.response_favourite) {
+        favouriteRepository.saveMovie(model)
+    }
 
     fun getYTSQuery(moviesListener: MoviesListener, queryMap: Map<String, String>) {
         moviesListener.onStarted()

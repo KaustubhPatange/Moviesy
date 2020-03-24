@@ -77,6 +77,13 @@
         <item name="colorTextLight">@color/light_white</item>
         <item name="colorSeparator">@color/separator_dark</item>
         <item name="colorNavSeparator">@color/separator_dark</item>
+        <item name="searchViewStyle">@style/SearchViewStyle</item>
+    </style>
+
+    <style name="AppTheme.Light.Main" parent="AppTheme.Light.NoAction">
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
+        <item name="colorNavSeparator">@color/separator_light</item>
+        <item name="searchViewStyle">@style/SearchViewStyle</item>
     </style>
 
     <style name="DialogTheme.Dark" parent="@style/CommonDialogTheme">
@@ -136,6 +143,11 @@
     <style name="SplashTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="android:background">#9B68DA</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="SearchViewStyle" parent="Widget.AppCompat.SearchView">
+        <item name="queryBackground">@android:color/transparent</item>
+        <item name="submitBackground">@android:color/transparent</item>
     </style>
 
 </resources>

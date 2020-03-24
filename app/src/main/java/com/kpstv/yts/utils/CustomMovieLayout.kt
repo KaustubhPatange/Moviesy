@@ -236,7 +236,7 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
                 imageUri = refactorYTSUrl(imageUri)
             }
 
-            Glide.with(context.applicationContext).asBitmap().load(imageUri)
+            GlideApp.with(context.applicationContext).asBitmap().load(imageUri)
                 .into(object : CustomTarget<Bitmap>() {
                     override fun onLoadCleared(placeholder: Drawable?) {
                     }

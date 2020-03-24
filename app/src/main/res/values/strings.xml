@@ -79,4 +79,11 @@ Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus d
     <string name="library">Library</string>
     <string name="charts">Charts</string>
     <string name="categories">Categories</string>
+    <string name="remove_watchlist">Removed from your watchlist</string>
+    <string name="undo">Undo</string>
+    <string name="fragment_watchlist_track">To keep track of the things that you want to watch, just add to it favourites.</string>
+    <string name="pause">Pause</string>
+    <string name="copy_magnet">Copy Magnet Url</string>
+    <string name="unpause">Unpause</string>
+    <string name="unpause_top"><![CDATA[Unpause & add to top queue]]></string>
 </resources>

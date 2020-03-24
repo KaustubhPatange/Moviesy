@@ -32,6 +32,7 @@ import com.kpstv.yts.utils.AppUtils
 import com.kpstv.yts.utils.AppUtils.Companion.getBulletSymbol
 import com.kpstv.yts.utils.AppUtils.Companion.getImdbUrl
 import com.kpstv.yts.utils.AppUtils.Companion.launchUrl
+import com.kpstv.yts.utils.GlideApp
 import kotlinx.android.synthetic.main.item_common_banner.view.*
 import kotlinx.android.synthetic.main.item_suggestion.view.*
 
@@ -81,7 +82,7 @@ class CustomPagedAdapter(private val context: Context, private val base: MovieBa
                 }
             }
 
-            Glide.with(context.applicationContext).asBitmap().load(movie.bannerUrl)
+            GlideApp.with(context.applicationContext).asBitmap().load(movie.bannerUrl)
                 .listener(object : RequestListener<Bitmap> {
                     override fun onLoadFailed(
                         e: GlideException?,

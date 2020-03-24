@@ -103,7 +103,10 @@ class AppUtils {
                         movieId = movie.id,
                         imdbCode = movie.imdb_code,
                         title = movie.title,
-                        imageUrl = movie.medium_cover_image
+                        imageUrl = movie.medium_cover_image,
+                        runtime = movie.runtime,
+                        rating = movie.rating,
+                        year = movie.year
                     )
                 )
                 R.drawable.ic_favorite_yes

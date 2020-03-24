@@ -3,12 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:title="Copy Magnet Url"
+        android:title="@string/pause"
+        app:showAsAction="never"
+        android:id="@+id/action_pause"/>
+
+    <item
+        android:title="@string/copy_magnet"
         app:showAsAction="never"
         android:id="@+id/action_copy_magnet" />
 
     <item
-        android:title="Cancel"
+        android:title="@android:string/cancel"
         app:showAsAction="never"
         android:id="@+id/action_cancel" />
 

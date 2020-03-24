@@ -1,5 +1,6 @@
 package com.kpstv.yts.data.db.localized
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.kpstv.yts.models.response.Model
 
@@ -12,8 +13,11 @@ interface FavouriteDao {
     fun getData(id: Int): Model.response_favourite
 
     @Query("select * from table_favourites")
-    fun getAllData(): List<Model.response_favourite>
+    fun getAllData(): LiveData<List<Model.response_favourite>>
 
     @Delete
     fun delete(data: Model.response_favourite)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun saveAllData(quotes : List<Model.response_favourite>)
 }

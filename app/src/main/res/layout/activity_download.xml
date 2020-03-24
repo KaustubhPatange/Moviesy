@@ -17,79 +17,101 @@
             android:layout_height="wrap_content" />
     </com.google.android.material.appbar.AppBarLayout>
 
-   <androidx.core.widget.NestedScrollView
-       app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content">
-       <LinearLayout
-           android:layout_width="match_parent"
-           android:layout_height="match_parent"
-           android:animateLayoutChanges="true"
-           android:orientation="vertical">
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-           <LinearLayout
-               android:id="@+id/layout_JobEmptyQueue"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:layout_marginBottom="10dp"
-               android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:animateLayoutChanges="true"
+            android:orientation="vertical">
 
-               <ImageView
-                   android:layout_marginTop="15dp"
-                   android:layout_width="match_parent"
-                   android:layout_height="70dp"
-                   android:src="@drawable/ic_notifications"
-                   app:tint="?attr/colorText" />
+            <LinearLayout
+                android:id="@+id/layout_JobEmptyQueue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:orientation="vertical">
 
-               <TextView
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:layout_marginTop="10dp"
-                   android:gravity="center"
-                   android:text="@string/download_queue"
-                   android:textColor="?attr/colorText"
-                   android:textSize="20sp" />
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:layout_marginTop="15dp"
+                    android:src="@drawable/ic_notifications"
+                    app:tint="?attr/colorText" />
 
-           </LinearLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:text="@string/download_queue"
+                    android:textColor="?attr/colorText"
+                    android:textSize="20sp" />
 
-           <LinearLayout
-               android:id="@+id/layout_jobCurrentQueue"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:orientation="vertical">
+            </LinearLayout>
 
-               <TextView
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:padding="10dp"
-                   android:text="@string/current"
-                   android:textColor="?attr/colorText"
-                   android:textSize="17sp" />
+            <LinearLayout
+                android:id="@+id/layout_jobCurrentQueue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-               <include layout="@layout/item_torrent_download" />
-           </LinearLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:text="@string/current"
+                    android:textColor="?attr/colorText"
+                    android:textSize="17sp" />
 
-           <LinearLayout
-               android:id="@+id/layout_jobPendingQueue"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:orientation="vertical">
+                <include layout="@layout/item_torrent_download" />
+            </LinearLayout>
 
-               <TextView
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:padding="10dp"
-                   android:text="@string/pending"
-                   android:textColor="?attr/colorText"
-                   android:textSize="17sp" />
+            <LinearLayout
+                android:id="@+id/layout_pauseQueue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-               <androidx.recyclerview.widget.RecyclerView
-                   android:id="@+id/recyclerView_download"
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   tools:listitem="@layout/item_torrent_download_1" />
-           </LinearLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:text="Paused"
+                    android:textColor="?attr/colorText"
+                    android:textSize="17sp" />
 
-       </LinearLayout>
-   </androidx.core.widget.NestedScrollView>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView_pause"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_jobPendingQueue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:text="@string/pending"
+                    android:textColor="?attr/colorText"
+                    android:textSize="17sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView_download"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:listitem="@layout/item_torrent_download_1" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

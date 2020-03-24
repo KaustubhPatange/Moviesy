@@ -32,6 +32,7 @@ class YTSApplication : Application(), KodeinAware {
         bind() from singleton { instance<MainDatabase>().getFavDao() }
         bind() from singleton { instance<MainDatabase>().getDownloadDao() }
         bind() from singleton { instance<MainDatabase>().getMovieDao() }
+        bind() from singleton { instance<MainDatabase>().getPauseDao() }
         bind() from singleton { NetworkConnectionInterceptor(instance()) }
         bind() from singleton { NetworkUtils.Companion(instance()) }
         bind() from singleton { MovieRepository(instance(), instance()) }
@@ -39,6 +40,7 @@ class YTSApplication : Application(), KodeinAware {
         bind() from singleton { TMdbRepository(instance(), instance()) }
         bind() from singleton { FavouriteRepository(instance()) }
         bind() from singleton { DownloadRepository(instance()) }
+        bind() from singleton { PauseRepository(instance()) }
         bind() from singleton { YTSPlaceholderApi(instance()) }
         bind() from singleton { TMdbPlaceholderApi(instance()) }
         bind() from singleton {
@@ -53,6 +55,7 @@ class YTSApplication : Application(), KodeinAware {
         bind() from singleton { MoreViewModelFactory(instance(), instance(), instance()) }
         bind() from singleton {
             MainViewModelFactory(
+                instance(),
                 instance(),
                 instance(),
                 instance(),

@@ -38,7 +38,7 @@ class AppInterface {
         var STREAM_LOCATION = "torrents"
         var SUBTITLE_LOCATION = File(Environment.getExternalStorageDirectory(), "Subtitles")
         var ANONYMOUSE_TORRENT_DOWNLOAD = true
-        var DOWNLOAD_TIMEOUT_SECOND = 30
+        var DOWNLOAD_TIMEOUT_SECOND = 40
         var DOWNLOAD_CONNECTION_TIMEOUT = 100
         var MOVIE_SPAN_DIFFERENCE = 3
         var QUERY_SPAN_DIFFERENCE = 6
@@ -51,6 +51,8 @@ class AppInterface {
         const val STOP_SERVICE = "com.kpstv.yts.STOP_SERVICE"
         const val PENDING_JOB_UPDATE = "com.kpstv.yts.PENDING_JOB_UPDATE"
         const val EMPTY_QUEUE = "com.kpstv.yts.EMPTY_QUEUE"
+        const val PAUSE_JOB = "com.kpstv.yts.PAUSE_JOB"
+        const val UNPAUSE_JOB = "com.kpstv.yts.ADD_ONLY_JOB"
         const val REMOVE_JOB = "com.kpstv.yts.REMOVE_JOB"
         const val REMOVE_CURRENT_JOB = "com.kpstv.yts.REMOVE_CURRENT_JOB"
 

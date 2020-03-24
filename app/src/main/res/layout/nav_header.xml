@@ -11,8 +11,8 @@
     <ImageView
         android:layout_marginStart="15dp"
         android:id="@+id/imageView"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
         android:layout_marginBottom="15dp"
         android:src="@drawable/play"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -29,7 +29,7 @@
         android:layout_marginBottom="15dp"
         android:text="@string/app_name"
         android:textColor="?colorTextLight"
-        android:textSize="20sp"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/imageView"
         app:layout_constraintTop_toTopOf="parent" />

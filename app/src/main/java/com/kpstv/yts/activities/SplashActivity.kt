@@ -18,11 +18,11 @@ class SplashActivity : AppCompatActivity(), Animation.AnimationListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-        val rotate = AnimationUtils.loadAnimation(this, R.anim.rotate)
+        val rotate = AnimationUtils.loadAnimation(this, R.anim.anim_splah_play)
         rotate.setAnimationListener(this)
         imageView.startAnimation(rotate)
 
-        val fade = AnimationUtils.loadAnimation(this, R.anim.fade)
+        val fade = AnimationUtils.loadAnimation(this, R.anim.anim_splash_text)
         textView.startAnimation(fade)
     }
 
@@ -34,6 +34,7 @@ class SplashActivity : AppCompatActivity(), Animation.AnimationListener {
         CoroutineScope(Dispatchers.IO).launch {
             delay(300)
             startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+            finish()
         }
     }
 

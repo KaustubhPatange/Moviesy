@@ -286,7 +286,7 @@ class BottomSheetSubtitles : BottomSheetDialogFragment() {
 
         override fun onBindViewHolder(holder: SubtitleHolder, i: Int) {
             val model = models[i]
-            Glide.with(context.applicationContext).load(FlagUtils.getFlagUrl(model.country)).into(holder.flagImage)
+            GlideApp.with(context.applicationContext).load(FlagUtils.getFlagUrl(model.country)).into(holder.flagImage)
 
             holder.title.text = model.text
             holder.subText.text = "${model.country} ${AppUtils.getBulletSymbol()} ${model.uploader}"

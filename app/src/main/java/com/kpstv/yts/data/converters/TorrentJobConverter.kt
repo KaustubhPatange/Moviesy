@@ -7,26 +7,26 @@ import com.kpstv.yts.models.Torrent
 import com.kpstv.yts.models.TorrentJob
 import java.lang.reflect.Type
 
-object TorrentConverter {
+object TorrentJobConverter {
     @TypeConverter
     @JvmStatic
-    fun fromTorrentJobToString(torrentJob: Torrent?): String? {
+    fun fromTorrentJobToString(torrentJob: TorrentJob?): String? {
         if (torrentJob == null) {
             return null
         }
         val gson = Gson()
-        val type: Type = object : TypeToken<Torrent?>() {}.type
+        val type: Type = object : TypeToken<TorrentJob?>() {}.type
         return gson.toJson(torrentJob, type)
     }
 
     @TypeConverter
     @JvmStatic
-    fun toTorrentJobfromString(torrentJobString: String?): Torrent? {
+    fun toTorrentJobfromString(torrentJobString: String?): TorrentJob? {
         if (torrentJobString == null) {
             return null
         }
         val gson = Gson()
-        val type: Type = object : TypeToken<Torrent?>() {}.type
-        return gson.fromJson<Torrent>(torrentJobString, type)
+        val type: Type = object : TypeToken<TorrentJob?>() {}.type
+        return gson.fromJson<TorrentJob>(torrentJobString, type)
     }
 }

@@ -9,9 +9,9 @@ data class TorrentJob (
     val seeds: Int,
     val downloadSpeed: Float,
     val currentSize: Long,
-    val totalSize: Long?,
+    val totalSize: Long? = null,
     val isPlay: Boolean,
-    val status: String,
+    var status: String,
     val peers: Int,
     val magnetHash: String
     ) : Serializable

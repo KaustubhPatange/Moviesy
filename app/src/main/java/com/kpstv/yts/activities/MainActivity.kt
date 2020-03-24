@@ -17,6 +17,7 @@ import com.kpstv.yts.fragments.HomeFragment
 import com.kpstv.yts.fragments.LibraryFragment
 import com.kpstv.yts.fragments.WatchlistFragment
 import com.kpstv.yts.services.DownloadService
+import com.kpstv.yts.utils.AppGlideModule
 import com.kpstv.yts.viewmodels.MainViewModel
 import com.kpstv.yts.viewmodels.providers.MainViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*

@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.kpstv.yts.R
 import com.kpstv.yts.models.Torrent
+import com.kpstv.yts.utils.GlideApp
 import kotlinx.android.synthetic.main.item_torrent_download_1.view.*
 
 class JobQueueAdapter(val context: Context, val models: ArrayList<Torrent>) :
@@ -27,7 +28,7 @@ class JobQueueAdapter(val context: Context, val models: ArrayList<Torrent>) :
         val model = models[i]
 
         holder.title.text = model.title
-        Glide.with(context.applicationContext).load(model.banner_url).into(holder.image)
+        GlideApp.with(context.applicationContext).load(model.banner_url).into(holder.image)
 
         holder.closeImage.setOnClickListener {
             listener.onClick(model, i)

@@ -34,6 +34,7 @@ import com.kpstv.yts.models.TmDbMovie
 import com.kpstv.yts.utils.AppUtils
 import com.kpstv.yts.utils.AppUtils.Companion.CafebarToast
 import com.kpstv.yts.utils.CustomMovieLayout
+import com.kpstv.yts.utils.GlideApp
 import com.kpstv.yts.viewmodels.FinalViewModel
 import com.kpstv.yts.viewmodels.providers.FinalViewModelFactory
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
@@ -274,7 +275,7 @@ class FinalActivity : AppCompatActivity(), MovieListener, KodeinAware {
     }
 
     private fun setPreviews() {
-        Glide.with(applicationContext).asBitmap().load(movie.background_image)
+        GlideApp.with(applicationContext).asBitmap().load(movie.background_image)
             .into(object : CustomTarget<Bitmap>() {
                 override fun onLoadCleared(placeholder: Drawable?) {
 
@@ -298,7 +299,7 @@ class FinalActivity : AppCompatActivity(), MovieListener, KodeinAware {
                 }
             })
 
-        Glide.with(applicationContext).asBitmap().load(movie.medium_cover_image)
+        GlideApp.with(applicationContext).asBitmap().load(movie.medium_cover_image)
             .into(object : CustomTarget<Bitmap>() {
                 override fun onLoadCleared(placeholder: Drawable?) {
                 }

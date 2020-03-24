@@ -8,7 +8,6 @@ import androidx.room.TypeConverters
 import com.kpstv.yts.data.converters.*
 import com.kpstv.yts.models.Movie
 import com.kpstv.yts.models.data.data_main
-import com.kpstv.yts.models.data.data_tmdb
 import com.kpstv.yts.models.response.Model
 
 @Database(
@@ -16,6 +15,7 @@ import com.kpstv.yts.models.response.Model
         data_main::class,
         Model.response_favourite::class,
         Model.response_download::class,
+        Model.response_pause::class,
         Movie::class],
     version = 1
 )
@@ -24,6 +24,8 @@ import com.kpstv.yts.models.response.Model
     CastConverter::class,
     GenreConverter::class,
     TMdbConverter::class,
+    TorrentListConverter::class,
+    TorrentJobConverter::class,
     TorrentConverter::class
 )
 abstract class MainDatabase : RoomDatabase() {
@@ -31,6 +33,7 @@ abstract class MainDatabase : RoomDatabase() {
     abstract fun getFavDao(): FavouriteDao
     abstract fun getDownloadDao(): DownloadDao
     abstract fun getMovieDao(): MovieDao
+    abstract fun getPauseDao(): PauseDao
 
     companion object {
         @Volatile
