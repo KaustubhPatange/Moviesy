@@ -76,6 +76,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (p0.itemId == R.id.settings) {
             drawerLayout.closeDrawer(GravityCompat.START)
             // TODO: Set up a settings activity
+        }else if (p0.itemId == R.id.downloadQueue) {
+            drawerLayout.closeDrawer(GravityCompat.START)
+            val downloadIntent = Intent(this, DownloadActivity::class.java)
+            startActivity(downloadIntent)
         }
         return true
     }

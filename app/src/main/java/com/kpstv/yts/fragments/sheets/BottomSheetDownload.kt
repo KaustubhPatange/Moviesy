@@ -31,7 +31,7 @@ import kotlinx.android.synthetic.main.custom_small_tip.view.*
 @Suppress("NAME_SHADOWING")
 class BottomSheetDownload : BottomSheetDialogFragment() {
 
-    val TAG = "BottomSheetDownload";
+    val TAG = "BottomSheetDownload"
     private var bluray = ArrayList<Torrent>()
     private var webrip = ArrayList<Torrent>()
     private lateinit var adapter: DownloadAdapter
@@ -85,15 +85,15 @@ class BottomSheetDownload : BottomSheetDialogFragment() {
         /** Special code for watch now button */
         setUpForWatch(view)
 
-        return view;
+        return view
     }
 
     fun startService(model: Torrent) {
         model.title = title
         model.banner_url = imageUri
         val serviceIntent = Intent(context, DownloadService::class.java)
-        serviceIntent.putExtra("addJob", model);
-        ContextCompat.startForegroundService(context as Context, serviceIntent);
+        serviceIntent.putExtra("addJob", model)
+        ContextCompat.startForegroundService(context as Context, serviceIntent)
     }
 
     private fun filterChips(view: View) {
@@ -176,7 +176,7 @@ class BottomSheetDownload : BottomSheetDialogFragment() {
 
                 /** Filter subtitle to check whether subtile for current movie exist */
 
-                var titleSpan = title.split(" ")[0]
+                val titleSpan = title.split(" ")[0]
 
                 val onlySuchFiles = SUBTITLE_LOCATION.list()?.filter { f -> f?.contains(titleSpan)!! }
                 if (onlySuchFiles?.isNotEmpty()!!) {

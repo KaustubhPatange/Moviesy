@@ -2,10 +2,7 @@ package com.kpstv.yts.models.response
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.kpstv.yts.models.TmDbCast
-import com.kpstv.yts.models.TmDbMovie
-import com.kpstv.yts.models.Torrent
-import com.kpstv.yts.models.TorrentJob
+import com.kpstv.yts.models.*
 import com.kpstv.yts.models.data.data_movie
 import java.io.Serializable
 
@@ -40,7 +37,20 @@ object Model {
         val rating: Double,
         val runtime: Int,
         val year: Int
-    )
+    ) {
+        companion object {
+            fun from(movie: MovieShort) =
+                response_favourite(
+                    movieId = movie.movieId!!,
+                    year = movie.year!!,
+                    rating = movie.rating,
+                    runtime = movie.runtime,
+                    imageUrl = movie.bannerUrl,
+                    title = movie.title,
+                    imdbCode = movie.imdbCode!!
+                )
+        }
+    }
 
     @Entity(tableName = "table_pause")
     data class response_pause(
@@ -50,7 +60,7 @@ object Model {
         val hash: String,
         val torrent: Torrent?,
         val saveLocation: String?
-    ): Serializable
+    ) : Serializable
 
     @Entity(tableName = "table_download")
     data class response_download(
@@ -63,5 +73,5 @@ object Model {
         val date_downloaded: String?,
         val total_video_length: Long,
         val hash: String
-        )
+    )
 }

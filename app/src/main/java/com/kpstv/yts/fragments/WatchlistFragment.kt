@@ -79,7 +79,7 @@ class WatchlistFragment : Fragment() {
                     it.dismiss()
                 }
                 autoDismiss(true)
-                duration(CafeBar.Duration.LONG)
+                duration(CafeBar.Duration.SHORT)
             }.show()
         }
 

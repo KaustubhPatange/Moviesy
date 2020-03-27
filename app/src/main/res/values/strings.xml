@@ -86,4 +86,6 @@ Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus d
     <string name="copy_magnet">Copy Magnet Url</string>
     <string name="unpause">Unpause</string>
     <string name="unpause_top"><![CDATA[Unpause & add to top queue]]></string>
+    <string name="nav_download">Download Queue</string>
+    <string name="add_watchlist">Added to watchlist</string>
 </resources>

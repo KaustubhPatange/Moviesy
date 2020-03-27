@@ -155,7 +155,7 @@ class DownloadActivity : AppCompatActivity(), KodeinAware {
                     val parcelableObject= intent?.getSerializableExtra("model")
                     Log.e(TAG, "Class: ${parcelableObject?.javaClass ?: "null"}")
                     if (parcelableObject is TorrentJob) {
-                        val model: TorrentJob = intent?.getSerializableExtra("model") as TorrentJob
+                        val model: TorrentJob = intent.getSerializableExtra("model") as TorrentJob
                         if (!::currentModel.isInitialized) {
                             updateCurrentModel(intent, model)
                         } else if (currentModel.title == model.title) {
@@ -169,7 +169,9 @@ class DownloadActivity : AppCompatActivity(), KodeinAware {
                     /** For some reasons it is throwing
                      * 'java.lang.RuntimeException: Parcelable encountered IOException reading a Serializable object (name = com.kpstv.yts.models.TorrentJob'
                      *
-                     *  Well i've to figure it out // TODO: Fix this */
+                     *  Well i've to figure it out // TODO: Fix this
+                     *  Edit: Seems like its fixed, but still needs some testing
+                     *  */
                     DA_LOG(e.message ?: "null")
                     e.printStackTrace()
 

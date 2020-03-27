@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:paddingBottom="15dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="?colorForeground"
+    android:layout_height="wrap_content">
+
+    <com.kpstv.shimmer.ShimmerImageView
+        android:id="@+id/shimmerImageView"
+        android:layout_width="57dp"
+        android:layout_height="85dp"
+        android:layout_margin="15dp"
+        app:cardCornerRadius="5dp"
+        app:layout_constraintBottom_toTopOf="@id/separatorView"
+        app:layout_constraintEnd_toStartOf="@id/item_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/item_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="15dp"
+        android:text="@string/af_title"
+        android:textColor="?colorTextLight"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/shimmerImageView"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/item_subText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/google_sans_regular"
+        android:text="2013 &#8226; 182 mins"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/shimmerImageView"
+        app:layout_constraintTop_toBottomOf="@id/item_title" />
+
+    <View
+        android:id="@+id/separatorView"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="20dp"
+        android:background="?colorSeparator"
+        app:layout_constraintTop_toBottomOf="@id/shimmerImageView" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/addLayout"
+        android:layout_marginTop="15dp"
+        app:layout_constraintTop_toBottomOf="@id/separatorView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

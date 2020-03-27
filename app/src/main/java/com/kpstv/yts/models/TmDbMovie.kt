@@ -12,7 +12,7 @@ data class TmDbMovie (
     @SerializedName("vote_average")
     val rating: Double,
     val title: String,
-    val release_date: String,
+    val release_date: String?,
     val runtime: Int,
     @SerializedName("original_language")
     val language: String,

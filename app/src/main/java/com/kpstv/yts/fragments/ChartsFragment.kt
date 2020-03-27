@@ -53,7 +53,7 @@ class ChartsFragment : Fragment() {
                 queryMap: Map<String, String>,
                 isMoreAvailable: Boolean
             ) {
-                featureLayout.setupCallbacksNoMore(movies)
+                featureLayout.setupCallbacksNoMore(movies, mainActivity.viewModel)
             }
 
         })

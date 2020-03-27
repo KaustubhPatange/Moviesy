@@ -1,18 +1,20 @@
 package com.kpstv.yts.utils
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.kpstv.yts.AppInterface.Companion.TMDB_IMAGE_PREFIX
@@ -23,6 +25,7 @@ import com.kpstv.yts.activities.FinalActivity
 import com.kpstv.yts.activities.MoreActivity
 import com.kpstv.yts.extensions.MovieBase
 import com.kpstv.yts.extensions.hide
+import com.kpstv.yts.fragments.sheets.BottomSheetQuickInfo
 import com.kpstv.yts.interfaces.listener.MoviesListener
 import com.kpstv.yts.models.MovieShort
 import com.kpstv.yts.models.TmDbMovie
@@ -101,13 +104,13 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
         clickableLayout.isFocusable = false
     }
 
-    fun setupCallbacksNoMore(list: ArrayList<MovieShort>) {
+    fun setupCallbacksNoMore(list: ArrayList<MovieShort>, viewModel: MainViewModel? = null) {
         base = MovieBase.YTS
         hideMoreCallbacks()
 
         models = list
 
-        setupRecyclerView(models)
+        setupRecyclerView(models, viewModel)
     }
 
     @JvmName("setupCallbacks")
@@ -130,7 +133,7 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
                 isMoreAvailable: Boolean
             ) {
                 models = movies
-                setupRecyclerView(models)
+                setupRecyclerView(models, viewModel)
                 if (isMoreAvailable)
                     setupMoreButton(queryMap)
                 else hideMoreCallbacks()
@@ -150,7 +153,7 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
          */
 
         val listener = View.OnClickListener {
-            invokeMoreFunction(context,view.cm_text.text.toString(),queryMap)
+            invokeMoreFunction(context, view.cm_text.text.toString(), queryMap)
         }
 
         moreButton.setOnClickListener(listener)
@@ -162,7 +165,7 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
         base = MovieBase.TMDB
         models = ArrayList()
         list.forEach {
-            if (it.release_date.contains("-")) {
+            if (it.release_date?.contains("-")!!) {
                 models.add(
                     MovieShort(
                         movieId = it.id.toInt(),
@@ -196,10 +199,20 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
         clickableLayout.setOnClickListener(listener)
     }
 
-    private fun setupRecyclerView(list: ArrayList<MovieShort>) {
+    private fun setupRecyclerView(list: ArrayList<MovieShort>, viewModel: MainViewModel? = null) {
         view.shimmerEffect.hideShimmer()
         view.shimmerEffect.visibility = View.GONE
         val adapter = CustomAdapter(context, list, base)
+
+        if (viewModel != null && context is Activity)
+            adapter.setOnLongListener = { movieShort, view ->
+                val sheet = BottomSheetQuickInfo(viewModel)
+                val bundle = Bundle()
+                bundle.putSerializable("model", movieShort);
+                sheet.arguments = bundle
+                sheet.show((context as FragmentActivity).supportFragmentManager, "")
+            }
+
         recyclerView.adapter = adapter
         recyclerView.setHasFixedSize(true)
         Log.e(TAG, "ItemSize: ${adapter.itemCount}")
@@ -215,6 +228,8 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
         private val base: MovieBase
     ) :
         RecyclerView.Adapter<CustomAdapter.CustomHolder>() {
+
+        lateinit var setOnLongListener: (MovieShort, View) -> Unit
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomHolder {
             return CustomHolder(
@@ -267,6 +282,13 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
                         intent.putExtra("movie_id", "${movie.movieId}")
                         context.startActivity(intent)
                     }
+                }
+            }
+
+            if (::setOnLongListener.isInitialized) {
+                holder.mainCard.setOnLongClickListener {
+                    setOnLongListener.invoke(movie, it)
+                    return@setOnLongClickListener true
                 }
             }
         }

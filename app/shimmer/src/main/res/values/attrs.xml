@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ShimmerImageView">
+        <attr name="setSrc" format="reference" />
+        <attr name="setShimmerColor" format="color" />
+        <attr name="setScaleType"/>
+    </declare-styleable>
+    <attr name="setScaleType" format="enum">
+        <enum name="center" value="0" />
+        <enum name="centerCrop" value="1" />
+        <enum name="fitCenter" value="2" />
+        <enum name="fitXY" value="3" />
+    </attr>
+</resources>

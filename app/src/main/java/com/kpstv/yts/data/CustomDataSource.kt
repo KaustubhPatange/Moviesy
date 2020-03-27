@@ -66,7 +66,7 @@ class CustomDataSource(
     private fun createMovieShort(it: ArrayList<TmDbMovie>): ArrayList<MovieShort> {
         val list = ArrayList<MovieShort>()
         it.forEach { movie ->
-            if (movie.release_date.contains("-")) {
+            if (movie.release_date?.contains("-")!!) {
                 list.add(
                     MovieShort(
                         movieId = movie.id.toInt(),

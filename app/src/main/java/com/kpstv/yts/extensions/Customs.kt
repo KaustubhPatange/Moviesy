@@ -17,7 +17,6 @@ fun<T> lazyDeferred(block: suspend CoroutineScope.() -> T): Lazy<Deferred<T>>{
     }
 }
 
-
 fun ArrayList<GenreFragment.LocalGenreModel>.add(title: String, @DrawableRes drawable: Int, genre: YTSQuery.Genre) {
     this.add(GenreFragment.LocalGenreModel(title, drawable, genre))
 }

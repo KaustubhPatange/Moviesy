@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.AndroidViewModel
+import co.metalab.asyncawait.async
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppInterface.Companion.CUSTOM_LAYOUT_YTS_SPAN
 import com.kpstv.yts.AppInterface.Companion.MainDateFormatter
@@ -16,12 +17,14 @@ import com.kpstv.yts.data.db.repository.PauseRepository
 import com.kpstv.yts.extensions.Coroutines
 import com.kpstv.yts.extensions.lazyDeferred
 import com.kpstv.yts.interfaces.api.YTSPlaceholderApi
+import com.kpstv.yts.interfaces.listener.FavouriteListener
 import com.kpstv.yts.interfaces.listener.MoviesListener
 import com.kpstv.yts.interfaces.listener.ObservableListener
 import com.kpstv.yts.models.Movie
 import com.kpstv.yts.models.MovieShort
 import com.kpstv.yts.models.data.data_main
 import com.kpstv.yts.models.response.Model
+import com.kpstv.yts.utils.AppUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
@@ -46,6 +49,12 @@ class MainViewModel(
 
     val pauseMovieJob by lazyDeferred {
         pauseRepository.getAllPauseJob()
+    }
+
+    fun isFavourite(listener: (Boolean) -> Unit, movieId: Int) {
+        Coroutines.main {
+            listener.invoke(AppUtils.isMovieFavourite(favouriteRepository, movieId))
+        }
     }
 
     fun removeFavourite(movieId: Int) {

@@ -25,6 +25,7 @@ import com.kpstv.yts.models.data.data_tmdb
 import com.kpstv.yts.models.response.Model
 import com.kpstv.yts.utils.AppUtils
 import retrofit2.await
+import java.lang.NullPointerException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.locks.ReentrantLock
@@ -297,16 +298,24 @@ class FinalViewModel(
     ) {
         listToModify.clear()
         results.forEach { movie ->
-            if (SimpleDateFormat("yyyy-MM-dd").parse(movie.release_date)?.let { date ->
-                    Calendar.getInstance().apply {
-                        time = date
-                        add(Calendar.MONTH, -MOVIE_SPAN_DIFFERENCE)
-                    }.let { calender ->
-                        Calendar.getInstance() > calender
-                    }
-                }!!) {
-                listToModify.add(movie)
+
+            /** There are some movies in TMDB where release data object does not exist.
+             *  Hence we've to make a null check.
+             */
+
+            if (!movie.release_date.isNullOrBlank()) {
+                if (SimpleDateFormat("yyyy-MM-dd").parse(movie.release_date)?.let { date ->
+                        Calendar.getInstance().apply {
+                            time = date
+                            add(Calendar.MONTH, -MOVIE_SPAN_DIFFERENCE)
+                        }.let { calender ->
+                            Calendar.getInstance() > calender
+                        }
+                    }!!) {
+                    listToModify.add(movie)
+                }
             }
+
         }
     }
 

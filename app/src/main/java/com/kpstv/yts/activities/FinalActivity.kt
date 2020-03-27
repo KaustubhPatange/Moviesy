@@ -152,7 +152,7 @@ class FinalActivity : AppCompatActivity(), MovieListener, KodeinAware {
                     viewModel.toggleFavourite(object : FavouriteListener {
                         override fun onToggleFavourite(id: Int?) {
                             if (id == R.drawable.ic_favorite_yes)
-                                Toasty.info(this@FinalActivity, "Added to watchlist").show()
+                                Toasty.info(this@FinalActivity, getString(R.string.add_watchlist)).show()
                             menu?.getItem(0)?.icon =
                                 ContextCompat.getDrawable(this@FinalActivity, id!!)
                         }
