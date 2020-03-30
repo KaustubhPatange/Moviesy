@@ -19,6 +19,7 @@ import com.kpstv.yts.R
 import com.kpstv.yts.activities.TorrentPlayerActivity
 import com.kpstv.yts.adapters.DownloadAdapter
 import com.kpstv.yts.adapters.SelectSubAdapter
+import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.models.SelectSubtitle
 import com.kpstv.yts.models.Torrent
 import com.kpstv.yts.services.DownloadService
@@ -39,6 +40,7 @@ class BottomSheetDownload : BottomSheetDialogFragment() {
     private lateinit var title: String
     private lateinit var imdbCode: String
     private lateinit var imageUri: String
+    private lateinit var movieId: Integer
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.bottom_sheet_download, container, false) as View
@@ -47,6 +49,7 @@ class BottomSheetDownload : BottomSheetDialogFragment() {
         title = arguments?.getString("title") as String
         imageUri = arguments?.getString("imageUri") as String
         imdbCode = arguments?.getString("imdbCode") as String
+        movieId = arguments?.getInt("movieId") as Integer
         view.recyclerView_download.layoutManager =
             LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
 
@@ -82,7 +85,7 @@ class BottomSheetDownload : BottomSheetDialogFragment() {
 
         filterChips(view)
 
-        /** Special code for watch now button */
+        /** Special code for watch now button & Library Button */
         setUpForWatch(view)
 
         return view
@@ -91,6 +94,8 @@ class BottomSheetDownload : BottomSheetDialogFragment() {
     fun startService(model: Torrent) {
         model.title = title
         model.banner_url = imageUri
+        model.imdbCode = imdbCode
+        model.movieId = movieId as Int
         val serviceIntent = Intent(context, DownloadService::class.java)
         serviceIntent.putExtra("addJob", model)
         ContextCompat.startForegroundService(context as Context, serviceIntent)
@@ -105,26 +110,29 @@ class BottomSheetDownload : BottomSheetDialogFragment() {
 
         adapter.setDownloadClickListener(object: DownloadAdapter.DownloadClickListener {
             override fun onClick(torrent: Torrent, pos: Int) {
-                if (tag == "watch_now") {
-                    val i = Intent(context,TorrentPlayerActivity::class.java)
-                    i.putExtra("torrentLink",torrent.url)
+                when (tag) {
+                    "watch_now" -> {
+                        val i = Intent(context,TorrentPlayerActivity::class.java)
+                        i.putExtra("torrentLink",torrent.url)
 
-                    if (::singleAdapter.isInitialized) {
-                        singleAdapter.models.forEach {
-                            if (it.isChecked) {
-                                i.putExtra("sub",it.text)
+                        if (::singleAdapter.isInitialized) {
+                            singleAdapter.models.forEach {
+                                if (it.isChecked) {
+                                    i.putExtra("sub",it.text)
+                                }
                             }
                         }
-                    }
 
-                    context?.startActivity(i)
-                }else {
-                    startService(torrent)
-                    Toast.makeText(
-                        context,
-                        "Download started, check notification",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                        context?.startActivity(i)
+                    }
+                    else -> {
+                        startService(torrent)
+                        Toast.makeText(
+                            context,
+                            "Download started, check notification",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
                 dismiss()
             }
@@ -172,42 +180,46 @@ class BottomSheetDownload : BottomSheetDialogFragment() {
 
             /** Show subtitles */
 
-            if (SUBTITLE_LOCATION.listFiles()?.isNotEmpty()!!) {
-
-                /** Filter subtitle to check whether subtile for current movie exist */
-
-                val titleSpan = title.split(" ")[0]
-
-                val onlySuchFiles = SUBTITLE_LOCATION.list()?.filter { f -> f?.contains(titleSpan)!! }
-                if (onlySuchFiles?.isNotEmpty()!!) {
-                    val cssView = LayoutInflater.from(context).inflate(R.layout.custom_select_subtitle,view.addLayout)
-                    val recyclerView = cssView.findViewById<RecyclerView>(R.id.recyclerView)
-
-                    val list = ArrayList<SelectSubtitle>()
-                    onlySuchFiles.mapTo(list) { SelectSubtitle(it) }
-
-                    singleAdapter = SelectSubAdapter(context!!,list)
-                    singleAdapter.setOnClickListener(object:
-                        SingleClickListener {
-                        override fun onClick(obj: Any, i: Int) {
-                            onlySuchFiles.indices.forEach { c ->
-                                if (list[c].isChecked && i!=c) {
-                                    list[c].isChecked = false
-                                    singleAdapter.notifyItemChanged(c)
-                                }
-                            }
-
-                            list[i].isChecked = !list[i].isChecked
-                            singleAdapter.notifyItemChanged(i)
-                        }
-                    })
-
-                    recyclerView.layoutManager = LinearLayoutManager(context)
-                    recyclerView.adapter = singleAdapter
-                }
-                else commonNoSubtitle(view)
-            }else commonNoSubtitle(view)
+            showSubtitle(view)
         }
+    }
+
+    private fun showSubtitle(view: View) {
+        if (SUBTITLE_LOCATION.listFiles()?.isNotEmpty()!!) {
+
+            /** Filter subtitle to check whether subtile for current movie exist */
+
+            val titleSpan = title.split(" ")[0]
+
+            val onlySuchFiles = SUBTITLE_LOCATION.list()?.filter { f -> f?.contains(titleSpan)!! }
+            if (onlySuchFiles?.isNotEmpty()!!) {
+                val cssView = LayoutInflater.from(context)
+                    .inflate(R.layout.custom_select_subtitle, view.addLayout)
+                val recyclerView = cssView.findViewById<RecyclerView>(R.id.recyclerView)
+
+                val list = ArrayList<SelectSubtitle>()
+                onlySuchFiles.mapTo(list) { SelectSubtitle(it) }
+
+                singleAdapter = SelectSubAdapter(context!!, list)
+                singleAdapter.setOnClickListener(object :
+                    SingleClickListener {
+                    override fun onClick(obj: Any, i: Int) {
+                        onlySuchFiles.indices.forEach { c ->
+                            if (list[c].isChecked && i != c) {
+                                list[c].isChecked = false
+                                singleAdapter.notifyItemChanged(c)
+                            }
+                        }
+
+                        list[i].isChecked = !list[i].isChecked
+                        singleAdapter.notifyItemChanged(i)
+                    }
+                })
+
+                recyclerView.layoutManager = LinearLayoutManager(context)
+                recyclerView.adapter = singleAdapter
+            } else commonNoSubtitle(view)
+        } else commonNoSubtitle(view)
     }
 
     private fun commonNoSubtitle(view: View) {

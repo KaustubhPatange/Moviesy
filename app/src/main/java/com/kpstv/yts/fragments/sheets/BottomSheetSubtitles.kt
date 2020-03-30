@@ -99,7 +99,7 @@ class BottomSheetSubtitles : BottomSheetDialogFragment() {
                             a.attr("href").toString()
                         ))
                 }
-                if (subtitleModels.size>0) {
+                if (subtitleModels.size > 0) {
                     adapter =
                         SubtitleAdapter(
                             context as Context,

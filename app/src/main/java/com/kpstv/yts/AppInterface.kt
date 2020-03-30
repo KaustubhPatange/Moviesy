@@ -37,7 +37,7 @@ class AppInterface {
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
         var STREAM_LOCATION = "torrents"
         var SUBTITLE_LOCATION = File(Environment.getExternalStorageDirectory(), "Subtitles")
-        var ANONYMOUSE_TORRENT_DOWNLOAD = true
+        var ANONYMOUS_TORRENT_DOWNLOAD = true
         var DOWNLOAD_TIMEOUT_SECOND = 40
         var DOWNLOAD_CONNECTION_TIMEOUT = 100
         var MOVIE_SPAN_DIFFERENCE = 3

@@ -18,8 +18,13 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:theme="@style/AppTheme.Dark.NoAction"
         tools:ignore="LockedOrientationActivity"
         tools:replace="android:allowBackup">
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".activities.settings.SettingsActivity"
+            android:theme="@style/AppTheme.Dark.NoAction"/>
         <activity
             android:name=".activities.SplashActivity"
             android:screenOrientation="portrait"
@@ -32,12 +37,10 @@
         </activity>
         <activity
             android:name=".activities.SearchActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Dark.NoAction"
             android:windowSoftInputMode="stateVisible" />
         <activity
             android:name=".activities.MoreActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Dark.NoAction" />
         <activity
             android:name=".activities.TorrentPlayerActivity"
@@ -50,7 +53,6 @@
         <activity
             android:name=".activities.DownloadActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Dark.NoAction" />
         <activity
             android:name=".activities.PlayerActivity"
@@ -58,15 +60,13 @@
             android:theme="@style/AppTheme.Dark.NoAction" />
         <activity
             android:name=".activities.ImageViewActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Dark.NoAction" />
         <activity
             android:name=".activities.MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Dark.Main"/>
+            android:theme="@style/AppTheme.Dark.Main" />
         <activity
             android:name=".activities.FinalActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Dark.NoAction" />
 
         <service android:name=".services.DownloadService" />

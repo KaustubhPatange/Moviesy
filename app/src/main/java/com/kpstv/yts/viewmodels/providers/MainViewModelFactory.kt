@@ -3,6 +3,7 @@ package com.kpstv.yts.viewmodels.providers
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.kpstv.yts.data.db.repository.DownloadRepository
 import com.kpstv.yts.data.db.repository.FavouriteRepository
 import com.kpstv.yts.data.db.repository.MainRepository
 import com.kpstv.yts.data.db.repository.PauseRepository
@@ -14,7 +15,8 @@ class MainViewModelFactory(
     private val application: Application,
     private val ytsPlaceholderApi: YTSPlaceholderApi,
     private val favouriteRepository: FavouriteRepository,
-    private val pauseRepository: PauseRepository
+    private val pauseRepository: PauseRepository,
+    private val downloadRepository: DownloadRepository
 ) : ViewModelProvider.NewInstanceFactory() {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
@@ -23,7 +25,8 @@ class MainViewModelFactory(
             ytsPlaceholderApi,
             repository,
             favouriteRepository,
-            pauseRepository
+            pauseRepository,
+            downloadRepository
         ) as T
     }
 }

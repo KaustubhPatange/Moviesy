@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="?colorForeground"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/addLayout"
+        android:orientation="vertical"/>
+
+    <TextView
+        android:clickable="true"
+        android:focusable="true"
+        android:id="@+id/playButton"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Play"
+        android:gravity="center"
+        android:textAllCaps="true"
+        android:textSize="18sp"
+        android:background="?colorAccent"
+        android:textColor="?colorTextLight"/>
+</LinearLayout>

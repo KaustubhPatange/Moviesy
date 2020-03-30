@@ -18,7 +18,7 @@ import com.github.se_bastiaan.torrentstream.StreamStatus
 import com.github.se_bastiaan.torrentstream.TorrentOptions
 import com.github.se_bastiaan.torrentstream.TorrentStream
 import com.github.se_bastiaan.torrentstream.listeners.TorrentListener
-import com.kpstv.yts.AppInterface.Companion.ANONYMOUSE_TORRENT_DOWNLOAD
+import com.kpstv.yts.AppInterface.Companion.ANONYMOUS_TORRENT_DOWNLOAD
 import com.kpstv.yts.AppInterface.Companion.DOWNLOAD_CONNECTION_TIMEOUT
 import com.kpstv.yts.AppInterface.Companion.DOWNLOAD_TIMEOUT_SECOND
 import com.kpstv.yts.AppInterface.Companion.EMPTY_QUEUE
@@ -196,7 +196,7 @@ class DownloadService : IntentService("blank") {
             .saveLocation(STORAGE_LOCATION)
             .autoDownload(true)
             .removeFilesAfterStop(false)
-            .anonymousMode(ANONYMOUSE_TORRENT_DOWNLOAD)
+            .anonymousMode(ANONYMOUS_TORRENT_DOWNLOAD)
             .build()
 
         updateNotification(model, null, true)
@@ -412,7 +412,7 @@ class DownloadService : IntentService("blank") {
             saveImageFromUrl(model.banner_url, imagePath)
 
             val todayDate = SimpleDateFormat("yyyy-MM-dd")
-                .format(Calendar.getInstance())
+                .format(Calendar.getInstance().time)
 
             val movieSize = getVideoDuration(this, currentModel?.videoFile!!)
                 .takeUnless { it == null } ?: 0L
@@ -425,7 +425,10 @@ class DownloadService : IntentService("blank") {
                     size = model.size,
                     date_downloaded = todayDate,
                     hash = model.hash,
-                    total_video_length = movieSize
+                    total_video_length = movieSize,
+                    videoPath = currentModel?.videoFile?.path,
+                    movieId = currentTorrentModel?.movieId,
+                    imdbCode = currentTorrentModel?.imdbCode
                 )
             )
 

@@ -8,52 +8,58 @@
     tools:context=".fragments.sheets.BottomSheetDownload">
 
     <LinearLayout
+        android:id="@+id/bs_download"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="7dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:fontFamily="@font/google_sans_regular"
-            android:text="@string/select_type"
-            android:textSize="15sp" />
+            android:layout_marginTop="7dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip_blueray"
-            android:layout_width="wrap_content"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:fontFamily="@font/google_sans_regular"
+                android:text="@string/select_type"
+                android:textSize="15sp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_blueray"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:checkable="true"
+                android:text="@string/bluray" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_webrip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:checkable="true"
+                android:text="@string/webrip" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="7dp"
+            android:background="?attr/colorSeparator" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView_download"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:checkable="true"
-            android:text="@string/bluray" />
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip_webrip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:checkable="true"
-            android:text="@string/webrip" />
-
+            android:layout_marginTop="7dp"
+            android:layout_marginBottom="15dp"
+            android:clipToPadding="false"
+            android:paddingStart="10dp" />
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="7dp"
-        android:background="?attr/colorSeparator" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView_download"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="7dp"
-        android:layout_marginBottom="15dp"
-        android:clipToPadding="false"
-        android:paddingStart="10dp" />
 
     <TextView
         android:id="@+id/item_tip_text"

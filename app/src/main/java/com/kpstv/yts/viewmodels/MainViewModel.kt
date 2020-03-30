@@ -11,6 +11,7 @@ import com.kpstv.yts.AppInterface.Companion.MainDateFormatter
 import com.kpstv.yts.AppInterface.Companion.QUERY_SPAN_DIFFERENCE
 import com.kpstv.yts.AppInterface.Companion.getPopularUtils
 import com.kpstv.yts.data.converters.QueryConverter
+import com.kpstv.yts.data.db.repository.DownloadRepository
 import com.kpstv.yts.data.db.repository.FavouriteRepository
 import com.kpstv.yts.data.db.repository.MainRepository
 import com.kpstv.yts.data.db.repository.PauseRepository
@@ -37,7 +38,8 @@ class MainViewModel(
     private val ytsPlaceholderApi: YTSPlaceholderApi,
     private val repository: MainRepository,
     private val favouriteRepository: FavouriteRepository,
-    private val pauseRepository: PauseRepository
+    private val pauseRepository: PauseRepository,
+    private val downloadRepository: DownloadRepository
 ) : AndroidViewModel(application) {
     private val TAG = "MainViewModel"
 
@@ -47,9 +49,19 @@ class MainViewModel(
         favouriteRepository.getAllMovieId()
     }
 
+    val downloadMovieIds by lazyDeferred {
+        downloadRepository.getAllDownloads()
+    }
+
     val pauseMovieJob by lazyDeferred {
         pauseRepository.getAllPauseJob()
     }
+
+    fun removeDownload(hash: String) =
+        downloadRepository.deleteDownload(hash)
+
+    fun updateDownload(hash: String, recentlyPlayed: Boolean, lastPosition: Int) =
+        downloadRepository.updateDownload(hash, recentlyPlayed, lastPosition)
 
     fun isFavourite(listener: (Boolean) -> Unit, movieId: Int) {
         Coroutines.main {
@@ -57,13 +69,11 @@ class MainViewModel(
         }
     }
 
-    fun removeFavourite(movieId: Int) {
+    fun removeFavourite(movieId: Int) =
         favouriteRepository.deleteMovie(movieId)
-    }
 
-    fun addToFavourite(model: Model.response_favourite) {
+    fun addToFavourite(model: Model.response_favourite) =
         favouriteRepository.saveMovie(model)
-    }
 
     fun getYTSQuery(moviesListener: MoviesListener, queryMap: Map<String, String>) {
         moviesListener.onStarted()

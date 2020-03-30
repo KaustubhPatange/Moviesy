@@ -5,6 +5,7 @@ import androidx.annotation.DrawableRes
 import com.kpstv.yts.YTSQuery
 import com.kpstv.yts.fragments.GenreFragment
 import kotlinx.coroutines.*
+import java.io.File
 import java.io.IOException
 
 class NoInternetException(message: String) : IOException(message)
@@ -25,6 +26,13 @@ fun View.hide() {
     visibility = View.GONE
 }
 
+fun File.deleteRecursive() {
+    if (this.isDirectory)
+        for (child in this.listFiles()) {
+            child.deleteRecursive()
+        }
+    this.delete();
+}
 
 fun View.show() {
     visibility = View.VISIBLE

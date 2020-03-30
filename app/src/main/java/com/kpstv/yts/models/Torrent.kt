@@ -9,5 +9,6 @@ data class Torrent(
     val type: String, val seeds: Int, val peers: Int,
     @SerializedName("size") val size_pretty: String,
     @SerializedName("size_bytes") val size: Long,
-    val date_uploaded: String, val date_uploaded_unix: String
+    val date_uploaded: String, val date_uploaded_unix: String,
+    var movieId: Int, var imdbCode: String
 ) : Serializable

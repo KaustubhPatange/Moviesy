@@ -13,6 +13,7 @@ import androidx.navigation.NavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.kpstv.yts.R
+import com.kpstv.yts.activities.settings.SettingsActivity
 import com.kpstv.yts.fragments.HomeFragment
 import com.kpstv.yts.fragments.LibraryFragment
 import com.kpstv.yts.fragments.WatchlistFragment
@@ -75,7 +76,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(p0: MenuItem): Boolean {
         if (p0.itemId == R.id.settings) {
             drawerLayout.closeDrawer(GravityCompat.START)
-            // TODO: Set up a settings activity
+            val settingIntent = Intent(this, SettingsActivity::class.java)
+            startActivity(settingIntent)
         }else if (p0.itemId == R.id.downloadQueue) {
             drawerLayout.closeDrawer(GravityCompat.START)
             val downloadIntent = Intent(this, DownloadActivity::class.java)

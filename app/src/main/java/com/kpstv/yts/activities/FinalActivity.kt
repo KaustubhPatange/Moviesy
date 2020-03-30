@@ -376,6 +376,7 @@ class FinalActivity : AppCompatActivity(), MovieListener, KodeinAware {
         bundle.putString("title", movie.title)
         bundle.putString("imdbCode", movie.imdb_code)
         bundle.putString("imageUri", movie.medium_cover_image)
+        bundle.putInt("movieId", movie.id)
         sheet.arguments = bundle
         sheet.show(supportFragmentManager, tag)
     }

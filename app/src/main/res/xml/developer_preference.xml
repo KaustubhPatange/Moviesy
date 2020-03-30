@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory android:title="Main">
+        <EditTextPreference
+            android:key="TMDB_IMAGE_PREFIX"
+            android:title="TMdB Image Prefix"
+            android:dialogTitle="Value"/>
+        <EditTextPreference
+            android:key="COUNTRY_FLAG_JSON_URL"
+            android:title="Country flags url"
+            android:dialogTitle="Value"/>
+        <EditTextPreference
+            android:key="SUGGESTION_URL"
+            android:title="Autocompletion strategy"
+            android:dialogTitle="Value"/>
+    </PreferenceCategory>
+    <PreferenceCategory app:title="Handling">
+        <EditTextPreference
+            android:inputType="number"
+            android:key="DOWNLOAD_TIMEOUT_SECOND"
+            android:title="DOWNLOAD_TIMEOUT_SECOND"/>
+        <EditTextPreference
+            android:inputType="number"
+            android:key="DOWNLOAD_CONNECTION_TIMEOUT"
+            android:title="DOWNLOAD_CONNECTION_TIMEOUT"/>
+        <EditTextPreference
+            android:inputType="number"
+            android:key="MOVIE_SPAN_DIFFERENCE"
+            android:title="MOVIE_SPAN_DIFFERENCE"/>
+        <EditTextPreference
+            android:inputType="number"
+            android:key="QUERY_SPAN_DIFFERENCE"
+            android:title="QUERY_SPAN_DIFFERENCE"/>
+        <EditTextPreference
+            android:inputType="number"
+            android:key="CUSTOM_LAYOUT_YTS_SPAN"
+            android:title="CUSTOM_LAYOUT_YTS_SPAN"/>
+    </PreferenceCategory>
+    <PreferenceCategory app:title="Key">
+        <EditTextPreference
+            android:key="TMDB_API_KEY"
+            android:title="TMdB Api Key"/>
+    </PreferenceCategory>
+</PreferenceScreen>

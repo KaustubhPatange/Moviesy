@@ -9,28 +9,30 @@ import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.github.se_bastiaan.torrentstream.StreamStatus
 import com.github.se_bastiaan.torrentstream.Torrent
 import com.github.se_bastiaan.torrentstream.TorrentOptions
 import com.github.se_bastiaan.torrentstream.TorrentStream
 import com.github.se_bastiaan.torrentstream.listeners.TorrentListener
+import com.kpstv.yts.AppInterface.Companion.ANONYMOUS_TORRENT_DOWNLOAD
 import com.kpstv.yts.AppInterface.Companion.STREAM_LOCATION
 import com.kpstv.yts.AppInterface.Companion.SUBTITLE_LOCATION
 import com.kpstv.yts.R
+import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.models.SubHolder
 import com.kpstv.yts.utils.SubtitleUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_torrent_player.*
-import tcking.github.com.giraffeplayer2.GiraffePlayer
-import tcking.github.com.giraffeplayer2.PlayerListener
 import tcking.github.com.giraffeplayer2.VideoInfo
-import tv.danmaku.ijk.media.player.IjkTimedText
 import java.io.File
-import java.util.stream.Collectors.toCollection
-import kotlin.math.log
 
+/** @Usage
+ *
+ *  Pass "torrentLink" and "sub" filePath (optional)
+ *  Pass "normalLink" and "sub" filePath (optional)
+ *
+ */
 @SuppressLint("SetTextI18n")
 class TorrentPlayerActivity : Activity() {
 
@@ -54,10 +56,37 @@ class TorrentPlayerActivity : Activity() {
 
         tf_subtitle.text = ""
 
-        val storeLocation = File(externalCacheDir,STREAM_LOCATION)
+        intent.getStringExtra("torrentLink")?.let { torrentLink ->
+            torrentSpecific(torrentLink)
+        } ?: intent.getStringExtra("normalLink")?.let { filePath ->
+            progressText.hide()
+            val file = File(filePath)
+            startPlayer(
+                file,
+                file.name
+            )
+        } ?: Toasty.error(this, "Could not figure out the type").show()
+
+        intent?.getStringExtra("sub")?.let { filename ->
+            subHolders = SubtitleUtils.parseSubtitles(File(SUBTITLE_LOCATION, filename).path)
+        }
+
+        if (!::subHolders.isInitialized)
+            tf_subtitle.visibility = View.GONE
+        else {
+            handlerHandler()
+            subtitleHandler.postDelayed(updateTask, 500)
+        }
+    }
+
+    private fun torrentSpecific(link: String) {
+        val storeLocation = File(externalCacheDir, STREAM_LOCATION)
 
         val torrentOptions = TorrentOptions.Builder()
+            .autoDownload(true)
             .saveLocation(storeLocation)
+            .removeFilesAfterStop(false)
+            .anonymousMode(ANONYMOUS_TORRENT_DOWNLOAD)
             .build()
 
         torrentStream = TorrentStream.init(torrentOptions)
@@ -77,21 +106,12 @@ class TorrentPlayerActivity : Activity() {
             override fun onStreamReady(torrent: Torrent) {
                 Log.e(TAG, "onStreamReady() called with: torrent = [$torrent]")
 
-                progressBar.visibility = View.GONE
-
-                val uri = Uri.fromFile(torrent.videoFile)
-                val videoInfo = VideoInfo(uri)
-                    .setTitle(torrent.videoFile.name)
-                    .setShowTopBar(true)
-                    .setAspectRatio(VideoInfo.AR_ASPECT_FILL_PARENT)
-                    .setBgColor(ContextCompat.getColor(this@TorrentPlayerActivity,android.R.color.black))
-
-                giraffe_player.videoInfo(videoInfo).player.start()
-
+                startPlayer(torrent.videoFile, torrent.videoFile.name)
             }
 
             override fun onStreamProgress(torrent: Torrent, status: StreamStatus) {
-                if (lastProgress!=status.progress) {
+                Log.e(TAG, "onStreamProgress() ==> ${status.progress}")
+                if (lastProgress != status.progress) {
                     lastProgress = status.progress
                     progressText.text = "${lastProgress.toInt()}%"
                 }
@@ -104,23 +124,31 @@ class TorrentPlayerActivity : Activity() {
                 Log.d(TAG, "onStreamStopped() called")
             }
         })
-        torrentStream.startStream(intent.getStringExtra("torrentLink"))
+        torrentStream.startStream(link)
+    }
 
-        intent?.getStringExtra("sub")?.let {filename ->
-            subHolders = SubtitleUtils.parseSubtitles(File(SUBTITLE_LOCATION,filename).path)
-        }
+    private fun startPlayer(file: File, title: String) {
+        progressBar.visibility = View.GONE
 
-        if (!::subHolders.isInitialized) tf_subtitle.visibility = View.GONE
-        else {
-            handlerHandler()
-            subtitleHandler.postDelayed(updateTask,500)
-        }
+        val uri = Uri.fromFile(file)
+        val videoInfo = VideoInfo(uri)
+            .setTitle(title)
+            .setShowTopBar(true)
+            .setAspectRatio(VideoInfo.AR_ASPECT_FILL_PARENT)
+            .setBgColor(
+                ContextCompat.getColor(
+                    this@TorrentPlayerActivity,
+                    android.R.color.black
+                )
+            )
+
+        giraffe_player.videoInfo(videoInfo).player.start()
     }
 
     private fun handlerHandler() {
         Log.e(TAG, "handlerHandler() called")
         tf_subtitle.text = ""
-        if (lastPostion==0)
+        if (lastPostion == 0)
             models = ArrayList(subHolders)
         else {
             models.clear()
@@ -128,8 +156,7 @@ class TorrentPlayerActivity : Activity() {
             val position = giraffe_player.player.currentPosition
 
             subHolders.forEach {
-                if (it.startTime >= position)
-                {
+                if (it.startTime >= position) {
                     models.add(it)
                 }
             }
@@ -138,8 +165,8 @@ class TorrentPlayerActivity : Activity() {
         }
     }
 
-    var subShowing=false
-    private val updateTask: Runnable = object: Runnable {
+    var subShowing = false
+    private val updateTask: Runnable = object : Runnable {
         override fun run() {
             try {
                 if (giraffe_player.isCurrentActivePlayer) {
@@ -171,18 +198,22 @@ class TorrentPlayerActivity : Activity() {
                     lastPostion = currentPosition
                 }
                 subtitleHandler.postDelayed(this, 100)
-            }catch (e: Exception) {
-                Toasty.error(this@TorrentPlayerActivity,"Subtitle crashed due to: ${e.message}").show()
-            }finally {
+            } catch (e: Exception) {
+                Toasty.error(this@TorrentPlayerActivity, "Subtitle crashed due to: ${e.message}")
+                    .show()
                 subtitleHandler.removeCallbacks(this)
             }
         }
     }
 
     override fun onDestroy() {
-        giraffe_player.player.release()
+        try {
+            giraffe_player.player.release()
+        } catch (e: Exception) {
+            Log.e(TAG, "==> Error: ${e.message}")
+        }
         subtitleHandler.removeCallbacks(updateTask)
-        torrentStream.stopStream()
+        if (::torrentStream.isInitialized) torrentStream.stopStream()
         super.onDestroy()
     }
 }

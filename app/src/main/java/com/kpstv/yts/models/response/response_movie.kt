@@ -1,5 +1,6 @@
 package com.kpstv.yts.models.response
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.kpstv.yts.models.*
@@ -66,12 +67,17 @@ object Model {
     data class response_download(
         @PrimaryKey(autoGenerate = true)
         val id: Int? = null,
+        val movieId: Int?,
+        val imdbCode: String?,
         val title: String,
         val imagePath: String?,
         val downloadPath: String?,
         val size: Long,
         val date_downloaded: String?,
         val total_video_length: Long,
-        val hash: String
+        val hash: String,
+        val videoPath: String?,
+        @ColumnInfo(name = "recentlyPlayed") val recentlyPlayed: Boolean = false,
+        @ColumnInfo(name = "lastSavedPosition") val lastSavedPosition: Int = 0
     )
 }

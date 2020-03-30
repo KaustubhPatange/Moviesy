@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/mainLayout"
+    android:clickable="true"
+    android:background="?selectableItemBackground"
+    android:focusable="true"
+    android:padding="15dp">
+
+    <com.kpstv.shimmer.ShimmerImageView
+        android:id="@+id/shimmerImageView"
+        android:layout_width="65dp"
+        android:layout_height="97dp"
+        app:cardCornerRadius="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/item_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="10dp"
+        android:text="@string/af_title"
+        android:textColor="?colorTextLight"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toStartOf="@+id/item_moreButton"
+        app:layout_constraintStart_toEndOf="@id/shimmerImageView"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:layout_marginEnd="10dp"
+        android:id="@+id/item_subText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/google_sans_regular"
+        android:text="2.2 GB &#8226; 182 mins"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toStartOf="@+id/item_moreButton"
+        app:layout_constraintStart_toEndOf="@id/shimmerImageView"
+        app:layout_constraintTop_toBottomOf="@id/item_title" />
+
+    <TextView
+        android:id="@+id/smallLabel"
+        android:layout_width="0dp"
+        android:textColor="?colorTextLight"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/colorAccent"
+        android:padding="3dp"
+        android:text="Recently played\u0020"
+        android:textSize="12sp"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/shimmerImageView"
+        app:layout_constraintTop_toBottomOf="@id/item_subText" />
+
+
+    <ImageView
+        android:id="@+id/item_moreButton"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:paddingStart="10dp"
+        android:paddingBottom="10dp"
+        android:src="@drawable/ic_more"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="?android:textColorSecondary" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

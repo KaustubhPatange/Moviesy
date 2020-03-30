@@ -275,12 +275,13 @@ class AppUtils {
             return builder.toString()
         }
 
+        @JvmName("deleteRecurse")
         fun deleteRecursive(fileOrDirectory: File?) {
             if (fileOrDirectory!!.isDirectory)
                 for (child in fileOrDirectory.listFiles()) {
-                    deleteRecursive(child);
+                    deleteRecursive(child)
                 }
-            fileOrDirectory.delete();
+            fileOrDirectory.delete()
         }
 
         fun downloadFile(url: String, outputFile: File) {
