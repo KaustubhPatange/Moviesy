@@ -1,26 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:background="?colorForeground"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="?colorForeground"
+    android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/addLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/addLayout"
-        android:orientation="vertical"/>
+        android:orientation="vertical" >
+        <CheckBox
+            android:fontFamily="@font/google_sans_regular"
+            android:id="@+id/checkBox_playFrom"
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="10dp"
+            android:text="Play from"
+            android:textColor="?colorTextLight"
+            />
+
+    </LinearLayout>
 
     <TextView
-        android:clickable="true"
-        android:focusable="true"
         android:id="@+id/playButton"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:text="Play"
-        android:gravity="center"
-        android:textAllCaps="true"
-        android:textSize="18sp"
         android:background="?colorAccent"
-        android:textColor="?colorTextLight"/>
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:text="@string/play"
+        android:textAllCaps="true"
+        android:textColor="?colorTextLight"
+        android:textSize="18sp" />
 </LinearLayout>

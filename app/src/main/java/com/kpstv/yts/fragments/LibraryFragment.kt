@@ -58,11 +58,13 @@ class LibraryFragment : Fragment() {
         downloadAdapter = LibraryDownloadAdapter(context!!, ArrayList())
         downloadAdapter.OnClickListener = { model, i ->
             // TODO: Show related sub
-            val sheet = BottomSheetLibraryDownload()
+            val sheet = BottomSheetLibraryDownload(mainActivity.viewModel)
             val bundle = Bundle()
-            bundle.putString("title", model.title)
+            bundle.putSerializable("model",model)
+           /* bundle.putString("title", model.title)
             bundle.putString("imdbCode", model.imdbCode)
             bundle.putString("normalLink", model.videoPath)
+            bundle.putString("hash", model.hash)*/
             sheet.arguments = bundle
             sheet.show(mainActivity.supportFragmentManager, "")
            /* val intent = Intent(context, TorrentPlayerActivity::class.java)

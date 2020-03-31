@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -12,30 +13,39 @@ import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
 import com.kpstv.yts.activities.TorrentPlayerActivity
 import com.kpstv.yts.adapters.SelectSubAdapter
+import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.interfaces.listener.SingleClickListener
 import com.kpstv.yts.models.SelectSubtitle
+import com.kpstv.yts.models.response.Model
+import com.kpstv.yts.viewmodels.MainViewModel
 import kotlinx.android.synthetic.main.bottom_sheet_download.view.addLayout
 import kotlinx.android.synthetic.main.bottom_sheet_library_download.view.*
 import kotlinx.android.synthetic.main.custom_small_tip.view.*
 
-class BottomSheetLibraryDownload: BottomSheetDialogFragment() {
+class BottomSheetLibraryDownload(private val viewModel: MainViewModel): BottomSheetDialogFragment() {
     private lateinit var singleAdapter: SelectSubAdapter
-    private lateinit var title: String
-    private lateinit var imdbCode: String
-    private lateinit var videoPath: String
+    private lateinit var model: Model.response_download
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
        return inflater.inflate(R.layout.bottom_sheet_library_download, container, false)?.also { view ->
-           title = arguments?.getString("title")!!
-           imdbCode = arguments?.getString("imdbCode")!!
-           videoPath = arguments?.getString("normalLink")!!
+           model = arguments?.getSerializable("model")!! as Model.response_download
+
+           if (model.lastSavedPosition != 0) {
+               view.checkBox_playFrom.text = "Play from last save position (${model.lastSavedPosition/(1000*60)} mins)"
+           }else view.checkBox_playFrom.hide()
 
            view.playButton.setOnClickListener {
                val i = Intent(context, TorrentPlayerActivity::class.java)
-               i.putExtra("normalLink", videoPath)
+               i.putExtra("normalLink", model.videoPath)
+               i.putExtra("hash", model.hash)
+
+               if (view.checkBox_playFrom.isVisible) {
+                   i.putExtra("lastPosition", model.lastSavedPosition)
+               }
 
                if (::singleAdapter.isInitialized) {
                    singleAdapter.models.forEach {
@@ -58,7 +68,7 @@ class BottomSheetLibraryDownload: BottomSheetDialogFragment() {
 
             /** Filter subtitle to check whether subtile for current movie exist */
 
-            val titleSpan = title.split(" ")[0]
+            val titleSpan = model.title.split(" ")[0]
 
             val onlySuchFiles = AppInterface.SUBTITLE_LOCATION.list()?.filter { f -> f?.contains(titleSpan)!! }
             if (onlySuchFiles?.isNotEmpty()!!) {
@@ -98,7 +108,7 @@ class BottomSheetLibraryDownload: BottomSheetDialogFragment() {
         subView.tip_button.setOnClickListener {
             val bottomSheetSubtitles =
                 BottomSheetSubtitles()
-            bottomSheetSubtitles.show(activity?.supportFragmentManager!!,imdbCode)
+            bottomSheetSubtitles.show(activity?.supportFragmentManager!!,model.imdbCode)
             dismiss()
         }
     }

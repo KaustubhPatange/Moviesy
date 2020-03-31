@@ -16,9 +16,15 @@ interface DownloadDao {
     @Query("update table_download set recentlyPlayed = :updateRecentlyPlayed, lastSavedPosition = :updateLastPosition where hash = :hash")
     fun updateDownload(hash: String, updateRecentlyPlayed: Boolean, updateLastPosition: Int)
 
+    @Query("update table_download set recentlyPlayed = :updateRecentlyPlayed where hash = :hash")
+    suspend fun updateDownload(hash: String, updateRecentlyPlayed: Boolean)
+
     @Delete()
     fun delete(data: Model.response_download)
 
     @Query("select * from table_download")
-    fun getAllDownloads(): LiveData<List<Model.response_download>>
+    fun getAllLiveDownloads(): LiveData<List<Model.response_download>>
+
+    @Query("select * from table_download")
+    fun getAllDownloads(): List<Model.response_download>
 }

@@ -79,5 +79,5 @@ object Model {
         val videoPath: String?,
         @ColumnInfo(name = "recentlyPlayed") val recentlyPlayed: Boolean = false,
         @ColumnInfo(name = "lastSavedPosition") val lastSavedPosition: Int = 0
-    )
+    ): Serializable
 }

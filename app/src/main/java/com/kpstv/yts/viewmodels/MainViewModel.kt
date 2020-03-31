@@ -60,8 +60,15 @@ class MainViewModel(
     fun removeDownload(hash: String) =
         downloadRepository.deleteDownload(hash)
 
-    fun updateDownload(hash: String, recentlyPlayed: Boolean, lastPosition: Int) =
+
+    fun updateDownload(hash: String, recentlyPlayed: Boolean, lastPosition: Int) = Coroutines.io {
+        downloadRepository.updateAllNormalDownloads()
         downloadRepository.updateDownload(hash, recentlyPlayed, lastPosition)
+    }
+
+  /*  fun getDownload(hash: String, listener: (Model.response_download)) {
+        downloadRepository.getDownload(hash)
+    }*/
 
     fun isFavourite(listener: (Boolean) -> Unit, movieId: Int) {
         Coroutines.main {

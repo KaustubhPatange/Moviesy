@@ -34,9 +34,15 @@ class DownloadRepository  (
         }
     }
 
+    suspend fun updateAllNormalDownloads() {
+        db.getDownloadDao().getAllDownloads().forEach {
+            db.getDownloadDao().updateDownload(it.hash, false)
+        }
+    }
+
     suspend fun getAllDownloads(): LiveData<List<Model.response_download>> {
         return withContext(Dispatchers.IO) {
-            db.getDownloadDao().getAllDownloads()
+            db.getDownloadDao().getAllLiveDownloads()
         }
     }
 
