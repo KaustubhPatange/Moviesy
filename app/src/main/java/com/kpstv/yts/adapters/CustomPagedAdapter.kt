@@ -16,25 +16,21 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppInterface.Companion.IS_DARK_THEME
 import com.kpstv.yts.R
-import com.kpstv.yts.activities.FinalActivity
+import com.kpstv.yts.ui.activities.FinalActivity
 import com.kpstv.yts.extensions.MovieBase
 import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.models.MovieShort
-import com.kpstv.yts.utils.AppUtils
 import com.kpstv.yts.utils.AppUtils.Companion.getBulletSymbol
 import com.kpstv.yts.utils.AppUtils.Companion.getImdbUrl
 import com.kpstv.yts.utils.AppUtils.Companion.launchUrl
 import com.kpstv.yts.utils.GlideApp
 import kotlinx.android.synthetic.main.item_common_banner.view.*
-import kotlinx.android.synthetic.main.item_suggestion.view.*
 
 /** An adapter class to manage the pagination library
  */

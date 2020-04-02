@@ -8,9 +8,9 @@ import com.kpstv.yts.interfaces.api.TMdbPlaceholderApi
 import com.kpstv.yts.interfaces.api.YTSPlaceholderApi
 import com.kpstv.yts.utils.NetworkUtils
 import com.kpstv.yts.utils.interceptors.NetworkConnectionInterceptor
-import com.kpstv.yts.viewmodels.providers.FinalViewModelFactory
-import com.kpstv.yts.viewmodels.providers.MainViewModelFactory
-import com.kpstv.yts.viewmodels.providers.MoreViewModelFactory
+import com.kpstv.yts.data.viewmodels.providers.FinalViewModelFactory
+import com.kpstv.yts.data.viewmodels.providers.MainViewModelFactory
+import com.kpstv.yts.data.viewmodels.providers.MoreViewModelFactory
 import es.dmoral.toasty.Toasty
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware

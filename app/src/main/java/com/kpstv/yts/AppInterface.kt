@@ -7,7 +7,7 @@ import android.os.Environment
 import androidx.core.text.isDigitsOnly
 import com.danimahardhika.cafebar.CafeBar
 import com.kpstv.yts.extensions.add
-import com.kpstv.yts.fragments.GenreFragment
+import com.kpstv.yts.ui.fragments.GenreFragment
 import com.kpstv.yts.interfaces.listener.ObservableListener
 import com.kpstv.yts.models.MovieShort
 import io.reactivex.Observable

@@ -32,7 +32,7 @@ import com.kpstv.yts.AppInterface.Companion.STORAGE_LOCATION
 import com.kpstv.yts.AppInterface.Companion.TORRENT_NOT_SUPPORTED
 import com.kpstv.yts.AppInterface.Companion.formatDownloadSpeed
 import com.kpstv.yts.R
-import com.kpstv.yts.activities.DownloadActivity
+import com.kpstv.yts.ui.activities.DownloadActivity
 import com.kpstv.yts.data.db.localized.MainDatabase
 import com.kpstv.yts.data.db.repository.DownloadRepository
 import com.kpstv.yts.data.db.repository.PauseRepository

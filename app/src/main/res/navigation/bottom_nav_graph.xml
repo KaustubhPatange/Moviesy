@@ -7,17 +7,17 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.kpstv.yts.fragments.HomeFragment"
+        android:name="com.kpstv.yts.ui.fragments.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/watchFragment"
-        android:name="com.kpstv.yts.fragments.WatchlistFragment"
+        android:name="com.kpstv.yts.ui.fragments.WatchlistFragment"
         android:label="fragment_watchlist"
         tools:layout="@layout/fragment_watchlist" />
     <fragment
         android:id="@+id/libraryFragment"
-        android:name="com.kpstv.yts.fragments.LibraryFragment"
+        android:name="com.kpstv.yts.ui.fragments.LibraryFragment"
         android:label="fragment_library"
         tools:layout="@layout/fragment_library" />
 

@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:background="?attr/colorForeground"
     android:orientation="vertical"
-    tools:context=".fragments.sheets.BottomSheetDownload">
+    tools:context=".ui.fragments.sheets.BottomSheetDownload">
 
     <LinearLayout
         android:id="@+id/bs_download"

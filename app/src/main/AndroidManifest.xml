@@ -23,10 +23,10 @@
         tools:replace="android:allowBackup">
         <activity
             android:screenOrientation="portrait"
-            android:name=".activities.settings.SettingsActivity"
+            android:name=".ui.settings.SettingsActivity"
             android:theme="@style/AppTheme.Dark.NoAction"/>
         <activity
-            android:name=".activities.SplashActivity"
+            android:name=".ui.activities.SplashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
             <intent-filter>
@@ -36,37 +36,37 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.SearchActivity"
+            android:name=".ui.activities.SearchActivity"
             android:theme="@style/AppTheme.Dark.NoAction"
             android:windowSoftInputMode="stateVisible" />
         <activity
-            android:name=".activities.MoreActivity"
+            android:name=".ui.activities.MoreActivity"
             android:theme="@style/AppTheme.Dark.NoAction" />
         <activity
-            android:name=".activities.TorrentPlayerActivity"
+            android:name=".ui.activities.TorrentPlayerActivity"
             android:screenOrientation="landscape"
             android:theme="@style/TorrentPlayerTheme" />
         <activity
-            android:name=".dialogs.AlertNoIconDialog"
+            android:name="com.kpstv.yts.ui.dialogs.AlertNoIconDialog"
             android:excludeFromRecents="true"
             android:theme="@style/DialogTheme.Dark" />
         <activity
-            android:name=".activities.DownloadActivity"
+            android:name=".ui.activities.DownloadActivity"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.Dark.NoAction" />
         <activity
-            android:name=".activities.PlayerActivity"
+            android:name=".ui.activities.PlayerActivity"
             android:screenOrientation="landscape"
             android:theme="@style/AppTheme.Dark.NoAction" />
         <activity
-            android:name=".activities.ImageViewActivity"
+            android:name=".ui.activities.ImageViewActivity"
             android:theme="@style/AppTheme.Dark.NoAction" />
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".ui.activities.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Dark.Main" />
         <activity
-            android:name=".activities.FinalActivity"
+            android:name=".ui.activities.FinalActivity"
             android:theme="@style/AppTheme.Dark.NoAction" />
 
         <service android:name=".services.DownloadService" />

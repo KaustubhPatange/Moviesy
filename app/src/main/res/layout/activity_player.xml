@@ -9,4 +9,4 @@
     app:showFullScreenButton="false"
     app:enableAutomaticInitialization="false"
     android:layout_height="match_parent"
-    tools:context=".activities.PlayerActivity"/>
+    tools:context=".ui.activities.PlayerActivity"/>

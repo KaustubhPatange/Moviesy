@@ -9,7 +9,7 @@ import com.kpstv.yts.AppInterface.Companion.UNPAUSE_JOB
 import com.kpstv.yts.AppInterface.Companion.STOP_SERVICE
 import com.kpstv.yts.AppInterface.Companion.TORRENT_NOT_SUPPORTED
 import com.kpstv.yts.R
-import com.kpstv.yts.dialogs.AlertNoIconDialog
+import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import com.kpstv.yts.models.Torrent
 import com.kpstv.yts.services.DownloadService
 

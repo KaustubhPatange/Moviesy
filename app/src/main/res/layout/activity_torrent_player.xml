@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:background="@color/black"
     android:layout_height="match_parent"
-    tools:context=".activities.TorrentPlayerActivity">
+    tools:context=".ui.activities.TorrentPlayerActivity">
 
     <tcking.github.com.giraffeplayer2.VideoView
         android:id="@+id/giraffe_player"

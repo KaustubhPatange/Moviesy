@@ -12,19 +12,8 @@ import java.time.LocalDateTime
 class FavouriteRepository (
     private val db: MainDatabase
 ) {
-
-  //  private val movieIds = MutableLiveData<List<Model.response_favourite>>()
-/*
-    init {
-        movieIds.observeForever {
-            saveAllMovieId(it)
-        }
-    }*/
-
-    suspend fun getMovieIdByQuery(id: Int): Model.response_favourite? {
-        return withContext(Dispatchers.IO) {
-            db.getFavDao().getData(id)
-        }
+    fun getMovieIdByQuery(id: Int): Model.response_favourite? {
+        return db.getFavDao().getData(id)
     }
 
     fun saveMovie(data: Model.response_favourite) {
@@ -47,10 +36,8 @@ class FavouriteRepository (
         }
     }
 
-    suspend fun getAllMovieId(): LiveData<List<Model.response_favourite>> {
-        return withContext(Dispatchers.IO) {
-            db.getFavDao().getAllData()
-        }
+   fun getAllMovieId(): LiveData<List<Model.response_favourite>> {
+        return db.getFavDao().getAllData()
     }
 
 }
