@@ -15,6 +15,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.chip.Chip
+import com.kpstv.yts.AppInterface
+import com.kpstv.yts.AppInterface.Companion.setAppThemeNoAction
 import com.kpstv.yts.R
 import com.kpstv.yts.YTSQuery
 import com.kpstv.yts.adapters.CustomPagedAdapter
@@ -92,6 +94,9 @@ class MoreActivity : AppCompatActivity(), KodeinAware {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        setAppThemeNoAction(this)
+
         setContentView(R.layout.activity_more)
 
         setSupportActionBar(toolbar)

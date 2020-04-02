@@ -20,7 +20,9 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppInterface.Companion.IS_DARK_THEME
+import com.kpstv.yts.AppInterface.Companion.MOVIE_ID
 import com.kpstv.yts.R
 import com.kpstv.yts.ui.activities.FinalActivity
 import com.kpstv.yts.extensions.MovieBase
@@ -73,7 +75,7 @@ class CustomPagedAdapter(private val context: Context, private val base: MovieBa
                 }
                 holder.mainLayout.setOnClickListener {
                     val intent = Intent(context, FinalActivity::class.java)
-                    intent.putExtra("movie_id", movie.movieId)
+                    intent.putExtra(MOVIE_ID, movie.movieId)
                     context.startActivity(intent)
                 }
             }
@@ -106,14 +108,14 @@ class CustomPagedAdapter(private val context: Context, private val base: MovieBa
                     MovieBase.YTS -> {
                         /** Passing movie Id as Int to normally fetch the movie details.
                          */
-                        intent.putExtra("movie_id", movie.movieId)
+                        intent.putExtra(MOVIE_ID, movie.movieId)
                         context.startActivity(intent)
                     }
                     MovieBase.TMDB -> {
                         /** Here we are passing movie Id as string to fetch movie
                          *  using second route.
                          */
-                        intent.putExtra("movie_id", "${movie.movieId}")
+                        intent.putExtra(MOVIE_ID, "${movie.movieId}")
                         context.startActivity(intent)
                     }
                 }

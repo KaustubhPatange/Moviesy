@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.os.Environment
 import androidx.core.text.isDigitsOnly
+import androidx.navigation.NavOptions
 import com.danimahardhika.cafebar.CafeBar
 import com.kpstv.yts.extensions.add
 import com.kpstv.yts.ui.fragments.GenreFragment
@@ -56,6 +57,16 @@ class AppInterface {
         const val REMOVE_JOB = "com.kpstv.yts.REMOVE_JOB"
         const val REMOVE_CURRENT_JOB = "com.kpstv.yts.REMOVE_CURRENT_JOB"
 
+        const val MOVIE_ID = "com.kpstv.yts.MOVIE_ID"
+
+        const val GENERAL_FRAG = "com.kpstv.yts.GENERAL_FRAG"
+        const val STORAGE_FRAG = "com.kpstv.yts.STORAGE_FRAG"
+        const val LOOK_FEEL_FRAG = "com.kpstv.yts.LOOK_FEEL_FRAG"
+        const val DEVELOPER_FRAG = "com.kpstv.yts.DEVELOPER_FRAG"
+        const val ABOUT_FRAG = "com.kpstv.yts.ABOUT_FRAG"
+
+        const val REPLACE_FRAG = "com.kpstv.yts.REPLACE_FRAG"
+
         val GENRE_CATEGORY_LIST = ArrayList<GenreFragment.LocalGenreModel>().apply {
             add("Action", R.drawable.ic_action_genre, YTSQuery.Genre.action)
             add("Adventure", R.drawable.ic_adventure_genre, YTSQuery.Genre.adventure)
@@ -76,6 +87,17 @@ class AppInterface {
             add("Western", R.drawable.ic_western_genre, YTSQuery.Genre.western)
         }
 
+        fun setAppThemeNoAction(activity: Activity) {
+            if (!IS_DARK_THEME) {
+                activity.setTheme(R.style.AppTheme_Light_NoAction)
+            }
+        }
+
+        fun setAppThemeMain(activity: Activity) {
+            if (!IS_DARK_THEME) {
+                activity.setTheme(R.style.AppTheme_Light_Main)
+            }
+        }
 
         @SuppressLint("SimpleDateFormat")
         val MainDateFormatter = SimpleDateFormat("yyyyMMddHH")
@@ -177,5 +199,12 @@ class AppInterface {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ listener.onSuccess(it) }, { listener.onError(it) })
         }
+        
+        
+
+        val animationOptions = NavOptions.Builder().setEnterAnim(R.anim.anim_blank)
+            .setExitAnim(R.anim.anim_blank)
+            .setPopEnterAnim(R.anim.nav_default_pop_enter_anim)
+            .setPopExitAnim(R.anim.nav_default_pop_exit_anim).build()
     }
 }

@@ -58,21 +58,21 @@ class AppUtils {
             AppInterface.TMDB_API_KEY = settingsPref.getString("TMDB_API_KEY",
                 AppInterface.TMDB_API_KEY
             )!!
-            AppInterface.DOWNLOAD_TIMEOUT_SECOND = settingsPref.getInt("DOWNLOAD_TIMEOUT_SECOND",
-                AppInterface.DOWNLOAD_TIMEOUT_SECOND
-            )
-            AppInterface.DOWNLOAD_CONNECTION_TIMEOUT = settingsPref.getInt("DOWNLOAD_CONNECTION_TIMEOUT",
-                AppInterface.DOWNLOAD_CONNECTION_TIMEOUT
-            )
-            AppInterface.MOVIE_SPAN_DIFFERENCE = settingsPref.getInt("MOVIE_SPAN_DIFFERENCE",
-                AppInterface.MOVIE_SPAN_DIFFERENCE
-            )
-            AppInterface.QUERY_SPAN_DIFFERENCE = settingsPref.getInt("QUERY_SPAN_DIFFERENCE",
-                AppInterface.QUERY_SPAN_DIFFERENCE
-            )
-            AppInterface.CUSTOM_LAYOUT_YTS_SPAN = settingsPref.getInt("CUSTOM_LAYOUT_YTS_SPAN",
-                AppInterface.CUSTOM_LAYOUT_YTS_SPAN
-            )
+            AppInterface.DOWNLOAD_TIMEOUT_SECOND = settingsPref.getString("DOWNLOAD_TIMEOUT_SECOND",
+                AppInterface.DOWNLOAD_TIMEOUT_SECOND.toString()
+            )!!.toInt()
+            AppInterface.DOWNLOAD_CONNECTION_TIMEOUT = settingsPref.getString("DOWNLOAD_CONNECTION_TIMEOUT",
+                AppInterface.DOWNLOAD_CONNECTION_TIMEOUT.toString()
+            )!!.toInt()
+            AppInterface.MOVIE_SPAN_DIFFERENCE = settingsPref.getString("MOVIE_SPAN_DIFFERENCE",
+                AppInterface.MOVIE_SPAN_DIFFERENCE.toString()
+            )!!.toInt()
+            AppInterface.QUERY_SPAN_DIFFERENCE = settingsPref.getString("QUERY_SPAN_DIFFERENCE",
+                AppInterface.QUERY_SPAN_DIFFERENCE.toString()
+            )!!.toInt()
+            AppInterface.CUSTOM_LAYOUT_YTS_SPAN = settingsPref.getString("CUSTOM_LAYOUT_YTS_SPAN",
+                AppInterface.CUSTOM_LAYOUT_YTS_SPAN.toString()
+            )!!.toInt()
 
             AppInterface.YTS_BASE_URL = settingsPref.getString("yts_web_url", AppInterface.YTS_BASE_URL)!!
             AppInterface.YIFY_BASE_URL = settingsPref.getString("yify_web_url",

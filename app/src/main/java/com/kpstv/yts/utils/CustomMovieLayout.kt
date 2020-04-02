@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.kpstv.yts.AppInterface
+import com.kpstv.yts.AppInterface.Companion.MOVIE_ID
 import com.kpstv.yts.AppInterface.Companion.TMDB_IMAGE_PREFIX
 import com.kpstv.yts.AppInterface.Companion.YTS_BASE_URL
 import com.kpstv.yts.AppInterface.Companion.handleRetrofitError
@@ -271,7 +273,7 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
                 val intent = Intent(context, FinalActivity::class.java)
                 when (base) {
                     MovieBase.YTS -> {
-                        intent.putExtra("movie_id", movie.movieId)
+                        intent.putExtra(MOVIE_ID, movie.movieId)
                         context.startActivity(intent)
                     }
                     MovieBase.TMDB -> {
@@ -279,7 +281,7 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
                         /** We are passing movie_id as string for TMDB Movie so that in
                          * Final View Model we can use the second route to get Movie Details*/
 
-                        intent.putExtra("movie_id", "${movie.movieId}")
+                        intent.putExtra(MOVIE_ID, "${movie.movieId}")
                         context.startActivity(intent)
                     }
                 }

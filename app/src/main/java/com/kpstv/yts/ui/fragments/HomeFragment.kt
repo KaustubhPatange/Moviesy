@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayout
@@ -16,26 +17,27 @@ import kotlinx.android.synthetic.main.fragment_home.view.*
 
 class HomeFragment : Fragment(), TabLayout.OnTabSelectedListener {
 
-    private lateinit var act: MainActivity
+    private lateinit var mainActivity: MainActivity
     var chartsFragment = ChartsFragment()
     var categoryFragment = GenreFragment()
-    private var v: View? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        mainActivity = activity as MainActivity
 
-        return v ?: inflater.inflate(R.layout.fragment_home, container, false).also { view->
-
-            act = activity as MainActivity
+        mainActivity.viewModel.homeView?.let {
+            return it
+        } ?:
+        return inflater.inflate(R.layout.fragment_home, container, false).also { view->
 
             view.searchImage.setOnClickListener {
-                act.drawerLayout.openDrawer(GravityCompat.START)
+                mainActivity.drawerLayout.openDrawer(GravityCompat.START)
             }
 
             view.searchCard.setOnClickListener {
-                val intent = Intent(act, SearchActivity::class.java)
+                val intent = Intent(mainActivity, SearchActivity::class.java)
                 startActivity(intent)
             }
 
@@ -43,7 +45,7 @@ class HomeFragment : Fragment(), TabLayout.OnTabSelectedListener {
 
             setFragment(chartsFragment)
 
-            v = view
+            mainActivity.viewModel.homeView = view
         }
     }
 
@@ -64,7 +66,7 @@ class HomeFragment : Fragment(), TabLayout.OnTabSelectedListener {
     }
 
     private fun setFragment(fragment: Fragment) {
-        act.supportFragmentManager
+        mainActivity.supportFragmentManager
             .beginTransaction()
             .replace(R.id.container, fragment)
             .commit()

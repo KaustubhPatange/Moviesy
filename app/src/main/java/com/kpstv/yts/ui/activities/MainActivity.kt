@@ -7,18 +7,22 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
+import com.kpstv.yts.AppInterface.Companion.IS_DARK_THEME
+import com.kpstv.yts.AppInterface.Companion.animationOptions
+import com.kpstv.yts.AppInterface.Companion.setAppThemeMain
 import com.kpstv.yts.R
-import com.kpstv.yts.ui.settings.SettingsActivity
+import com.kpstv.yts.data.viewmodels.MainViewModel
+import com.kpstv.yts.data.viewmodels.providers.MainViewModelFactory
+import com.kpstv.yts.services.DownloadService
 import com.kpstv.yts.ui.fragments.HomeFragment
 import com.kpstv.yts.ui.fragments.LibraryFragment
 import com.kpstv.yts.ui.fragments.WatchlistFragment
-import com.kpstv.yts.services.DownloadService
-import com.kpstv.yts.data.viewmodels.MainViewModel
-import com.kpstv.yts.data.viewmodels.providers.MainViewModelFactory
+import com.kpstv.yts.ui.settings.SettingsActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
@@ -35,38 +39,46 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     lateinit var viewModel: MainViewModel
     lateinit var drawerLayout: DrawerLayout
 
-    private val homeFragment = HomeFragment()
-    private val watchlistFragment = WatchlistFragment()
-    private val libraryFragment = LibraryFragment()
+    lateinit var navController: NavController
+    var isDarkTheme = true
 
     @SuppressLint("CheckResult")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        setAppThemeMain(this)
         setContentView(R.layout.activity_main)
+
+        isDarkTheme = IS_DARK_THEME
 
         viewModel = ViewModelProvider(this, factory).get(MainViewModel::class.java)
 
         drawerLayout = drawer_layout
         navigationView.setNavigationItemSelectedListener(this)
 
-        navigationView.setNavigationItemSelectedListener(this)
+        navController = findNavController(R.id.nav_host_fragment)
+
+        /** I am not using setupWithNavController options to let it automatically
+         *  navigate through the bottom nav listener instead I'll be using custom
+         *  navigation Listener.
+         *  The reason is though till this date there is no fix solution for saving
+         *  fragment state i.e supporting multiple backstack, however there are few
+         *  workarounds which can be done but it makes it more complex.
+         *  So I'll be waiting till google comes out with a perfect solution.
+         *
+         *  PS: Also there is no way to change the default transition when user clicks
+         *      on bottom nav. So we use navigateTo option to override default
+         *      transition methods.
+         */
 
         bottom_nav.setOnNavigationItemSelectedListener(bottomNavListener)
 
-        /** Set default fragment as Home Fragment */
 
-        bottom_nav.selectedItemId = R.id.homeFragment
     }
-
 
     private val bottomNavListener = BottomNavigationView.OnNavigationItemSelectedListener {
 
-        when (it.itemId) {
-            R.id.homeFragment -> setFragment(homeFragment)
-            R.id.watchFragment -> setFragment(watchlistFragment)
-            R.id.libraryFragment -> setFragment(libraryFragment)
-        }
+        if (it.itemId != navController.currentDestination?.id)
+            navController.navigate(it.itemId, null, animationOptions)
 
         return@OnNavigationItemSelectedListener true
     }
@@ -76,7 +88,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             drawerLayout.closeDrawer(GravityCompat.START)
             val settingIntent = Intent(this, SettingsActivity::class.java)
             startActivity(settingIntent)
-        }else if (p0.itemId == R.id.downloadQueue) {
+        } else if (p0.itemId == R.id.downloadQueue) {
             drawerLayout.closeDrawer(GravityCompat.START)
             val downloadIntent = Intent(this, DownloadActivity::class.java)
             startActivity(downloadIntent)
@@ -84,18 +96,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    private fun setFragment(fragment: Fragment) {
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.main_container, fragment)
-            .commit()
+    override fun onResume() {
+        super.onResume()
+        if (IS_DARK_THEME != isDarkTheme) {
+            val previousIntent = intent
+            finish();
+            startActivity(previousIntent);
+        }
     }
 
     override fun onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START))
-            drawerLayout.closeDrawer(GravityCompat.START)
-        else
-            super.onBackPressed()
+        when {
+            drawerLayout.isDrawerOpen(GravityCompat.START) -> drawerLayout.closeDrawer(GravityCompat.START)
+            navController.currentDestination?.id != R.id.homeFragment -> bottom_nav?.selectedItemId =
+                R.id.homeFragment
+            else -> super.onBackPressed()
+        }
     }
 
     override fun onDestroy() {

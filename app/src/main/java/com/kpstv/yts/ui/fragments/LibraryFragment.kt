@@ -7,9 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import androidx.activity.OnBackPressedCallback
 import androidx.core.view.GravityCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.kpstv.yts.AppInterface
 
 import com.kpstv.yts.R
 import com.kpstv.yts.ui.activities.MainActivity
@@ -22,6 +24,7 @@ import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.extensions.show
 import com.kpstv.yts.ui.fragments.sheets.BottomSheetLibraryDownload
 import es.dmoral.toasty.Toasty
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_library.view.*
 import kotlinx.android.synthetic.main.fragment_library_no_download.view.*
 import kotlinx.android.synthetic.main.fragment_watchlist.view.toolbar
@@ -29,7 +32,6 @@ import java.io.File
 
 class LibraryFragment : Fragment() {
 
-    private var v: View? = null
     private lateinit var mainActivity: MainActivity
     private val TAG = "LibraryFragment"
     private lateinit var downloadAdapter: LibraryDownloadAdapter
@@ -38,9 +40,12 @@ class LibraryFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return v ?: inflater.inflate(R.layout.fragment_library, container, false).also { view ->
-            v = view
-            mainActivity = activity as MainActivity
+        mainActivity = activity as MainActivity
+
+        mainActivity.viewModel.librayView?.let {
+            return it
+        } ?:
+        return inflater.inflate(R.layout.fragment_library, container, false).also { view ->
 
             view.layout_noDownload.hide()
 
@@ -49,6 +54,8 @@ class LibraryFragment : Fragment() {
             setRecyclerView(view)
 
             bindUI(view)
+
+            mainActivity.viewModel.librayView = view
         }
     }
 

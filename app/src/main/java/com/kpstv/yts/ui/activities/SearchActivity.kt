@@ -14,7 +14,9 @@ import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding2.widget.RxTextView
+import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppInterface.Companion.SUGGESTION_URL
+import com.kpstv.yts.AppInterface.Companion.setAppThemeNoAction
 import com.kpstv.yts.R
 import com.kpstv.yts.YTSQuery
 import com.kpstv.yts.ui.activities.MoreActivity.Companion.base
@@ -73,6 +75,7 @@ class SearchActivity : AppCompatActivity(), KodeinAware {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setAppThemeNoAction(this)
         setContentView(R.layout.activity_search)
 
         setSupportActionBar(toolbar)

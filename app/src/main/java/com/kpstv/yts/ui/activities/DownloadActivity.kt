@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.danimahardhika.cafebar.CafeBar
+import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppInterface.Companion.UNPAUSE_JOB
 import com.kpstv.yts.AppInterface.Companion.EMPTY_QUEUE
 import com.kpstv.yts.AppInterface.Companion.MODEL_UPDATE
@@ -24,6 +25,7 @@ import com.kpstv.yts.AppInterface.Companion.PAUSE_JOB
 import com.kpstv.yts.AppInterface.Companion.PENDING_JOB_UPDATE
 import com.kpstv.yts.AppInterface.Companion.REMOVE_CURRENT_JOB
 import com.kpstv.yts.AppInterface.Companion.formatDownloadSpeed
+import com.kpstv.yts.AppInterface.Companion.setAppThemeNoAction
 import com.kpstv.yts.R
 import com.kpstv.yts.adapters.JobQueueAdapter
 import com.kpstv.yts.adapters.PauseAdapter
@@ -76,6 +78,9 @@ class DownloadActivity : AppCompatActivity(), KodeinAware {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        setAppThemeNoAction(this)
+
         setContentView(R.layout.activity_download)
 
         setSupportActionBar(toolbar)

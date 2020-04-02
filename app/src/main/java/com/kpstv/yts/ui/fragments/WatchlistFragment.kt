@@ -5,11 +5,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.danimahardhika.cafebar.CafeBar
+import com.kpstv.yts.AppInterface
+import com.kpstv.yts.AppInterface.Companion.MOVIE_ID
+import com.kpstv.yts.AppInterface.Companion.animationOptions
 import com.kpstv.yts.R
 import com.kpstv.yts.ui.activities.FinalActivity
 import com.kpstv.yts.ui.activities.MainActivity
@@ -18,30 +22,37 @@ import com.kpstv.yts.adapters.WatchlistAdapter
 import com.kpstv.yts.extensions.Coroutines
 import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.extensions.show
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_watchlist.view.*
 
 class WatchlistFragment : Fragment() {
 
-    private var v: View? = null
     private lateinit var mainActivity: MainActivity
     private val TAG = "WatchListFragment"
     private lateinit var adapter: WatchlistAdapter
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return v ?: inflater.inflate(R.layout.fragment_watchlist, container, false).also { view ->
-            v = view
-            mainActivity = activity as MainActivity
+        mainActivity = activity as MainActivity
+
+        mainActivity.viewModel.watchView?.let {
+          return it
+        } ?:
+        return inflater.inflate(R.layout.fragment_watchlist, container, false).also { view ->
+            view.layout_noFavourite.hide()
 
             setToolBar(view)
 
             initRecyclerView(view)
 
             bindUI(view)
+
+            mainActivity.viewModel.watchView = view
         }
+
+      
     }
 
     /** This will bind the fragment with the viewModel returning LiveData.
@@ -61,7 +72,7 @@ class WatchlistFragment : Fragment() {
         adapter = WatchlistAdapter(mainActivity, ArrayList())
         adapter.onClickListener = { model, _ ->
             val intent = Intent(mainActivity, FinalActivity::class.java)
-            intent.putExtra("movie_id", model.movieId)
+            intent.putExtra(MOVIE_ID, model.movieId)
             startActivity(intent)
         }
 

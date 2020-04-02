@@ -16,7 +16,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.kpstv.yts.AppInterface
+import com.kpstv.yts.AppInterface.Companion.MOVIE_ID
 import com.kpstv.yts.AppInterface.Companion.handleRetrofitError
+import com.kpstv.yts.AppInterface.Companion.setAppThemeNoAction
 import com.kpstv.yts.R
 import com.kpstv.yts.YTSQuery
 import com.kpstv.yts.adapters.GenreAdapter
@@ -68,13 +71,16 @@ class FinalActivity : AppCompatActivity(), MovieListener, KodeinAware {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        setAppThemeNoAction(this)
+
         setContentView(R.layout.activity_final)
 
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         title = " "
 
-        val movieId = intent.extras?.get("movie_id")
+        val movieId = intent.extras?.get(MOVIE_ID)
 
         /** Initializing YouTube player instance */
         initializeYoutubePlayer()

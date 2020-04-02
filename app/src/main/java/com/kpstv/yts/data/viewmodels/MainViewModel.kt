@@ -2,6 +2,7 @@ package com.kpstv.yts.data.viewmodels
 
 import android.app.Application
 import android.util.Log
+import android.view.View
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.*
 import com.kpstv.yts.AppInterface
@@ -38,24 +39,15 @@ class MainViewModel(
 ) : AndroidViewModel(application) {
     private val TAG = "MainViewModel"
 
-    private val movieId = MutableLiveData(0)
-
-   /* var favouriteLive = MutableLiveData<List<Model.response_favourite>>()
-    var favouriteMovieLive = MutableLiveData<Model.response_favourite>()*/
+    /** We will save all fragment views into this ViewModel.
+     *  This a workaround to handle fragment save instance
+     *  which navigation component can't do.
+     */
+    var homeView: View? = null
+    var watchView: View? = null
+    var librayView: View? = null
 
     private val context = application.applicationContext
-
-  /*  init {
-        Transformations.map(movieId) { data ->
-            favouriteRepository.getMovieIdByQuery(data)
-        }.observeForever {
-            favouriteMovieLive.value = it
-        }
-    }
-
-    fun setIMdbCode(imdb: Int) {
-        movieId.value = imdb
-    }*/
 
     val favouriteMovieIds by lazyDeferred {
         favouriteRepository.getAllMovieId()
@@ -72,15 +64,10 @@ class MainViewModel(
     fun removeDownload(hash: String) =
         downloadRepository.deleteDownload(hash)
 
-
     fun updateDownload(hash: String, recentlyPlayed: Boolean, lastPosition: Int) = Coroutines.io {
         downloadRepository.updateAllNormalDownloads()
         downloadRepository.updateDownload(hash, recentlyPlayed, lastPosition)
     }
-
-  /*  fun getDownload(hash: String, listener: (Model.response_download)) {
-        downloadRepository.getDownload(hash)
-    }*/
 
     fun isFavourite(listener: (Boolean) -> Unit, movieId: Int) {
         Coroutines.main {
