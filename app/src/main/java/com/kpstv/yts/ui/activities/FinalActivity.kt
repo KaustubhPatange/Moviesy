@@ -59,7 +59,7 @@ class FinalActivity : AppCompatActivity(), MovieListener, KodeinAware {
     val TAG = "FinalActivity"
 
     override val kodein by kodein()
-    private val factory: FinalViewModelFactory by instance()
+    private val factory by instance<FinalViewModelFactory>()
 
     private lateinit var movie: Movie
     private lateinit var genreAdapter: GenreAdapter
@@ -99,7 +99,7 @@ class FinalActivity : AppCompatActivity(), MovieListener, KodeinAware {
                 viewModel.getMovieDetail(this, movieId)
             }
             else -> {
-                CafebarToast(this, "Invalid movieId parameter")
+                CafebarToast(this, getString(R.string.invalid_movieId))
             }
         }
     }
@@ -169,7 +169,7 @@ class FinalActivity : AppCompatActivity(), MovieListener, KodeinAware {
                 }
             }
         } else
-            Toasty.error(applicationContext, "Movie not loaded yet!").show()
+            Toasty.error(applicationContext, getString(R.string.movie_not_loaded)).show()
 
         return super.onOptionsItemSelected(item)
     }

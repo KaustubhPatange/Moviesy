@@ -43,6 +43,11 @@ import com.kpstv.yts.receivers.CommonBroadCast
 import com.kpstv.yts.utils.AppUtils
 import com.kpstv.yts.utils.AppUtils.Companion.getVideoDuration
 import com.kpstv.yts.utils.AppUtils.Companion.saveImageFromUrl
+import org.kodein.di.Kodein
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
+import org.kodein.di.android.kodein
+import org.kodein.di.generic.instance
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -50,7 +55,10 @@ import kotlin.collections.ArrayList
 
 
 @SuppressLint("WakelockTimeout")
-class DownloadService : IntentService("blank") {
+class DownloadService : IntentService("blank"), KodeinAware {
+
+    override val kodein by kodein()
+    private val pauseRepository: PauseRepository by instance()
 
     val TAG = "DownloadService"
     private var pendingJobs = ArrayList<Torrent>()
@@ -66,7 +74,6 @@ class DownloadService : IntentService("blank") {
     private var toDelete = false
     private var totalGap: Long? = 0
     private var lastProgress: Float? = 0f
-    private lateinit var pauseRepository: PauseRepository
 
     private val SHOW_LOG_FROM_THIS_CLASS = true
 
@@ -115,8 +122,6 @@ class DownloadService : IntentService("blank") {
         filter.addAction(REMOVE_CURRENT_JOB)
         filter.addAction(PAUSE_JOB)
         LocalBroadcastManager.getInstance(context).registerReceiver(localBroadcastReceiver, filter)
-
-        pauseRepository = PauseRepository(MainDatabase.invoke(applicationContext))
 
         super.onCreate()
     }
@@ -547,4 +552,6 @@ class DownloadService : IntentService("blank") {
         if (SHOW_LOG_FROM_THIS_CLASS)
             Log.e(TAG, message)
     }
+
+
 }

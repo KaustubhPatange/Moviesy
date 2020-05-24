@@ -117,6 +117,7 @@ class AppUtils {
             typedValue: TypedValue = TypedValue(),
             resolveRefs: Boolean = true
         ): Int {
+            // TODO: Make a check here
             context.theme.resolveAttribute(R.attr.colorText, typedValue, resolveRefs)
             return typedValue.data
         }

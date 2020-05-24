@@ -97,4 +97,6 @@ Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus d
     <string name="show_location">Show location</string>
     <string name="delete_storage">Delete from storage</string>
     <string name="play">Play</string>
+    <string name="invalid_movieId">Invalid movieId parameter</string>
+    <string name="movie_not_loaded">Movie not loaded yet!</string>
 </resources>

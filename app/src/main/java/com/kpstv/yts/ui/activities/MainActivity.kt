@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import android.webkit.WebView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -33,7 +34,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     KodeinAware {
 
     override val kodein by kodein()
-    private val factory: MainViewModelFactory by instance()
+    private val factory by instance<MainViewModelFactory>()
 
     val TAG = "MainActivity"
     lateinit var viewModel: MainViewModel
@@ -71,7 +72,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
          */
 
         bottom_nav.setOnNavigationItemSelectedListener(bottomNavListener)
-
 
     }
 

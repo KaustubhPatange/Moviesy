@@ -3,7 +3,6 @@ package com.kpstv.yts.utils
 import android.annotation.SuppressLint
 import android.util.Log
 import com.kpstv.yts.AppInterface.Companion.COUNTRY_FLAG_JSON_URL
-import com.kpstv.yts.interfaces.api.YTSPlaceholderApi
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.Consumer
@@ -14,23 +13,24 @@ import org.json.JSONObject
 import java.util.concurrent.Callable
 
 @SuppressLint("CheckResult")
-class FlagUtils {
-    companion object {
-        private const val TAG = "FlagUtils"
+class FlagUtils(
+    private val retrofitUtils: RetrofitUtils
+) {
+    private val TAG = javaClass.simpleName
 
-        fun getFlagUrl(country: String): String? {
-            return try {
-                val obj =JSONObject(DATA_JSON)
-                if (obj.has(country)) {
-                    obj.getString(country)
-                }else null
-            }catch (e: JSONException) {
-                Log.e(TAG,e.message,e)
-                null
-            }
+    fun getFlagUrl(country: String): String? {
+        return try {
+            val obj =JSONObject(DATA_JSON)
+            if (obj.has(country)) {
+                obj.getString(country)
+            }else null
+        }catch (e: JSONException) {
+            Log.e(TAG,e.message,e)
+            null
         }
+    }
 
-        private var DATA_JSON: String = """
+    private var DATA_JSON: String = """
             {
                 "Albanian": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Flag_of_Albania.svg/320px-Flag_of_Albania.svg.png",
                 "Arabic": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Flag_of_Saudi_Arabia.svg/640px-Flag_of_Saudi_Arabia.svg.png",
@@ -73,40 +73,37 @@ class FlagUtils {
             }
         """.trimIndent()
 
-        @Deprecated("Better to create a DATA_JSON instead of calling callback"
-            , level = DeprecationLevel.ERROR)
-        fun setUp(listener: FlagCallbacks) {
-            if (DATA_JSON.isBlank()) {
-                Observable.fromCallable(Callable<String> {
-                    return@Callable NetworkUtils.getHttpClient().newCall(
-                        Request.Builder().url(
-                            COUNTRY_FLAG_JSON_URL
-                        ).build()
-                    ).execute().body?.string()
-                }).subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(Consumer {
-                        parseData(it,listener)
-                    })
-            }else parseData(DATA_JSON,listener)
-        }
-
-        private fun parseData(it: String?, listener: FlagCallbacks) {
-            if (it==null) {
-                DATA_JSON = "{ }"
-                listener.onError()
-            }
-            else {
-                DATA_JSON = it
-                listener.onSuccess(it)
-            }
-        }
-
-        interface FlagCallbacks {
-            fun onSuccess(text: String)
-            fun onError()
-        }
-
+    @Deprecated("Better to create a DATA_JSON instead of calling callback"
+        , level = DeprecationLevel.ERROR)
+    fun setUp(listener: FlagCallbacks) {
+        if (DATA_JSON.isBlank()) {
+            Observable.fromCallable(Callable<String> {
+                return@Callable retrofitUtils.getHttpClient().newCall(
+                    Request.Builder().url(
+                        COUNTRY_FLAG_JSON_URL
+                    ).build()
+                ).execute().body?.string()
+            }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(Consumer {
+                    parseData(it,listener)
+                })
+        }else parseData(DATA_JSON,listener)
     }
 
+    private fun parseData(it: String?, listener: FlagCallbacks) {
+        if (it==null) {
+            DATA_JSON = "{ }"
+            listener.onError()
+        }
+        else {
+            DATA_JSON = it
+            listener.onSuccess(it)
+        }
+    }
+
+    interface FlagCallbacks {
+        fun onSuccess(text: String)
+        fun onError()
+    }
 }

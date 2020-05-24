@@ -14,7 +14,6 @@ import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding2.widget.RxTextView
-import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppInterface.Companion.SUGGESTION_URL
 import com.kpstv.yts.AppInterface.Companion.setAppThemeNoAction
 import com.kpstv.yts.R
@@ -34,7 +33,7 @@ import com.kpstv.yts.models.MovieShort
 import com.kpstv.yts.models.TmDbMovie
 import com.kpstv.yts.utils.AppUtils.Companion.hideKeyboard
 import com.kpstv.yts.utils.CustomMovieLayout
-import com.kpstv.yts.utils.NetworkUtils
+import com.kpstv.yts.utils.RetrofitUtils
 import com.kpstv.yts.data.viewmodels.FinalViewModel
 import com.kpstv.yts.data.viewmodels.MoreViewModel
 import com.kpstv.yts.data.viewmodels.providers.FinalViewModelFactory
@@ -56,8 +55,9 @@ import org.kodein.di.generic.instance
 class SearchActivity : AppCompatActivity(), KodeinAware {
 
     override val kodein by kodein()
-    private val moreFactory: MoreViewModelFactory by instance()
-    private val mainFactory: FinalViewModelFactory by instance()
+    private val moreFactory by instance<MoreViewModelFactory>()
+    private val mainFactory by instance<FinalViewModelFactory>()
+    private val retrofitUtils by instance<RetrofitUtils>()
 
     private val TAG = "SearchActivity"
 
@@ -359,7 +359,7 @@ class SearchActivity : AppCompatActivity(), KodeinAware {
             return@Consumer
         }
 
-        val response = NetworkUtils.getHttpClient().newCall(
+        val response = retrofitUtils.getHttpClient().newCall(
             Request.Builder()
                 .url("${SUGGESTION_URL}$it")
                 .build()

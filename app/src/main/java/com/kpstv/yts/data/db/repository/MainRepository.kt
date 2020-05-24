@@ -18,6 +18,10 @@ class MainRepository(
         }
     }
 
+    fun removeMoviesByQuery(queryString: String) {
+        deleteMovies(db.getMainDao().getMovies(queryString))
+    }
+
     fun saveMovies(dataMain: data_main) {
         Coroutines.io {
             db.getMainDao().upsert(dataMain)

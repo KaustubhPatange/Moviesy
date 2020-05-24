@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.tabs.TabLayout
 import com.kpstv.yts.R
 import com.kpstv.yts.ui.activities.MainActivity
@@ -56,7 +58,6 @@ class HomeFragment : Fragment(), TabLayout.OnTabSelectedListener {
     override fun onTabUnselected(tab: TabLayout.Tab?) {
 
     }
-
     override fun onTabSelected(tab: TabLayout.Tab?) {
        if (tab?.position == 0) {
            setFragment(chartsFragment)
@@ -71,5 +72,4 @@ class HomeFragment : Fragment(), TabLayout.OnTabSelectedListener {
             .replace(R.id.container, fragment)
             .commit()
     }
-
 }

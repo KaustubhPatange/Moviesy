@@ -35,11 +35,18 @@ import kotlinx.android.synthetic.main.bottom_sheet_subtitles.*
 import kotlinx.android.synthetic.main.bottom_sheet_subtitles.view.*
 import kotlinx.android.synthetic.main.item_subtitles.view.*
 import org.jsoup.Jsoup
+import org.kodein.di.Kodein
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.x.kodein
+import org.kodein.di.generic.instance
 import java.io.File
 import java.util.concurrent.Callable
 
 @SuppressLint("SetTextI18n")
-class BottomSheetSubtitles : BottomSheetDialogFragment() {
+class BottomSheetSubtitles : BottomSheetDialogFragment(), KodeinAware {
+
+    override val kodein by kodein()
+    private val flagUtils by instance<FlagUtils>()
 
     private val TAG = "BottomSheetSubtiles"
     private lateinit var v: View
@@ -49,6 +56,8 @@ class BottomSheetSubtitles : BottomSheetDialogFragment() {
     var hasEnglish = false
     var hasSpanish = false
     var hasArabic = false
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -101,8 +110,9 @@ class BottomSheetSubtitles : BottomSheetDialogFragment() {
                 if (subtitleModels.size > 0) {
                     adapter =
                         SubtitleAdapter(
-                            context as Context,
-                            subtitleModels
+                            context = context as Context,
+                            flagUtils = flagUtils,
+                            models = subtitleModels
                         )
                     adapter.setOnSingleClickListener(object:
                         SingleClickListener {
@@ -279,13 +289,16 @@ class BottomSheetSubtitles : BottomSheetDialogFragment() {
 
 
 
-    class SubtitleAdapter(val context: Context, var models: List<Subtitle>) : RecyclerView.Adapter<SubtitleAdapter.SubtitleHolder>() {
+    class SubtitleAdapter(val context: Context, private val flagUtils: FlagUtils, var models: List<Subtitle>) : RecyclerView.Adapter<SubtitleAdapter.SubtitleHolder>(), KodeinAware {
+
+        override val kodein: Kodein
+            get() = TODO("Not yet implemented")
 
         private lateinit var listener: SingleClickListener
 
         override fun onBindViewHolder(holder: SubtitleHolder, i: Int) {
             val model = models[i]
-            GlideApp.with(context.applicationContext).load(FlagUtils.getFlagUrl(model.country)).into(holder.flagImage)
+            GlideApp.with(context.applicationContext).load(flagUtils.getFlagUrl(model.country)).into(holder.flagImage)
 
             holder.title.text = model.text
             holder.subText.text = "${model.country} ${AppUtils.getBulletSymbol()} ${model.uploader}"
@@ -349,5 +362,9 @@ class BottomSheetSubtitles : BottomSheetDialogFragment() {
             val itemLikes = view.item_likes
             val progressBar = view.item_progressBar
         }
+
+
     }
+
+
 }

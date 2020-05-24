@@ -17,22 +17,21 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppInterface.Companion.MOVIE_ID
 import com.kpstv.yts.AppInterface.Companion.TMDB_IMAGE_PREFIX
 import com.kpstv.yts.AppInterface.Companion.YTS_BASE_URL
 import com.kpstv.yts.AppInterface.Companion.handleRetrofitError
 import com.kpstv.yts.R
-import com.kpstv.yts.ui.activities.FinalActivity
-import com.kpstv.yts.ui.activities.MoreActivity
+import com.kpstv.yts.data.viewmodels.MainViewModel
 import com.kpstv.yts.extensions.MovieBase
 import com.kpstv.yts.extensions.hide
-import com.kpstv.yts.ui.fragments.sheets.BottomSheetQuickInfo
 import com.kpstv.yts.interfaces.listener.MoviesListener
 import com.kpstv.yts.models.MovieShort
 import com.kpstv.yts.models.TmDbMovie
+import com.kpstv.yts.ui.activities.FinalActivity
+import com.kpstv.yts.ui.activities.MoreActivity
+import com.kpstv.yts.ui.fragments.sheets.BottomSheetQuickInfo
 import com.kpstv.yts.utils.AppUtils.Companion.refactorYTSUrl
-import com.kpstv.yts.data.viewmodels.MainViewModel
 import kotlinx.android.synthetic.main.custom_movie_layout.view.*
 import kotlinx.android.synthetic.main.item_common_banner.view.*
 import kotlinx.android.synthetic.main.item_suggestion.view.*
@@ -52,6 +51,7 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
     private lateinit var models: ArrayList<MovieShort>
     private lateinit var moreButton: ImageView
     private lateinit var clickableLayout: RelativeLayout
+    private lateinit var removeBlock: () -> Unit
 
     companion object {
         /** Creating this companion object so that we can call it from
@@ -106,13 +106,19 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
         clickableLayout.isFocusable = false
     }
 
-    fun setupCallbacksNoMore(list: ArrayList<MovieShort>, viewModel: MainViewModel? = null) {
+    fun setupCallbacksNoMore(
+        list: ArrayList<MovieShort>,
+        queryMap: Map<String, String>,
+        viewModel: MainViewModel? = null
+    ) {
         base = MovieBase.YTS
         hideMoreCallbacks()
 
         models = list
 
         setupRecyclerView(models, viewModel)
+
+        removeBlock = { viewModel?.removeYtsQuery(queryMap) }
     }
 
     @JvmName("setupCallbacks")
@@ -143,6 +149,15 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
 
         }
         viewModel.getYTSQuery(listener, queryMap)
+        removeBlock = { viewModel.removeYtsQuery(queryMap) }
+    }
+
+    /**
+     * This will remove the data from the repository when force refreshed!
+     */
+    fun removeData() {
+        if (::removeBlock.isInitialized)
+            removeBlock.invoke()
     }
 
     private fun setupMoreButton(queryMap: Map<String, String>) {

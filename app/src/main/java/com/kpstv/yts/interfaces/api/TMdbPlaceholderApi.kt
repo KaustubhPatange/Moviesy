@@ -3,7 +3,7 @@ package com.kpstv.yts.interfaces.api
 import com.kpstv.yts.AppInterface.Companion.TMDB_API_KEY
 import com.kpstv.yts.AppInterface.Companion.TMDB_BASE_URL
 import com.kpstv.yts.models.response.Model
-import com.kpstv.yts.utils.NetworkUtils
+import com.kpstv.yts.utils.RetrofitUtils
 import kotlinx.coroutines.Deferred
 import okhttp3.Interceptor
 import retrofit2.http.GET
@@ -34,7 +34,7 @@ interface TMdbPlaceholderApi {
 
     companion object {
         private var tmdbApi: TMdbPlaceholderApi? = null
-        operator fun invoke(networkUtils: NetworkUtils.Companion): TMdbPlaceholderApi {
+        operator fun invoke(retrofitUtils: RetrofitUtils): TMdbPlaceholderApi {
             val requestInterceptor = Interceptor { chain ->
                 val url = chain.request()
                     .url
@@ -48,9 +48,9 @@ interface TMdbPlaceholderApi {
                 return@Interceptor chain.proceed(request)
             }
             return tmdbApi
-                ?: networkUtils.getRetrofitBuilder()
+                ?: retrofitUtils.getRetrofitBuilder()
                     .baseUrl(TMDB_BASE_URL)
-                    .client(networkUtils.getHttpBuilder().addInterceptor(requestInterceptor).build())
+                    .client(retrofitUtils.getHttpBuilder().addInterceptor(requestInterceptor).build())
                     .build()
                     .create(TMdbPlaceholderApi::class.java)
                     .also { tmdbApi = it }

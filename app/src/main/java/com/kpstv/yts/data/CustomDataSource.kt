@@ -1,7 +1,6 @@
 package com.kpstv.yts.data
 
 import android.app.Application
-import android.util.Log
 import androidx.paging.PageKeyedDataSource
 import com.kpstv.yts.AppInterface.Companion.TMDB_IMAGE_PREFIX
 import com.kpstv.yts.extensions.Coroutines

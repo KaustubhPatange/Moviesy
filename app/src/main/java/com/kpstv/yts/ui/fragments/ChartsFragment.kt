@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.kpstv.yts.R
 import com.kpstv.yts.YTSQuery
 import com.kpstv.yts.ui.activities.MainActivity
@@ -18,6 +19,9 @@ class ChartsFragment : Fragment() {
     private var v: View? = null
     private lateinit var mainActivity: MainActivity
 
+    /** This lambda will hold method on how to remove the data */
+    private lateinit var removeData: () -> Unit
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -29,6 +33,22 @@ class ChartsFragment : Fragment() {
             v = view
 
             setViewAndLayout()
+
+            setSwipeRefreshCallback()
+        }
+    }
+
+    private fun setSwipeRefreshCallback() {
+        val swipeRefreshLayout = v?.findViewById<SwipeRefreshLayout>(R.id.swipeRefreshLayout)
+
+        swipeRefreshLayout?.setOnRefreshListener {
+            if (::removeData.isInitialized) {
+                removeData.invoke()
+
+                setViewAndLayout()
+
+                swipeRefreshLayout.isRefreshing = false
+            }
         }
     }
 
@@ -53,7 +73,7 @@ class ChartsFragment : Fragment() {
                 queryMap: Map<String, String>,
                 isMoreAvailable: Boolean
             ) {
-                featureLayout.setupCallbacksNoMore(movies, mainActivity.viewModel)
+                featureLayout.setupCallbacksNoMore(movies, queryMap, mainActivity.viewModel)
             }
 
         })
@@ -102,6 +122,17 @@ class ChartsFragment : Fragment() {
         val layout4 = CustomMovieLayout(mainActivity, "Latest")
         layout4.injectViewAt(addLayout)
         layout4.setupCallbacks( mainActivity.viewModel, queryMap5)
+
+        /** Setting this function which holds method to clear this above data. */
+        removeData = {
+            featureLayout.removeData()
+            layout1.removeData()
+            layout2.removeData()
+            layout3.removeData()
+            layout4.removeData()
+
+            addLayout.removeAllViews()
+        }
     }
 
 }

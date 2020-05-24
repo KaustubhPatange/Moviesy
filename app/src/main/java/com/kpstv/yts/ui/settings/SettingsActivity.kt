@@ -8,7 +8,6 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppInterface.Companion.ABOUT_FRAG
 import com.kpstv.yts.AppInterface.Companion.DEVELOPER_FRAG
 import com.kpstv.yts.AppInterface.Companion.GENERAL_FRAG
@@ -24,7 +23,6 @@ import kotlinx.android.synthetic.main.activity_settings.*
 class SettingsActivity : AppCompatActivity() {
 
     val settingsMainFragment = SettingsMainFragment()
-
     val lookSettingsFragment = LookSettingsFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,7 +33,11 @@ class SettingsActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        lookSettingsFragment.listener = {
+        /** This listener on DARK_THEME switch button will help
+         *  us to change theme of this activity by recreating
+         *  it after destroying :)
+         */
+        lookSettingsFragment.onDarkThemeChangeListener = {
             IS_DARK_THEME = it
             val previousIntent = intent
             previousIntent.putExtra(REPLACE_FRAG, true)
@@ -53,8 +55,14 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
+        /** Setting default fragment of this layout empty container
+         */
         replaceFragment(settingsMainFragment, false)
 
+        /** This check from LookSettingsFragment Listener will change
+         *  current fragment with lookSettingsFragment due to result
+         *  of theme being changed i.e activity recreated.
+         */
         if (intent.getBooleanExtra(REPLACE_FRAG, false))
             replaceFragment(lookSettingsFragment)
     }
@@ -81,6 +89,9 @@ class SettingsActivity : AppCompatActivity() {
         super.onBackPressed()
     }
 
+    /** This fragment will hold the category names to navigate within.
+     *  A listener is called by parent activity which navigates accordingly.
+     */
     class SettingsMainFragment : Fragment() {
         private lateinit var act: FragmentActivity
         lateinit var listener: (String) -> Unit

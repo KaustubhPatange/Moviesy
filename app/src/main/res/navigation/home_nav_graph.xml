@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_nav_graph"
+    app:startDestination="@id/chartsFragment">
+
+    <fragment
+        android:id="@+id/chartsFragment"
+        android:name="com.kpstv.yts.ui.fragments.ChartsFragment"
+        android:label="fragment_charts"
+        tools:layout="@layout/fragment_charts" />
+    <fragment
+        android:id="@+id/genreFragment"
+        android:name="com.kpstv.yts.ui.fragments.GenreFragment"
+        android:label="fragment_genre"
+        tools:layout="@layout/fragment_genre" />
+</navigation>

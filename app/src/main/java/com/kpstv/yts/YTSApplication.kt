@@ -6,11 +6,12 @@ import com.kpstv.yts.data.db.localized.*
 import com.kpstv.yts.data.db.repository.*
 import com.kpstv.yts.interfaces.api.TMdbPlaceholderApi
 import com.kpstv.yts.interfaces.api.YTSPlaceholderApi
-import com.kpstv.yts.utils.NetworkUtils
+import com.kpstv.yts.utils.RetrofitUtils
 import com.kpstv.yts.utils.interceptors.NetworkConnectionInterceptor
 import com.kpstv.yts.data.viewmodels.providers.FinalViewModelFactory
 import com.kpstv.yts.data.viewmodels.providers.MainViewModelFactory
 import com.kpstv.yts.data.viewmodels.providers.MoreViewModelFactory
+import com.kpstv.yts.utils.FlagUtils
 import es.dmoral.toasty.Toasty
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -34,7 +35,8 @@ class YTSApplication : Application(), KodeinAware {
         bind() from singleton { instance<MainDatabase>().getMovieDao() }
         bind() from singleton { instance<MainDatabase>().getPauseDao() }
         bind() from singleton { NetworkConnectionInterceptor(instance()) }
-        bind() from singleton { NetworkUtils.Companion(instance()) }
+        bind() from singleton { RetrofitUtils(instance()) }
+        bind() from singleton { FlagUtils(instance()) }
         bind() from singleton { MovieRepository(instance(), instance()) }
         bind() from singleton { MainRepository(instance(), instance()) }
         bind() from singleton { TMdbRepository(instance(), instance()) }

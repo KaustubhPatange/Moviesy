@@ -2,7 +2,7 @@ package com.kpstv.yts.interfaces.api
 
 import com.kpstv.yts.AppInterface.Companion.YTS_BASE_API_URL
 import com.kpstv.yts.models.response.Model
-import com.kpstv.yts.utils.NetworkUtils
+import com.kpstv.yts.utils.RetrofitUtils
 import kotlinx.coroutines.Deferred
 import retrofit2.Call
 import retrofit2.http.GET
@@ -36,10 +36,10 @@ interface YTSPlaceholderApi {
         private var ytsApi: YTSPlaceholderApi? = null
 
         operator fun invoke(
-            networkUtils: NetworkUtils.Companion
+            retrofitUtils: RetrofitUtils
         ): YTSPlaceholderApi {
             return ytsApi
-                ?: networkUtils.getRetrofitBuilder()
+                ?: retrofitUtils.getRetrofitBuilder()
                     .baseUrl(YTS_BASE_API_URL)
                     .build()
                     .create(YTSPlaceholderApi::class.java)

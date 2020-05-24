@@ -121,7 +121,7 @@ class AppInterface {
                 }
                 .autoDismiss(false)
                 .showShadow(true)
-                .show();
+                .show()
         }
 
 

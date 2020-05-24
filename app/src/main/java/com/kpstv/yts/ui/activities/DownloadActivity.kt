@@ -328,10 +328,6 @@ class DownloadActivity : AppCompatActivity(), KodeinAware {
                     models.removeAt(pos)
                     adapter.notifyItemRemoved(pos)
 
-                    /*  // TODO: Check if you need this... AHH.. WE DON't NEED it
-                      val i = Intent(REMOVE_JOB)
-                      i.putExtra("model",model)
-                      LocalBroadcastManager.getInstance(this@DownloadActivity).sendBroadcast(intent)*/
                 }
             })
 

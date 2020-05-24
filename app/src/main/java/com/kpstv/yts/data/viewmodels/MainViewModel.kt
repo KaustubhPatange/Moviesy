@@ -39,7 +39,7 @@ class MainViewModel(
 ) : AndroidViewModel(application) {
     private val TAG = "MainViewModel"
 
-    /** We will save all fragment views into this ViewModel.
+    /** We will save all fragment views into this ViewModel.c
      *  This a workaround to handle fragment save instance
      *  which navigation component can't do.
      */
@@ -80,6 +80,11 @@ class MainViewModel(
 
     fun addToFavourite(model: Model.response_favourite) =
         favouriteRepository.saveMovie(model)
+
+    fun removeYtsQuery(queryMap: Map<String, String>) {
+        val queryString = QueryConverter.fromMapToString(queryMap)
+        repository.removeMoviesByQuery(queryString)
+    }
 
     fun getYTSQuery(moviesListener: MoviesListener, queryMap: Map<String, String>) {
         moviesListener.onStarted()

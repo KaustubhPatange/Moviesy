@@ -8,7 +8,7 @@ import com.kpstv.yts.R
 
 class LookSettingsFragment: PreferenceFragmentCompat() {
 
-    lateinit var listener:(Boolean) -> Unit
+    lateinit var onDarkThemeChangeListener:(Boolean) -> Unit
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.look_preference, rootKey)
@@ -16,7 +16,7 @@ class LookSettingsFragment: PreferenceFragmentCompat() {
         val darkPref = findPreference<SwitchPreferenceCompat>("IS_DARK_THEME")
         darkPref?.isChecked = AppInterface.IS_DARK_THEME
         darkPref?.setOnPreferenceChangeListener { _, newValue ->
-            listener.invoke(newValue as Boolean)
+            onDarkThemeChangeListener.invoke(newValue as Boolean)
             return@setOnPreferenceChangeListener true
         }
     }
