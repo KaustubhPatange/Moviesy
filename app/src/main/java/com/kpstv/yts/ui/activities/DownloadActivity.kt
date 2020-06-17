@@ -32,6 +32,7 @@ import com.kpstv.yts.data.db.localized.MainDatabase
 import com.kpstv.yts.data.db.repository.PauseRepository
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import com.kpstv.yts.extensions.Coroutines
+import com.kpstv.yts.extensions.ServiceManager
 import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.extensions.show
 import com.kpstv.yts.models.Torrent
@@ -55,7 +56,8 @@ import java.lang.Exception
 class DownloadActivity : AppCompatActivity(), KodeinAware {
 
     override val kodein by kodein()
-    private val factory: MainViewModelFactory by instance()
+    private val factory by instance<MainViewModelFactory>()
+    private val serviceManager by instance<ServiceManager>()
 
     private val TAG = "DownloadActivity"
     private lateinit var adapter: JobQueueAdapter
@@ -101,7 +103,7 @@ class DownloadActivity : AppCompatActivity(), KodeinAware {
 
         bindUI()
 
-        registerLocalBroadcast()
+       // registerLocalBroadcast()
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -133,6 +135,39 @@ class DownloadActivity : AppCompatActivity(), KodeinAware {
             }else
                 layout_pauseQueue.hide()
             DA_LOG("Updating models")
+        })
+
+        serviceManager.pendingJobs.observe(this, Observer { models ->
+            if (models.size > 0) {
+
+                if (::adapter.isInitialized && adapter.itemCount == models.size) return@Observer
+
+                adapter = JobQueueAdapter(this@DownloadActivity, models)
+
+                adapter.setCloseClickListener(object : JobQueueAdapter.CloseClickListener {
+                    override fun onClick(model: Torrent, pos: Int) {
+                       // models.removeAt(pos) TODO: Remove this
+                        serviceManager.removePendingJob(model)
+                        adapter.notifyItemRemoved(pos)
+                    }
+                })
+
+                recyclerView_download.adapter = adapter
+                layout_jobPendingQueue.visibility = View.VISIBLE
+
+            }
+            else layout_jobPendingQueue.visibility = View.GONE
+        })
+
+        serviceManager.torrentJob.observe(this, Observer { model ->
+
+            if (!::currentModel.isInitialized) {
+                updateCurrentModel(intent, model)
+            } else if (currentModel.title == model.title) {
+                updateCurrentModel(intent, model, true)
+            } else updateCurrentModel(intent, model)
+
+            layout_jobCurrentQueue.visibility = View.VISIBLE
         })
     }
 
@@ -220,7 +255,7 @@ class DownloadActivity : AppCompatActivity(), KodeinAware {
         item_progressBar.progress = torrentJob.progress
         item_total_size.text = AppUtils.getSizePretty(torrentJob.totalSize)
 
-        pendingJobUpdate(intent)
+      //  pendingJobUpdate(intent) TODO: Remove this
 
         if (!justUpdateStatus) {
             currentModel = torrentJob

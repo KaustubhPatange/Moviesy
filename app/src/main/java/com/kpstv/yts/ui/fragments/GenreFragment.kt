@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.yts.AppInterface.Companion.GENRE_CATEGORY_LIST
 import com.kpstv.yts.R
-import com.kpstv.yts.YTSQuery
+import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.extensions.utils.CustomMovieLayout
 import kotlinx.android.synthetic.main.fragment_genre.view.*
 import kotlinx.android.synthetic.main.item_local_genre.view.*

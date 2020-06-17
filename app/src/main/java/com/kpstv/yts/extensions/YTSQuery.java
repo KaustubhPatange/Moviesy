@@ -1,4 +1,4 @@
-package com.kpstv.yts;
+package com.kpstv.yts.extensions;
 
 
 import java.util.HashMap;

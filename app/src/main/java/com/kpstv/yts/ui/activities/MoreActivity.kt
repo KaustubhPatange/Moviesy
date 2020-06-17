@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.chip.Chip
 import com.kpstv.yts.AppInterface.Companion.setAppThemeNoAction
 import com.kpstv.yts.R
-import com.kpstv.yts.YTSQuery
+import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.adapters.CustomPagedAdapter
 import com.kpstv.yts.data.converters.QueryConverter
 import com.kpstv.yts.extensions.MovieBase

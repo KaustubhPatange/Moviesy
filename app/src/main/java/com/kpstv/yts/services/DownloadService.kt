@@ -36,6 +36,7 @@ import com.kpstv.yts.ui.activities.DownloadActivity
 import com.kpstv.yts.data.db.localized.MainDatabase
 import com.kpstv.yts.data.db.repository.DownloadRepository
 import com.kpstv.yts.data.db.repository.PauseRepository
+import com.kpstv.yts.extensions.ServiceManager
 import com.kpstv.yts.models.Torrent
 import com.kpstv.yts.models.TorrentJob
 import com.kpstv.yts.models.response.Model
@@ -57,9 +58,10 @@ class DownloadService : IntentService("blank"), KodeinAware {
 
     override val kodein by kodein()
     private val pauseRepository by instance<PauseRepository>()
+    private val serviceManager by instance<ServiceManager>()
 
     val TAG = "DownloadService"
-    private var pendingJobs = ArrayList<Torrent>()
+  //  private var pendingJobs = ArrayList<Torrent>() // TODO: Remove this
     private var currentModel: com.github.se_bastiaan.torrentstream.Torrent? = null
     private var currentTorrentModel: Torrent? = null
     private lateinit var context: Context
@@ -126,19 +128,20 @@ class DownloadService : IntentService("blank"), KodeinAware {
 
     private fun setContentIntent(config: Torrent, torrentJob: TorrentJob? = null) {
         val notificationIntent = Intent(context, DownloadActivity::class.java)
-        val t: TorrentJob = torrentJob
+       /* val t: TorrentJob = torrentJob TODO: Check this
             ?: TorrentJob (
                 config.title, config.banner_url, 0, 0, 0f, 0, 0, false, "Pending",
                 0, getMagnetHash(config.url)
             )
         notificationIntent.action = MODEL_UPDATE
-        notificationIntent.putExtra("model", t)
+        notificationIntent.putExtra("model", t)*/
         contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val config: Torrent = intent!!.getSerializableExtra("addJob") as Torrent
-        pendingJobs.add(config)
+       // pendingJobs.add(config) // TODO: Remove this
+        serviceManager.addPendingJobs(config)
 
         DS_LOG("==> onStartCommand(): ${config.title}")
 
@@ -183,14 +186,21 @@ class DownloadService : IntentService("blank"), KodeinAware {
         DS_LOG("==> onHandleIntent(): ${model.title}")
 
         var isExist = false
-        for (c in pendingJobs) {
+        // TODO: Remove this
+        /*for (c in pendingJobs) {
             if (c.title == model.title) isExist = true
-        }
+        }*/
+        for (c in serviceManager.getPendingJobs())
+            if (c.title == model.title) isExist = true
 
         if (!isExist) return
 
-        if (pendingJobs.size > 0)
-            pendingJobs.removeAt(0)
+        // TODO: Remove this
+        /*if (pendingJobs.size > 0)
+            pendingJobs.removeAt(0)*/
+
+        if (serviceManager.getPendingJobs().size > 0)
+            serviceManager.removePendingJob(0)
 
         /** Update pending jobs */
         updatePendingJobs()
@@ -368,14 +378,20 @@ class DownloadService : IntentService("blank"), KodeinAware {
 
         /** Update the current model */
 
+        serviceManager.postTorrentJob(torrentJob)
+
         val intent = Intent(MODEL_UPDATE)
-        intent.putExtra("model", torrentJob)
-        intent.putExtra("models", pendingJobs)
+        intent.putExtra("model", torrentJob) // TODO: Remove this
+      //  intent.putExtra("models", pendingJobs) // TODO: Remove this
+
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
     }
 
     private fun getContentText(speedString: String): String {
-        return "Downloading: ${pendingJobs.size + 1}  ${Html.fromHtml("&#8226;")}  $speedString ${Html.fromHtml(
+        /*return "Downloading: ${pendingJobs.size + 1}  ${Html.fromHtml("&#8226;")}  $speedString ${Html.fromHtml(
+            "&#8595;"
+        )}"*/ // TODO : Remove this
+        return "Downloading: ${serviceManager.getPendingJobs().size + 1}  ${Html.fromHtml("&#8226;")}  $speedString ${Html.fromHtml(
             "&#8595;"
         )}"
     }
@@ -391,7 +407,7 @@ class DownloadService : IntentService("blank"), KodeinAware {
 
     private fun updatePendingJobs() {
         val intent = Intent(PENDING_JOB_UPDATE)
-        intent.putExtra("models", pendingJobs)
+     //   intent.putExtra("models", pendingJobs) // TODO: Remove this
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
     }
 
@@ -508,9 +524,16 @@ class DownloadService : IntentService("blank"), KodeinAware {
                 }*/
                 REMOVE_JOB -> {
                     val model: Torrent = intent.extras?.getSerializable("model") as Torrent
-                    for (c in pendingJobs) {
+                   /* for (c in pendingJobs) {  TODO: Remove this
                         if (model.title == c.title) {
                             pendingJobs.remove(c)
+                            DS_LOG("OK it is removed")
+                            break
+                        }
+                    }*/
+                    for (c in serviceManager.getPendingJobs()) {
+                        if (model.title == c.title) {
+                            serviceManager.removePendingJob(c)
                             DS_LOG("OK it is removed")
                             break
                         }
@@ -535,10 +558,15 @@ class DownloadService : IntentService("blank"), KodeinAware {
         /** Update receiver to know that all jobs completed */
         updateEmptyQueue()
 
+        serviceManager.clearPendingJobs()
+        serviceManager.removeTorrentJob()
+
         /** Remove registered localbroadcast */
         LocalBroadcastManager.getInstance(context).unregisterReceiver(localBroadcastReceiver)
 
-        pendingJobs.clear()
+        //pendingJobs.clear() TODO: Remove this
+        serviceManager.clearPendingJobs()
+
         if (torrentStream.isStreaming) torrentStream.stopStream()
         wakeLock?.release()
         notificationManagerCompat.cancel(FOREGROUND_ID);

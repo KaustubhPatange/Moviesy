@@ -7,6 +7,7 @@ import android.os.Environment
 import androidx.core.text.isDigitsOnly
 import androidx.navigation.NavOptions
 import com.danimahardhika.cafebar.CafeBar
+import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.extensions.add
 import com.kpstv.yts.ui.fragments.GenreFragment
 import com.kpstv.yts.interfaces.listener.ObservableListener

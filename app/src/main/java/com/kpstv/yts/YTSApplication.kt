@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.core.content.res.ResourcesCompat
 import com.kpstv.yts.data.db.localized.*
 import com.kpstv.yts.data.db.repository.*
+import com.kpstv.yts.extensions.ServiceManager
 import com.kpstv.yts.interfaces.api.TMdbPlaceholderApi
 import com.kpstv.yts.interfaces.api.YTSPlaceholderApi
 import com.kpstv.yts.extensions.utils.RetrofitUtils
@@ -37,6 +38,7 @@ class YTSApplication : Application(), KodeinAware {
         bind() from singleton { NetworkConnectionInterceptor(instance()) }
         bind() from singleton { RetrofitUtils(instance()) }
         bind() from singleton { FlagUtils(instance()) }
+        bind() from singleton { ServiceManager() }
         bind() from singleton { MovieRepository(instance(), instance()) }
         bind() from singleton { MainRepository(instance(), instance()) }
         bind() from singleton { TMdbRepository(instance(), instance()) }
