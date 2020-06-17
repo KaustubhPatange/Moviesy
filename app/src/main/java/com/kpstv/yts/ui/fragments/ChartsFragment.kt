@@ -8,7 +8,7 @@ import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.kpstv.yts.R
-import com.kpstv.yts.YTSQuery
+import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.ui.activities.MainActivity
 import com.kpstv.yts.interfaces.listener.MoviesListener
 import com.kpstv.yts.models.MovieShort

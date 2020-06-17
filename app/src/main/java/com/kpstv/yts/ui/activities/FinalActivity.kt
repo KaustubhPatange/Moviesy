@@ -20,7 +20,7 @@ import com.kpstv.yts.AppInterface.Companion.MOVIE_ID
 import com.kpstv.yts.AppInterface.Companion.handleRetrofitError
 import com.kpstv.yts.AppInterface.Companion.setAppThemeNoAction
 import com.kpstv.yts.R
-import com.kpstv.yts.YTSQuery
+import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.adapters.GenreAdapter
 import com.kpstv.yts.data.converters.GenreEnumConverter
 import com.kpstv.yts.extensions.hide

@@ -6,7 +6,9 @@ import android.content.Context
 import android.os.Environment
 import androidx.core.text.isDigitsOnly
 import androidx.navigation.NavOptions
+import androidx.preference.PreferenceManager
 import com.danimahardhika.cafebar.CafeBar
+import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.extensions.add
 import com.kpstv.yts.ui.fragments.GenreFragment
 import com.kpstv.yts.interfaces.listener.ObservableListener
@@ -67,6 +69,8 @@ class AppInterface {
 
         const val REPLACE_FRAG = "com.kpstv.yts.REPLACE_FRAG"
 
+        const val PROXY_CHECK_PREF = "proxy_check_pref"
+
         val GENRE_CATEGORY_LIST = ArrayList<GenreFragment.LocalGenreModel>().apply {
             add("Action", R.drawable.ic_action_genre, YTSQuery.Genre.action)
             add("Adventure", R.drawable.ic_adventure_genre, YTSQuery.Genre.adventure)
@@ -109,6 +113,15 @@ class AppInterface {
             } else if (!t.message?.contains("timeout")!!) {
                 message = "Error: ${t.message}"
             }
+
+            /** We will also set a preference lookup to check for proxy
+             *  when app is launched again. */
+
+            val preference = PreferenceManager.getDefaultSharedPreferences(context)
+            preference.edit().apply {
+                putBoolean(PROXY_CHECK_PREF, true)
+            }.apply()
+
             CafeBar.builder(context)
                 .content(message)
                 .floating(true)

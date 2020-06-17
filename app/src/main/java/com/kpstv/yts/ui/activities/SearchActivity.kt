@@ -17,7 +17,7 @@ import com.jakewharton.rxbinding2.widget.RxTextView
 import com.kpstv.yts.AppInterface.Companion.SUGGESTION_URL
 import com.kpstv.yts.AppInterface.Companion.setAppThemeNoAction
 import com.kpstv.yts.R
-import com.kpstv.yts.YTSQuery
+import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.ui.activities.MoreActivity.Companion.base
 import com.kpstv.yts.ui.activities.MoreActivity.Companion.queryMap
 import com.kpstv.yts.adapters.CustomPagedAdapter

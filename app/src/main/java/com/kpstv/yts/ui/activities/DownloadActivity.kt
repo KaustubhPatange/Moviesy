@@ -55,7 +55,7 @@ import java.lang.Exception
 class DownloadActivity : AppCompatActivity(), KodeinAware {
 
     override val kodein by kodein()
-    private val factory: MainViewModelFactory by instance()
+    private val factory by instance<MainViewModelFactory>()
 
     private val TAG = "DownloadActivity"
     private lateinit var adapter: JobQueueAdapter

@@ -1,6 +1,6 @@
 package com.kpstv.yts.data.converters
 
-import com.kpstv.yts.YTSQuery
+import com.kpstv.yts.extensions.YTSQuery
 import java.lang.Exception
 
 object GenreEnumConverter {

@@ -17,10 +17,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.chip.Chip
 import com.kpstv.yts.AppInterface.Companion.setAppThemeNoAction
 import com.kpstv.yts.R
-import com.kpstv.yts.YTSQuery
 import com.kpstv.yts.adapters.CustomPagedAdapter
 import com.kpstv.yts.data.converters.QueryConverter
 import com.kpstv.yts.extensions.MovieBase
+import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.models.MovieShort
 import com.kpstv.yts.ui.viewmodels.MoreViewModel
 import com.kpstv.yts.ui.viewmodels.providers.MoreViewModelFactory
@@ -37,15 +37,18 @@ import org.kodein.di.generic.instance
 class MoreActivity : AppCompatActivity(), KodeinAware {
 
     private val TAG = "MoreActivity"
+
     companion object {
         var endPoint: String? = null
         var base: MovieBase? = null
         var queryMap: Map<String, String>? = null
+        var genre: String? = null
     }
 
     /** This query map will be used to reset the values
      */
 
+    private var localGenre: String? = null
     private var localBase: MovieBase? = null
     private var alertDialog: AlertDialog? = null
     private var query: Map<String, String>? = null
@@ -53,7 +56,7 @@ class MoreActivity : AppCompatActivity(), KodeinAware {
     private var localEndpoint: String? = null
     private var updateHandler = Handler()
     override val kodein by kodein()
-    private val factory: MoreViewModelFactory by instance()
+    private val factory by instance<MoreViewModelFactory>()
     private lateinit var adapter: CustomPagedAdapter
     private lateinit var viewModel: MoreViewModel
     private lateinit var dialogView: View
@@ -74,6 +77,7 @@ class MoreActivity : AppCompatActivity(), KodeinAware {
             endPoint
         localBase = base
         localQuery = queryMap
+        localGenre = genre;
         super.onPause()
     }
 
@@ -81,10 +85,11 @@ class MoreActivity : AppCompatActivity(), KodeinAware {
 
         Log.e(TAG, "==> onResume()")
 
-        if (localBase!=null) {
+        if (localBase != null) {
             endPoint = localEndpoint
             base = localBase
             queryMap = localQuery
+            genre = localGenre
         }
         super.onResume()
     }
@@ -128,12 +133,38 @@ class MoreActivity : AppCompatActivity(), KodeinAware {
 
             setupDialogView()
 
+            findGenre(query)
+
             initQueries(query)
-        }else {
+        } else {
             setupRecyclerView()
         }
     }
 
+    /**
+     * Since this filter dialog only supports filtering on sort_by
+     * and order_by, by updating the query we lose the genre filter
+     * if applied. This function will store the filter into a companion
+     * string object and add it whenever query is changed.
+     *
+     * eg: For GenreFragment (categories)
+     */
+    private fun findGenre(map: Map<String, String>?) {
+        val genreQuery = map?.filterKeys { it == "genre" }
+        if (genreQuery != null)
+            genre = genreQuery["genre"]
+    }
+
+    /**
+     * As above this will insert the genre into the map.
+     */
+    private fun insertGenre(map: Map<String, String>) {
+        if (!map.keys.contains("genre") && genre != null) {
+            val hashMap = HashMap(map)
+            hashMap["genre"] = genre
+            queryMap = hashMap
+        }
+    }
 
     /** This is used to parse query and update the filter layout by
      *  adding chips and also responsible for setting up recyclerView
@@ -164,7 +195,7 @@ class MoreActivity : AppCompatActivity(), KodeinAware {
         Log.e(TAG, "==> Adding chip: $title")
 
         val chipView = LayoutInflater.from(this)
-            .inflate(R.layout.item_chip,null)
+            .inflate(R.layout.item_chip, null)
 
         chipView.chip.apply {
             text = getTextfromQuery(title)
@@ -213,7 +244,6 @@ class MoreActivity : AppCompatActivity(), KodeinAware {
                     }
                 }
                 queryMap = builder.build()
-
             }
             setupRecyclerView()
         }
@@ -238,15 +268,20 @@ class MoreActivity : AppCompatActivity(), KodeinAware {
      */
     private fun setupRecyclerView() {
 
+        /** Calling insert genre here which will automatically inject
+         *  genre parameter in the map.
+         */
+        insertGenre(queryMap ?: HashMap())
+
         swipeRefreshLayout.isRefreshing = true
 
-        viewModel = if (base ==MovieBase.YTS) {
+        viewModel = if (base == MovieBase.YTS) {
             viewModelStore.clear()
             ViewModelProvider(viewModelStore, factory).get(MoreViewModel::class.java)
-        }else
+        } else
             ViewModelProvider(this, factory).get(MoreViewModel::class.java)
 
-        if (queryMap !=null)
+        if (queryMap != null)
             Log.e(TAG, "==> Query: ${QueryConverter.fromMapToString(queryMap!!)}")
 
         adapter = CustomPagedAdapter(this, base!!)
@@ -265,7 +300,6 @@ class MoreActivity : AppCompatActivity(), KodeinAware {
     private val observer = Observer<PagedList<MovieShort>?> {
         adapter.submitList(it)
     }
-
 
 
     /** This dialog view is only available when base is YTS. Basically it is
@@ -295,6 +329,8 @@ class MoreActivity : AppCompatActivity(), KodeinAware {
                 }
             }
 
+
+
             initQueries(map)
 
             alertDialog?.dismiss()
@@ -318,26 +354,33 @@ class MoreActivity : AppCompatActivity(), KodeinAware {
     private fun showAlertDialog() {
         val values: ArrayList<String>? = ArrayList(queryMap?.values!!)
 
-        dialogView.sortChipGroup.forEach {
-            val chip = it as Chip
-            (0 until values?.size!!).forEach { i->
-                if (chip.text == getTextfromQuery(values[i]))
-                    chip.isChecked = true
+        if (queryMap?.containsKey("sort_by") == true)
+            dialogView.sortChipGroup.forEach {
+                val chip = it as Chip
+                chip.isChecked = false
+                (0 until values?.size!!).forEach { i ->
+                    if (chip.text == getTextfromQuery(values[i]))
+                        chip.isChecked = true
+                }
             }
-        }
+        else dialogView.sortChipGroup.clearCheck()
 
-        dialogView.OrderChipGroup.forEach {
-            val chip = it as Chip
-            (0 until values?.size!!).forEach { i->
-                if (chip.text == getTextfromQuery(values[i]))
-                    chip.isChecked = true
+        if (queryMap?.containsKey("order_by") == true)
+            dialogView.OrderChipGroup.forEach {
+                val chip = it as Chip
+                chip.isChecked = false
+                (0 until values?.size!!).forEach { i ->
+                    if (chip.text == getTextfromQuery(values[i]))
+                        chip.isChecked = true
+                }
             }
-        }
+        else dialogView.OrderChipGroup.clearCheck()
 
         alertDialog?.show()
     }
 
-    private fun isSameArrayList(listA: ArrayList<String>, listB: ArrayList<String>) = listA.containsAll(listB)
+    private fun isSameArrayList(listA: ArrayList<String>, listB: ArrayList<String>) =
+        listA.containsAll(listB)
 
     /** Since fetching live data depends on network parameter, so I've created
      *  a handler task which will check if Adapter has atleast one item.
@@ -363,7 +406,7 @@ class MoreActivity : AppCompatActivity(), KodeinAware {
     }
 
     private fun getTextfromQuery(text: String) =
-        when(text) {
+        when (text) {
             "desc" -> getString(R.string.desc)
             "asc" -> getString(R.string.asc)
             YTSQuery.SortBy.date_added.name -> getString(R.string.date)

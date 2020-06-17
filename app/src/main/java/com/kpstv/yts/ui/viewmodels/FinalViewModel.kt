@@ -7,7 +7,7 @@ import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppInterface.Companion.MOVIE_SPAN_DIFFERENCE
 import com.kpstv.yts.AppInterface.Companion.MainDateFormatter
 import com.kpstv.yts.AppInterface.Companion.TMDB_IMAGE_PREFIX
-import com.kpstv.yts.YTSQuery
+import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.data.db.repository.FavouriteRepository
 import com.kpstv.yts.data.db.repository.MovieRepository
 import com.kpstv.yts.data.db.repository.TMdbRepository

@@ -2,7 +2,6 @@ package com.kpstv.yts.extensions
 
 import android.view.View
 import androidx.annotation.DrawableRes
-import com.kpstv.yts.YTSQuery
 import com.kpstv.yts.ui.fragments.GenreFragment
 import kotlinx.coroutines.*
 import java.io.File
