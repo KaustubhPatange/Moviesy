@@ -1,4 +1,4 @@
-package com.kpstv.yts.data.viewmodels
+package com.kpstv.yts.ui.viewmodels
 
 import android.annotation.SuppressLint
 import android.util.Log
@@ -22,7 +22,7 @@ import com.kpstv.yts.models.Cast
 import com.kpstv.yts.models.Movie
 import com.kpstv.yts.models.TmDbMovie
 import com.kpstv.yts.models.data.data_tmdb
-import com.kpstv.yts.utils.AppUtils
+import com.kpstv.yts.extensions.utils.AppUtils
 import retrofit2.await
 import java.text.SimpleDateFormat
 import java.util.*

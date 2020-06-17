@@ -1,4 +1,4 @@
-package com.kpstv.yts.data.viewmodels.providers
+package com.kpstv.yts.ui.viewmodels.providers
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData

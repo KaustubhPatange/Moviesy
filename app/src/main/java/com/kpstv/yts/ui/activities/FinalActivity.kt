@@ -16,7 +16,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppInterface.Companion.MOVIE_ID
 import com.kpstv.yts.AppInterface.Companion.handleRetrofitError
 import com.kpstv.yts.AppInterface.Companion.setAppThemeNoAction
@@ -33,12 +32,12 @@ import com.kpstv.yts.interfaces.listener.SuggestionListener
 import com.kpstv.yts.models.Cast
 import com.kpstv.yts.models.Movie
 import com.kpstv.yts.models.TmDbMovie
-import com.kpstv.yts.utils.AppUtils
-import com.kpstv.yts.utils.AppUtils.Companion.CafebarToast
-import com.kpstv.yts.utils.CustomMovieLayout
-import com.kpstv.yts.utils.GlideApp
-import com.kpstv.yts.data.viewmodels.FinalViewModel
-import com.kpstv.yts.data.viewmodels.providers.FinalViewModelFactory
+import com.kpstv.yts.extensions.utils.AppUtils
+import com.kpstv.yts.extensions.utils.AppUtils.Companion.CafebarToast
+import com.kpstv.yts.extensions.utils.CustomMovieLayout
+import com.kpstv.yts.extensions.utils.GlideApp
+import com.kpstv.yts.ui.viewmodels.FinalViewModel
+import com.kpstv.yts.ui.viewmodels.providers.FinalViewModelFactory
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerListener

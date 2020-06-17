@@ -1,4 +1,4 @@
-package com.kpstv.yts.data.viewmodels
+package com.kpstv.yts.ui.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -10,7 +10,7 @@ import com.kpstv.yts.AppInterface.Companion.MOVIE_FETCH_SIZE
 import com.kpstv.yts.interfaces.api.TMdbPlaceholderApi
 import com.kpstv.yts.interfaces.api.YTSPlaceholderApi
 import com.kpstv.yts.models.MovieShort
-import com.kpstv.yts.data.viewmodels.providers.CustomDataSourceFactory
+import com.kpstv.yts.ui.viewmodels.providers.CustomDataSourceFactory
 
 class MoreViewModel(
     private val tMdbPlaceholderApi: TMdbPlaceholderApi,

@@ -1,4 +1,4 @@
-package com.kpstv.yts.utils
+package com.kpstv.yts.extensions.utils
 
 import android.app.Activity
 import android.content.Context
@@ -22,7 +22,7 @@ import com.kpstv.yts.AppInterface.Companion.TMDB_IMAGE_PREFIX
 import com.kpstv.yts.AppInterface.Companion.YTS_BASE_URL
 import com.kpstv.yts.AppInterface.Companion.handleRetrofitError
 import com.kpstv.yts.R
-import com.kpstv.yts.data.viewmodels.MainViewModel
+import com.kpstv.yts.ui.viewmodels.MainViewModel
 import com.kpstv.yts.extensions.MovieBase
 import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.interfaces.listener.MoviesListener
@@ -31,7 +31,7 @@ import com.kpstv.yts.models.TmDbMovie
 import com.kpstv.yts.ui.activities.FinalActivity
 import com.kpstv.yts.ui.activities.MoreActivity
 import com.kpstv.yts.ui.fragments.sheets.BottomSheetQuickInfo
-import com.kpstv.yts.utils.AppUtils.Companion.refactorYTSUrl
+import com.kpstv.yts.extensions.utils.AppUtils.Companion.refactorYTSUrl
 import kotlinx.android.synthetic.main.custom_movie_layout.view.*
 import kotlinx.android.synthetic.main.item_common_banner.view.*
 import kotlinx.android.synthetic.main.item_suggestion.view.*

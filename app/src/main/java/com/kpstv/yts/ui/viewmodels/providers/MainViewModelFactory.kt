@@ -1,4 +1,4 @@
-package com.kpstv.yts.data.viewmodels.providers
+package com.kpstv.yts.ui.viewmodels.providers
 
 import android.app.Application
 import androidx.lifecycle.ViewModel
@@ -8,7 +8,7 @@ import com.kpstv.yts.data.db.repository.FavouriteRepository
 import com.kpstv.yts.data.db.repository.MainRepository
 import com.kpstv.yts.data.db.repository.PauseRepository
 import com.kpstv.yts.interfaces.api.YTSPlaceholderApi
-import com.kpstv.yts.data.viewmodels.MainViewModel
+import com.kpstv.yts.ui.viewmodels.MainViewModel
 
 class MainViewModelFactory(
     private val repository: MainRepository,

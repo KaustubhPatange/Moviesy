@@ -10,8 +10,8 @@ import com.kpstv.yts.R
 import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.extensions.show
 import com.kpstv.yts.models.response.Model
-import com.kpstv.yts.utils.AppUtils.Companion.getBulletSymbol
-import com.kpstv.yts.utils.AppUtils.Companion.getSizePretty
+import com.kpstv.yts.extensions.utils.AppUtils.Companion.getBulletSymbol
+import com.kpstv.yts.extensions.utils.AppUtils.Companion.getSizePretty
 import kotlinx.android.synthetic.main.item_library_download.view.*
 import java.io.File
 

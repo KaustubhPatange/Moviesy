@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import com.kpstv.yts.AppInterface.Companion.ABOUT_FRAG
 import com.kpstv.yts.AppInterface.Companion.DEVELOPER_FRAG
 import com.kpstv.yts.AppInterface.Companion.GENERAL_FRAG
@@ -17,7 +16,7 @@ import com.kpstv.yts.AppInterface.Companion.REPLACE_FRAG
 import com.kpstv.yts.AppInterface.Companion.STORAGE_FRAG
 import com.kpstv.yts.AppInterface.Companion.setAppThemeNoAction
 import com.kpstv.yts.R
-import com.kpstv.yts.utils.CustomBottomItem
+import com.kpstv.yts.extensions.utils.CustomBottomItem
 import kotlinx.android.synthetic.main.activity_settings.*
 
 class SettingsActivity : AppCompatActivity() {
@@ -46,7 +45,7 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         settingsMainFragment.listener = {
-            when(it) {
+            when (it) {
                 GENERAL_FRAG -> replaceFragment(GeneralSettingsFragment())
                 STORAGE_FRAG -> ""
                 LOOK_FEEL_FRAG -> replaceFragment(lookSettingsFragment)
@@ -67,11 +66,11 @@ class SettingsActivity : AppCompatActivity() {
             replaceFragment(lookSettingsFragment)
     }
 
-    private fun replaceFragment(fragment: Fragment, addtoBackStack: Boolean = true) {
+    private fun replaceFragment(fragment: Fragment, addToBackStack: Boolean = true) {
         val fragmentTransition = supportFragmentManager
             .beginTransaction()
             .replace(R.id.settings_container, fragment)
-        if (addtoBackStack)
+        if (addToBackStack)
             fragmentTransition.addToBackStack(null)
         fragmentTransition.commit()
     }
@@ -93,14 +92,12 @@ class SettingsActivity : AppCompatActivity() {
      *  A listener is called by parent activity which navigates accordingly.
      */
     class SettingsMainFragment : Fragment() {
-        private lateinit var act: FragmentActivity
         lateinit var listener: (String) -> Unit
         override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
         ): View? {
-            act = activity!!
 
             val mainLayout = LinearLayout(context)
             mainLayout.orientation = LinearLayout.VERTICAL

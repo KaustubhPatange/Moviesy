@@ -1,4 +1,4 @@
-package com.kpstv.yts.utils.interceptors
+package com.kpstv.yts.extensions.utils.interceptors
 
 import android.content.Context
 import android.net.ConnectivityManager

@@ -3,7 +3,7 @@ package com.kpstv.yts.ui.activities
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.kpstv.yts.R
-import com.kpstv.yts.utils.GlideApp
+import com.kpstv.yts.extensions.utils.GlideApp
 import kotlinx.android.synthetic.main.activity_image_view.*
 
 class ImageViewActivity : AppCompatActivity() {

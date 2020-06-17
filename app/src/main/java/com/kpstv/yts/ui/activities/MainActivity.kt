@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
-import android.webkit.WebView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -17,12 +16,9 @@ import com.kpstv.yts.AppInterface.Companion.IS_DARK_THEME
 import com.kpstv.yts.AppInterface.Companion.animationOptions
 import com.kpstv.yts.AppInterface.Companion.setAppThemeMain
 import com.kpstv.yts.R
-import com.kpstv.yts.data.viewmodels.MainViewModel
-import com.kpstv.yts.data.viewmodels.providers.MainViewModelFactory
+import com.kpstv.yts.ui.viewmodels.MainViewModel
+import com.kpstv.yts.ui.viewmodels.providers.MainViewModelFactory
 import com.kpstv.yts.services.DownloadService
-import com.kpstv.yts.ui.fragments.HomeFragment
-import com.kpstv.yts.ui.fragments.LibraryFragment
-import com.kpstv.yts.ui.fragments.WatchlistFragment
 import com.kpstv.yts.ui.settings.SettingsActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import org.kodein.di.KodeinAware
@@ -100,7 +96,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onResume()
         if (IS_DARK_THEME != isDarkTheme) {
             val previousIntent = intent
-            finish();
+            finish()
             startActivity(previousIntent);
         }
     }

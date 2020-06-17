@@ -5,10 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.kpstv.yts.R
 import com.kpstv.yts.models.Torrent
-import com.kpstv.yts.utils.GlideApp
+import com.kpstv.yts.extensions.utils.GlideApp
 import kotlinx.android.synthetic.main.item_torrent_download_1.view.*
 
 class JobQueueAdapter(val context: Context, val models: ArrayList<Torrent>) :

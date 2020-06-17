@@ -1,8 +1,6 @@
-package com.kpstv.yts.utils
+package com.kpstv.yts.extensions.utils
 
-import android.util.Log
 import com.kpstv.yts.models.SubHolder
-import java.io.FileInputStream
 import java.io.FileReader
 import java.lang.StringBuilder
 

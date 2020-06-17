@@ -2,7 +2,7 @@ package com.kpstv.yts.interfaces.api
 
 import com.kpstv.yts.AppInterface.Companion.YTS_BASE_API_URL
 import com.kpstv.yts.models.response.Model
-import com.kpstv.yts.utils.RetrofitUtils
+import com.kpstv.yts.extensions.utils.RetrofitUtils
 import kotlinx.coroutines.Deferred
 import retrofit2.Call
 import retrofit2.http.GET

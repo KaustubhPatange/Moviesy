@@ -17,7 +17,7 @@ import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.interfaces.listener.SingleClickListener
 import com.kpstv.yts.models.SelectSubtitle
 import com.kpstv.yts.models.response.Model
-import com.kpstv.yts.data.viewmodels.MainViewModel
+import com.kpstv.yts.ui.viewmodels.MainViewModel
 import kotlinx.android.synthetic.main.bottom_sheet_download.view.addLayout
 import kotlinx.android.synthetic.main.bottom_sheet_library_download.view.*
 import kotlinx.android.synthetic.main.custom_small_tip.view.*

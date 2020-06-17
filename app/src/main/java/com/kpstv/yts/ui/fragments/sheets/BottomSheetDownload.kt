@@ -23,7 +23,7 @@ import com.kpstv.yts.models.SelectSubtitle
 import com.kpstv.yts.models.Torrent
 import com.kpstv.yts.services.DownloadService
 import com.kpstv.yts.interfaces.listener.SingleClickListener
-import com.kpstv.yts.utils.AppUtils.Companion.getMagnetUrl
+import com.kpstv.yts.extensions.utils.AppUtils.Companion.getMagnetUrl
 import kotlinx.android.synthetic.main.bottom_sheet_download.view.*
 import kotlinx.android.synthetic.main.custom_small_tip.view.*
 

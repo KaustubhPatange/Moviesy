@@ -15,7 +15,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.chip.Chip
-import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppInterface.Companion.setAppThemeNoAction
 import com.kpstv.yts.R
 import com.kpstv.yts.YTSQuery
@@ -23,8 +22,8 @@ import com.kpstv.yts.adapters.CustomPagedAdapter
 import com.kpstv.yts.data.converters.QueryConverter
 import com.kpstv.yts.extensions.MovieBase
 import com.kpstv.yts.models.MovieShort
-import com.kpstv.yts.data.viewmodels.MoreViewModel
-import com.kpstv.yts.data.viewmodels.providers.MoreViewModelFactory
+import com.kpstv.yts.ui.viewmodels.MoreViewModel
+import com.kpstv.yts.ui.viewmodels.providers.MoreViewModelFactory
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_more.*
 import kotlinx.android.synthetic.main.custom_alert_buttons.view.*

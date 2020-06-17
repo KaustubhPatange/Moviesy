@@ -40,12 +40,10 @@ import com.kpstv.yts.models.Torrent
 import com.kpstv.yts.models.TorrentJob
 import com.kpstv.yts.models.response.Model
 import com.kpstv.yts.receivers.CommonBroadCast
-import com.kpstv.yts.utils.AppUtils
-import com.kpstv.yts.utils.AppUtils.Companion.getVideoDuration
-import com.kpstv.yts.utils.AppUtils.Companion.saveImageFromUrl
-import org.kodein.di.Kodein
+import com.kpstv.yts.extensions.utils.AppUtils
+import com.kpstv.yts.extensions.utils.AppUtils.Companion.getVideoDuration
+import com.kpstv.yts.extensions.utils.AppUtils.Companion.saveImageFromUrl
 import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
 import org.kodein.di.android.kodein
 import org.kodein.di.generic.instance
 import java.io.File
@@ -58,7 +56,7 @@ import kotlin.collections.ArrayList
 class DownloadService : IntentService("blank"), KodeinAware {
 
     override val kodein by kodein()
-    private val pauseRepository: PauseRepository by instance()
+    private val pauseRepository by instance<PauseRepository>()
 
     val TAG = "DownloadService"
     private var pendingJobs = ArrayList<Torrent>()

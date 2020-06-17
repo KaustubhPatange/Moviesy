@@ -54,7 +54,7 @@ class HomeFragment : Fragment(), TabLayout.OnTabSelectedListener {
     override fun onTabReselected(tab: TabLayout.Tab?) { }
 
     override fun onTabUnselected(tab: TabLayout.Tab?) { }
-    
+
     override fun onTabSelected(tab: TabLayout.Tab?) {
        if (tab?.position == 0) {
            setFragment(chartsFragment)

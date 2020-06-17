@@ -1,4 +1,4 @@
-package com.kpstv.yts.utils;
+package com.kpstv.yts.extensions.utils;
 
 import java.io.BufferedInputStream;
 import java.io.File;

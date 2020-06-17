@@ -1,11 +1,11 @@
-package com.kpstv.yts.data.viewmodels.providers
+package com.kpstv.yts.ui.viewmodels.providers
 
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kpstv.yts.interfaces.api.TMdbPlaceholderApi
 import com.kpstv.yts.interfaces.api.YTSPlaceholderApi
-import com.kpstv.yts.data.viewmodels.MoreViewModel
+import com.kpstv.yts.ui.viewmodels.MoreViewModel
 
 class MoreViewModelFactory(
     private val application: Application,

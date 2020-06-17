@@ -1,8 +1,8 @@
-package com.kpstv.yts.utils
+package com.kpstv.yts.extensions.utils
 
 import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
-import com.kpstv.yts.utils.interceptors.NetworkConnectionInterceptor
+import com.kpstv.yts.extensions.utils.interceptors.NetworkConnectionInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

@@ -1,4 +1,4 @@
-package com.kpstv.yts.data.viewmodels
+package com.kpstv.yts.ui.viewmodels
 
 import android.app.Application
 import android.util.Log
@@ -21,7 +21,7 @@ import com.kpstv.yts.interfaces.listener.MoviesListener
 import com.kpstv.yts.models.MovieShort
 import com.kpstv.yts.models.data.data_main
 import com.kpstv.yts.models.response.Model
-import com.kpstv.yts.utils.AppUtils
+import com.kpstv.yts.extensions.utils.AppUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup

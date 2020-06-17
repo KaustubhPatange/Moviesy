@@ -6,7 +6,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import com.kpstv.yts.R
-import com.kpstv.yts.utils.AppUtils.Companion.parseSettings
+import com.kpstv.yts.extensions.utils.AppUtils.Companion.parseSettings
 import kotlinx.android.synthetic.main.activity_splash.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -1,12 +1,10 @@
-package com.kpstv.yts.utils
+package com.kpstv.yts.extensions.utils
 
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageInfo
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
@@ -118,7 +116,7 @@ class AppUtils {
             resolveRefs: Boolean = true
         ): Int {
             // TODO: Make a check here
-            context.theme.resolveAttribute(R.attr.colorText, typedValue, resolveRefs)
+            context.theme.resolveAttribute(attrColor, typedValue, resolveRefs)
             return typedValue.data
         }
 

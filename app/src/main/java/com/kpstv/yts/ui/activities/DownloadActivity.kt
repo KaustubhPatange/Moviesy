@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.danimahardhika.cafebar.CafeBar
-import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppInterface.Companion.UNPAUSE_JOB
 import com.kpstv.yts.AppInterface.Companion.EMPTY_QUEUE
 import com.kpstv.yts.AppInterface.Companion.MODEL_UPDATE
@@ -39,11 +38,11 @@ import com.kpstv.yts.models.Torrent
 import com.kpstv.yts.models.TorrentJob
 import com.kpstv.yts.models.response.Model
 import com.kpstv.yts.receivers.CommonBroadCast
-import com.kpstv.yts.utils.AppUtils
-import com.kpstv.yts.utils.AppUtils.Companion.getMagnetUrl
-import com.kpstv.yts.utils.GlideApp
-import com.kpstv.yts.data.viewmodels.MainViewModel
-import com.kpstv.yts.data.viewmodels.providers.MainViewModelFactory
+import com.kpstv.yts.extensions.utils.AppUtils
+import com.kpstv.yts.extensions.utils.AppUtils.Companion.getMagnetUrl
+import com.kpstv.yts.extensions.utils.GlideApp
+import com.kpstv.yts.ui.viewmodels.MainViewModel
+import com.kpstv.yts.ui.viewmodels.providers.MainViewModelFactory
 import kotlinx.android.synthetic.main.activity_download.*
 import kotlinx.android.synthetic.main.item_torrent_download.*
 import org.kodein.di.KodeinAware

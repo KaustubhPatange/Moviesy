@@ -1,4 +1,4 @@
-package com.kpstv.yts.data.viewmodels.providers
+package com.kpstv.yts.ui.viewmodels.providers
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -7,7 +7,7 @@ import com.kpstv.yts.data.db.repository.MovieRepository
 import com.kpstv.yts.data.db.repository.TMdbRepository
 import com.kpstv.yts.interfaces.api.TMdbPlaceholderApi
 import com.kpstv.yts.interfaces.api.YTSPlaceholderApi
-import com.kpstv.yts.data.viewmodels.FinalViewModel
+import com.kpstv.yts.ui.viewmodels.FinalViewModel
 
 class FinalViewModelFactory(
     private val movieRepo: MovieRepository,

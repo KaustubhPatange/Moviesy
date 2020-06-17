@@ -12,10 +12,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.kpstv.yts.R
 import com.kpstv.yts.models.MovieShort
 import com.kpstv.yts.models.response.Model
-import com.kpstv.yts.utils.AppUtils.Companion.getBulletSymbol
-import com.kpstv.yts.utils.CustomBottomItem
-import com.kpstv.yts.utils.GlideApp
-import com.kpstv.yts.data.viewmodels.MainViewModel
+import com.kpstv.yts.extensions.utils.AppUtils.Companion.getBulletSymbol
+import com.kpstv.yts.extensions.utils.CustomBottomItem
+import com.kpstv.yts.extensions.utils.GlideApp
+import com.kpstv.yts.ui.viewmodels.MainViewModel
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.bottom_sheet_quickinfo.*
 import kotlinx.android.synthetic.main.bottom_sheet_quickinfo.view.*

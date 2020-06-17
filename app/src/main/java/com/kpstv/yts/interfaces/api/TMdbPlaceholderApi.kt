@@ -3,7 +3,7 @@ package com.kpstv.yts.interfaces.api
 import com.kpstv.yts.AppInterface.Companion.TMDB_API_KEY
 import com.kpstv.yts.AppInterface.Companion.TMDB_BASE_URL
 import com.kpstv.yts.models.response.Model
-import com.kpstv.yts.utils.RetrofitUtils
+import com.kpstv.yts.extensions.utils.RetrofitUtils
 import kotlinx.coroutines.Deferred
 import okhttp3.Interceptor
 import retrofit2.http.GET

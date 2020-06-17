@@ -9,7 +9,7 @@ import com.bumptech.glide.Glide
 import com.kpstv.yts.R
 import com.kpstv.yts.ui.activities.DownloadActivity.Companion.calculateCurrentSize
 import com.kpstv.yts.models.response.Model
-import com.kpstv.yts.utils.AppUtils
+import com.kpstv.yts.extensions.utils.AppUtils
 import kotlinx.android.synthetic.main.item_torrent_download.view.*
 
 class PauseAdapter(

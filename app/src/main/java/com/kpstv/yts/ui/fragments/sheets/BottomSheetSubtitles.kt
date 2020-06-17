@@ -25,7 +25,7 @@ import com.kpstv.yts.R
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import com.kpstv.yts.interfaces.listener.SingleClickListener
 import com.kpstv.yts.models.Subtitle
-import com.kpstv.yts.utils.*
+import com.kpstv.yts.extensions.utils.*
 import es.dmoral.toasty.Toasty
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers

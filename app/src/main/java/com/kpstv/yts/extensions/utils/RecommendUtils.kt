@@ -1,4 +1,4 @@
-package com.kpstv.yts.utils
+package com.kpstv.yts.extensions.utils
 
 import android.content.Context
 import com.google.gson.Gson

@@ -20,9 +20,9 @@ import com.kpstv.yts.AppInterface.Companion.SUBTITLE_LOCATION
 import com.kpstv.yts.R
 import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.models.SubHolder
-import com.kpstv.yts.utils.SubtitleUtils
-import com.kpstv.yts.data.viewmodels.MainViewModel
-import com.kpstv.yts.data.viewmodels.providers.MainViewModelFactory
+import com.kpstv.yts.extensions.utils.SubtitleUtils
+import com.kpstv.yts.ui.viewmodels.MainViewModel
+import com.kpstv.yts.ui.viewmodels.providers.MainViewModelFactory
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_torrent_player.*
 import org.kodein.di.KodeinAware

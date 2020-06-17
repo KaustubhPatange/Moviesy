@@ -12,7 +12,7 @@ import com.kpstv.yts.YTSQuery
 import com.kpstv.yts.ui.activities.MainActivity
 import com.kpstv.yts.interfaces.listener.MoviesListener
 import com.kpstv.yts.models.MovieShort
-import com.kpstv.yts.utils.CustomMovieLayout
+import com.kpstv.yts.extensions.utils.CustomMovieLayout
 
 class ChartsFragment : Fragment() {
 

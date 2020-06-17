@@ -20,7 +20,6 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppInterface.Companion.IS_DARK_THEME
 import com.kpstv.yts.AppInterface.Companion.MOVIE_ID
 import com.kpstv.yts.R
@@ -28,10 +27,10 @@ import com.kpstv.yts.ui.activities.FinalActivity
 import com.kpstv.yts.extensions.MovieBase
 import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.models.MovieShort
-import com.kpstv.yts.utils.AppUtils.Companion.getBulletSymbol
-import com.kpstv.yts.utils.AppUtils.Companion.getImdbUrl
-import com.kpstv.yts.utils.AppUtils.Companion.launchUrl
-import com.kpstv.yts.utils.GlideApp
+import com.kpstv.yts.extensions.utils.AppUtils.Companion.getBulletSymbol
+import com.kpstv.yts.extensions.utils.AppUtils.Companion.getImdbUrl
+import com.kpstv.yts.extensions.utils.AppUtils.Companion.launchUrl
+import com.kpstv.yts.extensions.utils.GlideApp
 import kotlinx.android.synthetic.main.item_common_banner.view.*
 
 /** An adapter class to manage the pagination library
