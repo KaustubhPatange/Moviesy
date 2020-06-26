@@ -147,4 +147,11 @@
         <item name="submitBackground">@android:color/transparent</item>
     </style>
 
+    <style name="BottomViewActive" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:textSize">13sp</item>
+    </style>
+    <style name="BottomViewInActive" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:textSize">12sp</item>
+    </style>
+
 </resources>

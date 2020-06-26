@@ -39,10 +39,18 @@
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_nav"
+            app:itemTextAppearanceActive="@style/BottomViewActive"
+            app:itemTextAppearanceInactive="@style/BottomViewInActive"
             android:background="?colorForeground"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:menu="@menu/bottom_nav"/>
+
+      <!--  <TextView
+            android:textSize="12sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1djkejd"/>-->
 
     </LinearLayout>
 
