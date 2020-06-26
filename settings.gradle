@@ -1,3 +1,0 @@
-include ':app'
-rootProject.name='Movieasy'
-include ':app:shimmer'
