@@ -55,9 +55,8 @@ import kotlin.collections.ArrayList
 @AndroidEntryPoint
 class DownloadService: IntentService("blank") {
 
-    @Inject
-    lateinit var pauseRepository: PauseRepository
-    lateinit var downloadRepository: DownloadRepository
+    @Inject lateinit var pauseRepository: PauseRepository
+    @Inject lateinit var downloadRepository: DownloadRepository
 
     val TAG = "DownloadService"
     private var pendingJobs = ArrayList<Torrent>()
