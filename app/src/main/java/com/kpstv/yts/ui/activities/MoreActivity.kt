@@ -248,7 +248,6 @@ class MoreActivity : AppCompatActivity() {
         }
     }
 
-
     /**
      *  This is used to setup viewModel and recyclerView.
      *

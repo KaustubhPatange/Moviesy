@@ -81,8 +81,6 @@ dependencies {
     implementation(LibraryDependency.RXANDROID)
     implementation(LibraryDependency.RXJAVA)
     implementation(LibraryDependency.RXBINDING)
-    implementation(LibraryDependency.KODEIN_JVM)
-    implementation(LibraryDependency.KODEIN_ANDROID)
     implementation(LibraryDependency.TOASTY)
     implementation(LibraryDependency.BLURRY)
     implementation(LibraryDependency.JSOUP)
