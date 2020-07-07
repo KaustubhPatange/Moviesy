@@ -1,6 +1,7 @@
 package com.kpstv.yts.data
 
 import android.app.Application
+import android.content.Context
 import androidx.paging.PageKeyedDataSource
 import com.kpstv.yts.AppInterface.Companion.TMDB_IMAGE_PREFIX
 import com.kpstv.yts.extensions.Coroutines
@@ -19,7 +20,7 @@ import retrofit2.await
  */
 
 class CustomDataSource(
-    private val application: Application,
+    private val context: Context,
     private val tMdbPlaceholderApi: TMdbPlaceholderApi,
     private val ytsPlaceholderApi: YTSPlaceholderApi
 ) : PageKeyedDataSource<Int, MovieShort>() {
@@ -122,7 +123,7 @@ class CustomDataSource(
                 }
                 INITIAL_QUERY_FETCHED = true
             } catch (e: Exception) {
-                Toasty.error(application.applicationContext, "Error: ${e.message}").show()
+                Toasty.error(context, "Error: ${e.message}").show()
             }
         }
     }
@@ -148,7 +149,7 @@ class CustomDataSource(
                 }
             }
         } catch (e: Exception) {
-            Toasty.error(application.applicationContext, "Error: ${e.message}").show()
+            Toasty.error(context, "Error: ${e.message}").show()
         }
     }
 
@@ -176,7 +177,7 @@ class CustomDataSource(
                 }
             }
         } catch (e: Exception) {
-            Toasty.error(application.applicationContext, "Error: ${e.message}").show()
+            Toasty.error(context, "Error: ${e.message}").show()
         }
     }
 }

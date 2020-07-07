@@ -6,8 +6,9 @@ import com.kpstv.yts.extensions.Coroutines
 import com.kpstv.yts.models.data.data_tmdb
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class TMdbRepository(
+class TMdbRepository @Inject constructor(
     private val suggestDb: SuggestionDatabase,
     private val recommendDb: RecommendDatabase
 ) {

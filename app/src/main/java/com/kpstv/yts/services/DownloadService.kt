@@ -32,31 +32,32 @@ import com.kpstv.yts.AppInterface.Companion.STORAGE_LOCATION
 import com.kpstv.yts.AppInterface.Companion.TORRENT_NOT_SUPPORTED
 import com.kpstv.yts.AppInterface.Companion.formatDownloadSpeed
 import com.kpstv.yts.R
-import com.kpstv.yts.ui.activities.DownloadActivity
 import com.kpstv.yts.data.db.localized.MainDatabase
 import com.kpstv.yts.data.db.repository.DownloadRepository
 import com.kpstv.yts.data.db.repository.PauseRepository
+import com.kpstv.yts.extensions.utils.AppUtils
+import com.kpstv.yts.extensions.utils.AppUtils.Companion.getVideoDuration
+import com.kpstv.yts.extensions.utils.AppUtils.Companion.saveImageFromUrl
 import com.kpstv.yts.models.Torrent
 import com.kpstv.yts.models.TorrentJob
 import com.kpstv.yts.models.response.Model
 import com.kpstv.yts.receivers.CommonBroadCast
-import com.kpstv.yts.extensions.utils.AppUtils
-import com.kpstv.yts.extensions.utils.AppUtils.Companion.getVideoDuration
-import com.kpstv.yts.extensions.utils.AppUtils.Companion.saveImageFromUrl
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.kodein
-import org.kodein.di.generic.instance
+import com.kpstv.yts.ui.activities.DownloadActivity
+import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 
 @SuppressLint("WakelockTimeout")
-class DownloadService : IntentService("blank"), KodeinAware {
+@AndroidEntryPoint
+class DownloadService: IntentService("blank") {
 
-    override val kodein by kodein()
-    private val pauseRepository by instance<PauseRepository>()
+    @Inject
+    lateinit var pauseRepository: PauseRepository
+    lateinit var downloadRepository: DownloadRepository
 
     val TAG = "DownloadService"
     private var pendingJobs = ArrayList<Torrent>()
@@ -127,7 +128,7 @@ class DownloadService : IntentService("blank"), KodeinAware {
     private fun setContentIntent(config: Torrent, torrentJob: TorrentJob? = null) {
         val notificationIntent = Intent(context, DownloadActivity::class.java)
         val t: TorrentJob = torrentJob
-            ?: TorrentJob (
+            ?: TorrentJob(
                 config.title, config.banner_url, 0, 0, 0f, 0, 0, false, "Pending",
                 0, getMagnetHash(config.url)
             )
@@ -242,7 +243,8 @@ class DownloadService : IntentService("blank"), KodeinAware {
                     DS_LOG(
                         "==> Progress: ${status?.progress}, Download queue: ${torrent?.torrentHandle?.downloadQueue?.size}, " +
                                 "Piece availability: ${torrent?.torrentHandle?.pieceAvailability?.size}, " +
-                                "Piece size: ${torrent?.torrentHandle?.torrentFile()?.numPieces()}, " +
+                                "Piece size: ${torrent?.torrentHandle?.torrentFile()
+                                    ?.numPieces()}, " +
                                 "Pieces to prepare: ${torrent?.piecesToPrepare}"
                     )
                     if (status?.progress?.toInt() == 100) {
@@ -420,8 +422,8 @@ class DownloadService : IntentService("blank"), KodeinAware {
             val movieSize = getVideoDuration(this, currentModel?.videoFile!!)
                 .takeUnless { it == null } ?: 0L
 
-            DownloadRepository(MainDatabase(this)).saveDownload(
-                Model.response_download (
+            downloadRepository.saveDownload(
+                Model.response_download(
                     title = model.title,
                     imagePath = imagePath.path,
                     downloadPath = currentModel?.saveLocation?.path,
@@ -492,20 +494,20 @@ class DownloadService : IntentService("blank"), KodeinAware {
 
                     torrentStream.stopStream()
                 }
-               /* UNPAUSE_JOB_NORMAL -> {
-                    val modelJob = intent.getSerializableExtra("model") as Model.response_pause
-                    pendingJobs.add(modelJob.torrent!!)
-                    PauseRepository(MainDatabase.invoke(applicationContext)).deletePause(modelJob.hash)
-                    updatePendingJobs()
-                }
-                UNPAUSE_JOB_TOP -> {
-                    val modelJob = intent.getSerializableExtra("model") as Model.response_pause
-                    pendingJobs.add(0, currentTorrentModel!!)
-                    pendingJobs.add(0, modelJob.torrent!!)
-                    torrentStream.stopStream()
-                    PauseRepository(MainDatabase.invoke(applicationContext)).deletePause(modelJob.hash)
-                    updatePendingJobs()
-                }*/
+                /* UNPAUSE_JOB_NORMAL -> {
+                     val modelJob = intent.getSerializableExtra("model") as Model.response_pause
+                     pendingJobs.add(modelJob.torrent!!)
+                     PauseRepository(MainDatabase.invoke(applicationContext)).deletePause(modelJob.hash)
+                     updatePendingJobs()
+                 }
+                 UNPAUSE_JOB_TOP -> {
+                     val modelJob = intent.getSerializableExtra("model") as Model.response_pause
+                     pendingJobs.add(0, currentTorrentModel!!)
+                     pendingJobs.add(0, modelJob.torrent!!)
+                     torrentStream.stopStream()
+                     PauseRepository(MainDatabase.invoke(applicationContext)).deletePause(modelJob.hash)
+                     updatePendingJobs()
+                 }*/
                 REMOVE_JOB -> {
                     val model: Torrent = intent.extras?.getSerializable("model") as Torrent
                     for (c in pendingJobs) {

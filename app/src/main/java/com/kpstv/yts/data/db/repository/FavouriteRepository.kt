@@ -8,8 +8,9 @@ import com.kpstv.yts.models.response.Model
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
+import javax.inject.Inject
 
-class FavouriteRepository (
+class FavouriteRepository @Inject constructor (
     private val db: MainDatabase
 ) {
     fun getMovieIdByQuery(id: Int): Model.response_favourite? {

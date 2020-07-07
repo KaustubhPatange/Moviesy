@@ -9,6 +9,7 @@ import com.kpstv.yts.data.converters.*
 import com.kpstv.yts.models.Movie
 import com.kpstv.yts.models.data.data_main
 import com.kpstv.yts.models.response.Model
+import javax.inject.Inject
 
 @Database(
     entities = [
@@ -35,7 +36,7 @@ abstract class MainDatabase : RoomDatabase() {
     abstract fun getMovieDao(): MovieDao
     abstract fun getPauseDao(): PauseDao
 
-    companion object {
+   /* companion object {
         @Volatile
         private var instance: MainDatabase? = null
         private val LOCK = Any()
@@ -57,5 +58,5 @@ abstract class MainDatabase : RoomDatabase() {
                 .fallbackToDestructiveMigration()
                 .fallbackToDestructiveMigrationOnDowngrade()
                 .build()
-    }
+    }*/
 }

@@ -6,11 +6,14 @@ import com.kpstv.yts.extensions.Coroutines
 import com.kpstv.yts.models.response.Model
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class PauseRepository(
+@Singleton
+class PauseRepository @Inject constructor(
     val db: MainDatabase
 ) {
-    suspend fun getPauseModelbyQuery(hash: String): Model.response_pause? {
+    private suspend fun getPauseModelByQuery(hash: String): Model.response_pause? {
         return withContext(Dispatchers.IO) {
             db.getPauseDao().getTorrentJob(hash)
         }
@@ -24,7 +27,7 @@ class PauseRepository(
 
     fun deletePause(hash: String) {
         Coroutines.io {
-            getPauseModelbyQuery(hash)?.let {
+            getPauseModelByQuery(hash)?.let {
                 db.getPauseDao().delete(it)
             }
         }

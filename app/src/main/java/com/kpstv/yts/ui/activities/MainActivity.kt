@@ -4,10 +4,10 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -16,24 +16,19 @@ import com.kpstv.yts.AppInterface.Companion.IS_DARK_THEME
 import com.kpstv.yts.AppInterface.Companion.animationOptions
 import com.kpstv.yts.AppInterface.Companion.setAppThemeMain
 import com.kpstv.yts.R
-import com.kpstv.yts.ui.viewmodels.MainViewModel
-import com.kpstv.yts.ui.viewmodels.providers.MainViewModelFactory
 import com.kpstv.yts.services.DownloadService
 import com.kpstv.yts.ui.settings.SettingsActivity
+import com.kpstv.yts.ui.viewmodels.MainViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.kodein
-import org.kodein.di.generic.instance
 
+@AndroidEntryPoint
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
-    KodeinAware {
-
-    override val kodein by kodein()
-    private val factory by instance<MainViewModelFactory>()
+    val viewModel by viewModels<MainViewModel>()
 
     val TAG = "MainActivity"
-    lateinit var viewModel: MainViewModel
+
     lateinit var drawerLayout: DrawerLayout
 
     lateinit var navController: NavController
@@ -46,8 +41,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_main)
 
         isDarkTheme = IS_DARK_THEME
-
-        viewModel = ViewModelProvider(this, factory).get(MainViewModel::class.java)
 
         drawerLayout = drawer_layout
         navigationView.setNavigationItemSelectedListener(this)

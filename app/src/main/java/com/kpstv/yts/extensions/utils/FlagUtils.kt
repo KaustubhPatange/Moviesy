@@ -11,9 +11,12 @@ import okhttp3.Request
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.concurrent.Callable
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @SuppressLint("CheckResult")
-class FlagUtils(
+@Singleton
+class FlagUtils @Inject constructor(
     private val retrofitUtils: RetrofitUtils
 ) {
     private val TAG = javaClass.simpleName

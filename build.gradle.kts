@@ -10,6 +10,7 @@ buildscript {
         classpath(GradleDependency.GRADLE_BUILD_TOOLS)
         classpath(GradleDependency.KOTLIN_PLUGIN)
         classpath(GradleDependency.SAFE_ARGS)
+        classpath(GradleDependency.HILT)
     }
 }
 

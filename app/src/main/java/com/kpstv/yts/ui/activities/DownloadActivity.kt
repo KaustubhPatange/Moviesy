@@ -9,20 +9,20 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.danimahardhika.cafebar.CafeBar
-import com.kpstv.yts.AppInterface.Companion.UNPAUSE_JOB
 import com.kpstv.yts.AppInterface.Companion.EMPTY_QUEUE
 import com.kpstv.yts.AppInterface.Companion.MODEL_UPDATE
 import com.kpstv.yts.AppInterface.Companion.PAUSE_JOB
 import com.kpstv.yts.AppInterface.Companion.PENDING_JOB_UPDATE
 import com.kpstv.yts.AppInterface.Companion.REMOVE_CURRENT_JOB
+import com.kpstv.yts.AppInterface.Companion.UNPAUSE_JOB
 import com.kpstv.yts.AppInterface.Companion.formatDownloadSpeed
 import com.kpstv.yts.AppInterface.Companion.setAppThemeNoAction
 import com.kpstv.yts.R
@@ -30,39 +30,38 @@ import com.kpstv.yts.adapters.JobQueueAdapter
 import com.kpstv.yts.adapters.PauseAdapter
 import com.kpstv.yts.data.db.localized.MainDatabase
 import com.kpstv.yts.data.db.repository.PauseRepository
-import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import com.kpstv.yts.extensions.Coroutines
 import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.extensions.show
+import com.kpstv.yts.extensions.utils.AppUtils
+import com.kpstv.yts.extensions.utils.AppUtils.Companion.getMagnetUrl
+import com.kpstv.yts.extensions.utils.GlideApp
 import com.kpstv.yts.models.Torrent
 import com.kpstv.yts.models.TorrentJob
 import com.kpstv.yts.models.response.Model
 import com.kpstv.yts.receivers.CommonBroadCast
-import com.kpstv.yts.extensions.utils.AppUtils
-import com.kpstv.yts.extensions.utils.AppUtils.Companion.getMagnetUrl
-import com.kpstv.yts.extensions.utils.GlideApp
+import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import com.kpstv.yts.ui.viewmodels.MainViewModel
-import com.kpstv.yts.ui.viewmodels.providers.MainViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_download.*
 import kotlinx.android.synthetic.main.item_torrent_download.*
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.kodein
-import org.kodein.di.generic.instance
 import java.io.File
-import java.lang.Exception
+import javax.inject.Inject
 
 @SuppressLint("SetTextI18n")
-class DownloadActivity : AppCompatActivity(), KodeinAware {
+@AndroidEntryPoint
+class DownloadActivity : AppCompatActivity() {
 
-    override val kodein by kodein()
-    private val factory by instance<MainViewModelFactory>()
+    val viewModel by viewModels<MainViewModel>()
+
+    @Inject
+    lateinit var pauseRepository: PauseRepository
 
     private val TAG = "DownloadActivity"
     private lateinit var adapter: JobQueueAdapter
     private lateinit var currentModel: TorrentJob
-    lateinit var viewModel: MainViewModel
+
     private lateinit var pauseAdapter: PauseAdapter
-    private var pauseRepository: PauseRepository? = null
     private var PAUSE_BUTTON_CLICKED = false
 
     private val SHOW_LOG_FROM_THIS_CLASS = true
@@ -83,8 +82,6 @@ class DownloadActivity : AppCompatActivity(), KodeinAware {
         setContentView(R.layout.activity_download)
 
         setSupportActionBar(toolbar)
-
-        viewModel = ViewModelProvider(this, factory).get(MainViewModel::class.java)
 
         title = "Download Queue"
 
@@ -110,12 +107,10 @@ class DownloadActivity : AppCompatActivity(), KodeinAware {
     }
 
     private fun bindUI() = Coroutines.main {
-        pauseRepository = PauseRepository(MainDatabase.invoke(applicationContext))
-
         recyclerView_pause.layoutManager = LinearLayoutManager(this)
         pauseAdapter = PauseAdapter(applicationContext, ArrayList())
 
-        pauseAdapter.setOnMoreListener = {v, model, i ->
+        pauseAdapter.setOnMoreListener = { v, model, i ->
             val popupMenu = PopupMenu(this, v)
             popupMenu.inflate(R.menu.activity_download_pause_menu)
             popupMenu.setOnMenuItemClickListener {
@@ -130,7 +125,7 @@ class DownloadActivity : AppCompatActivity(), KodeinAware {
             pauseAdapter.updateModels(it)
             if (pauseAdapter.itemCount > 0) {
                 layout_pauseQueue.show()
-            }else
+            } else
                 layout_pauseQueue.hide()
             DA_LOG("Updating models")
         })
@@ -155,7 +150,7 @@ class DownloadActivity : AppCompatActivity(), KodeinAware {
                 try {
                     DA_LOG("--- MODAL_UPDATE ---")
 
-                    val parcelableObject= intent?.getSerializableExtra("model")
+                    val parcelableObject = intent?.getSerializableExtra("model")
                     Log.e(TAG, "Class: ${parcelableObject?.javaClass ?: "null"}")
                     if (parcelableObject is TorrentJob) {
                         val model: TorrentJob = intent.getSerializableExtra("model") as TorrentJob
@@ -167,7 +162,7 @@ class DownloadActivity : AppCompatActivity(), KodeinAware {
                         layout_jobCurrentQueue.visibility = View.VISIBLE
                     }
 
-                }catch (e: Exception) {
+                } catch (e: Exception) {
 
                     /** For some reasons it is throwing
                      * 'java.lang.RuntimeException: Parcelable encountered IOException reading a Serializable object (name = com.kpstv.yts.models.TorrentJob'
@@ -254,8 +249,9 @@ class DownloadActivity : AppCompatActivity(), KodeinAware {
                             PAUSE_BUTTON_CLICKED = true
 
                             val i = Intent(PAUSE_JOB)
-                            i.putExtra("model",currentModel)
-                            LocalBroadcastManager.getInstance(this@DownloadActivity).sendBroadcast(i)
+                            i.putExtra("model", currentModel)
+                            LocalBroadcastManager.getInstance(this@DownloadActivity)
+                                .sendBroadcast(i)
                         }
                         R.id.action_copy_magnet -> {
                             val service =
@@ -343,7 +339,7 @@ class DownloadActivity : AppCompatActivity(), KodeinAware {
                 intent.putExtra("model", model.torrent!!)
                 sendBroadcast(intent)
             }
-            R.id.action_deleteJob ->  {
+            R.id.action_deleteJob -> {
                 AlertNoIconDialog.Companion.Builder(this).apply {
                     setTitle(getString(R.string.ask_title))
                     setMessage(getString(R.string.ask_delete))
@@ -372,7 +368,7 @@ class DownloadActivity : AppCompatActivity(), KodeinAware {
     }
 
     private fun decideToShowNoJobLayout() {
-        if (pauseAdapter.itemCount <=0 && ::adapter.isInitialized && adapter.itemCount <= 0 && layout_jobCurrentQueue.visibility == View.GONE) {
+        if (pauseAdapter.itemCount <= 0 && ::adapter.isInitialized && adapter.itemCount <= 0 && layout_jobCurrentQueue.visibility == View.GONE) {
             layout_JobEmptyQueue.show()
             return
         }
@@ -404,7 +400,7 @@ class DownloadActivity : AppCompatActivity(), KodeinAware {
         if (::pauseAdapter.isInitialized && pauseAdapter.itemCount <= 0) {
             DA_LOG("pauseAdapter: ${pauseAdapter.itemCount}")
             layout_JobEmptyQueue.show()
-        }else layout_JobEmptyQueue.show()
+        } else layout_JobEmptyQueue.show()
     }
 
     override fun onDestroy() {

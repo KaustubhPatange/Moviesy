@@ -31,9 +31,14 @@ private object LibraryVersion {
     const val LOCALBROADCAST = "1.0.0"
     const val PHOTOVIEW = "2.0.0"
     const val CARDVIEW = "1.0.0"
+    const val HILT_VIEWMODEL = "1.0.0-alpha01"
 }
 
 object LibraryDependency {
+    const val HILT_VIEWODEL_COMPILER = "androidx.hilt:hilt-compiler:${LibraryVersion.HILT_VIEWMODEL}"
+    const val HILT_VIEWODEL = "androidx.hilt:hilt-lifecycle-viewmodel:${LibraryVersion.HILT_VIEWMODEL}"
+    const val HILT_ANDROID = "com.google.dagger:hilt-android:${CoreVersion.HILT}"
+    const val HILT_COMPILER = "com.google.dagger:hilt-android-compiler:${CoreVersion.HILT}"
     const val CARDVIEW = "androidx.cardview:cardview:${LibraryVersion.CARDVIEW}"
     const val PHOTOVIEW = "com.github.chrisbanes:PhotoView:${LibraryVersion.PHOTOVIEW}"
     const val LOCALBROADCAST_MANAGER = "androidx.localbroadcastmanager:localbroadcastmanager:${LibraryVersion.LOCALBROADCAST}"

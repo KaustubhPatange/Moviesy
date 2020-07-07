@@ -18,7 +18,7 @@ import com.kpstv.yts.models.data.data_tmdb
 abstract class SuggestionDatabase : RoomDatabase() {
     abstract fun getTMdbDao(): SuggestionDao
 
-    companion object {
+    /*companion object {
         @Volatile
         private var instance: SuggestionDatabase? = null
         private val LOCK = Any()
@@ -39,5 +39,5 @@ abstract class SuggestionDatabase : RoomDatabase() {
                 .fallbackToDestructiveMigration()
                 .fallbackToDestructiveMigrationOnDowngrade()
                 .build()
-    }
+    }*/
 }

@@ -20,8 +20,9 @@ import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance
 import org.kodein.di.generic.singleton
 
-class YTSApplication : Application(), KodeinAware {
-    override val kodein = Kodein.lazy {
+@Suppress("unused")
+class YTSApplication : Application() {
+   /* override val kodein = Kodein.lazy {
         import(androidXModule(this@YTSApplication))
 
         bind() from singleton { MainDatabase(instance()) }
@@ -66,13 +67,6 @@ class YTSApplication : Application(), KodeinAware {
             )
         }
     }
+*/
 
-    override fun onCreate() {
-        super.onCreate()
-        val typeface = ResourcesCompat.getFont(applicationContext, R.font.google_sans_regular)
-        Toasty.Config.getInstance()
-            .setTextSize(14)
-            .setToastTypeface(typeface!!)
-            .apply()
-    }
 }
