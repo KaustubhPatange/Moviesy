@@ -4,6 +4,7 @@ plugins {
     kotlin(GradlePluginId.ANDROID_EXTENSIONS_KTX)
     kotlin(GradlePluginId.KAPT)
     id(GradlePluginId.SAFE_ARGS)
+    id(GradlePluginId.DAGGER_HILT)
 }
 
 android {
@@ -80,8 +81,6 @@ dependencies {
     implementation(LibraryDependency.RXANDROID)
     implementation(LibraryDependency.RXJAVA)
     implementation(LibraryDependency.RXBINDING)
-    implementation(LibraryDependency.KODEIN_JVM)
-    implementation(LibraryDependency.KODEIN_ANDROID)
     implementation(LibraryDependency.TOASTY)
     implementation(LibraryDependency.BLURRY)
     implementation(LibraryDependency.JSOUP)
@@ -89,9 +88,13 @@ dependencies {
     implementation(LibraryDependency.PHOTOVIEW)
     implementation(LibraryDependency.TORRENT_STREAM_ANDROID)
     implementation(LibraryDependency.CAFEBAR)
+    implementation(LibraryDependency.HILT_ANDROID)
+    implementation(LibraryDependency.HILT_VIEWODEL)
 
     kapt(LibraryDependency.ROOM_COMPILER_KAPT)
     kapt(LibraryDependency.GLIDE_COMPILER)
+    kapt(LibraryDependency.HILT_COMPILER)
+    kapt(LibraryDependency.HILT_VIEWODEL_COMPILER)
 
     annotationProcessor(LibraryDependency.GLIDE_COMPILER)
     testImplementation(TestLibraryDependency.JUNIT)

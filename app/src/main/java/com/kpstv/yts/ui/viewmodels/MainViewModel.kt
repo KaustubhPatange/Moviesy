@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import android.view.View
 import androidx.core.text.isDigitsOnly
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppInterface.Companion.CUSTOM_LAYOUT_YTS_SPAN
@@ -29,7 +30,7 @@ import retrofit2.await
 import java.util.*
 import kotlin.collections.ArrayList
 
-class MainViewModel(
+class MainViewModel @ViewModelInject constructor(
     application: Application,
     private val ytsPlaceholderApi: YTSPlaceholderApi,
     private val repository: MainRepository,

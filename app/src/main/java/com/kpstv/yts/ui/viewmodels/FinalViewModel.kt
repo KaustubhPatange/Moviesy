@@ -2,6 +2,7 @@ package com.kpstv.yts.ui.viewmodels
 
 import android.annotation.SuppressLint
 import android.util.Log
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppInterface.Companion.MOVIE_SPAN_DIFFERENCE
@@ -30,7 +31,7 @@ import java.util.concurrent.locks.ReentrantLock
 import kotlin.collections.ArrayList
 
 @SuppressLint("SimpleDateFormat")
-class FinalViewModel(
+class FinalViewModel @ViewModelInject constructor(
     private val movieRepository: MovieRepository,
     private val tMdbRepository: TMdbRepository,
     private val ytsPlaceholderApi: YTSPlaceholderApi,

@@ -6,8 +6,9 @@ import com.kpstv.yts.interfaces.api.YTSPlaceholderApi
 import com.kpstv.yts.models.data.data_main
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class MainRepository(
+class MainRepository @Inject constructor(
     private val db: MainDatabase,
     private val ytsPlaceholderApi: YTSPlaceholderApi
 ) {

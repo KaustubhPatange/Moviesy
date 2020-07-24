@@ -32,7 +32,7 @@ interface TMdbPlaceholderApi {
     @GET("movie/{id}/credits")
     fun getCast(@Path("id") id: String): Deferred<Model.response_tmdb_cast>
 
-    companion object {
+    /*companion object {
         private var tmdbApi: TMdbPlaceholderApi? = null
         operator fun invoke(retrofitUtils: RetrofitUtils): TMdbPlaceholderApi {
             val requestInterceptor = Interceptor { chain ->
@@ -55,5 +55,5 @@ interface TMdbPlaceholderApi {
                     .create(TMdbPlaceholderApi::class.java)
                     .also { tmdbApi = it }
         }
-    }
+    }*/
 }

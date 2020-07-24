@@ -160,24 +160,6 @@ class BottomSheetDownload : BottomSheetDialogFragment() {
         if (tag == "watch_now") {
             view.item_tip_text.visibility = View.GONE
 
-         /*   *//** Show storage delete tip *//*
-            val storeLocation: File? = File(context?.externalCacheDir, STREAM_LOCATION)
-
-            if ( storeLocation?.listFiles()?.isNotEmpty()!!) {
-                val deleteView = LayoutInflater.from(context).inflate(R.layout.custom_tip_dialog,view.addLayout)
-
-                deleteView.tipDialog_title.text = getString(R.string.previous_title)
-                deleteView.tipDialog_message.text = getString(R.string.previous_text)
-                deleteView.tipDialog_button.text = getString(R.string.delete)
-
-                deleteView.tipDialog_button.setOnClickListener {
-                    Utils.deleteRecursive(storeLocation)
-                    storeLocation.mkdirs()
-                    view.addLayout.removeAllViews()
-                    setUpForWatch(view)
-                }
-            }*/
-
             /** Show subtitles */
 
             showSubtitle(view)

@@ -10,9 +10,9 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -20,52 +20,48 @@ import com.kpstv.yts.AppInterface.Companion.MOVIE_ID
 import com.kpstv.yts.AppInterface.Companion.handleRetrofitError
 import com.kpstv.yts.AppInterface.Companion.setAppThemeNoAction
 import com.kpstv.yts.R
-import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.adapters.GenreAdapter
 import com.kpstv.yts.data.converters.GenreEnumConverter
+import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.extensions.hide
-import com.kpstv.yts.ui.fragments.sheets.BottomSheetDownload
-import com.kpstv.yts.ui.fragments.sheets.BottomSheetSubtitles
+import com.kpstv.yts.extensions.utils.AppUtils
+import com.kpstv.yts.extensions.utils.AppUtils.Companion.CafebarToast
+import com.kpstv.yts.extensions.utils.CustomMovieLayout
+import com.kpstv.yts.extensions.utils.GlideApp
 import com.kpstv.yts.interfaces.listener.FavouriteListener
 import com.kpstv.yts.interfaces.listener.MovieListener
 import com.kpstv.yts.interfaces.listener.SuggestionListener
 import com.kpstv.yts.models.Cast
 import com.kpstv.yts.models.Movie
 import com.kpstv.yts.models.TmDbMovie
-import com.kpstv.yts.extensions.utils.AppUtils
-import com.kpstv.yts.extensions.utils.AppUtils.Companion.CafebarToast
-import com.kpstv.yts.extensions.utils.CustomMovieLayout
-import com.kpstv.yts.extensions.utils.GlideApp
+import com.kpstv.yts.ui.fragments.sheets.BottomSheetDownload
+import com.kpstv.yts.ui.fragments.sheets.BottomSheetSubtitles
 import com.kpstv.yts.ui.viewmodels.FinalViewModel
-import com.kpstv.yts.ui.viewmodels.providers.FinalViewModelFactory
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerListener
+import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_final.*
 import kotlinx.android.synthetic.main.activity_final_content.*
 import kotlinx.android.synthetic.main.activity_final_content.view.*
 import kotlinx.android.synthetic.main.activity_final_previews.*
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.kodein
-import org.kodein.di.generic.instance
 
 
 @SuppressLint("SetTextI18n")
-class FinalActivity : AppCompatActivity(), MovieListener, KodeinAware {
+@AndroidEntryPoint
+class FinalActivity : AppCompatActivity(), MovieListener {
 
     val TAG = "FinalActivity"
 
-    override val kodein by kodein()
-    private val factory by instance<FinalViewModelFactory>()
+    private val viewModel by viewModels<FinalViewModel>()
 
     private lateinit var movie: Movie
     private lateinit var genreAdapter: GenreAdapter
     private lateinit var subtitleFetch: Disposable
     private lateinit var player: YouTubePlayer
     private var fetchHere = false;
-    private lateinit var viewModel: FinalViewModel
     private var menu: Menu? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,9 +79,6 @@ class FinalActivity : AppCompatActivity(), MovieListener, KodeinAware {
 
         /** Initializing YouTube player instance */
         initializeYoutubePlayer()
-
-        /** Setting up viewModel Class */
-        viewModel = ViewModelProvider(this, factory).get(FinalViewModel::class.java)
 
         /** Getting movie details for movieId */
         when (movieId) {

@@ -6,10 +6,10 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,27 +17,26 @@ import com.jakewharton.rxbinding2.widget.RxTextView
 import com.kpstv.yts.AppInterface.Companion.SUGGESTION_URL
 import com.kpstv.yts.AppInterface.Companion.setAppThemeNoAction
 import com.kpstv.yts.R
-import com.kpstv.yts.extensions.YTSQuery
-import com.kpstv.yts.ui.activities.MoreActivity.Companion.base
-import com.kpstv.yts.ui.activities.MoreActivity.Companion.queryMap
 import com.kpstv.yts.adapters.CustomPagedAdapter
 import com.kpstv.yts.adapters.SearchAdapter
 import com.kpstv.yts.data.CustomDataSource.Companion.INITIAL_QUERY_FETCHED
 import com.kpstv.yts.data.converters.QueryConverter
 import com.kpstv.yts.extensions.MovieBase
+import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.extensions.show
+import com.kpstv.yts.extensions.utils.AppUtils.Companion.hideKeyboard
+import com.kpstv.yts.extensions.utils.CustomMovieLayout
+import com.kpstv.yts.extensions.utils.RetrofitUtils
 import com.kpstv.yts.interfaces.listener.SingleClickListener
 import com.kpstv.yts.interfaces.listener.SuggestionListener
 import com.kpstv.yts.models.MovieShort
 import com.kpstv.yts.models.TmDbMovie
-import com.kpstv.yts.extensions.utils.AppUtils.Companion.hideKeyboard
-import com.kpstv.yts.extensions.utils.CustomMovieLayout
-import com.kpstv.yts.extensions.utils.RetrofitUtils
+import com.kpstv.yts.ui.activities.MoreActivity.Companion.base
+import com.kpstv.yts.ui.activities.MoreActivity.Companion.queryMap
 import com.kpstv.yts.ui.viewmodels.FinalViewModel
 import com.kpstv.yts.ui.viewmodels.MoreViewModel
-import com.kpstv.yts.ui.viewmodels.providers.FinalViewModelFactory
-import com.kpstv.yts.ui.viewmodels.providers.MoreViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -47,24 +46,23 @@ import kotlinx.android.synthetic.main.activity_search.*
 import kotlinx.android.synthetic.main.activity_search_single.*
 import okhttp3.Request
 import org.json.JSONArray
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.kodein
-import org.kodein.di.generic.instance
+import javax.inject.Inject
 
+@AndroidEntryPoint
+class SearchActivity : AppCompatActivity() {
 
-class SearchActivity : AppCompatActivity(), KodeinAware {
+    private val moreViewModel by viewModels<MoreViewModel>()
+    private val finalViewModel by viewModels<FinalViewModel>()
 
-    override val kodein by kodein()
-    private val moreFactory by instance<MoreViewModelFactory>()
-    private val mainFactory by instance<FinalViewModelFactory>()
-    private val retrofitUtils by instance<RetrofitUtils>()
+    @Inject
+    lateinit var retrofitUtils: RetrofitUtils
+
 
     private val TAG = "SearchActivity"
 
     private lateinit var suggestionFetch: Disposable
     private lateinit var suggestionAdapter: SearchAdapter
-    private lateinit var moreViewModel: MoreViewModel
-    private lateinit var finalViewModel: FinalViewModel
+
     private val suggestionModels = ArrayList<String>()
     private var isSearchClicked = false
     private lateinit var adapter: CustomPagedAdapter
@@ -86,7 +84,6 @@ class SearchActivity : AppCompatActivity(), KodeinAware {
         /** Setting up FinalViewModel which will be used to show suggestions
          *  based on movie searched!
          */
-        finalViewModel = ViewModelProvider(this, mainFactory).get(FinalViewModel::class.java)
 
         swipeRefreshLayout.isEnabled = false
 
@@ -167,9 +164,6 @@ class SearchActivity : AppCompatActivity(), KodeinAware {
 
         Log.e(TAG, "==> Query: ${QueryConverter.fromMapToString(queryMap!!)}")
 
-        moreViewModel =
-            ViewModelProvider(viewModelStore, moreFactory).get(MoreViewModel::class.java)
-
         adapter = CustomPagedAdapter(this, MovieBase.YTS)
 
         moreViewModel.itemPagedList?.observe(this, observer)
@@ -232,7 +226,11 @@ class SearchActivity : AppCompatActivity(), KodeinAware {
                         adapter.currentList?.get(0)?.imdbCode?.let { imdbCode ->
                             finalViewModel.getSuggestions(object : SuggestionListener {
                                 override fun onStarted() {} // Ignore AF...
-                                override fun onComplete(movies: ArrayList<TmDbMovie>, tag: String?,isMoreAvailable: Boolean) {
+                                override fun onComplete(
+                                    movies: ArrayList<TmDbMovie>,
+                                    tag: String?,
+                                    isMoreAvailable: Boolean
+                                ) {
                                     val layout = CustomMovieLayout(this@SearchActivity, "Suggested")
                                     layout.injectViewAt(addLayout)
                                     layout.setupCallbacks(
@@ -241,6 +239,7 @@ class SearchActivity : AppCompatActivity(), KodeinAware {
                                         isMoreAvailable
                                     )
                                 }
+
                                 override fun onFailure(e: Exception) {} // Ignore exception
                             }, imdbCode)
                         }
@@ -257,7 +256,7 @@ class SearchActivity : AppCompatActivity(), KodeinAware {
     private fun updateQuery(text: String) {
 
         if (text.isEmpty()) {
-            Toasty.error(this,"Query cannot be empty").show()
+            Toasty.error(this, "Query cannot be empty").show()
             return
         }
 
@@ -265,13 +264,16 @@ class SearchActivity : AppCompatActivity(), KodeinAware {
          */
         layout_noMovieFound.hide()
 
-        isSearchClicked = true /** Setting this boolean true because search was clicked */
+        isSearchClicked = true
+        /** Setting this boolean true because search was clicked */
 
         as_searchEditText.clearFocus()
 
-        as_searchEditText.setText(text) /** Autocomplete text in search EditText */
+        as_searchEditText.setText(text)
+        /** Autocomplete text in search EditText */
 
-        hideKeyboard(this) /** Hide the keyboard after search was clicked */
+        hideKeyboard(this)
+        /** Hide the keyboard after search was clicked */
 
         removeSuggestionRecyclerView()
 

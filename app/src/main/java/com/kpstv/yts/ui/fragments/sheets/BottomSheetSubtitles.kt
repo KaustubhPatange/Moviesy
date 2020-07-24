@@ -22,10 +22,15 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.kpstv.yts.AppInterface.Companion.SUBTITLE_LOCATION
 import com.kpstv.yts.AppInterface.Companion.YIFY_BASE_URL
 import com.kpstv.yts.R
-import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
+import com.kpstv.yts.extensions.utils.AppUtils
+import com.kpstv.yts.extensions.utils.FlagUtils
+import com.kpstv.yts.extensions.utils.GlideApp
+import com.kpstv.yts.extensions.utils.ZipUtility
 import com.kpstv.yts.interfaces.listener.SingleClickListener
 import com.kpstv.yts.models.Subtitle
-import com.kpstv.yts.extensions.utils.*
+import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.scopes.FragmentScoped
 import es.dmoral.toasty.Toasty
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -35,18 +40,16 @@ import kotlinx.android.synthetic.main.bottom_sheet_subtitles.*
 import kotlinx.android.synthetic.main.bottom_sheet_subtitles.view.*
 import kotlinx.android.synthetic.main.item_subtitles.view.*
 import org.jsoup.Jsoup
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.x.kodein
-import org.kodein.di.generic.instance
 import java.io.File
 import java.util.concurrent.Callable
+import javax.inject.Inject
 
 @SuppressLint("SetTextI18n")
-class BottomSheetSubtitles : BottomSheetDialogFragment(), KodeinAware {
+@AndroidEntryPoint
+class BottomSheetSubtitles : BottomSheetDialogFragment() {
 
-    override val kodein by kodein()
-    private val flagUtils by instance<FlagUtils>()
+    @Inject
+    lateinit var flagUtils: FlagUtils
 
     private val TAG = "BottomSheetSubtiles"
     private lateinit var v: View
@@ -56,7 +59,6 @@ class BottomSheetSubtitles : BottomSheetDialogFragment(), KodeinAware {
     var hasEnglish = false
     var hasSpanish = false
     var hasArabic = false
-
 
 
     override fun onCreateView(
@@ -82,15 +84,16 @@ class BottomSheetSubtitles : BottomSheetDialogFragment(), KodeinAware {
     private fun fetchSubtitles() {
 
         subtitleFetch = Observable.fromCallable<String> {
-            return@fromCallable Jsoup.connect("${YIFY_BASE_URL}/movie-imdb/${imdb_code}").get().html()
-                // btn-icon download-subtitle --> Own text
+            return@fromCallable Jsoup.connect("${YIFY_BASE_URL}/movie-imdb/${imdb_code}").get()
+                .html()
+            // btn-icon download-subtitle --> Own text
         }.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 progressBar.visibility = View.GONE
                 val subtitles = Jsoup.parse(it).getElementsByClass("high-rating")
                 subtitleModels.clear()
-                for(element in subtitles) {
+                for (element in subtitles) {
                     val a = element.select("a")[0]
 
                     val country = element.getElementsByClass("sub-lang")[0].ownText()
@@ -105,7 +108,8 @@ class BottomSheetSubtitles : BottomSheetDialogFragment(), KodeinAware {
                             element.getElementsByClass("label")[0].ownText().toInt(),
                             element.getElementsByClass("uploader-cell")[0].ownText(),
                             a.attr("href").toString()
-                        ))
+                        )
+                    )
                 }
                 if (subtitleModels.size > 0) {
                     adapter =
@@ -114,10 +118,10 @@ class BottomSheetSubtitles : BottomSheetDialogFragment(), KodeinAware {
                             flagUtils = flagUtils,
                             models = subtitleModels
                         )
-                    adapter.setOnSingleClickListener(object:
+                    adapter.setOnSingleClickListener(object :
                         SingleClickListener {
                         override fun onClick(obj: Any, i: Int) {
-                            parseSubtitle(obj as Subtitle,i)
+                            parseSubtitle(obj as Subtitle, i)
                         }
                     })
                     recyclerView_subtitles.setHasFixedSize(true)
@@ -127,8 +131,8 @@ class BottomSheetSubtitles : BottomSheetDialogFragment(), KodeinAware {
 
                     handleFilter()
 
-                }else {
-                   Toasty.error(context!!, "No subtitles found").show()
+                } else {
+                    Toasty.error(requireContext(), "No subtitles found").show()
                     dismiss()
                 }
 
@@ -138,11 +142,12 @@ class BottomSheetSubtitles : BottomSheetDialogFragment(), KodeinAware {
                 AlertNoIconDialog.Companion.Builder(context).apply {
                     setTitle("Error")
                     setMessage("Failed to fetch subtitles due to: ${it.message}")
-                    setPositiveButton(getString(R.string.yes),object: AlertNoIconDialog.DialogListener{
-                        override fun onClick() {
-                            dismiss()
-                        }
-                    })
+                    setPositiveButton(getString(R.string.yes),
+                        object : AlertNoIconDialog.DialogListener {
+                            override fun onClick() {
+                                dismiss()
+                            }
+                        })
                 }.show()
             })
     }
@@ -191,8 +196,8 @@ class BottomSheetSubtitles : BottomSheetDialogFragment(), KodeinAware {
 
         /** Async task to fetch download link */
 
-        subtitleFetch = Observable.fromCallable(Callable<String>{
-           return@Callable Jsoup.connect("${YIFY_BASE_URL}${model.fetchEndpoint}").get().html()
+        subtitleFetch = Observable.fromCallable(Callable<String> {
+            return@Callable Jsoup.connect("${YIFY_BASE_URL}${model.fetchEndpoint}").get().html()
         })
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -205,9 +210,9 @@ class BottomSheetSubtitles : BottomSheetDialogFragment(), KodeinAware {
 
                 Log.e(TAG, "DownloadLink $downloadLink")
 
-                downloadSubtitle(model,downloadLink,i)
+                downloadSubtitle(model, downloadLink, i)
 
-            },{
+            }, {
                 model.isDownload = false
                 adapter.notifyItemChanged(i)
 
@@ -215,11 +220,12 @@ class BottomSheetSubtitles : BottomSheetDialogFragment(), KodeinAware {
                 AlertNoIconDialog.Companion.Builder(context).apply {
                     setTitle("Error")
                     setMessage("Failed to download subtitles due to: ${it.message}")
-                    setPositiveButton(getString(R.string.alright),object: AlertNoIconDialog.DialogListener{
-                        override fun onClick() {
-                            dismiss()
-                        }
-                    })
+                    setPositiveButton(getString(R.string.alright),
+                        object : AlertNoIconDialog.DialogListener {
+                            override fun onClick() {
+                                dismiss()
+                            }
+                        })
                 }.show()
             })
 
@@ -227,28 +233,29 @@ class BottomSheetSubtitles : BottomSheetDialogFragment(), KodeinAware {
 
     override fun onDestroy() {
         Log.e(TAG, "onDestroy() called")
-        if (::subtitleFetch.isInitialized &&!subtitleFetch.isDisposed) subtitleFetch.dispose()
+        if (::subtitleFetch.isInitialized && !subtitleFetch.isDisposed) subtitleFetch.dispose()
         subtitleModels.clear()
         super.onDestroy()
     }
 
     private fun downloadSubtitle(model: Subtitle, downloadLink: String, i: Int) {
 
-       // val saveLocation = File(SUBTITLE_LOCATION,"${model.text}-${model.country}.srt")
-        val tempLocation = File(context?.externalCacheDir,imdb_code)
+        // val saveLocation = File(SUBTITLE_LOCATION,"${model.text}-${model.country}.srt")
+        val tempLocation = File(context?.externalCacheDir, imdb_code)
         if (!tempLocation.exists()) tempLocation.mkdirs()
 
-        val temporarySaveLocation = File(tempLocation,"${model.text}.zip")
+        val temporarySaveLocation = File(tempLocation, "${model.text}.zip")
         if (temporarySaveLocation.exists()) temporarySaveLocation.delete()
 
         /** Registering broadcast receiver for listening afterDownload complete event */
 
-        val onComplete: BroadcastReceiver = object: BroadcastReceiver() {
+        val onComplete: BroadcastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 if (temporarySaveLocation.exists()) {
 
-                    val nameofDownload =  "${model.text}${downloadLink.substring(downloadLink.indexOf("-"))
-                        .replace(".zip","")}.srt"
+                    val nameofDownload =
+                        "${model.text}${downloadLink.substring(downloadLink.indexOf("-"))
+                            .replace(".zip", "")}.srt"
 
                     SUBTITLE_LOCATION.mkdirs()
 
@@ -257,24 +264,33 @@ class BottomSheetSubtitles : BottomSheetDialogFragment(), KodeinAware {
                     if (temporarySaveLocation.exists()) temporarySaveLocation.delete()
 
                     if (tempLocation.listFiles().isNotEmpty()) {
-                        tempLocation.listFiles()[0].renameTo(File(SUBTITLE_LOCATION,nameofDownload))
+                        tempLocation.listFiles()[0].renameTo(
+                            File(
+                                SUBTITLE_LOCATION,
+                                nameofDownload
+                            )
+                        )
 
-                    }else throw Throwable("File does not exist")
+                    } else throw Throwable("File does not exist")
 
-                    Toast.makeText(context, "${model.text} download complete!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "${model.text} download complete!", Toast.LENGTH_SHORT)
+                        .show()
                     model.isDownload = false
                     adapter.notifyItemChanged(i)
 
                     AppUtils.deleteRecursive(tempLocation)
 
                     context?.unregisterReceiver(this)
-                }else {
+                } else {
                     Toasty.error(context!!, "Failed to download subtitles!").show()
                 }
             }
         }
 
-        context?.registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+        context?.registerReceiver(
+            onComplete,
+            IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
+        )
 
         /*** Making a request to download manager */
 
@@ -288,17 +304,18 @@ class BottomSheetSubtitles : BottomSheetDialogFragment(), KodeinAware {
     }
 
 
-
-    class SubtitleAdapter(val context: Context, private val flagUtils: FlagUtils, var models: List<Subtitle>) : RecyclerView.Adapter<SubtitleAdapter.SubtitleHolder>(), KodeinAware {
-
-        override val kodein: Kodein
-            get() = TODO("Not yet implemented")
+    class SubtitleAdapter(
+        val context: Context,
+        private val flagUtils: FlagUtils,
+        var models: List<Subtitle>
+    ) : RecyclerView.Adapter<SubtitleAdapter.SubtitleHolder>() {
 
         private lateinit var listener: SingleClickListener
 
         override fun onBindViewHolder(holder: SubtitleHolder, i: Int) {
             val model = models[i]
-            GlideApp.with(context.applicationContext).load(flagUtils.getFlagUrl(model.country)).into(holder.flagImage)
+            GlideApp.with(context.applicationContext).load(flagUtils.getFlagUrl(model.country))
+                .into(holder.flagImage)
 
             holder.title.text = model.text
             holder.subText.text = "${model.country} ${AppUtils.getBulletSymbol()} ${model.uploader}"
@@ -308,12 +325,22 @@ class BottomSheetSubtitles : BottomSheetDialogFragment(), KodeinAware {
             when {
                 model.likes > 0 -> {
                     holder.itemLikes.text = model.likes.toString()
-                    holder.itemLikes.setBackgroundColor(ContextCompat.getColor(context,R.color.green))
+                    holder.itemLikes.setBackgroundColor(
+                        ContextCompat.getColor(
+                            context,
+                            R.color.green
+                        )
+                    )
                     holder.itemLikes.visibility = View.VISIBLE
                 }
                 model.likes < 0 -> {
                     holder.itemLikes.text = "${model.likes}"
-                    holder.itemLikes.setBackgroundColor(ContextCompat.getColor(context,R.color.red))
+                    holder.itemLikes.setBackgroundColor(
+                        ContextCompat.getColor(
+                            context,
+                            R.color.red
+                        )
+                    )
                     holder.itemLikes.visibility = View.VISIBLE
                 }
                 else -> {
@@ -324,13 +351,13 @@ class BottomSheetSubtitles : BottomSheetDialogFragment(), KodeinAware {
             if (model.isDownload) {
                 holder.progressBar.visibility = View.VISIBLE
                 holder.itemLikes.visibility = View.GONE
-            }else {
+            } else {
                 holder.progressBar.visibility = View.GONE
                 holder.itemLikes.visibility = View.VISIBLE
             }
 
             holder.mainCard.setOnClickListener {
-                listener.onClick(model,i)
+                listener.onClick(model, i)
             }
         }
 

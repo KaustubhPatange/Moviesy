@@ -6,12 +6,12 @@ import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.children
 import androidx.core.view.forEach
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.chip.Chip
@@ -23,18 +23,18 @@ import com.kpstv.yts.extensions.MovieBase
 import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.models.MovieShort
 import com.kpstv.yts.ui.viewmodels.MoreViewModel
-import com.kpstv.yts.ui.viewmodels.providers.MoreViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_more.*
 import kotlinx.android.synthetic.main.custom_alert_buttons.view.*
 import kotlinx.android.synthetic.main.custom_alert_filter.view.*
 import kotlinx.android.synthetic.main.item_chip.view.*
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.kodein
-import org.kodein.di.generic.instance
 
 @SuppressLint("SetTextI18n")
-class MoreActivity : AppCompatActivity(), KodeinAware {
+@AndroidEntryPoint
+class MoreActivity : AppCompatActivity() {
+
+    private val viewModel by viewModels<MoreViewModel>()
 
     private val TAG = "MoreActivity"
 
@@ -55,10 +55,7 @@ class MoreActivity : AppCompatActivity(), KodeinAware {
     private var localQuery: Map<String, String>? = null
     private var localEndpoint: String? = null
     private var updateHandler = Handler()
-    override val kodein by kodein()
-    private val factory by instance<MoreViewModelFactory>()
     private lateinit var adapter: CustomPagedAdapter
-    private lateinit var viewModel: MoreViewModel
     private lateinit var dialogView: View
 
     /** Since our endpoint, base, queryMap static objects gets updated whenever
@@ -118,6 +115,8 @@ class MoreActivity : AppCompatActivity(), KodeinAware {
          */
         endPoint = intent?.extras?.getString("endPoint")
         base = MovieBase.valueOf(intent?.extras?.getString("baseValue")!!)
+
+        viewModel.buildNewConfig()
 
         /** If the base is YTS we will show we will set query coming from intent
          */
@@ -249,22 +248,15 @@ class MoreActivity : AppCompatActivity(), KodeinAware {
         }
     }
 
-
-    /** This is used to setup viewModel and recyclerView.
+    /**
+     *  This is used to setup viewModel and recyclerView.
      *
      *  Endless recyclerView is implemented using Pagination which returns
      *  live page data.
      *
-     *  We are actually creating viewModel in two ways. Whenever base is not YTS
-     *  we are providing this activity as viewModel owner, but whenever base is
-     *  YTS we are creating viewModel from viewModelStore.
+     *  Whenever a configuration is changed we need to reload the data from
+     *  source factory hence we use viewModel.buildNewConfig to reload it.
      *
-     *  The reason we are doing it because whenever queryMap is change and we
-     *  want to update/refresh adapter, but here viewModel returns live data which
-     *  can only be destroyed whenever observer/owner is destroyed. It means in
-     *  order to refresh we would've have to restart the activity by killing it which
-     *  is not a good practise. So we use ViewModelStore as owner and whenever we
-     *  want to refresh adapter we just clear the viewModel stored in viewModelStore.
      */
     private fun setupRecyclerView() {
 
@@ -275,11 +267,8 @@ class MoreActivity : AppCompatActivity(), KodeinAware {
 
         swipeRefreshLayout.isRefreshing = true
 
-        viewModel = if (base == MovieBase.YTS) {
-            viewModelStore.clear()
-            ViewModelProvider(viewModelStore, factory).get(MoreViewModel::class.java)
-        } else
-            ViewModelProvider(this, factory).get(MoreViewModel::class.java)
+        if (base == MovieBase.YTS)
+            viewModel.buildNewConfig()
 
         if (queryMap != null)
             Log.e(TAG, "==> Query: ${QueryConverter.fromMapToString(queryMap!!)}")

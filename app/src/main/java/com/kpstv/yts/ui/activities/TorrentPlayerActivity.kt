@@ -6,9 +6,9 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProvider
 import com.github.se_bastiaan.torrentstream.StreamStatus
 import com.github.se_bastiaan.torrentstream.Torrent
 import com.github.se_bastiaan.torrentstream.TorrentOptions
@@ -19,15 +19,12 @@ import com.kpstv.yts.AppInterface.Companion.STREAM_LOCATION
 import com.kpstv.yts.AppInterface.Companion.SUBTITLE_LOCATION
 import com.kpstv.yts.R
 import com.kpstv.yts.extensions.hide
-import com.kpstv.yts.models.SubHolder
 import com.kpstv.yts.extensions.utils.SubtitleUtils
+import com.kpstv.yts.models.SubHolder
 import com.kpstv.yts.ui.viewmodels.MainViewModel
-import com.kpstv.yts.ui.viewmodels.providers.MainViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_torrent_player.*
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.kodein
-import org.kodein.di.generic.instance
 import tcking.github.com.giraffeplayer2.GiraffePlayer
 import tcking.github.com.giraffeplayer2.PlayerListener
 import tcking.github.com.giraffeplayer2.VideoInfo
@@ -41,10 +38,10 @@ import java.io.File
  *
  */
 @SuppressLint("SetTextI18n")
-class TorrentPlayerActivity : AppCompatActivity(), KodeinAware {
+@AndroidEntryPoint
+class TorrentPlayerActivity : AppCompatActivity() {
 
-    override val kodein by kodein()
-    private val factory: MainViewModelFactory by instance()
+    private val viewModel by viewModels<MainViewModel>()
 
     private val TAG = "TorrentPlayerActivity"
     private lateinit var torrentStream: TorrentStream
@@ -53,7 +50,7 @@ class TorrentPlayerActivity : AppCompatActivity(), KodeinAware {
     private var subtitleHandler = Handler()
     private var models: ArrayList<SubHolder> = ArrayList()
     private var lastSubtitlePosition: Int = 0
-    private lateinit var viewModel: MainViewModel
+
     private lateinit var hash: String
     private var hasSubtitle: Boolean = false
     private var isTorrentLink: Boolean = false
@@ -74,11 +71,9 @@ class TorrentPlayerActivity : AppCompatActivity(), KodeinAware {
              */
             val position = giraffe_player.player.currentPosition
             Log.e(TAG, "==> LastSavedPosition: $position")
-            if (::viewModel.isInitialized) {
-                viewModel.updateDownload(
-                    hash, true, position
-                )
-            }
+            viewModel.updateDownload(
+                hash, true, position
+            )
 
             /**  We will save current player position to last pause position,
              *   so in onResume we can retrieve it.
@@ -93,7 +88,8 @@ class TorrentPlayerActivity : AppCompatActivity(), KodeinAware {
              *  automatically triggers play() on player during syncing.
              */
             if (hasSubtitle) subtitleHandler.removeCallbacks(updateTask)
-        } catch (e: Exception) { }
+        } catch (e: Exception) {
+        }
         super.onPause()
     }
 
@@ -108,7 +104,8 @@ class TorrentPlayerActivity : AppCompatActivity(), KodeinAware {
              *  last pause position.
              */
             startPlayer(File(filePath), File(filePath).name)
-        } catch (e: Exception) { }
+        } catch (e: Exception) {
+        }
         super.onResume()
     }
 
@@ -131,15 +128,13 @@ class TorrentPlayerActivity : AppCompatActivity(), KodeinAware {
          */
         intent.getStringExtra("torrentLink")?.let { torrentLink ->
             torrentSpecific(torrentLink)
-        } ?: 
-            /** Check if the callback is for normalLink i.e playing from local storage.
-             */
+        } ?:
+        /** Check if the callback is for normalLink i.e playing from local storage.
+         */
         intent.getStringExtra("normalLink")?.let { filePath ->
             this.filePath = filePath
             progressText.hide()
             hash = intent.getStringExtra("hash")!!
-
-            viewModel = ViewModelProvider(this, factory).get(MainViewModel::class.java)
 
             val file = File(filePath)
             startPlayer(
@@ -189,7 +184,8 @@ class TorrentPlayerActivity : AppCompatActivity(), KodeinAware {
 
             override fun onStreamError(torrent: Torrent, e: Exception) {
                 Log.e(TAG, "onStreamError() called with: torrent = [$torrent], e = [$e]")
-                Toasty.error(this@TorrentPlayerActivity, "Torrent stream error: ${e.message}").show()
+                Toasty.error(this@TorrentPlayerActivity, "Torrent stream error: ${e.message}")
+                    .show()
             }
 
             override fun onStreamReady(torrent: Torrent) {
@@ -283,7 +279,7 @@ class TorrentPlayerActivity : AppCompatActivity(), KodeinAware {
                         handlerHandler()
                         if (noPlayerStartHandler) {
                             noPlayerStartHandler = false
-                        }else giraffe_player.player.start()
+                        } else giraffe_player.player.start()
                     }
                     if (models.isNotEmpty()) {
                         if (!subShowing) {
@@ -325,7 +321,7 @@ class TorrentPlayerActivity : AppCompatActivity(), KodeinAware {
      *  last saved position if not 0.
      */
     private var noPlayerStartHandler = false
-    val listener = object: PlayerListener {
+    val listener = object : PlayerListener {
         override fun onTimedText(giraffePlayer: GiraffePlayer?, text: IjkTimedText?) {
 
         }
@@ -355,7 +351,7 @@ class TorrentPlayerActivity : AppCompatActivity(), KodeinAware {
 
         override fun onSeekComplete(giraffePlayer: GiraffePlayer?) {
             Log.e(TAG, "==> SeekChange() ")
-            if (lastPausePosition  != 0 && !isLoadedfromLast) {
+            if (lastPausePosition != 0 && !isLoadedfromLast) {
                 giraffePlayer?.pause()
                 noPlayerStartHandler = true
                 if (hasSubtitle) subtitleHandler.postDelayed(updateTask, 100)
@@ -365,7 +361,7 @@ class TorrentPlayerActivity : AppCompatActivity(), KodeinAware {
 
             /** I had to do this hacks since the Player doesn't have removeListener method
              */
-            giraffe_player.playerListener = object: PlayerListener {
+            giraffe_player.playerListener = object : PlayerListener {
                 override fun onTimedText(giraffePlayer: GiraffePlayer?, text: IjkTimedText?) {
                 }
 

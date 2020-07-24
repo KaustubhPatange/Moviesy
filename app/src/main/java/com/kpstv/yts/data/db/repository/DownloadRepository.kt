@@ -6,8 +6,11 @@ import com.kpstv.yts.extensions.Coroutines
 import com.kpstv.yts.models.response.Model
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class DownloadRepository  (
+@Singleton
+class DownloadRepository @Inject constructor(
     private val db: MainDatabase
 ) {
     suspend fun getDownload(hash: String): Model.response_download? {

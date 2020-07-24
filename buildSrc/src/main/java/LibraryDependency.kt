@@ -8,7 +8,6 @@ private object LibraryVersion {
     const val ROOM = "2.2.5"
     const val LIFECYCLE = "2.2.0"
     const val PAGING = "2.1.2"
-    const val KODEIN = "6.2.1"
     const val RETROFIT = "2.9.0"
     const val OKHTTP = "4.7.2"
     const val GSON_CONVERTER = "2.7.0"
@@ -31,9 +30,14 @@ private object LibraryVersion {
     const val LOCALBROADCAST = "1.0.0"
     const val PHOTOVIEW = "2.0.0"
     const val CARDVIEW = "1.0.0"
+    const val HILT_VIEWMODEL = "1.0.0-alpha01"
 }
 
 object LibraryDependency {
+    const val HILT_VIEWODEL_COMPILER = "androidx.hilt:hilt-compiler:${LibraryVersion.HILT_VIEWMODEL}"
+    const val HILT_VIEWODEL = "androidx.hilt:hilt-lifecycle-viewmodel:${LibraryVersion.HILT_VIEWMODEL}"
+    const val HILT_ANDROID = "com.google.dagger:hilt-android:${CoreVersion.HILT}"
+    const val HILT_COMPILER = "com.google.dagger:hilt-android-compiler:${CoreVersion.HILT}"
     const val CARDVIEW = "androidx.cardview:cardview:${LibraryVersion.CARDVIEW}"
     const val PHOTOVIEW = "com.github.chrisbanes:PhotoView:${LibraryVersion.PHOTOVIEW}"
     const val LOCALBROADCAST_MANAGER = "androidx.localbroadcastmanager:localbroadcastmanager:${LibraryVersion.LOCALBROADCAST}"
@@ -60,8 +64,6 @@ object LibraryDependency {
     const val RETROFIT_COROUTINES_ADAPTER = "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:${LibraryVersion.COROUTINES_ADAPTER}"
     const val COROUTINES_CORE = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${CoreVersion.ANDROID_COROUTINES}"
     const val COROUTINES_ANDROID = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${CoreVersion.ANDROID_COROUTINES}"
-    const val KODEIN_JVM = "org.kodein.di:kodein-di-generic-jvm:${LibraryVersion.KODEIN}"
-    const val KODEIN_ANDROID = "org.kodein.di:kodein-di-framework-android-x:${LibraryVersion.KODEIN}"
     const val PAGING = "androidx.paging:paging-runtime-ktx:${LibraryVersion.PAGING}"
     const val LIFECYCLE_EXTENSIONS = "androidx.lifecycle:lifecycle-extensions:${LibraryVersion.LIFECYCLE}"
     const val LIFECYCLE_VIEWMODEL = "androidx.lifecycle:lifecycle-viewmodel-ktx:${LibraryVersion.LIFECYCLE}"
