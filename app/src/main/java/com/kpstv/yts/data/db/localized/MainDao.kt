@@ -1,10 +1,7 @@
 package com.kpstv.yts.data.db.localized
 
 import androidx.room.*
-import com.kpstv.yts.models.Movie
-import com.kpstv.yts.models.data.data_main
-import com.kpstv.yts.models.response.Model
-import kotlinx.coroutines.selects.select
+import com.kpstv.yts.data.models.data.data_main
 
 @Dao
 interface MainDao {

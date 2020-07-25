@@ -1,11 +1,10 @@
 package com.kpstv.yts.data.db.localized
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.kpstv.yts.models.Movie
+import com.kpstv.yts.data.models.Movie
 
 @Dao
 interface MovieDao {

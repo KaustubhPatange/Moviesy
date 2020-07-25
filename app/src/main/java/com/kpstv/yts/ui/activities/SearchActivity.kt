@@ -30,8 +30,8 @@ import com.kpstv.yts.extensions.utils.CustomMovieLayout
 import com.kpstv.yts.extensions.utils.RetrofitUtils
 import com.kpstv.yts.interfaces.listener.SingleClickListener
 import com.kpstv.yts.interfaces.listener.SuggestionListener
-import com.kpstv.yts.models.MovieShort
-import com.kpstv.yts.models.TmDbMovie
+import com.kpstv.yts.data.models.MovieShort
+import com.kpstv.yts.data.models.TmDbMovie
 import com.kpstv.yts.ui.activities.MoreActivity.Companion.base
 import com.kpstv.yts.ui.activities.MoreActivity.Companion.queryMap
 import com.kpstv.yts.ui.viewmodels.FinalViewModel

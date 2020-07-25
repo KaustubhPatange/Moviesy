@@ -2,8 +2,8 @@ package com.kpstv.yts.extensions.utils
 
 import android.content.Context
 import com.google.gson.Gson
-import com.kpstv.yts.models.data.data_genre_recommend
-import com.kpstv.yts.models.internel.GenreRecommend
+import com.kpstv.yts.data.models.data.data_genre_recommend
+import com.kpstv.yts.data.models.internel.GenreRecommend
 import java.io.File
 import kotlin.collections.ArrayList
 

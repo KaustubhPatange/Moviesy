@@ -8,7 +8,7 @@ import com.kpstv.yts.data.CustomDataSource
 import com.kpstv.yts.extensions.MovieBase
 import com.kpstv.yts.interfaces.api.TMdbApi
 import com.kpstv.yts.interfaces.api.YTSApi
-import com.kpstv.yts.models.MovieShort
+import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.ui.activities.MoreActivity.Companion.base
 import com.kpstv.yts.ui.activities.MoreActivity.Companion.endPoint
 import com.kpstv.yts.ui.activities.MoreActivity.Companion.queryMap

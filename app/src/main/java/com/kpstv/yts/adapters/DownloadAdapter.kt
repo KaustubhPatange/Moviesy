@@ -10,7 +10,7 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.yts.R
-import com.kpstv.yts.models.Torrent
+import com.kpstv.yts.data.models.Torrent
 import kotlinx.android.synthetic.main.item_download.view.*
 
 @SuppressLint("SetTextI18n")

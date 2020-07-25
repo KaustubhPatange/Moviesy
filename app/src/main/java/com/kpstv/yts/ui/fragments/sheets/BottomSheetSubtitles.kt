@@ -27,7 +27,7 @@ import com.kpstv.yts.extensions.utils.FlagUtils
 import com.kpstv.yts.extensions.utils.GlideApp
 import com.kpstv.yts.extensions.utils.ZipUtility
 import com.kpstv.yts.interfaces.listener.SingleClickListener
-import com.kpstv.yts.models.Subtitle
+import com.kpstv.yts.data.models.Subtitle
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty

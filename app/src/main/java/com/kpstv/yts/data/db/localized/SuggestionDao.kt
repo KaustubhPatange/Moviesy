@@ -1,8 +1,7 @@
 package com.kpstv.yts.data.db.localized
 
 import androidx.room.*
-import com.kpstv.yts.models.data.data_tmdb
-import java.lang.StringBuilder
+import com.kpstv.yts.data.models.data.data_tmdb
 
 @Dao
 interface SuggestionDao {

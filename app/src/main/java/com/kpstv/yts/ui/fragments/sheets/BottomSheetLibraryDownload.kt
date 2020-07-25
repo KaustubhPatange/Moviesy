@@ -15,8 +15,8 @@ import com.kpstv.yts.ui.activities.TorrentPlayerActivity
 import com.kpstv.yts.adapters.SelectSubAdapter
 import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.interfaces.listener.SingleClickListener
-import com.kpstv.yts.models.SelectSubtitle
-import com.kpstv.yts.models.response.Model
+import com.kpstv.yts.data.models.SelectSubtitle
+import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import kotlinx.android.synthetic.main.bottom_sheet_download.view.addLayout
 import kotlinx.android.synthetic.main.bottom_sheet_library_download.view.*

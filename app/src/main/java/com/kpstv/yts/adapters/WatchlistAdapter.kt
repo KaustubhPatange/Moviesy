@@ -12,7 +12,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.kpstv.yts.R
 import com.kpstv.yts.extensions.hide
-import com.kpstv.yts.models.response.Model
+import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.GlideApp
 import kotlinx.android.synthetic.main.item_watchlist.view.*

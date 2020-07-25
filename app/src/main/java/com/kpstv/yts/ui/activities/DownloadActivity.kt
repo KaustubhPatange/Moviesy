@@ -28,7 +28,6 @@ import com.kpstv.yts.AppInterface.Companion.setAppThemeNoAction
 import com.kpstv.yts.R
 import com.kpstv.yts.adapters.JobQueueAdapter
 import com.kpstv.yts.adapters.PauseAdapter
-import com.kpstv.yts.data.db.localized.MainDatabase
 import com.kpstv.yts.data.db.repository.PauseRepository
 import com.kpstv.yts.extensions.Coroutines
 import com.kpstv.yts.extensions.hide
@@ -36,9 +35,9 @@ import com.kpstv.yts.extensions.show
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.getMagnetUrl
 import com.kpstv.yts.extensions.utils.GlideApp
-import com.kpstv.yts.models.Torrent
-import com.kpstv.yts.models.TorrentJob
-import com.kpstv.yts.models.response.Model
+import com.kpstv.yts.data.models.Torrent
+import com.kpstv.yts.data.models.TorrentJob
+import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.receivers.CommonBroadCast
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import com.kpstv.yts.ui.viewmodels.MainViewModel
@@ -165,7 +164,7 @@ class DownloadActivity : AppCompatActivity() {
                 } catch (e: Exception) {
 
                     /** For some reasons it is throwing
-                     * 'java.lang.RuntimeException: Parcelable encountered IOException reading a Serializable object (name = com.kpstv.yts.models.TorrentJob'
+                     * 'java.lang.RuntimeException: Parcelable encountered IOException reading a Serializable object (name = com.kpstv.yts.data.models.TorrentJob'
                      *
                      *  Well i've to figure it out // TODO: Fix this
                      *  Edit: Seems like its fixed, but still needs some testing

@@ -5,6 +5,8 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
+import com.kpstv.yts.extensions.utils.AppSettings
+import com.kpstv.yts.extensions.utils.AppSettings.IS_DARK_THEME_PREF
 
 class LookSettingsFragment: PreferenceFragmentCompat() {
 
@@ -13,7 +15,7 @@ class LookSettingsFragment: PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.look_preference, rootKey)
 
-        val darkPref = findPreference<SwitchPreferenceCompat>("IS_DARK_THEME")
+        val darkPref = findPreference<SwitchPreferenceCompat>(IS_DARK_THEME_PREF)
         darkPref?.isChecked = AppInterface.IS_DARK_THEME
         darkPref?.setOnPreferenceChangeListener { _, newValue ->
             onDarkThemeChangeListener.invoke(newValue as Boolean)

@@ -11,7 +11,7 @@ import com.danimahardhika.cafebar.CafeBar
 import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.extensions.add
 import com.kpstv.yts.interfaces.listener.ObservableListener
-import com.kpstv.yts.models.MovieShort
+import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.ui.fragments.GenreFragment
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -34,6 +34,7 @@ class AppInterface {
         var TMDB_IMAGE_PREFIX = "https://image.tmdb.org/t/p/w500"
         var TMDB_API_KEY = "dbaba3594e59e4ff47c003b2ddb82c2a"
         var COUNTRY_FLAG_JSON_URL = "https://pastebin.com/raw/H0CYRdJ9"
+        var APP_DATABASE_URL = "https://pastebin.com/raw/rq6KYdgC" // TODO: Change this url
         var SUGGESTION_URL =
             "https://suggestqueries.google.com/complete/search?ds=yt&client=firefox&q="
         var STORAGE_LOCATION =

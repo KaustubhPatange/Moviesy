@@ -3,7 +3,7 @@ package com.kpstv.yts.data.converters
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.kpstv.yts.models.MovieShort
+import com.kpstv.yts.data.models.MovieShort
 import java.lang.reflect.Type
 
 object MovieShortConverter {

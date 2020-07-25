@@ -1,8 +1,8 @@
-package com.kpstv.yts.models.data
+package com.kpstv.yts.data.models.data
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.kpstv.yts.models.TmDbMovie
+import com.kpstv.yts.data.models.TmDbMovie
 
 @Entity(tableName = "table_dataTMDB")
 data class data_tmdb (

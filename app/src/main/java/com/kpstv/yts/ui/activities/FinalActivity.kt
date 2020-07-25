@@ -31,9 +31,9 @@ import com.kpstv.yts.extensions.utils.GlideApp
 import com.kpstv.yts.interfaces.listener.FavouriteListener
 import com.kpstv.yts.interfaces.listener.MovieListener
 import com.kpstv.yts.interfaces.listener.SuggestionListener
-import com.kpstv.yts.models.Cast
-import com.kpstv.yts.models.Movie
-import com.kpstv.yts.models.TmDbMovie
+import com.kpstv.yts.data.models.Cast
+import com.kpstv.yts.data.models.Movie
+import com.kpstv.yts.data.models.TmDbMovie
 import com.kpstv.yts.ui.fragments.sheets.BottomSheetDownload
 import com.kpstv.yts.ui.fragments.sheets.BottomSheetSubtitles
 import com.kpstv.yts.ui.viewmodels.FinalViewModel

@@ -19,9 +19,9 @@ import com.kpstv.yts.extensions.Coroutines
 import com.kpstv.yts.extensions.lazyDeferred
 import com.kpstv.yts.interfaces.api.YTSApi
 import com.kpstv.yts.interfaces.listener.MoviesListener
-import com.kpstv.yts.models.MovieShort
-import com.kpstv.yts.models.data.data_main
-import com.kpstv.yts.models.response.Model
+import com.kpstv.yts.data.models.MovieShort
+import com.kpstv.yts.data.models.data.data_main
+import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.extensions.utils.AppUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

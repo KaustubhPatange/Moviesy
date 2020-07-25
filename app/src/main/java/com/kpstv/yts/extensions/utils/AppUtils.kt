@@ -26,8 +26,8 @@ import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppInterface.Companion.handleRetrofitError
 import com.kpstv.yts.R
 import com.kpstv.yts.data.db.repository.FavouriteRepository
-import com.kpstv.yts.models.Movie
-import com.kpstv.yts.models.response.Model
+import com.kpstv.yts.data.models.Movie
+import com.kpstv.yts.data.models.response.Model
 import java.io.*
 import java.net.HttpURLConnection
 import java.net.URL
@@ -36,54 +36,6 @@ import java.text.DecimalFormat
 class AppUtils {
 
     companion object {
-
-        fun parseSettings(context: Context) {
-            val settingsPref = PreferenceManager.getDefaultSharedPreferences(context)
-            AppInterface.IS_DARK_THEME = settingsPref.getBoolean("IS_DARK_THEME",
-                AppInterface.IS_DARK_THEME
-            )
-
-            AppInterface.TMDB_IMAGE_PREFIX = settingsPref.getString("TMDB_IMAGE_PREFIX",
-                AppInterface.TMDB_IMAGE_PREFIX
-            )!!
-            AppInterface.COUNTRY_FLAG_JSON_URL = settingsPref.getString("COUNTRY_FLAG_JSON_URL",
-                AppInterface.COUNTRY_FLAG_JSON_URL
-            )!!
-            AppInterface.SUGGESTION_URL = settingsPref.getString("SUGGESTION_URL",
-                AppInterface.SUGGESTION_URL
-            )!!
-
-            AppInterface.TMDB_API_KEY = settingsPref.getString("TMDB_API_KEY",
-                AppInterface.TMDB_API_KEY
-            )!!
-            AppInterface.DOWNLOAD_TIMEOUT_SECOND = settingsPref.getString("DOWNLOAD_TIMEOUT_SECOND",
-                AppInterface.DOWNLOAD_TIMEOUT_SECOND.toString()
-            )!!.toInt()
-            AppInterface.DOWNLOAD_CONNECTION_TIMEOUT = settingsPref.getString("DOWNLOAD_CONNECTION_TIMEOUT",
-                AppInterface.DOWNLOAD_CONNECTION_TIMEOUT.toString()
-            )!!.toInt()
-            AppInterface.MOVIE_SPAN_DIFFERENCE = settingsPref.getString("MOVIE_SPAN_DIFFERENCE",
-                AppInterface.MOVIE_SPAN_DIFFERENCE.toString()
-            )!!.toInt()
-            AppInterface.QUERY_SPAN_DIFFERENCE = settingsPref.getString("QUERY_SPAN_DIFFERENCE",
-                AppInterface.QUERY_SPAN_DIFFERENCE.toString()
-            )!!.toInt()
-            AppInterface.CUSTOM_LAYOUT_YTS_SPAN = settingsPref.getString("CUSTOM_LAYOUT_YTS_SPAN",
-                AppInterface.CUSTOM_LAYOUT_YTS_SPAN.toString()
-            )!!.toInt()
-
-            AppInterface.YTS_BASE_URL = settingsPref.getString("yts_web_url", AppInterface.YTS_BASE_URL)!!
-            AppInterface.YIFY_BASE_URL = settingsPref.getString("yify_web_url",
-                AppInterface.YIFY_BASE_URL
-            )!!
-            AppInterface.TMDB_BASE_URL = settingsPref.getString("tmdb_api_url",
-                AppInterface.TMDB_BASE_URL
-            )!!
-
-            AppInterface.ANONYMOUS_TORRENT_DOWNLOAD = settingsPref.getBoolean("anonymous_torrent",
-                AppInterface.ANONYMOUS_TORRENT_DOWNLOAD
-            )
-        }
 
         fun getBulletSymbol(): Spanned {
             return getHtmlText("&#8226;")

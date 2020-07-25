@@ -1,6 +1,6 @@
 package com.kpstv.yts.interfaces.api
 
-import com.kpstv.yts.models.response.Model
+import com.kpstv.yts.data.models.response.Model
 import kotlinx.coroutines.Deferred
 import retrofit2.Call
 import retrofit2.http.GET

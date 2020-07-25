@@ -4,43 +4,43 @@
 
     <PreferenceCategory android:title="Main">
         <EditTextPreference
-            android:key="TMDB_IMAGE_PREFIX"
+            android:key="tmdb_image_prefix_pref"
             android:title="TMdB Image Prefix"
             android:dialogTitle="Value"/>
         <EditTextPreference
-            android:key="COUNTRY_FLAG_JSON_URL"
+            android:key="country_flag_json_url_pref"
             android:title="Country flags url"
             android:dialogTitle="Value"/>
         <EditTextPreference
-            android:key="SUGGESTION_URL"
+            android:key="suggestion_url_pref"
             android:title="Autocompletion strategy"
             android:dialogTitle="Value"/>
     </PreferenceCategory>
     <PreferenceCategory app:title="Handling">
         <EditTextPreference
             android:inputType="number"
-            android:key="DOWNLOAD_TIMEOUT_SECOND"
+            android:key="download_timeout_second_pref"
             android:title="DOWNLOAD_TIMEOUT_SECOND"/>
         <EditTextPreference
             android:inputType="number"
-            android:key="DOWNLOAD_CONNECTION_TIMEOUT"
+            android:key="download_connection_timeout_pref"
             android:title="DOWNLOAD_CONNECTION_TIMEOUT"/>
         <EditTextPreference
             android:inputType="number"
-            android:key="MOVIE_SPAN_DIFFERENCE"
+            android:key="movie_span_difference_pref"
             android:title="MOVIE_SPAN_DIFFERENCE"/>
         <EditTextPreference
             android:inputType="number"
-            android:key="QUERY_SPAN_DIFFERENCE"
+            android:key="query_span_difference_pref"
             android:title="QUERY_SPAN_DIFFERENCE"/>
         <EditTextPreference
             android:inputType="number"
-            android:key="CUSTOM_LAYOUT_YTS_SPAN"
+            android:key="custom_layout_yts_span_pref"
             android:title="CUSTOM_LAYOUT_YTS_SPAN"/>
     </PreferenceCategory>
     <PreferenceCategory app:title="Key">
         <EditTextPreference
-            android:key="TMDB_API_KEY"
+            android:key="tmdb_api_key_pref"
             android:title="TMdB Api Key"/>
     </PreferenceCategory>
 </PreferenceScreen>

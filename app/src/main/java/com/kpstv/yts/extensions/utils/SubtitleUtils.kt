@@ -1,6 +1,6 @@
 package com.kpstv.yts.extensions.utils
 
-import com.kpstv.yts.models.SubHolder
+import com.kpstv.yts.data.models.SubHolder
 import java.io.FileReader
 import java.lang.StringBuilder
 

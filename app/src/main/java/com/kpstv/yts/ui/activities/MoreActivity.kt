@@ -21,7 +21,7 @@ import com.kpstv.yts.adapters.CustomPagedAdapter
 import com.kpstv.yts.data.converters.QueryConverter
 import com.kpstv.yts.extensions.MovieBase
 import com.kpstv.yts.extensions.YTSQuery
-import com.kpstv.yts.models.MovieShort
+import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.ui.viewmodels.MoreViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty

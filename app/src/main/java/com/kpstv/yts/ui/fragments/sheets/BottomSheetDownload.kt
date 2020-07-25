@@ -19,8 +19,8 @@ import com.kpstv.yts.R
 import com.kpstv.yts.ui.activities.TorrentPlayerActivity
 import com.kpstv.yts.adapters.DownloadAdapter
 import com.kpstv.yts.adapters.SelectSubAdapter
-import com.kpstv.yts.models.SelectSubtitle
-import com.kpstv.yts.models.Torrent
+import com.kpstv.yts.data.models.SelectSubtitle
+import com.kpstv.yts.data.models.Torrent
 import com.kpstv.yts.services.DownloadService
 import com.kpstv.yts.interfaces.listener.SingleClickListener
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.getMagnetUrl

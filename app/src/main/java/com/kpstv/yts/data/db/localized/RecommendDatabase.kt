@@ -4,7 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.kpstv.yts.data.converters.TMdbConverter
-import com.kpstv.yts.models.data.data_tmdb
+import com.kpstv.yts.data.models.data.data_tmdb
 
 @Database(
     entities = [data_tmdb::class],

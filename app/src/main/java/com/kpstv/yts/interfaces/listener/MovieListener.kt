@@ -1,7 +1,7 @@
 package com.kpstv.yts.interfaces.listener
 
-import com.kpstv.yts.models.Cast
-import com.kpstv.yts.models.Movie
+import com.kpstv.yts.data.models.Cast
+import com.kpstv.yts.data.models.Movie
 import java.lang.Exception
 
 interface MovieListener {

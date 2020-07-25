@@ -10,8 +10,8 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.kpstv.yts.R
-import com.kpstv.yts.models.MovieShort
-import com.kpstv.yts.models.response.Model
+import com.kpstv.yts.data.models.MovieShort
+import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.getBulletSymbol
 import com.kpstv.yts.extensions.utils.CustomBottomItem
 import com.kpstv.yts.extensions.utils.GlideApp

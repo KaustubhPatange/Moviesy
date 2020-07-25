@@ -1,9 +1,8 @@
-package com.kpstv.yts.models.data
+package com.kpstv.yts.data.models.data
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.kpstv.yts.models.Movie
-import com.kpstv.yts.models.MovieShort
+import com.kpstv.yts.data.models.MovieShort
 
 @Entity(tableName = "table_main")
 data class data_main (

@@ -4,9 +4,9 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.kpstv.yts.data.converters.*
-import com.kpstv.yts.models.Movie
-import com.kpstv.yts.models.data.data_main
-import com.kpstv.yts.models.response.Model
+import com.kpstv.yts.data.models.Movie
+import com.kpstv.yts.data.models.data.data_main
+import com.kpstv.yts.data.models.response.Model
 
 @Database(
     entities = [

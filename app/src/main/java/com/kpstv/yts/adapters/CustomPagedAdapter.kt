@@ -26,7 +26,7 @@ import com.kpstv.yts.R
 import com.kpstv.yts.ui.activities.FinalActivity
 import com.kpstv.yts.extensions.MovieBase
 import com.kpstv.yts.extensions.hide
-import com.kpstv.yts.models.MovieShort
+import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.getBulletSymbol
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.getImdbUrl
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.launchUrl

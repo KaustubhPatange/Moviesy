@@ -26,8 +26,8 @@ import com.kpstv.yts.ui.viewmodels.MainViewModel
 import com.kpstv.yts.extensions.MovieBase
 import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.interfaces.listener.MoviesListener
-import com.kpstv.yts.models.MovieShort
-import com.kpstv.yts.models.TmDbMovie
+import com.kpstv.yts.data.models.MovieShort
+import com.kpstv.yts.data.models.TmDbMovie
 import com.kpstv.yts.ui.activities.FinalActivity
 import com.kpstv.yts.ui.activities.MoreActivity
 import com.kpstv.yts.ui.fragments.sheets.BottomSheetQuickInfo

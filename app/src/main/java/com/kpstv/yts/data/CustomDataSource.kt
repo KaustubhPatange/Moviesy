@@ -7,10 +7,10 @@ import com.kpstv.yts.extensions.Coroutines
 import com.kpstv.yts.extensions.MovieBase
 import com.kpstv.yts.interfaces.api.TMdbApi
 import com.kpstv.yts.interfaces.api.YTSApi
-import com.kpstv.yts.models.Movie
-import com.kpstv.yts.models.MovieShort
-import com.kpstv.yts.models.TmDbMovie
-import com.kpstv.yts.models.response.Model
+import com.kpstv.yts.data.models.Movie
+import com.kpstv.yts.data.models.MovieShort
+import com.kpstv.yts.data.models.TmDbMovie
+import com.kpstv.yts.data.models.response.Model
 import es.dmoral.toasty.Toasty
 import retrofit2.await
 

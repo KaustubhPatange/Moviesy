@@ -1,7 +1,6 @@
 package com.kpstv.yts.interfaces.listener
 
-import com.kpstv.yts.models.Movie
-import com.kpstv.yts.models.MovieShort
+import com.kpstv.yts.data.models.MovieShort
 
 interface MoviesListener {
     fun onStarted()

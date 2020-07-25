@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.yts.R
 import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.extensions.show
-import com.kpstv.yts.models.response.Model
+import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.getBulletSymbol
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.getSizePretty
 import kotlinx.android.synthetic.main.item_library_download.view.*

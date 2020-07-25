@@ -1,10 +1,10 @@
-package com.kpstv.yts.models.response
+package com.kpstv.yts.data.models.response
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.kpstv.yts.models.*
-import com.kpstv.yts.models.data.data_movie
+import com.kpstv.yts.data.models.*
+import com.kpstv.yts.data.models.data.data_movie
 import java.io.Serializable
 
 object Model {

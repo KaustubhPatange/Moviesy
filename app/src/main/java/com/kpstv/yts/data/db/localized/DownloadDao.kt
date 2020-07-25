@@ -2,8 +2,7 @@ package com.kpstv.yts.data.db.localized
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.kpstv.yts.models.data.data_main
-import com.kpstv.yts.models.response.Model
+import com.kpstv.yts.data.models.response.Model
 
 @Dao
 interface DownloadDao {

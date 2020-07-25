@@ -3,7 +3,7 @@ package com.kpstv.yts.data.db.repository
 import androidx.lifecycle.LiveData
 import com.kpstv.yts.data.db.localized.MainDatabase
 import com.kpstv.yts.extensions.Coroutines
-import com.kpstv.yts.models.response.Model
+import com.kpstv.yts.data.models.response.Model
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject

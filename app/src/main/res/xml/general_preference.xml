@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <EditTextPreference
-        android:key="yts_web_url"
-        android:title="@string/yts_base_title"
-        android:dialogTitle="Value"/>
+        android:dialogTitle="Value"
+        android:key="yts_base_url_pref"
+        android:title="@string/yts_base_title" />
 
     <EditTextPreference
-        android:key="yify_web_url"
-        android:title="Subtitle Proxy"
-        android:dialogTitle="Value"/>
+        android:dialogTitle="Value"
+        android:key="yify_base_url_perf"
+        android:title="Subtitle Proxy" />
 
     <EditTextPreference
-        android:key="tmdb_api_url"
-        android:title="TMdB Api"
-        android:dialogTitle="Value"/>
+        android:dialogTitle="Value"
+        android:key="tmdb_base_url_pref"
+        android:title="TMdB Api" />
 
     <SwitchPreferenceCompat
         android:defaultValue="true"
-        android:key="anonymous_torrent"
-        android:summary="Enable spoofing of ip location while downloading torrent movies."
-        android:title="Anonymous Download"/>
+        android:key="anonymous_torrent_download_pref"
+        android:summary="@string/anonymous_summary"
+        android:title="@string/anonymous_title" />
 
 </PreferenceScreen>
