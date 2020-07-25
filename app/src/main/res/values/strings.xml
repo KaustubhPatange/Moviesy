@@ -101,4 +101,5 @@ Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus d
     <string name="movie_not_loaded">Movie not loaded yet!</string>
     <string name="anonymous_title">Anonymous Download</string>
     <string name="anonymous_summary">Enable spoofing of ip location while downloading torrent movies.</string>
+    <string name="error_directory">Current directory structure is not supported</string>
 </resources>

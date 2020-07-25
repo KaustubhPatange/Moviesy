@@ -6,16 +6,15 @@ import androidx.preference.EditTextPreference
 import androidx.preference.PreferenceFragmentCompat
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
-import com.kpstv.yts.extensions.utils.AppSettings
-import com.kpstv.yts.extensions.utils.AppSettings.COUNTRY_FLAG_JSON_URL_PREF
-import com.kpstv.yts.extensions.utils.AppSettings.CUSTOM_LAYOUT_YTS_SPAN_PREF
-import com.kpstv.yts.extensions.utils.AppSettings.DOWNLOAD_CONNECTION_TIMEOUT_PREF
-import com.kpstv.yts.extensions.utils.AppSettings.DOWNLOAD_TIMEOUT_SECOND_PREF
-import com.kpstv.yts.extensions.utils.AppSettings.MOVIE_SPAN_DIFFERENCE_PREF
-import com.kpstv.yts.extensions.utils.AppSettings.QUERY_SPAN_DIFFERENCE_PREF
-import com.kpstv.yts.extensions.utils.AppSettings.SUGGESTION_URL_PREF
-import com.kpstv.yts.extensions.utils.AppSettings.TMDB_API_KEY_PREF
-import com.kpstv.yts.extensions.utils.AppSettings.TMDB_IMAGE_PREFIX_PREF
+import com.kpstv.yts.AppSettings.COUNTRY_FLAG_JSON_URL_PREF
+import com.kpstv.yts.AppSettings.CUSTOM_LAYOUT_YTS_SPAN_PREF
+import com.kpstv.yts.AppSettings.DOWNLOAD_CONNECTION_TIMEOUT_PREF
+import com.kpstv.yts.AppSettings.DOWNLOAD_TIMEOUT_SECOND_PREF
+import com.kpstv.yts.AppSettings.MOVIE_SPAN_DIFFERENCE_PREF
+import com.kpstv.yts.AppSettings.QUERY_SPAN_DIFFERENCE_PREF
+import com.kpstv.yts.AppSettings.SUGGESTION_URL_PREF
+import com.kpstv.yts.AppSettings.TMDB_API_KEY_PREF
+import com.kpstv.yts.AppSettings.TMDB_IMAGE_PREFIX_PREF
 
 class DevSettingsFragment: PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {

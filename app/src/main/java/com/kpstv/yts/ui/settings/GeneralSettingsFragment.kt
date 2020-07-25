@@ -6,11 +6,10 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
-import com.kpstv.yts.extensions.utils.AppSettings
-import com.kpstv.yts.extensions.utils.AppSettings.ANONYMOUS_TORRENT_DOWNLOAD_PREF
-import com.kpstv.yts.extensions.utils.AppSettings.TMDB_BASE_URL_PREF
-import com.kpstv.yts.extensions.utils.AppSettings.YIFY_BASE_URL_PREF
-import com.kpstv.yts.extensions.utils.AppSettings.YTS_BASE_URL_PREF
+import com.kpstv.yts.AppSettings.ANONYMOUS_TORRENT_DOWNLOAD_PREF
+import com.kpstv.yts.AppSettings.TMDB_BASE_URL_PREF
+import com.kpstv.yts.AppSettings.YIFY_BASE_URL_PREF
+import com.kpstv.yts.AppSettings.YTS_BASE_URL_PREF
 
 class GeneralSettingsFragment: PreferenceFragmentCompat() {
     private val TAG = "GeneralSettingsFragment"

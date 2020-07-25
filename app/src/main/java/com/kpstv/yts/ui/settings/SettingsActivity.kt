@@ -47,7 +47,7 @@ class SettingsActivity : AppCompatActivity() {
         settingsMainFragment.listener = {
             when (it) {
                 GENERAL_FRAG -> replaceFragment(GeneralSettingsFragment())
-                STORAGE_FRAG -> ""
+                STORAGE_FRAG -> replaceFragment(StorageSettingFragment())
                 LOOK_FEEL_FRAG -> replaceFragment(lookSettingsFragment)
                 DEVELOPER_FRAG -> replaceFragment(DevSettingsFragment())
                 ABOUT_FRAG -> ""
@@ -103,42 +103,40 @@ class SettingsActivity : AppCompatActivity() {
             mainLayout.orientation = LinearLayout.VERTICAL
 
             // General Settings
-            val general = CustomBottomItem(context!!)
+            val general = CustomBottomItem(requireContext())
             general.setUp(R.drawable.ic_slider, "General", mainLayout, true)
             general.onClickListener = {
                 listener.invoke(GENERAL_FRAG)
             }
 
             // Storage Settings
-            val storage = CustomBottomItem(context!!)
+            val storage = CustomBottomItem(requireContext())
             storage.setUp(R.drawable.ic_storage, "Storage", mainLayout, true)
             storage.onClickListener = {
                 listener.invoke(STORAGE_FRAG)
             }
 
             // Look & Feel Settings
-            val lookFeel = CustomBottomItem(context!!)
+            val lookFeel = CustomBottomItem(requireContext())
             lookFeel.setUp(R.drawable.ic_look_feel, "Look & Feel", mainLayout, true)
             lookFeel.onClickListener = {
                 listener.invoke(LOOK_FEEL_FRAG)
             }
 
             // Developer Settings
-            val developer = CustomBottomItem(context!!)
+            val developer = CustomBottomItem(requireContext())
             developer.setUp(R.drawable.ic_developer, "Developer (untouched)", mainLayout, true)
             developer.onClickListener = {
                 listener.invoke(DEVELOPER_FRAG)
             }
 
             // About
-            val about = CustomBottomItem(context!!)
+            val about = CustomBottomItem(requireContext())
             about.setUp(R.drawable.ic_about, "About", mainLayout, true)
             about.onClickListener = {
                 listener.invoke(ABOUT_FRAG)
             }
             return mainLayout
         }
-
-
     }
 }

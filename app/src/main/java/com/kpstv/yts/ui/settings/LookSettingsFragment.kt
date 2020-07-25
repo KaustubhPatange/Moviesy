@@ -5,8 +5,7 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
-import com.kpstv.yts.extensions.utils.AppSettings
-import com.kpstv.yts.extensions.utils.AppSettings.IS_DARK_THEME_PREF
+import com.kpstv.yts.AppSettings.IS_DARK_THEME_PREF
 
 class LookSettingsFragment: PreferenceFragmentCompat() {
 

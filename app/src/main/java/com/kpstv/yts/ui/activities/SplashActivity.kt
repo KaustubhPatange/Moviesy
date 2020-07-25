@@ -12,7 +12,7 @@ import com.kpstv.yts.AppInterface.Companion.PROXY_CHECK_PREF
 import com.kpstv.yts.R
 import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.extensions.show
-import com.kpstv.yts.extensions.utils.AppSettings.parseSettings
+import com.kpstv.yts.AppSettings.parseSettings
 import com.kpstv.yts.extensions.utils.ProxyUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_splash.*

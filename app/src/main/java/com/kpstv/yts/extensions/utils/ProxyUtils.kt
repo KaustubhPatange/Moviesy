@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.kpstv.yts.AppInterface
+import com.kpstv.yts.AppSettings
 import com.kpstv.yts.data.converters.AppDatabaseConverter
 import com.kpstv.yts.extensions.Coroutines
 import com.kpstv.yts.extensions.await
