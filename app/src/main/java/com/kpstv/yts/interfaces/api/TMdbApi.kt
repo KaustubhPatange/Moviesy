@@ -10,7 +10,7 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface TMdbPlaceholderApi {
+interface TMdbApi {
 
     /** Get similar movie by either passing TMDB ID or IMDB ID */
 

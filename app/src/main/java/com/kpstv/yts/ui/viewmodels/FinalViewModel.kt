@@ -14,8 +14,8 @@ import com.kpstv.yts.data.db.repository.MovieRepository
 import com.kpstv.yts.data.db.repository.TMdbRepository
 import com.kpstv.yts.extensions.Coroutines
 import com.kpstv.yts.extensions.MovieType
-import com.kpstv.yts.interfaces.api.TMdbPlaceholderApi
-import com.kpstv.yts.interfaces.api.YTSPlaceholderApi
+import com.kpstv.yts.interfaces.api.TMdbApi
+import com.kpstv.yts.interfaces.api.YTSApi
 import com.kpstv.yts.interfaces.listener.FavouriteListener
 import com.kpstv.yts.interfaces.listener.MovieListener
 import com.kpstv.yts.interfaces.listener.SuggestionListener
@@ -34,8 +34,8 @@ import kotlin.collections.ArrayList
 class FinalViewModel @ViewModelInject constructor(
     private val movieRepository: MovieRepository,
     private val tMdbRepository: TMdbRepository,
-    private val ytsPlaceholderApi: YTSPlaceholderApi,
-    private val tMdbPlaceholderApi: TMdbPlaceholderApi,
+    private val ytsApi: YTSApi,
+    private val tMdbApi: TMdbApi,
     private val favouriteRepository: FavouriteRepository
 ) : ViewModel() {
 
@@ -66,7 +66,7 @@ class FinalViewModel @ViewModelInject constructor(
 
         Coroutines.main {
             try {
-                val response = ytsPlaceholderApi.getMovie(query).await()
+                val response = ytsApi.getMovie(query).await()
                 val movie = response.data.movie
                 movieRepository.saveMovie(movie!!)
                 movieListener.onComplete(movie)
@@ -89,7 +89,7 @@ class FinalViewModel @ViewModelInject constructor(
                  * so we first need to get details of the TMDB movie to
                  * extract IMDB Id.
                  */
-                val responseMovie = tMdbPlaceholderApi.getMovie(queryString).await()
+                val responseMovie = tMdbApi.getMovie(queryString).await()
 
                 val query = YTSQuery.ListMoviesBuilder().apply {
                     setQuery(responseMovie.imdb_id)
@@ -99,14 +99,14 @@ class FinalViewModel @ViewModelInject constructor(
                 /** Using IMDB Id we can query the ytsApi to filter movies
                  * and get the movie we wanted.
                  */
-                val response = ytsPlaceholderApi.listMovies(query).await()
+                val response = ytsApi.listMovies(query).await()
                 if (response.data.movie_count > 0) {
                     val movie = response.data.movies?.get(0)!!
                     movieListener.onComplete(movie)
 
                     /** A patch that will modify movie and inject cast
                      */
-                    val response1 = tMdbPlaceholderApi.getCast(movie.imdb_code).await()
+                    val response1 = tMdbApi.getCast(movie.imdb_code).await()
                     if (response1.cast?.isNotEmpty()!!) {
                         val list = ArrayList<Cast>()
                         response1.cast.forEach {
@@ -149,11 +149,11 @@ class FinalViewModel @ViewModelInject constructor(
                     /** Since Recommendation query needs only TMDB movie id,
                      *  we first get the movie from tMdbApi to fetch the movie id
                      */
-                    val response = tMdbPlaceholderApi.getMovie(imdbId).await()
+                    val response = tMdbApi.getMovie(imdbId).await()
 
                     /** Now we will fetch the recommendations using the movie id
                      */
-                    val response1 = tMdbPlaceholderApi.getRecommendations(response.id).await()
+                    val response1 = tMdbApi.getRecommendations(response.id).await()
 
                     commonProcessTMdbMovies(
                         suggestionListener,
@@ -183,7 +183,7 @@ class FinalViewModel @ViewModelInject constructor(
                 if (isFetchNeeded(imdbId, MovieType.Suggestion)) {
                     Log.e(TAG, "==> Fetching New data")
 
-                    val response = tMdbPlaceholderApi.getSimilars(imdbId).await()
+                    val response = tMdbApi.getSimilars(imdbId).await()
 
                     commonProcessTMdbMovies(
                         suggestionListener,

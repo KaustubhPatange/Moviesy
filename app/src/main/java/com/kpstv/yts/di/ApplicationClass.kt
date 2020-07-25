@@ -1,4 +1,4 @@
-package com.kpstv.yts.application
+package com.kpstv.yts.di
 
 import android.app.Application
 import androidx.core.content.res.ResourcesCompat

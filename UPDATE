@@ -1,0 +1,14 @@
+{
+	"yts": {
+		"base": "https://yts.mx",
+		"yify": "https://yts-subs.com"
+	},
+	"tmdb": {
+		"base": "https://api.themoviedb.org/3/",
+		"image": "https://image.tmdb.org/t/p/w500",
+		"apiKey": "dbaba3594e59e4ff47c003b2ddb82c2a",
+	},
+	"misc": {
+		"suggestionApi": "https://suggestqueries.google.com/complete/search?ds=yt&client=firefox&q="
+	}
+}

@@ -30,7 +30,6 @@ import com.kpstv.yts.interfaces.listener.SingleClickListener
 import com.kpstv.yts.models.Subtitle
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.scopes.FragmentScoped
 import es.dmoral.toasty.Toasty
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers

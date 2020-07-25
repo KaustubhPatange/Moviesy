@@ -81,10 +81,6 @@ class SearchActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowHomeEnabled(true)
         title = " "
 
-        /** Setting up FinalViewModel which will be used to show suggestions
-         *  based on movie searched!
-         */
-
         swipeRefreshLayout.isEnabled = false
 
         /** Hiding noMovieFound layout
@@ -134,7 +130,7 @@ class SearchActivity : AppCompatActivity() {
         item_close.hide()
     }
 
-    /** This will setup final RecylerView which will show all query.
+    /** This will setup final RecyclerView which will show all query.
      *
      *  Remember we've two types of handling searches.
      *
@@ -259,6 +255,9 @@ class SearchActivity : AppCompatActivity() {
             Toasty.error(this, "Query cannot be empty").show()
             return
         }
+
+        /** We need to recreate pagination list */
+        moreViewModel.buildNewConfig()
 
         /** Hiding noMovieFound layout if visible
          */

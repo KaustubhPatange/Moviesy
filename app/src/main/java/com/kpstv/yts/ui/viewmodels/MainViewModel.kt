@@ -17,7 +17,7 @@ import com.kpstv.yts.data.db.repository.MainRepository
 import com.kpstv.yts.data.db.repository.PauseRepository
 import com.kpstv.yts.extensions.Coroutines
 import com.kpstv.yts.extensions.lazyDeferred
-import com.kpstv.yts.interfaces.api.YTSPlaceholderApi
+import com.kpstv.yts.interfaces.api.YTSApi
 import com.kpstv.yts.interfaces.listener.MoviesListener
 import com.kpstv.yts.models.MovieShort
 import com.kpstv.yts.models.data.data_main
@@ -32,7 +32,7 @@ import kotlin.collections.ArrayList
 
 class MainViewModel @ViewModelInject constructor(
     application: Application,
-    private val ytsPlaceholderApi: YTSPlaceholderApi,
+    private val ytsApi: YTSApi,
     private val repository: MainRepository,
     private val favouriteRepository: FavouriteRepository,
     private val pauseRepository: PauseRepository,
@@ -227,7 +227,7 @@ class MainViewModel @ViewModelInject constructor(
         moviesListener: MoviesListener,
         queryMap: Map<String, String>
     ) {
-        val response = ytsPlaceholderApi.listMovies(queryMap).await()
+        val response = ytsApi.listMovies(queryMap).await()
         if (response.data.movie_count > 0) {
 
             val list = response.data.movies

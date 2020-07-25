@@ -1,20 +1,13 @@
 package com.kpstv.yts.interfaces.api
 
-import com.kpstv.yts.AppInterface.Companion.YTS_BASE_API_URL
 import com.kpstv.yts.models.response.Model
-import com.kpstv.yts.extensions.utils.RetrofitUtils
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
 import kotlinx.coroutines.Deferred
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
 import retrofit2.http.QueryMap
-import javax.inject.Inject
 
-interface YTSPlaceholderApi {
+interface YTSApi {
 
     /** Get movie details by passing certain queries build using
      *  YTSQuery.MovieBuilder class*/
@@ -36,20 +29,4 @@ interface YTSPlaceholderApi {
      */
     @GET("list_movies.json")
     fun listMovies(@QueryMap params: Map<String, String>, @Query("page") page: Int): Call<Model.response_movie>
-
-
-   /* companion object {
-        private var ytsApi: YTSPlaceholderApi? = null
-
-        operator fun invoke(
-            retrofitUtils: RetrofitUtils
-        ): YTSPlaceholderApi {
-            return ytsApi
-                ?: retrofitUtils.getRetrofitBuilder()
-                    .baseUrl(YTS_BASE_API_URL)
-                    .build()
-                    .create(YTSPlaceholderApi::class.java)
-                    .also { ytsApi = it }
-        }
-    }*/
 }

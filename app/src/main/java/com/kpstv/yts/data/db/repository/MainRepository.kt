@@ -2,7 +2,7 @@ package com.kpstv.yts.data.db.repository
 
 import com.kpstv.yts.data.db.localized.MainDatabase
 import com.kpstv.yts.extensions.Coroutines
-import com.kpstv.yts.interfaces.api.YTSPlaceholderApi
+import com.kpstv.yts.interfaces.api.YTSApi
 import com.kpstv.yts.models.data.data_main
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class MainRepository @Inject constructor(
     private val db: MainDatabase,
-    private val ytsPlaceholderApi: YTSPlaceholderApi
+    private val ytsApi: YTSApi
 ) {
 
     suspend fun getMoviesByQuery(queryString: String): data_main? {

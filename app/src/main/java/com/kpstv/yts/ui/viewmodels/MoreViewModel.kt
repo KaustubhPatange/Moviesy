@@ -8,15 +8,15 @@ import androidx.paging.LivePagedListBuilder
 import androidx.paging.PageKeyedDataSource
 import androidx.paging.PagedList
 import com.kpstv.yts.AppInterface.Companion.MOVIE_FETCH_SIZE
-import com.kpstv.yts.interfaces.api.TMdbPlaceholderApi
-import com.kpstv.yts.interfaces.api.YTSPlaceholderApi
+import com.kpstv.yts.interfaces.api.TMdbApi
+import com.kpstv.yts.interfaces.api.YTSApi
 import com.kpstv.yts.models.MovieShort
 import com.kpstv.yts.ui.viewmodels.providers.CustomDataSourceFactory
 import dagger.hilt.android.qualifiers.ApplicationContext
 
 class MoreViewModel @ViewModelInject constructor(
-    private val tMdbPlaceholderApi: TMdbPlaceholderApi,
-    private val ytsPlaceholderApi: YTSPlaceholderApi,
+    private val tMdbApi: TMdbApi,
+    private val ytsApi: YTSApi,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
@@ -26,11 +26,12 @@ class MoreViewModel @ViewModelInject constructor(
     private var liveDataSource: LiveData<PageKeyedDataSource<Int, MovieShort>>? = null
 
     /**
-     * Recreate the source factory.
+     * Recreate the source factory. Must be called before to start
+     * pagination.
      */
     fun buildNewConfig() {
         val sourceFactory =
-            CustomDataSourceFactory(context, tMdbPlaceholderApi, ytsPlaceholderApi)
+            CustomDataSourceFactory(context, tMdbApi, ytsApi)
         liveDataSource = sourceFactory.itemLiveDataSource
 
         val config: PagedList.Config = PagedList.Config.Builder()

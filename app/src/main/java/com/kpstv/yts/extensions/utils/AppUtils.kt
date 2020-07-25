@@ -361,6 +361,4 @@ class AppUtils {
 
         private val TAG = "Utils"
     }
-
-
 }

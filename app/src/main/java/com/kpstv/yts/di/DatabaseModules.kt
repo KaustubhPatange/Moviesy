@@ -1,4 +1,4 @@
-package com.kpstv.yts.application
+package com.kpstv.yts.di
 
 import android.content.Context
 import androidx.room.Room

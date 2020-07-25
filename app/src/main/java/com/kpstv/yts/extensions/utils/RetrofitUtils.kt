@@ -37,17 +37,25 @@ class RetrofitUtils @Inject constructor(
     }
 
     fun getHttpBuilder(): OkHttpClient.Builder {
-        val loggingInterceptor = HttpLoggingInterceptor()
-        loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
-
         return httpBuilder
             ?: OkHttpClient.Builder()
                 .addInterceptor(interceptor)
-                // .addInterceptor(loggingInterceptor)  // TODO: Add this interceptor when debugging
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .also { httpBuilder = it }
     }
 
-    fun getHttpClient() = getHttpBuilder().build()
+    /**
+     * @param addLoggingInterceptor If true logcat will display all the Http request messages
+     */
+    fun getHttpClient(addLoggingInterceptor: Boolean = false): OkHttpClient {
+        val client = getHttpBuilder()
+        if (addLoggingInterceptor) {
+            val loggingInterceptor = HttpLoggingInterceptor()
+            loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+
+            client.addInterceptor(loggingInterceptor)
+        }
+        return client.build()
+    }
 }

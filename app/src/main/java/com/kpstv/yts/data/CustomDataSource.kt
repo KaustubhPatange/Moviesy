@@ -1,13 +1,12 @@
 package com.kpstv.yts.data
 
-import android.app.Application
 import android.content.Context
 import androidx.paging.PageKeyedDataSource
 import com.kpstv.yts.AppInterface.Companion.TMDB_IMAGE_PREFIX
 import com.kpstv.yts.extensions.Coroutines
 import com.kpstv.yts.extensions.MovieBase
-import com.kpstv.yts.interfaces.api.TMdbPlaceholderApi
-import com.kpstv.yts.interfaces.api.YTSPlaceholderApi
+import com.kpstv.yts.interfaces.api.TMdbApi
+import com.kpstv.yts.interfaces.api.YTSApi
 import com.kpstv.yts.models.Movie
 import com.kpstv.yts.models.MovieShort
 import com.kpstv.yts.models.TmDbMovie
@@ -21,8 +20,8 @@ import retrofit2.await
 
 class CustomDataSource(
     private val context: Context,
-    private val tMdbPlaceholderApi: TMdbPlaceholderApi,
-    private val ytsPlaceholderApi: YTSPlaceholderApi
+    private val tMdbApi: TMdbApi,
+    private val ytsApi: YTSApi
 ) : PageKeyedDataSource<Int, MovieShort>() {
 
     companion object {
@@ -54,9 +53,9 @@ class CustomDataSource(
         val split = endPoint?.split("/")
         if (split != null) {
             if (endPoint?.contains("/similar")!!) {
-                return tMdbPlaceholderApi.getSimilars(split[0], page).await()
+                return tMdbApi.getSimilars(split[0], page).await()
             } else if (endPoint?.contains("/recommendations")!!) {
-                return tMdbPlaceholderApi.getRecommendations(split[0].toInt(), page).await()
+                return tMdbApi.getRecommendations(split[0].toInt(), page).await()
             }
         }
         return null
@@ -83,7 +82,7 @@ class CustomDataSource(
     }
 
     private suspend fun executeYTSQuery(page: Int): Model.response_movie? {
-        return ytsPlaceholderApi.listMovies(queryMap!!, page).await()
+        return ytsApi.listMovies(queryMap!!, page).await()
     }
 
     @JvmName("createMovieShort")

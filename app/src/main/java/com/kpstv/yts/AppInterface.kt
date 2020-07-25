@@ -10,9 +10,9 @@ import androidx.preference.PreferenceManager
 import com.danimahardhika.cafebar.CafeBar
 import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.extensions.add
-import com.kpstv.yts.ui.fragments.GenreFragment
 import com.kpstv.yts.interfaces.listener.ObservableListener
 import com.kpstv.yts.models.MovieShort
+import com.kpstv.yts.ui.fragments.GenreFragment
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -69,6 +69,7 @@ class AppInterface {
 
         const val REPLACE_FRAG = "com.kpstv.yts.REPLACE_FRAG"
 
+        const val IS_FIRST_LAUNCH_PREF = "is_first_launch_pref"
         const val PROXY_CHECK_PREF = "proxy_check_pref"
 
         val GENRE_CATEGORY_LIST = ArrayList<GenreFragment.LocalGenreModel>().apply {
@@ -212,8 +213,7 @@ class AppInterface {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ listener.onSuccess(it) }, { listener.onError(it) })
         }
-        
-        
+
 
         val animationOptions = NavOptions.Builder().setEnterAnim(R.anim.anim_blank)
             .setExitAnim(R.anim.anim_blank)

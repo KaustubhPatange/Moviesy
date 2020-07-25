@@ -1,17 +1,13 @@
-package com.kpstv.yts.application
+package com.kpstv.yts.di
 
-import android.content.Context
-import androidx.room.Room
 import com.kpstv.yts.AppInterface
-import com.kpstv.yts.data.db.localized.RecommendDatabase
 import com.kpstv.yts.extensions.utils.RetrofitUtils
-import com.kpstv.yts.interfaces.api.TMdbPlaceholderApi
-import com.kpstv.yts.interfaces.api.YTSPlaceholderApi
+import com.kpstv.yts.interfaces.api.TMdbApi
+import com.kpstv.yts.interfaces.api.YTSApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
-import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.Interceptor
 import javax.inject.Singleton
 
@@ -22,18 +18,18 @@ object NetworkModule {
     @Singleton
     fun provideYTSApi(
         retrofitUtils: RetrofitUtils
-    ): YTSPlaceholderApi {
+    ): YTSApi {
         return retrofitUtils.getRetrofitBuilder()
                 .baseUrl(AppInterface.YTS_BASE_API_URL)
                 .build()
-                .create(YTSPlaceholderApi::class.java)
+                .create(YTSApi::class.java)
     }
 
     @Provides
     @Singleton
     fun provideTMDbApi(
         retrofitUtils: RetrofitUtils
-    ): TMdbPlaceholderApi {
+    ): TMdbApi {
         val requestInterceptor = Interceptor { chain ->
             val url = chain.request()
                 .url
@@ -50,6 +46,6 @@ object NetworkModule {
                 .baseUrl(AppInterface.TMDB_BASE_URL)
                 .client(retrofitUtils.getHttpBuilder().addInterceptor(requestInterceptor).build())
                 .build()
-                .create(TMdbPlaceholderApi::class.java)
+                .create(TMdbApi::class.java)
     }
 }
