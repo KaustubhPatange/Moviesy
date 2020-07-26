@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">Moviesy</string>
 
-
     <string name="long_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porta urna fermentum neque venenatis pellentesque. Nunc nec massa elit. Praesent pulvinar purus id semper pulvinar. Aliquam eget libero ac libero bibendum tempor. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Suspendisse potenti. Vivamus cursus sit amet turpis id imperdiet. Donec nec ligula eget diam laoreet vulputate sit amet in sapien. Aenean iaculis nibh et purus rutrum hendrerit quis imperdiet ipsum. Vivamus elementum lobortis auctor. Aliquam pretium nisl vel lectus consectetur viverra. Praesent iaculis magna diam, nec sodales dui bibendum quis. Donec a felis ligula. Suspendisse potenti. In nec magna magna. Etiam sit amet convallis ipsum.
 
 Nunc nec orci efficitur, sollicitudin magna ut, hendrerit ligula. Aenean fringilla enim in ex laoreet ornare. Maecenas tempor eget diam et sodales. Pellentesque ornare porttitor placerat. Vestibulum rutrum nulla lectus, non gravida metus euismod sed. Phasellus lacinia, magna rutrum elementum mollis, turpis lectus venenatis metus, vitae auctor urna nibh at tellus. Morbi laoreet fermentum nulla id tempor.
@@ -102,4 +101,8 @@ Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus d
     <string name="anonymous_title">Anonymous Download</string>
     <string name="anonymous_summary">Enable spoofing of ip location while downloading torrent movies.</string>
     <string name="error_directory">Current directory structure is not supported</string>
+    <string name="report_issue_summary">Create a github issue in the official repository</string>
+    <string name="report_issue_title">Report a bug</string>
+    <string name="feedback_summary">Want a give a feedback just hit me up</string>
+    <string name="feedback_title">Send me an email</string>
 </resources>

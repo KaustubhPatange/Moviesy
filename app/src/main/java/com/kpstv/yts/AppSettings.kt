@@ -122,4 +122,10 @@ object AppSettings {
     const val TMDB_BASE_URL_PREF = "tmdb_base_url_pref"
     const val ANONYMOUS_TORRENT_DOWNLOAD_PREF = "anonymous_torrent_download_pref"
     const val STORAGE_LOCATION_PREF = "storage_location_pref"
+
+    const val AUTHOR_OWNER_PREF = "author_owner_pref"
+    const val AUTHOR_EMAIL_PREF = "author_email_pref"
+    const val APP_PACKAGE_PREF = "app_package_pref"
+    const val APP_VERSION_PREF = "app_version_pref"
+    const val APP_REPORT_PREF = "app_report_pref"
 }

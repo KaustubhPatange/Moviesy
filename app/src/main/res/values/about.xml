@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="author_owner">\@KaustubhPatange</string>
+    <string name="author_link">http://github.com/KaustubhPatange</string>
+    <string name="author_mail">developerkp16@gmail.com</string>
+
+    <string name="app_github">https://github.com/KaustubhPatange/Moviesy</string>
+</resources>

@@ -15,6 +15,7 @@ import com.kpstv.yts.R
 import com.kpstv.yts.extensions.utils.ContentUtils
 import es.dmoral.toasty.Toasty
 
+// TODO: Testing needed for storage location
 class StorageSettingFragment : PreferenceFragmentCompat() {
     companion object {
         const val STORAGE_REQUEST = 102

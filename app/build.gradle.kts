@@ -68,7 +68,6 @@ dependencies {
     implementation(LibraryDependency.LIFECYCLE_VIEWMODEL)
     implementation(LibraryDependency.LIFECYCLE_COMMON)
     implementation(LibraryDependency.PAGING)
-    implementation(LibraryDependency.ASYNC_AWAIT)
     implementation(LibraryDependency.RETROFIT) {
         exclude("okhttp")
     }

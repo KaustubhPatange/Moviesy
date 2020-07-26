@@ -50,7 +50,7 @@ class SettingsActivity : AppCompatActivity() {
                 STORAGE_FRAG -> replaceFragment(StorageSettingFragment())
                 LOOK_FEEL_FRAG -> replaceFragment(lookSettingsFragment)
                 DEVELOPER_FRAG -> replaceFragment(DevSettingsFragment())
-                ABOUT_FRAG -> ""
+                ABOUT_FRAG -> replaceFragment(AboutSettingFragment())
             }
         }
 
