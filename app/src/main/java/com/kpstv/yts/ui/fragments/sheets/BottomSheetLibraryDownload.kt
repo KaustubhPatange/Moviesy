@@ -58,22 +58,7 @@ class BottomSheetLibraryDownload(
                             R.layout.button_local_play,
                             view.bottom_sheet_layout
                         ).apply {
-                            this.playButton.setOnClickListener {
-                                val i = Intent(context, TorrentPlayerActivity::class.java)
-                                i.putExtra("normalLink", model.videoPath)
-                                i.putExtra("hash", model.hash)
-
-                                if (view.checkBox_playFrom.isVisible && view.checkBox_playFrom.isChecked) {
-                                    i.putExtra("lastPosition", model.lastSavedPosition)
-                                }
-
-                                if (::subtitleHelper.isInitialized) {
-                                    i.putExtra("sub", subtitleHelper.getSelectedSubtitle()?.name)
-                                }
-
-                                startActivity(i)
-                                dismiss()
-                            }
+                            this.playButton.setOnClickListener { localPlayButtonClicked(view) }
                         }
 
                         /** Show subtitle view */
@@ -84,48 +69,12 @@ class BottomSheetLibraryDownload(
                             R.layout.button_cast_play,
                             view.bottom_sheet_layout
                         ).apply {
-                            this.castButton.setOnClickListener {
-                                val subtitleFile = if (::subtitleHelper.isInitialized)
-                                    subtitleHelper.getSelectedSubtitle() else null
-
-                                val lastSavedPosition =
-                                    if (view.checkBox_playFrom.isVisible && view.checkBox_playFrom.isChecked) model.lastSavedPosition.toLong()
-                                    else 0L
-
-                                if (model.videoPath != null) {
-                                    /** Clear the bottom sheet view */
-                                    view.bottom_sheet_layout.removeAllViews()
-                                    layoutInflater.inflate(R.layout.custom_progress, view.bottom_sheet_layout)
-
-                                    /** Finding an image associated with the download */
-                                    castHelper.loadMedia(
-                                        mediaFile = model.videoPath.toFile()!!, // Won't crash I promise :(
-                                        videoLength = model.total_video_length,
-                                        lastSavedPosition = lastSavedPosition,
-                                        bannerImage = model.imagePath.toFile(),
-                                        srtFile = subtitleFile,
-                                        onComplete = { error ->
-                                            if (error != null) {
-                                                Toasty.error(
-                                                    requireContext(),
-                                                    error.message ?: requireContext().getString(
-                                                        R.string.error_unknown
-                                                    )
-                                                ).show()
-                                            }
-                                            dismiss()
-                                        }
-                                    )
-                                } else
-                                    Toasty.error(
-                                        requireContext(),
-                                        requireContext().getString(R.string.error_video_path)
-                                    ).show()
-                            }
+                            this.castButton.setOnClickListener { remotePlayButtonClicked(view) }
                         }
+
                         showSubtitle(view)
 
-                        /** Show subtitle only if the premium is unlocked *//*
+                        /** TODO: Show subtitle only if the premium is unlocked *//*
                         if (AppInterface.IS_PREMIUM_UNLOCKED) {
                             showSubtitle(view)
                         } else {
@@ -136,6 +85,63 @@ class BottomSheetLibraryDownload(
                     }
                 }
             }
+    }
+
+    private fun remotePlayButtonClicked(view: View) {
+        /** Find a subtitle track if exist */
+        val subtitleFile = if (::subtitleHelper.isInitialized)
+            subtitleHelper.getSelectedSubtitle() else null
+
+        if (model.videoPath != null) {
+            /** This must be called before clearing bottom sheet */
+            val playFromLastPosition =
+                view.checkBox_playFrom.isVisible && view.checkBox_playFrom.isChecked
+
+            /** Clear the bottom sheet view */
+            view.bottom_sheet_layout.removeAllViews()
+            layoutInflater.inflate(
+                R.layout.custom_progress,
+                view.bottom_sheet_layout
+            )
+
+            castHelper.loadMedia(
+                downloadModel = model,
+                playFromLastPosition = playFromLastPosition,
+                srtFile = subtitleFile,
+                onLoadComplete = { error ->
+                    if (error != null) {
+                        Toasty.error(
+                            requireContext(),
+                            error.message ?: requireContext().getString(
+                                R.string.error_unknown
+                            )
+                        ).show()
+                    }
+                    dismiss()
+                }
+            )
+        } else
+            Toasty.error(
+                requireContext(),
+                requireContext().getString(R.string.error_video_path)
+            ).show()
+    }
+
+    private fun localPlayButtonClicked(view: View) {
+        val i = Intent(context, TorrentPlayerActivity::class.java)
+        i.putExtra("normalLink", model.videoPath)
+        i.putExtra("hash", model.hash)
+
+        if (view.checkBox_playFrom.isVisible && view.checkBox_playFrom.isChecked) {
+            i.putExtra("lastPosition", model.lastSavedPosition)
+        }
+
+        if (::subtitleHelper.isInitialized) {
+            i.putExtra("sub", subtitleHelper.getSelectedSubtitle()?.name)
+        }
+
+        startActivity(i)
+        dismiss()
     }
 
     private fun showSubtitle(view: View) {

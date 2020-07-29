@@ -113,4 +113,9 @@ Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus d
     <string name="stop_cast">Stop casting from the menu to show normal play button.</string>
     <string name="error_video_path">Not a valid video path</string>
     <string name="error_unknown">Failed due to unknown error</string>
+    <string name="location">Location</string>
+    <string name="delete_undone">This can\'t be undone?</string>
+    <string name="error_path_exist">Path does not exist</string>
+    <string name="do_it">Do It</string>
+    <string name="no">Nope</string>
 </resources>

@@ -20,22 +20,16 @@ import com.kpstv.yts.cast.service.WebService
 import com.kpstv.yts.cast.ui.ExpandedControlsActivity
 import com.kpstv.yts.cast.utils.SubtitleConverter
 import com.kpstv.yts.cast.utils.Utils
+import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.extensions.Coroutines
+import com.kpstv.yts.extensions.SessionCallback
+import com.kpstv.yts.extensions.toFile
 import es.dmoral.toasty.Toasty
+import io.github.dkbai.tinyhttpd.nanohttpd.webserver.SimpleWebServer
 import java.io.File
 
 /**
  * A helper created to manage cast in the app.
- *
- * Steps: To setup this class
- * 1. You need to add [tinyhttpd] module to your app.
- * 2. Copy this cast folder to your device.
- * 3. Update the manifest with the required permissions, metadata tag
- *    for [CastOptionsProvider] & service required by cast.
- * 4. Call [initCastSession] method in the parent activity if you are hosting a fragment
- *    inside it. Otherwise call [init] method
- * 5. (Optional) Call [init] method in the fragment onViewCreated() where you want to cast.
- * 6. Call [loadMedia] to play a local media file
  *
  * Instead of putting all the codes in activity/fragment, better to
  * separate the logic to a different class.
@@ -57,8 +51,12 @@ class CastHelper {
     private lateinit var mApplicationContext: Context
     private lateinit var mToolbar: Toolbar
 
+    private var model: Model.response_download? = null
+
+    private var onSessionDisconnected: SessionCallback? = null
+
     fun isCastActive() =
-        mCastSession?.isConnected != null
+        mCastSession?.castDevice != null
 
     /**
      * You need to call this method in the parent activity if you are setting up
@@ -66,7 +64,6 @@ class CastHelper {
      */
     fun initCastSession(activity: AppCompatActivity) {
         mActivity = activity
-
         mCastContext = CastContext.getSharedInstance(mActivity)
     }
 
@@ -74,10 +71,17 @@ class CastHelper {
      * Set the activity along with the toolbar must be called in [onPostCreate]
      * of activity.
      */
-    fun init(activity: AppCompatActivity, toolbar: Toolbar) {
+    fun init(
+        activity: AppCompatActivity,
+        toolbar: Toolbar,
+        /** Use this to save last play position, Integer value returns the last
+         *  played position. */
+        onSessionDisconnected: SessionCallback
+    ) {
         mToolbar = toolbar
         mActivity = activity
         mApplicationContext = mActivity.applicationContext
+        this.onSessionDisconnected = onSessionDisconnected
 
         deviceIpAddress = Utils.findIPAddress(mApplicationContext)
         if (deviceIpAddress == null) {
@@ -98,6 +102,11 @@ class CastHelper {
         mCastContext.addCastStateListener { state ->
             if (state != CastState.NO_DEVICES_AVAILABLE)
                 showIntroductoryOverlay()
+            if (state == CastState.NOT_CONNECTED) {
+                /** When casting is disconnected we post updateLastModel */
+                postUpdateLastModel()
+                SimpleWebServer.stopServer()
+            }
         }
 
         mediaRouteMenuItem = CastButtonFactory.setUpMediaRouteButton(
@@ -108,13 +117,24 @@ class CastHelper {
     }
 
     fun loadMedia(
-        mediaFile: File,
-        videoLength: Long = 0,
-        lastSavedPosition: Long = 0,
-        bannerImage: File? = null,
-        srtFile: File? = null,
-        onComplete: (Exception?) -> Unit
+        downloadModel: Model.response_download,
+        playFromLastPosition: Boolean,
+        srtFile: File?,
+        onLoadComplete: (Exception?) -> Unit
     ) {
+        /**
+         * Suppose if a media is already casting and user decided to cast another media,
+         * in such case we still've last [Model.response_download] model which needs to
+         * be updated.
+         *
+         * Here we post such a similar update.
+         */
+        postUpdateLastModel()
+
+        this.model = downloadModel
+
+        val mediaFile = model?.videoPath.toFile()!!
+        val bannerImage = model?.imagePath.toFile()
 
         /** Get the remote names of the file */
         val remoteFileName = Utils.getRemoteFileName(deviceIpAddress, mediaFile)
@@ -135,7 +155,7 @@ class CastHelper {
                 .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
                 .setContentType("videos/mp4")
                 .setMetadata(movieMetadata)
-                .setStreamDuration(videoLength)
+                .setStreamDuration(downloadModel.total_video_length)
                 .setMediaTracks(mediaTracks)
                 .build()
 
@@ -144,14 +164,15 @@ class CastHelper {
 
             /** Play the file on the device. */
             if (mCastSession?.remoteMediaClient == null) {
-                onComplete.invoke(Exception("Client is null"))
+                onLoadComplete.invoke(Exception("Client is null"))
                 return@buildSubtitle
             }
             val remoteMediaClient = mCastSession?.remoteMediaClient ?: return@buildSubtitle
+
             remoteMediaClient.registerCallback(object : RemoteMediaClient.Callback() {
                 override fun onStatusUpdated() {
                     /** OnLoaded */
-                    onComplete.invoke(null)
+                    onLoadComplete.invoke(null)
 
                     /** When media loaded we will start the fullscreen player activity. */
                     val intent =
@@ -164,7 +185,9 @@ class CastHelper {
                 MediaLoadRequestData.Builder()
                     .setMediaInfo(mediaInfo)
                     .setAutoplay(true)
-                    .setCurrentTime(lastSavedPosition)
+                    .setCurrentTime(
+                        if (playFromLastPosition) model?.lastSavedPosition?.toLong() ?: 0L else 0L
+                    )
                     .build()
             )
         }
@@ -172,6 +195,21 @@ class CastHelper {
 
     fun stopCast() {
         mCastSession?.remoteMediaClient?.stop()
+        SimpleWebServer.stopServer()
+    }
+
+    /**
+     * This will post a callback to the subscriber when session is disconnected along
+     * with the [Model.response_download] and last saved position [Long].
+     */
+    private fun postUpdateLastModel() {
+        mCastSession?.remoteMediaClient?.approximateStreamPosition?.let {
+            onSessionDisconnected?.invoke(
+                model,
+                it.toInt()
+            )
+            this@CastHelper.model = null
+        }
     }
 
     private fun buildSubtitle(srtFile: File?, onComplete: (List<MediaTrack>) -> Unit) {

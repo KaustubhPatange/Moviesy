@@ -34,6 +34,7 @@
         <item name="colorTextInverse">@color/inverse_light</item>
         <item name="colorSeparator">@color/separator_light</item>
         <item name="colorNavSeparator">@color/separator_light</item>
+        <item name="castMiniControllerStyle">@style/CastMiniController.Light</item>
     </style>
 
     <style name="AppTheme.Dark" parent="Theme.MaterialComponents">
@@ -64,6 +65,7 @@
         <item name="colorTextInverse">@color/inverse_dark</item>
         <item name="colorSeparator">@color/separator_dark</item>
         <item name="colorNavSeparator">@color/separator_dark</item>
+        <item name="castMiniControllerStyle">@style/CastMiniController.Dark</item>
     </style>
 
 </resources>

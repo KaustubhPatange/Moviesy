@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kpstv.yts.R
@@ -21,12 +22,17 @@ import com.kpstv.yts.ui.activities.SearchActivity
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import com.kpstv.yts.ui.fragments.sheets.BottomSheetLibraryDownload
 import com.kpstv.yts.ui.fragments.sheets.PlaybackType
+import com.kpstv.yts.ui.viewmodels.MainViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_library.view.*
 import kotlinx.android.synthetic.main.fragment_library_no_download.view.*
 import java.io.File
 
+@AndroidEntryPoint
 class LibraryFragment : Fragment() {
+
+    private val viewModel by viewModels<MainViewModel>()
 
     private lateinit var mainActivity: MainActivity
     private val TAG = "LibraryFragment"
@@ -56,7 +62,14 @@ class LibraryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mainActivity.castHelper.init(mainActivity, view.toolbar)
+        mainActivity.castHelper.init(
+            activity = mainActivity,
+            toolbar = view.toolbar,
+            onSessionDisconnected = { model, lastSavedPosition ->
+                if (model == null) return@init
+                viewModel.updateDownload(model.hash, true, lastSavedPosition)
+            }
+        )
     }
 
     private fun setRecyclerView(view: View) {
@@ -83,7 +96,7 @@ class LibraryFragment : Fragment() {
                 when (it.itemId) {
                     R.id.action_show_location -> {
                         AlertNoIconDialog.Companion.Builder(context).apply {
-                            setTitle("Location")
+                            setTitle(getString(R.string.location))
                             setMessage("${model.downloadPath}")
                             setPositiveButton("OK", null)
                         }.show()
@@ -91,11 +104,11 @@ class LibraryFragment : Fragment() {
                     R.id.action_delete -> {
                         AlertNoIconDialog.Companion.Builder(context).apply {
                             setTitle("Delete?")
-                            setMessage("This can't be undone?")
-                            setNegativeButton("Nope", object : AlertNoIconDialog.DialogListener {
+                            setMessage(getString(R.string.delete_undone))
+                            setNegativeButton(getString(R.string.no), object : AlertNoIconDialog.DialogListener {
                                 override fun onClick() {}
                             })
-                            setPositiveButton("Do It", object : AlertNoIconDialog.DialogListener {
+                            setPositiveButton(getString(R.string.do_it), object : AlertNoIconDialog.DialogListener {
                                 override fun onClick() {
                                     val f = File(model.downloadPath!!)
                                     if (f.exists()) {
@@ -103,7 +116,7 @@ class LibraryFragment : Fragment() {
                                     } else {
                                         Toasty.error(
                                             requireContext(),
-                                            "Path does not exist",
+                                            getString(R.string.error_path_exist),
                                             Toasty.LENGTH_SHORT
                                         ).show()
                                         mainActivity.viewModel.removeDownload(model.hash)

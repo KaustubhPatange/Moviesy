@@ -7,10 +7,14 @@
     <style name="CastMiniController.Light" parent="CastMiniController">
         <item name="castBackground">@color/light_white</item>
         <item name="castProgressBarColor">@color/colorAccent</item>
+        <item name="castTitleTextAppearance">@style/TextAppearance.MaterialComponents.Caption</item>
+        <item name="castSubtitleTextAppearance">@style/TextAppearance.MaterialComponents.Caption</item>
     </style>
 
     <style name="CastMiniController.Dark" parent="CastMiniController">
         <item name="castBackground">@color/foreground</item>
         <item name="castProgressBarColor">@color/colorAccent</item>
+        <item name="castTitleTextAppearance">@style/TextAppearance.MaterialComponents.Caption</item>
+        <item name="castSubtitleTextAppearance">@style/TextAppearance.MaterialComponents.Caption</item>
     </style>
 </resources>

@@ -2,6 +2,7 @@ package com.kpstv.yts.extensions
 
 import android.view.View
 import androidx.annotation.DrawableRes
+import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.ui.fragments.GenreFragment
 import kotlinx.coroutines.*
 import java.io.File
@@ -20,6 +21,8 @@ fun<T> lazyDeferred(block: suspend CoroutineScope.() -> T): Lazy<Deferred<T>>{
 fun ArrayList<GenreFragment.LocalGenreModel>.add(title: String, @DrawableRes drawable: Int, genre: YTSQuery.Genre) {
     this.add(GenreFragment.LocalGenreModel(title, drawable, genre))
 }
+
+typealias SessionCallback = (Model.response_download?, Int) -> Unit
 
 fun View.hide() {
     visibility = View.GONE

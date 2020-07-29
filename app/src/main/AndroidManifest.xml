@@ -24,7 +24,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.Dark.NoAction"
-        tools:ignore="LockedOrientationActivity"
+        tools:ignore="LockedOrientationActivity,UnusedAttribute"
         tools:replace="android:allowBackup">
 
         <meta-data

@@ -18,12 +18,14 @@ import com.kpstv.yts.AppInterface.Companion.setAppThemeMain
 import com.kpstv.yts.BuildConfig
 import com.kpstv.yts.R
 import com.kpstv.yts.cast.CastHelper
+import com.kpstv.yts.data.db.repository.DownloadRepository
 import com.kpstv.yts.services.DownloadService
 import com.kpstv.yts.ui.settings.SettingsActivity
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.dkbai.tinyhttpd.nanohttpd.webserver.SimpleWebServer
 import kotlinx.android.synthetic.main.activity_main.*
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -36,8 +38,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     lateinit var drawerLayout: DrawerLayout
 
-    lateinit var navController: NavController
-    var isDarkTheme = true
+    private lateinit var navController: NavController
+    private var isDarkTheme = true
 
     @SuppressLint("CheckResult")
     override fun onCreate(savedInstanceState: Bundle?) {
