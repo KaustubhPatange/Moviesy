@@ -53,6 +53,7 @@ dependencies {
 
     implementation(LibraryDependency.MEDIA_ROUTER)
     implementation(LibraryDependency.CAST_FRAMEWORK)
+    implementation(LibraryDependency.ANDROID_LOCAL_CAST_SAMPLE)
 
     api(LibraryDependency.MATERIAL)
     api(LibraryDependency.GIRAFFE_PLAYER2)
@@ -97,6 +98,8 @@ dependencies {
     kapt(LibraryDependency.GLIDE_COMPILER)
     kapt(LibraryDependency.HILT_COMPILER)
     kapt(LibraryDependency.HILT_VIEWODEL_COMPILER)
+
+    debugImplementation(TestLibraryDependency.ANDROID_DEBUG_DB)
 
     annotationProcessor(LibraryDependency.GLIDE_COMPILER)
     testImplementation(TestLibraryDependency.JUNIT)

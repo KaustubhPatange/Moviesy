@@ -2,10 +2,10 @@ package com.kpstv.yts.cast.utils
 
 import android.content.Context
 import android.net.wifi.WifiManager
+import android.os.Environment
 import android.util.Log
-import android.view.MenuItem
-import androidx.appcompat.widget.Toolbar
-import androidx.core.view.forEach
+import com.kpstv.yts.cast.CastHelper
+import java.io.File
 import java.net.InetAddress
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -29,6 +29,12 @@ class Utils {
                 Log.e(Utils::class.java.name, "Error finding IpAddress: ${e.message}", e)
             }
             return null
+        }
+
+        fun getRemoteFileName(deviceIp: String?, file: File): String? {
+            if (deviceIp == null) return null
+            val root = Environment.getExternalStorageDirectory().absolutePath
+            return "http://${deviceIp}:${CastHelper.PORT}${file.absolutePath.replace(root, "")}"
         }
     }
 }

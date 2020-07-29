@@ -32,9 +32,11 @@ private object LibraryVersion {
     const val HILT_VIEWMODEL = "1.0.0-alpha01"
     const val MEDIA_ROUTER = "1.1.0"
     const val CAST_FRAMEWORK = "18.1.0"
+    const val CAST_SAMPLE = "0.01"
 }
 
 object LibraryDependency {
+    const val ANDROID_LOCAL_CAST_SAMPLE = "com.github.KaustubhPatange:Android-Cast-Local-Sample:${LibraryVersion.CAST_SAMPLE}"
     const val MEDIA_ROUTER = "androidx.mediarouter:mediarouter:${LibraryVersion.MEDIA_ROUTER}"
     const val CAST_FRAMEWORK = "com.google.android.gms:play-services-cast-framework:${LibraryVersion.CAST_FRAMEWORK}"
     const val HILT_VIEWODEL_COMPILER = "androidx.hilt:hilt-compiler:${LibraryVersion.HILT_VIEWMODEL}"

@@ -1,14 +1,28 @@
 package com.kpstv.yts.cast
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Handler
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.google.android.gms.cast.MediaInfo
+import com.google.android.gms.cast.MediaLoadRequestData
+import com.google.android.gms.cast.MediaMetadata
+import com.google.android.gms.cast.MediaTrack
 import com.google.android.gms.cast.framework.*
+import com.google.android.gms.cast.framework.media.RemoteMediaClient
+import com.google.android.gms.common.images.WebImage
+import com.kpstv.yts.AppInterface.Companion.APP_IMAGE_URL
 import com.kpstv.yts.R
+import com.kpstv.yts.cast.service.WebService
+import com.kpstv.yts.cast.ui.ExpandedControlsActivity
+import com.kpstv.yts.cast.utils.SubtitleConverter
 import com.kpstv.yts.cast.utils.Utils
+import com.kpstv.yts.extensions.Coroutines
 import es.dmoral.toasty.Toasty
+import java.io.File
 
 /**
  * A helper created to manage cast in the app.
@@ -28,6 +42,7 @@ import es.dmoral.toasty.Toasty
  */
 class CastHelper {
     companion object {
+        const val PORT = "8081"
         var deviceIpAddress: String? = null
     }
 
@@ -43,7 +58,7 @@ class CastHelper {
     private lateinit var mToolbar: Toolbar
 
     fun isCastActive() =
-        mCastSession?.castDevice != null
+        mCastSession?.isConnected != null
 
     /**
      * You need to call this method in the parent activity if you are setting up
@@ -92,7 +107,98 @@ class CastHelper {
         )
     }
 
-    fun loadMedia() {}
+    fun loadMedia(
+        mediaFile: File,
+        videoLength: Long = 0,
+        lastSavedPosition: Long = 0,
+        bannerImage: File? = null,
+        srtFile: File? = null,
+        onComplete: (Exception?) -> Unit
+    ) {
+
+        /** Get the remote names of the file */
+        val remoteFileName = Utils.getRemoteFileName(deviceIpAddress, mediaFile)
+            ?.replace(" ", "%20")
+        val remoteImageFileName =
+            if (bannerImage != null)
+                Utils.getRemoteFileName(deviceIpAddress, bannerImage)?.replace(" ", "%20")
+            else APP_IMAGE_URL
+
+        /** Generate media metadata */
+        val movieMetadata = MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE)
+        movieMetadata.putString(MediaMetadata.KEY_TITLE, mediaFile.nameWithoutExtension)
+        movieMetadata.addImage(WebImage(Uri.parse(remoteImageFileName)))
+        movieMetadata.addImage(WebImage(Uri.parse(remoteImageFileName)))
+
+        buildSubtitle(srtFile) { mediaTracks ->
+            val mediaInfo = MediaInfo.Builder(remoteFileName)
+                .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
+                .setContentType("videos/mp4")
+                .setMetadata(movieMetadata)
+                .setStreamDuration(videoLength)
+                .setMediaTracks(mediaTracks)
+                .build()
+
+            /** Start a local HTTP server */
+            mApplicationContext.startService(Intent(mApplicationContext, WebService::class.java))
+
+            /** Play the file on the device. */
+            if (mCastSession?.remoteMediaClient == null) {
+                onComplete.invoke(Exception("Client is null"))
+                return@buildSubtitle
+            }
+            val remoteMediaClient = mCastSession?.remoteMediaClient ?: return@buildSubtitle
+            remoteMediaClient.registerCallback(object : RemoteMediaClient.Callback() {
+                override fun onStatusUpdated() {
+                    /** OnLoaded */
+                    onComplete.invoke(null)
+
+                    /** When media loaded we will start the fullscreen player activity. */
+                    val intent =
+                        Intent(mApplicationContext, ExpandedControlsActivity::class.java)
+                    mActivity.startActivity(intent)
+                    remoteMediaClient.unregisterCallback(this)
+                }
+            })
+            remoteMediaClient.load(
+                MediaLoadRequestData.Builder()
+                    .setMediaInfo(mediaInfo)
+                    .setAutoplay(true)
+                    .setCurrentTime(lastSavedPosition)
+                    .build()
+            )
+        }
+    }
+
+    fun stopCast() {
+        mCastSession?.remoteMediaClient?.stop()
+    }
+
+    private fun buildSubtitle(srtFile: File?, onComplete: (List<MediaTrack>) -> Unit) {
+        if (srtFile == null) return onComplete.invoke(listOf())
+        Coroutines.io {
+            val vttFile =
+                File(mApplicationContext.externalCacheDir, srtFile.nameWithoutExtension + ".vtt")
+            val remoteSrtFileName = Utils.getRemoteFileName(deviceIpAddress, vttFile)
+            /** Convert srt to vtt on background thread */
+            SubtitleConverter.convertFromSrtToVtt(srtFile, vttFile)
+            /** Post subtitles on main thread */
+            Coroutines.main {
+                onComplete.invoke(
+                    listOf(
+                        MediaTrack.Builder(1, MediaTrack.TYPE_TEXT)
+                            .setName(srtFile.name)
+                            .setSubtype(MediaTrack.SUBTYPE_SUBTITLES)
+                            .setContentId(remoteSrtFileName)
+                            .setLanguage("en-US")
+                            .build()
+                    )
+                )
+            }
+        }
+
+
+    }
 
     private fun setUpCastListener() {
         mSessionManagerListener = object : SessionManagerListener<CastSession> {
@@ -118,21 +224,25 @@ class CastHelper {
 
             override fun onSessionSuspended(p0: CastSession?, p1: Int) {}
 
-            override fun onSessionStarting(p0: CastSession?) {}
+            override fun onSessionStarting(castSession: CastSession?) {
+                mCastSession = castSession
+            }
 
-            override fun onSessionResuming(p0: CastSession?, p1: String?) {}
+            override fun onSessionResuming(castSession: CastSession?, p1: String?) {
+                mCastSession = castSession
+            }
 
             override fun onSessionEnding(p0: CastSession?) {}
 
             private fun onApplicationConnected(castSession: CastSession?) {
                 mCastSession = castSession
                 mActivity.invalidateOptionsMenu()
-                mToolbar.invalidate()
+                //    mToolbar.invalidate()
             }
 
             private fun onApplicationDisconnected() {
                 mActivity.invalidateOptionsMenu()
-                mToolbar.invalidate()
+                //  mToolbar.invalidate()
             }
         }
     }

@@ -35,6 +35,7 @@ class AppInterface {
         var TMDB_API_KEY = "dbaba3594e59e4ff47c003b2ddb82c2a"
         var COUNTRY_FLAG_JSON_URL = "https://pastebin.com/raw/H0CYRdJ9"
         var APP_DATABASE_URL = "https://pastebin.com/raw/rq6KYdgC" // TODO: Change this url
+        var APP_IMAGE_URL = "https://raw.githubusercontent.com/KaustubhPatange/Moviesy/master/app/src/main/ic_launcher-playstore.png"
         var SUGGESTION_URL =
             "https://suggestqueries.google.com/complete/search?ds=yt&client=firefox&q="
         var STORAGE_LOCATION =

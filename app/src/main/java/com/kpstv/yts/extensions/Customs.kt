@@ -37,6 +37,10 @@ fun View.show() {
     visibility = View.VISIBLE
 }
 
+fun String?.toFile(): File? {
+    return if (this != null) File(this) else null
+}
+
 enum class MovieBase {
     YTS,
     TMDB

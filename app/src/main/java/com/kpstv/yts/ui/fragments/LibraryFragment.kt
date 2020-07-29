@@ -12,7 +12,6 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kpstv.yts.R
 import com.kpstv.yts.adapters.LibraryDownloadAdapter
-import com.kpstv.yts.cast.CastHelper
 import com.kpstv.yts.extensions.Coroutines
 import com.kpstv.yts.extensions.deleteRecursive
 import com.kpstv.yts.extensions.hide
@@ -25,7 +24,6 @@ import com.kpstv.yts.ui.fragments.sheets.PlaybackType
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_library.view.*
 import kotlinx.android.synthetic.main.fragment_library_no_download.view.*
-import kotlinx.android.synthetic.main.fragment_library.view.toolbar
 import java.io.File
 
 class LibraryFragment : Fragment() {
@@ -68,10 +66,10 @@ class LibraryFragment : Fragment() {
             /** OnClick for download item */
             val sheet = if (mainActivity.castHelper.isCastActive()) {
                 /** Show cast to device button */
-                BottomSheetLibraryDownload(mainActivity.viewModel, PlaybackType.REMOTE)
-            }else {
+                BottomSheetLibraryDownload(mainActivity.castHelper, PlaybackType.REMOTE)
+            } else {
                 /** Show local play button */
-                BottomSheetLibraryDownload(mainActivity.viewModel, PlaybackType.LOCAL)
+                BottomSheetLibraryDownload(mainActivity.castHelper, PlaybackType.LOCAL)
             }
             val bundle = Bundle()
             bundle.putSerializable("model", model)

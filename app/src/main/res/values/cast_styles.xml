@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="CastVideosDark" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimaryDark">@color/black</item>
+    </style>
+
+    <style name="CastMiniController.Light" parent="CastMiniController">
+        <item name="castBackground">@color/light_white</item>
+        <item name="castProgressBarColor">@color/colorAccent</item>
+    </style>
+
+    <style name="CastMiniController.Dark" parent="CastMiniController">
+        <item name="castBackground">@color/foreground</item>
+        <item name="castProgressBarColor">@color/colorAccent</item>
+    </style>
+</resources>

@@ -15,12 +15,14 @@ import com.google.android.material.navigation.NavigationView
 import com.kpstv.yts.AppInterface.Companion.IS_DARK_THEME
 import com.kpstv.yts.AppInterface.Companion.animationOptions
 import com.kpstv.yts.AppInterface.Companion.setAppThemeMain
+import com.kpstv.yts.BuildConfig
 import com.kpstv.yts.R
 import com.kpstv.yts.cast.CastHelper
 import com.kpstv.yts.services.DownloadService
 import com.kpstv.yts.ui.settings.SettingsActivity
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import io.github.dkbai.tinyhttpd.nanohttpd.webserver.SimpleWebServer
 import kotlinx.android.synthetic.main.activity_main.*
 
 @AndroidEntryPoint
@@ -42,6 +44,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onCreate(savedInstanceState)
         setAppThemeMain(this)
         setContentView(R.layout.activity_main)
+
+        SimpleWebServer.init(this, BuildConfig.DEBUG)
 
         isDarkTheme = IS_DARK_THEME
 
@@ -110,6 +114,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onDestroy() {
         stopService(Intent(this, DownloadService::class.java))
+
+        /** Stop the HTTP server if started */
+        SimpleWebServer.stopServer()
         super.onDestroy()
     }
 }

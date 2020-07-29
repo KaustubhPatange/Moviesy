@@ -110,4 +110,7 @@ Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus d
     <string name="error_cast_wifi">Connect to wifi device or hotspot</string>
     <string name="cast_media_to_device">Cast media to device</string>
     <string name="cast_to_device">Cast to device</string>
+    <string name="stop_cast">Stop casting from the menu to show normal play button.</string>
+    <string name="error_video_path">Not a valid video path</string>
+    <string name="error_unknown">Failed due to unknown error</string>
 </resources>

@@ -62,6 +62,7 @@
         <item name="colorTextLight">@color/light_white</item>
         <item name="colorSeparator">@color/separator_dark</item>
         <item name="colorNavSeparator">@color/separator_dark</item>
+        <item name="castMiniControllerStyle">@style/CastMiniController.Dark</item>
     </style>
 
     <style name="AppTheme.Dark.Main" parent="Theme.MaterialComponents.NoActionBar">
@@ -153,10 +154,6 @@
 
     <style name="BottomViewInActive" parent="TextAppearance.AppCompat.Caption">
         <item name="android:textSize">12sp</item>
-    </style>
-
-    <style name="CastVideosDark" parent="Theme.AppCompat.NoActionBar">
-        <item name="colorPrimaryDark">@color/black</item>
     </style>
 
 </resources>
