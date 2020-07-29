@@ -167,22 +167,22 @@ class BottomSheetDownload : BottomSheetDialogFragment() {
     }
 
     private fun showSubtitle(view: View) {
-        if (SUBTITLE_LOCATION.listFiles()?.isNotEmpty()!!) {
+        if (SUBTITLE_LOCATION.listFiles()?.isNotEmpty() == true) {
 
             /** Filter subtitle to check whether subtile for current movie exist */
 
             val titleSpan = title.split(" ")[0]
 
-            val onlySuchFiles = SUBTITLE_LOCATION.list()?.filter { f -> f?.contains(titleSpan)!! }
-            if (onlySuchFiles?.isNotEmpty()!!) {
-                val cssView = LayoutInflater.from(context)
+            val onlySuchFiles = SUBTITLE_LOCATION.list()?.filter { f -> f?.contains(titleSpan) == true }
+            if (onlySuchFiles?.isNotEmpty() == true) {
+                val cssView = LayoutInflater.from(requireContext())
                     .inflate(R.layout.custom_select_subtitle, view.addLayout)
                 val recyclerView = cssView.findViewById<RecyclerView>(R.id.recyclerView)
 
                 val list = ArrayList<SelectSubtitle>()
                 onlySuchFiles.mapTo(list) { SelectSubtitle(it) }
 
-                singleAdapter = SelectSubAdapter(context!!, list)
+                singleAdapter = SelectSubAdapter(requireContext(), list)
                 singleAdapter.setOnClickListener(object :
                     SingleClickListener {
                     override fun onClick(obj: Any, i: Int) {

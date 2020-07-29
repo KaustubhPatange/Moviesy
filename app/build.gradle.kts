@@ -51,6 +51,9 @@ dependencies {
     implementation(LibraryDependency.COROUTINES_CORE)
     implementation(LibraryDependency.COROUTINES_ANDROID)
 
+    implementation(LibraryDependency.MEDIA_ROUTER)
+    implementation(LibraryDependency.CAST_FRAMEWORK)
+
     api(LibraryDependency.MATERIAL)
     api(LibraryDependency.GIRAFFE_PLAYER2)
 

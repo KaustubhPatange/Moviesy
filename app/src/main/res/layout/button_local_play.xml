@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/playButton"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="@drawable/button_local_background"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center"
+    android:text="@string/play"
+    android:textAllCaps="true"
+    android:textColor="?colorTextLight"
+    android:textSize="18sp" />

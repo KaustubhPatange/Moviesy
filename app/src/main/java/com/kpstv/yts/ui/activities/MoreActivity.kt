@@ -379,7 +379,7 @@ class MoreActivity : AppCompatActivity() {
     private val updateTask: Runnable = object : Runnable {
         override fun run() {
             try {
-                if (recyclerView.adapter?.itemCount!! <= 0) {
+                if (recyclerView.adapter?.itemCount ?: 0 <= 0) {
                     updateHandler.postDelayed(this, 1000)
                 } else {
 

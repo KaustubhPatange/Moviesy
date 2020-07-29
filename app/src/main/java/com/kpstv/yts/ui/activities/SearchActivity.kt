@@ -187,7 +187,7 @@ class SearchActivity : AppCompatActivity() {
     private val updateTask: Runnable = object : Runnable {
         override fun run() {
             try {
-                if (recyclerView.adapter?.itemCount!! <= 0) {
+                if (recyclerView.adapter?.itemCount ?: 0 <= 0) {
 
                     /** A hack used to know if there are no results found
                      *  and certainly displaying noMovieFound layout.
@@ -304,7 +304,7 @@ class SearchActivity : AppCompatActivity() {
      */
     private fun searchEditTextChangeListener() = object : TextWatcher {
         override fun afterTextChanged(s: Editable?) {
-            if (s?.toString()?.isNotEmpty()!!)
+            if (s?.toString()?.isNotEmpty() == true)
                 item_close.show()
             else item_close.hide()
         }
@@ -374,7 +374,7 @@ class SearchActivity : AppCompatActivity() {
             suggestionModels.clear()
             try {
                 val json = response.body?.string()
-                if (json?.isNotEmpty()!!) {
+                if (json?.isNotEmpty() == true) {
 
                     val jsonArray = JSONArray(json).getJSONArray(1)
                     for (i in 0 until jsonArray.length()) {

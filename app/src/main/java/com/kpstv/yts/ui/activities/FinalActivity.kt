@@ -330,7 +330,7 @@ class FinalActivity : AppCompatActivity(), MovieListener {
 
         /** YTS sometimes doesn't add cast to its movie so we are checking it */
 
-        if (!movie.cast.isNullOrEmpty()) {
+        if (movie.cast?.isNotEmpty() == true) {
             val builder = StringBuilder()
             for (i in 0 until movie.cast?.size!! -1) {
                 builder.append(movie.cast?.get(i)?.name).append("  &#8226;  ")

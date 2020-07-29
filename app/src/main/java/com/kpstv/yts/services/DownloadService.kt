@@ -34,12 +34,12 @@ import com.kpstv.yts.AppInterface.Companion.formatDownloadSpeed
 import com.kpstv.yts.R
 import com.kpstv.yts.data.db.repository.DownloadRepository
 import com.kpstv.yts.data.db.repository.PauseRepository
-import com.kpstv.yts.extensions.utils.AppUtils
-import com.kpstv.yts.extensions.utils.AppUtils.Companion.getVideoDuration
-import com.kpstv.yts.extensions.utils.AppUtils.Companion.saveImageFromUrl
 import com.kpstv.yts.data.models.Torrent
 import com.kpstv.yts.data.models.TorrentJob
 import com.kpstv.yts.data.models.response.Model
+import com.kpstv.yts.extensions.utils.AppUtils
+import com.kpstv.yts.extensions.utils.AppUtils.Companion.getVideoDuration
+import com.kpstv.yts.extensions.utils.AppUtils.Companion.saveImageFromUrl
 import com.kpstv.yts.receivers.CommonBroadCast
 import com.kpstv.yts.ui.activities.DownloadActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -52,10 +52,12 @@ import kotlin.collections.ArrayList
 
 @SuppressLint("WakelockTimeout")
 @AndroidEntryPoint
-class DownloadService: IntentService("blank") {
+class DownloadService : IntentService("blank") {
 
-    @Inject lateinit var pauseRepository: PauseRepository
-    @Inject lateinit var downloadRepository: DownloadRepository
+    @Inject
+    lateinit var pauseRepository: PauseRepository
+    @Inject
+    lateinit var downloadRepository: DownloadRepository
 
     val TAG = "DownloadService"
     private var pendingJobs = ArrayList<Torrent>()
@@ -69,7 +71,7 @@ class DownloadService: IntentService("blank") {
     private lateinit var torrentStream: TorrentStream
     private val FOREGROUND_ID = 1
     private var toDelete = false
-    private var totalGap: Long? = 0
+    private var totalGap: Long = 0
     private var lastProgress: Float? = 0f
 
     private val SHOW_LOG_FROM_THIS_CLASS = true
@@ -136,7 +138,8 @@ class DownloadService: IntentService("blank") {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val config: Torrent = intent!!.getSerializableExtra("addJob") as Torrent
+        if (intent == null) return super.onStartCommand(intent, flags, startId)
+        val config: Torrent = intent.getSerializableExtra("addJob") as Torrent
         pendingJobs.add(config)
 
         DS_LOG("==> onStartCommand(): ${config.title}")
@@ -268,8 +271,8 @@ class DownloadService: IntentService("blank") {
         torrentStream.startStream(model.url)
 
         do {
-            if ((isCurrentProgressUpdated && getCurrentTimeSecond() > totalGap!! + DOWNLOAD_TIMEOUT_SECOND && lastProgress?.toInt()!! >= 98)
-                || (isConnected && getCurrentTimeSecond() > totalGap!! + DOWNLOAD_CONNECTION_TIMEOUT && lastProgress?.toInt()!! == 0)
+            if ((isCurrentProgressUpdated && getCurrentTimeSecond() > totalGap + DOWNLOAD_TIMEOUT_SECOND && lastProgress?.toInt()!! >= 98)
+                || (isConnected && getCurrentTimeSecond() > totalGap + DOWNLOAD_CONNECTION_TIMEOUT && lastProgress?.toInt()!! == 0)
             ) {
                 DS_LOG("==> Auto Stopping Stream")
                 toDelete = false
@@ -400,6 +403,7 @@ class DownloadService: IntentService("blank") {
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
     }
 
+    @SuppressLint("SimpleDateFormat")
     private fun handleAfterJobComplete(model: Torrent, isError: Boolean = false) {
 
         /** Create notification based on error bool */

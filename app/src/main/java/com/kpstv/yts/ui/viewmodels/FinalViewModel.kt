@@ -107,7 +107,7 @@ class FinalViewModel @ViewModelInject constructor(
                     /** A patch that will modify movie and inject cast
                      */
                     val response1 = tMdbApi.getCast(movie.imdb_code).await()
-                    if (response1.cast?.isNotEmpty()!!) {
+                    if (response1.cast?.isNotEmpty() == true) {
                         val list = ArrayList<Cast>()
                         response1.cast.forEach {
                             if (list.size < 4) {

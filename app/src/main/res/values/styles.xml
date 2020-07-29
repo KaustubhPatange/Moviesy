@@ -150,8 +150,13 @@
     <style name="BottomViewActive" parent="TextAppearance.AppCompat.Caption">
         <item name="android:textSize">13sp</item>
     </style>
+
     <style name="BottomViewInActive" parent="TextAppearance.AppCompat.Caption">
         <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="CastVideosDark" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimaryDark">@color/black</item>
     </style>
 
 </resources>

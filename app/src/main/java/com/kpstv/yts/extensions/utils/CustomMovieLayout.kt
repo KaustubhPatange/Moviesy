@@ -182,7 +182,7 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
         base = MovieBase.TMDB
         models = ArrayList()
         list.forEach {
-            if (it.release_date?.contains("-")!!) {
+            if (it.release_date?.contains("-") == true) {
                 models.add(
                     MovieShort(
                         movieId = it.id.toInt(),

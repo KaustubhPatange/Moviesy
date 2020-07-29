@@ -2,6 +2,7 @@ package com.kpstv.yts.di
 
 import android.app.Application
 import androidx.core.content.res.ResourcesCompat
+import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
 import dagger.hilt.android.HiltAndroidApp
 import es.dmoral.toasty.Toasty

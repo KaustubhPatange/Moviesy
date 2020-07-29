@@ -34,7 +34,7 @@ class BottomSheetQuickInfo(private val viewModel: MainViewModel) : BottomSheetDi
 
         val movie = arguments?.getSerializable("model") as MovieShort
 
-        GlideApp.with(context?.applicationContext!!).asBitmap().load(movie.bannerUrl)
+        GlideApp.with(requireContext().applicationContext).asBitmap().load(movie.bannerUrl)
             .into(object : CustomTarget<Bitmap>() {
                 override fun onLoadCleared(placeholder: Drawable?) {
 
@@ -58,15 +58,15 @@ class BottomSheetQuickInfo(private val viewModel: MainViewModel) : BottomSheetDi
                 icon = R.drawable.ic_favorite_yes
             }
 
-            val watchlistLayout = CustomBottomItem(context!!)
+            val watchlistLayout = CustomBottomItem(requireContext())
             watchlistLayout.setUp(icon, title, view.addLayout)
             watchlistLayout.onClickListener = {
                 if (b) {
                     viewModel.removeFavourite(movie.movieId!!)
-                    Toasty.info(context!!, getString(R.string.remove_watchlist)).show()
+                    Toasty.info(requireContext(), getString(R.string.remove_watchlist)).show()
                 } else {
                     viewModel.addToFavourite(Model.response_favourite.from(movie))
-                    Toasty.info(context!!, getString(R.string.add_watchlist)).show()
+                    Toasty.info(requireContext(), getString(R.string.add_watchlist)).show()
                 }
                 dismiss()
             }

@@ -52,9 +52,9 @@ class CustomDataSource(
     private suspend fun executeTMdbQuery(page: Int): Model.response_tmdb_movies? {
         val split = endPoint?.split("/")
         if (split != null) {
-            if (endPoint?.contains("/similar")!!) {
+            if (endPoint?.contains("/similar") == true) {
                 return tMdbApi.getSimilars(split[0], page).await()
-            } else if (endPoint?.contains("/recommendations")!!) {
+            } else if (endPoint?.contains("/recommendations") == true) {
                 return tMdbApi.getRecommendations(split[0].toInt(), page).await()
             }
         }
@@ -65,7 +65,7 @@ class CustomDataSource(
     private fun createMovieShort(it: ArrayList<TmDbMovie>): ArrayList<MovieShort> {
         val list = ArrayList<MovieShort>()
         it.forEach { movie ->
-            if (movie.release_date?.contains("-")!!) {
+            if (movie.release_date?.contains("-") == true) {
                 list.add(
                     MovieShort(
                         movieId = movie.id.toInt(),

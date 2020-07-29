@@ -234,6 +234,7 @@ class AppUtils {
             return time?.toLong()
         }
 
+        // TODO: Remove this obsolete method
         fun getDirSize(dir: File): Long {
             if (dir.exists()) {
                 var result: Long = 0
@@ -279,8 +280,10 @@ class AppUtils {
 
         @JvmName("deleteRecurse")
         fun deleteRecursive(fileOrDirectory: File?) {
-            if (fileOrDirectory!!.isDirectory)
-                for (child in fileOrDirectory.listFiles()) {
+            if (fileOrDirectory == null) return
+            val allFiles = fileOrDirectory.listFiles()
+            if (fileOrDirectory.isDirectory && allFiles != null)
+                for (child in allFiles) {
                     deleteRecursive(child)
                 }
             fileOrDirectory.delete()

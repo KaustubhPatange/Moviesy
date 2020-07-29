@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/castButton"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="@drawable/button_cast_background"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center">
+
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="10dp"
+        android:src="@drawable/ic_cast" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="@string/cast_to_device"
+        android:textAllCaps="true"
+        android:textColor="?colorTextLight"
+        android:textSize="18sp" />
+</LinearLayout>

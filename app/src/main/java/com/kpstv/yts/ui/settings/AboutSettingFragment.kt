@@ -29,7 +29,7 @@ class AboutSettingFragment : PreferenceFragmentCompat() {
             "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})"
 
         findPreference<Preference>(AppSettings.APP_REPORT_PREF)?.setOnPreferenceClickListener {
-            AppUtils.launchUrlIntent(getString(R.string.app_github), requireContext())
+            launch(getString(R.string.app_github))
             true
         }
     }

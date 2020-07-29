@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bottom_sheet_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?colorForeground"
@@ -9,30 +10,18 @@
         android:id="@+id/addLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:orientation="vertical">
+
         <CheckBox
-            android:fontFamily="@font/google_sans_regular"
             android:id="@+id/checkBox_playFrom"
-            android:layout_margin="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:fontFamily="@font/google_sans_regular"
             android:paddingStart="10dp"
-            android:text="Play from"
-            android:textColor="?colorTextLight"
-            />
+            android:text="@string/start_from"
+            android:textColor="?colorTextLight" />
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/playButton"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="?colorAccent"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="center"
-        android:text="@string/play"
-        android:textAllCaps="true"
-        android:textColor="?colorTextLight"
-        android:textSize="18sp" />
 </LinearLayout>

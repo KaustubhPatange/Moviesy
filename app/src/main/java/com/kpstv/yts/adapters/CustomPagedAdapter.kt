@@ -70,7 +70,7 @@ class CustomPagedAdapter(private val context: Context, private val base: MovieBa
                 holder.mainSubTextView.text = "${movie.year} ${getBulletSymbol()} ${movie.runtime} mins"
                 holder.mainImdbButton.text = "imdb ${movie.rating}"
                 holder.mainImdbButton.setOnClickListener {
-                    launchUrl(context,getImdbUrl(movie.imdbCode!!),IS_DARK_THEME)
+                    movie.imdbCode?.let { launchUrl(context,getImdbUrl(it),IS_DARK_THEME) }
                 }
                 holder.mainLayout.setOnClickListener {
                     val intent = Intent(context, FinalActivity::class.java)
@@ -93,7 +93,7 @@ class CustomPagedAdapter(private val context: Context, private val base: MovieBa
 
                     override fun onResourceReady(resource: Bitmap?, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean
                     ): Boolean {
-                        holder.mainImage.setImageBitmap(resource!!)
+                        holder.mainImage.setImageBitmap(resource)
                         holder.itemView.shimmerFrame.hide()
                         return true
                     }

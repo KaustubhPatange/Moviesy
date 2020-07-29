@@ -16,6 +16,7 @@ import com.kpstv.yts.AppInterface.Companion.IS_DARK_THEME
 import com.kpstv.yts.AppInterface.Companion.animationOptions
 import com.kpstv.yts.AppInterface.Companion.setAppThemeMain
 import com.kpstv.yts.R
+import com.kpstv.yts.cast.CastHelper
 import com.kpstv.yts.services.DownloadService
 import com.kpstv.yts.ui.settings.SettingsActivity
 import com.kpstv.yts.ui.viewmodels.MainViewModel
@@ -29,6 +30,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     val TAG = "MainActivity"
 
+    val castHelper = CastHelper()
+
     lateinit var drawerLayout: DrawerLayout
 
     lateinit var navController: NavController
@@ -41,6 +44,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_main)
 
         isDarkTheme = IS_DARK_THEME
+
+        castHelper.initCastSession(this)
 
         drawerLayout = drawer_layout
         navigationView.setNavigationItemSelectedListener(this)

@@ -21,7 +21,7 @@ class CommonBroadCast : BroadcastReceiver() {
         when (intent?.action) {
             STOP_SERVICE -> {
                 val serviceIntent = Intent(context, DownloadService::class.java)
-                context!!.stopService(serviceIntent)
+                context?.stopService(serviceIntent)
             }
             TORRENT_NOT_SUPPORTED -> {
                 AlertNoIconDialog.Companion.Builder(context!!).apply {
@@ -36,7 +36,7 @@ class CommonBroadCast : BroadcastReceiver() {
 
                 val serviceDownload = Intent(context, DownloadService::class.java)
                 serviceDownload.putExtra("addJob", intent.getSerializableExtra("model") as Torrent)
-                ContextCompat.startForegroundService(context!!, serviceDownload);
+                ContextCompat.startForegroundService(context!!, serviceDownload)
             }
         }
     }

@@ -262,7 +262,7 @@ class BottomSheetSubtitles : BottomSheetDialogFragment() {
 
                     if (temporarySaveLocation.exists()) temporarySaveLocation.delete()
 
-                    if (tempLocation.listFiles().isNotEmpty()) {
+                    if (tempLocation.listFiles()?.isNotEmpty() == true) {
                         tempLocation.listFiles()[0].renameTo(
                             File(
                                 SUBTITLE_LOCATION,

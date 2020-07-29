@@ -7,12 +7,13 @@ import com.kpstv.yts.data.models.internel.GenreRecommend
 import java.io.File
 import kotlin.collections.ArrayList
 
+// TODO: See if you need to add some recommendations based on movie
 class RecommendUtils {
     companion object {
         fun writeGenreUtils(context: Context, genre: String, movieTitle: String) {
             val gson = Gson()
             var genres = getGenreUtils(context)
-            if (genres?.list?.isNotEmpty()!!) {
+            if (genres?.list?.isNotEmpty() == true) {
                 for (c in genres.list) {
                     if (c.genre == genre && !c.movieNames.contains(movieTitle)) {
                         c.times++
@@ -36,7 +37,7 @@ class RecommendUtils {
 
         fun getTopGenre(context: Context): ArrayList<String>? {
             var genres = getGenreUtils(context)
-            return if (genres?.list?.isNotEmpty()!!) {
+            return if (genres?.list?.isNotEmpty() == true) {
                 if (genres.timesWritten>3) {
                     val list = ArrayList<String>()
                     val sortedList = genres.list.sortedWith(compareByDescending { it.times })

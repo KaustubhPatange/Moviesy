@@ -49,6 +49,7 @@ class AppInterface {
         var CUSTOM_LAYOUT_YTS_SPAN = 8
         const val MOVIE_FETCH_SIZE = 10
         var IS_DARK_THEME = true
+        var IS_PREMIUM_UNLOCKED = false
 
         const val TORRENT_NOT_SUPPORTED = "com.kpstv.yts.TORRENT_NOT_SUPPORTED"
         const val MODEL_UPDATE = "com.kpstv.yts.MODEL_UPDATE"
@@ -105,14 +106,16 @@ class AppInterface {
             }
         }
 
+
         @SuppressLint("SimpleDateFormat")
         val MainDateFormatter = SimpleDateFormat("yyyyMMddHH")
 
+        @SuppressLint("Range")
         fun handleRetrofitError(context: Context, t: Exception?) {
             var message = "Site is not responding. Try to change proxy from settings."
             if (t?.message == null) {
                 message = "Error: Unknown, could not be determined"
-            } else if (!t.message?.contains("timeout")!!) {
+            } else if (t.message?.contains("timeout") != true) {
                 message = "Error: ${t.message}"
             }
 

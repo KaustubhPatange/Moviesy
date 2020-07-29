@@ -1,7 +1,6 @@
 package com.kpstv.yts
 
 import android.content.Context
-import android.provider.MediaStore
 import androidx.preference.PreferenceManager
 import java.io.File
 
@@ -11,6 +10,11 @@ object AppSettings {
         AppInterface.IS_DARK_THEME = settingsPref.getBoolean(
             IS_DARK_THEME_PREF,
             AppInterface.IS_DARK_THEME
+        )
+
+        AppInterface.IS_PREMIUM_UNLOCKED = settingsPref.getBoolean(
+            PREMIUM_PURCHASE_PREF,
+            AppInterface.IS_PREMIUM_UNLOCKED
         )
 
         AppInterface.TMDB_IMAGE_PREFIX = settingsPref.getString(
@@ -87,6 +91,7 @@ object AppSettings {
         val settingsPref = PreferenceManager.getDefaultSharedPreferences(context)
         settingsPref.edit().apply {
             putBoolean(IS_DARK_THEME_PREF, AppInterface.IS_DARK_THEME)
+            putBoolean(PREMIUM_PURCHASE_PREF, AppInterface.IS_PREMIUM_UNLOCKED)
             putString(TMDB_IMAGE_PREFIX_PREF, AppInterface.TMDB_IMAGE_PREFIX)
             putString(STORAGE_LOCATION_PREF, AppInterface.STORAGE_LOCATION.path)
             putString(COUNTRY_FLAG_JSON_URL_PREF, AppInterface.COUNTRY_FLAG_JSON_URL)
@@ -128,4 +133,6 @@ object AppSettings {
     const val APP_PACKAGE_PREF = "app_package_pref"
     const val APP_VERSION_PREF = "app_version_pref"
     const val APP_REPORT_PREF = "app_report_pref"
+
+    const val PREMIUM_PURCHASE_PREF = "premium_purchase_pref"
 }

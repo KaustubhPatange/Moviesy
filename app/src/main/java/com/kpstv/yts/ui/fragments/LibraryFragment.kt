@@ -2,32 +2,30 @@ package com.kpstv.yts.ui.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
-import androidx.activity.OnBackPressedCallback
 import androidx.core.view.GravityCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.kpstv.yts.AppInterface
-
 import com.kpstv.yts.R
-import com.kpstv.yts.ui.activities.MainActivity
-import com.kpstv.yts.ui.activities.SearchActivity
 import com.kpstv.yts.adapters.LibraryDownloadAdapter
-import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
+import com.kpstv.yts.cast.CastHelper
 import com.kpstv.yts.extensions.Coroutines
 import com.kpstv.yts.extensions.deleteRecursive
 import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.extensions.show
+import com.kpstv.yts.ui.activities.MainActivity
+import com.kpstv.yts.ui.activities.SearchActivity
+import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import com.kpstv.yts.ui.fragments.sheets.BottomSheetLibraryDownload
+import com.kpstv.yts.ui.fragments.sheets.PlaybackType
 import es.dmoral.toasty.Toasty
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_library.view.*
 import kotlinx.android.synthetic.main.fragment_library_no_download.view.*
-import kotlinx.android.synthetic.main.fragment_watchlist.view.toolbar
+import kotlinx.android.synthetic.main.fragment_library.view.toolbar
 import java.io.File
 
 class LibraryFragment : Fragment() {
@@ -44,8 +42,7 @@ class LibraryFragment : Fragment() {
 
         mainActivity.viewModel.librayView?.let {
             return it
-        } ?:
-        return inflater.inflate(R.layout.fragment_library, container, false).also { view ->
+        } ?: return inflater.inflate(R.layout.fragment_library, container, false).also { view ->
 
             view.layout_noDownload.hide()
 
@@ -59,26 +56,30 @@ class LibraryFragment : Fragment() {
         }
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        mainActivity.castHelper.init(mainActivity, view.toolbar)
+    }
+
     private fun setRecyclerView(view: View) {
         view.recyclerView_download.layoutManager = LinearLayoutManager(context)
-        downloadAdapter = LibraryDownloadAdapter(context!!, ArrayList())
-        downloadAdapter.OnClickListener = { model, i ->
-            // TODO: Show related sub
-            val sheet = BottomSheetLibraryDownload(mainActivity.viewModel)
+        downloadAdapter = LibraryDownloadAdapter(requireContext(), ArrayList())
+        downloadAdapter.OnClickListener = { model, _ ->
+            /** OnClick for download item */
+            val sheet = if (mainActivity.castHelper.isCastActive()) {
+                /** Show cast to device button */
+                BottomSheetLibraryDownload(mainActivity.viewModel, PlaybackType.REMOTE)
+            }else {
+                /** Show local play button */
+                BottomSheetLibraryDownload(mainActivity.viewModel, PlaybackType.LOCAL)
+            }
             val bundle = Bundle()
-            bundle.putSerializable("model",model)
-           /* bundle.putString("title", model.title)
-            bundle.putString("imdbCode", model.imdbCode)
-            bundle.putString("normalLink", model.videoPath)
-            bundle.putString("hash", model.hash)*/
+            bundle.putSerializable("model", model)
             sheet.arguments = bundle
             sheet.show(mainActivity.supportFragmentManager, "")
-           /* val intent = Intent(context, TorrentPlayerActivity::class.java)
-            intent.putExtra("normalLink", model.videoPath)
-            startActivity(intent)*/
         }
-        downloadAdapter.OnMoreClickListener = { view, model, i ->
-           val popupMenu = PopupMenu(context!!, view)
+        downloadAdapter.OnMoreClickListener = { innerView, model, _ ->
+            val popupMenu = PopupMenu(requireContext(), innerView)
             popupMenu.inflate(R.menu.library_menu)
             popupMenu.setOnMenuItemClickListener {
                 when (it.itemId) {
@@ -86,23 +87,27 @@ class LibraryFragment : Fragment() {
                         AlertNoIconDialog.Companion.Builder(context).apply {
                             setTitle("Location")
                             setMessage("${model.downloadPath}")
-                            setPositiveButton("OK",null)
+                            setPositiveButton("OK", null)
                         }.show()
                     }
                     R.id.action_delete -> {
                         AlertNoIconDialog.Companion.Builder(context).apply {
                             setTitle("Delete?")
                             setMessage("This can't be undone?")
-                            setNegativeButton("Nope", object: AlertNoIconDialog.DialogListener {
-                                override fun onClick() { }
+                            setNegativeButton("Nope", object : AlertNoIconDialog.DialogListener {
+                                override fun onClick() {}
                             })
-                            setPositiveButton("Do It", object: AlertNoIconDialog.DialogListener {
+                            setPositiveButton("Do It", object : AlertNoIconDialog.DialogListener {
                                 override fun onClick() {
                                     val f = File(model.downloadPath!!)
                                     if (f.exists()) {
                                         f.deleteRecursive()
-                                    }else {
-                                        Toasty.error(context!!, "Path does not exist", Toasty.LENGTH_SHORT).show()
+                                    } else {
+                                        Toasty.error(
+                                            requireContext(),
+                                            "Path does not exist",
+                                            Toasty.LENGTH_SHORT
+                                        ).show()
                                         mainActivity.viewModel.removeDownload(model.hash)
                                     }
                                 }
@@ -136,7 +141,7 @@ class LibraryFragment : Fragment() {
         view.toolbar.setNavigationOnClickListener {
             mainActivity.drawerLayout.openDrawer(GravityCompat.START)
         }
-        view.toolbar.inflateMenu(R.menu.fragment_watchlist_menu)
+        view.toolbar.inflateMenu(R.menu.fragment_library_menu)
 
         view.toolbar.setOnMenuItemClickListener {
             if (it.itemId == R.id.action_search) {
