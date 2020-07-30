@@ -74,7 +74,7 @@ class LibraryFragment : Fragment() {
 
     private fun setRecyclerView(view: View) {
         view.recyclerView_download.layoutManager = LinearLayoutManager(context)
-        downloadAdapter = LibraryDownloadAdapter(requireContext(), ArrayList())
+        downloadAdapter = LibraryDownloadAdapter(ArrayList())
         downloadAdapter.OnClickListener = { model, _ ->
             /** OnClick for download item */
             val sheet = if (mainActivity.castHelper.isCastActive()) {

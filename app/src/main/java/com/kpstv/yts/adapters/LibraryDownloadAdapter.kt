@@ -1,6 +1,6 @@
 package com.kpstv.yts.adapters
 
-import android.content.Context
+import android.annotation.SuppressLint
 import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +17,6 @@ import java.io.File
 
 
 class LibraryDownloadAdapter(
-    private val context: Context,
     private var models: List<Model.response_download>
 ) : RecyclerView.Adapter<LibraryDownloadAdapter.LDHolder>() {
 
@@ -33,6 +32,7 @@ class LibraryDownloadAdapter(
             )
         )
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: LDHolder, i: Int) {
         val model = models[i]
 

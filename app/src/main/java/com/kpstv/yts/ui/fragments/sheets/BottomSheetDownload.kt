@@ -12,27 +12,21 @@ import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.kpstv.yts.AppInterface.Companion.SUBTITLE_LOCATION
 import com.kpstv.yts.R
 import com.kpstv.yts.adapters.DownloadAdapter
-import com.kpstv.yts.adapters.SelectSubAdapter
-import com.kpstv.yts.data.models.SelectSubtitle
 import com.kpstv.yts.data.models.Torrent
+import com.kpstv.yts.databinding.BottomSheetDownloadBinding
+import com.kpstv.yts.extensions.ExtendedBottomSheetDialogFragment
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.getMagnetUrl
-import com.kpstv.yts.interfaces.listener.SingleClickListener
+import com.kpstv.yts.extensions.viewBinding
 import com.kpstv.yts.services.DownloadService
 import com.kpstv.yts.ui.activities.TorrentPlayerActivity
 import com.kpstv.yts.ui.helpers.SubtitleHelper
-import kotlinx.android.synthetic.main.bottom_sheet_download.view.*
-import kotlinx.android.synthetic.main.custom_small_tip.view.*
-import java.util.*
-import kotlin.collections.ArrayList
-
 
 @Suppress("NAME_SHADOWING")
-class BottomSheetDownload : BottomSheetDialogFragment() {
+class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sheet_download) {
+
+    private val binding by viewBinding(BottomSheetDownloadBinding::bind)
 
     val TAG = "BottomSheetDownload"
     private var bluray = ArrayList<Torrent>()
@@ -44,19 +38,15 @@ class BottomSheetDownload : BottomSheetDialogFragment() {
     private lateinit var imageUri: String
     private lateinit var movieId: Integer
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.bottom_sheet_download, container, false) as View
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         val list = arguments?.getSerializable("models") as ArrayList<Torrent>
         title = arguments?.getString("title") as String
         imageUri = arguments?.getString("imageUri") as String
         imdbCode = arguments?.getString("imdbCode") as String
         movieId = arguments?.getInt("movieId") as Integer
-        view.recyclerView_download.layoutManager =
+        binding.recyclerViewDownload.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
         for (t in list) {
@@ -65,36 +55,34 @@ class BottomSheetDownload : BottomSheetDialogFragment() {
         }
 
         if (bluray.size <= 0) {
-            view.chip_blueray.visibility = View.GONE
-            view.chip_webrip.isChecked = true
-            view.chip_webrip.isClickable = false
+            binding.chipBlueray.visibility = View.GONE
+            binding.chipWebrip.isChecked = true
+            binding.chipWebrip.isClickable = false
         }
         if (webrip.size <= 0) {
-            view.chip_webrip.visibility = View.GONE
-            view.chip_blueray.isChecked = true
-            view.chip_blueray.isClickable = false
+            binding.chipWebrip.visibility = View.GONE
+            binding.chipBlueray.isChecked = true
+            binding.chipBlueray.isClickable = false
         }
 
         if (webrip.size > 0 && bluray.size > 0)
-            view.chip_blueray.isChecked = true
+            binding.chipBlueray.isChecked = true
 
 
-        view.chip_blueray.setOnCheckedChangeListener { _: CompoundButton, b: Boolean ->
-            if (b) view.chip_webrip.isChecked = false
-            filterChips(view)
+        binding.chipBlueray.setOnCheckedChangeListener { _: CompoundButton, b: Boolean ->
+            if (b) binding.chipWebrip.isChecked = false
+            filterChips()
         }
 
-        view.chip_webrip.setOnCheckedChangeListener { _: CompoundButton, b: Boolean ->
-            if (b) view.chip_blueray.isChecked = false
-            filterChips(view)
+        binding.chipWebrip.setOnCheckedChangeListener { _: CompoundButton, b: Boolean ->
+            if (b) binding.chipBlueray.isChecked = false
+            filterChips()
         }
 
-        filterChips(view)
+        filterChips()
 
         /** Special code for watch now button & Library Button */
-        setUpForWatch(view)
-
-        return view
+        setUpForWatch()
     }
 
     fun startService(model: Torrent) {
@@ -107,10 +95,10 @@ class BottomSheetDownload : BottomSheetDialogFragment() {
         ContextCompat.startForegroundService(context as Context, serviceIntent)
     }
 
-    private fun filterChips(view: View) {
-        if (view.chip_blueray.isChecked) {
+    private fun filterChips() {
+        if (binding.chipBlueray.isChecked) {
             adapter = DownloadAdapter(context, bluray)
-        } else if (view.chip_webrip.isCheckable) {
+        } else if (binding.chipWebrip.isCheckable) {
             adapter = DownloadAdapter(context, webrip)
         }
 
@@ -158,25 +146,25 @@ class BottomSheetDownload : BottomSheetDialogFragment() {
             }
         })
 
-        view.recyclerView_download.adapter = adapter
+        binding.recyclerViewDownload.adapter = adapter
     }
 
-    private fun setUpForWatch(view: View) {
+    private fun setUpForWatch() {
         if (tag == "watch_now") {
-            view.item_tip_text.visibility = View.GONE
+            binding.itemTipText.visibility = View.GONE
 
             /** Show subtitles */
 
-            showSubtitle(view)
+            showSubtitle()
         }
     }
 
-    private fun showSubtitle(view: View) {
+    private fun showSubtitle() {
         subtitleHelper = SubtitleHelper.Builder(requireActivity())
             .setTitle(title)
             .setImdbCode(imdbCode)
-            .setParentView(view)
-            .setAddLayout(view.addLayout)
+            .setParentView(binding.root)
+            .setAddLayout(binding.addLayout)
             .setParentBottomSheet(this)
             .build()
             .apply {

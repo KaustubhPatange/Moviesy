@@ -22,10 +22,11 @@ import com.kpstv.yts.data.converters.QueryConverter
 import com.kpstv.yts.extensions.MovieBase
 import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.data.models.MovieShort
+import com.kpstv.yts.databinding.ActivityMoreBinding
+import com.kpstv.yts.extensions.viewBinding
 import com.kpstv.yts.ui.viewmodels.MoreViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
-import kotlinx.android.synthetic.main.activity_more.*
 import kotlinx.android.synthetic.main.custom_alert_buttons.view.*
 import kotlinx.android.synthetic.main.custom_alert_filter.view.*
 import kotlinx.android.synthetic.main.item_chip.view.*
@@ -35,6 +36,7 @@ import kotlinx.android.synthetic.main.item_chip.view.*
 class MoreActivity : AppCompatActivity() {
 
     private val viewModel by viewModels<MoreViewModel>()
+    private val binding by viewBinding(ActivityMoreBinding::inflate)
 
     private val TAG = "MoreActivity"
 
@@ -98,18 +100,18 @@ class MoreActivity : AppCompatActivity() {
 
         setAppThemeNoAction(this)
 
-        setContentView(R.layout.activity_more)
+        setContentView(binding.root)
 
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         /** Setting title for the activity and updating views
          */
         title = intent?.extras?.getString("title")
 
-        swipeRefreshLayout.isEnabled = false
-        recyclerView.layoutManager = GridLayoutManager(this, 3)
-        am_chipLayout.visibility = View.GONE
+        binding.swipeRefreshLayout.isEnabled = false
+        binding.recyclerView.layoutManager = GridLayoutManager(this, 3)
+        binding.amChipLayout.visibility = View.GONE
 
         /** Updating the base, endpoint static object
          */
@@ -170,7 +172,7 @@ class MoreActivity : AppCompatActivity() {
      */
     private fun initQueries(map: Map<String, String>?) {
 
-        am_chipGroup.removeAllViews()
+        binding.amChipGroup.removeAllViews()
 
         Log.e(TAG, "==> InitQueries")
 
@@ -199,12 +201,12 @@ class MoreActivity : AppCompatActivity() {
         chipView.chip.apply {
             text = getTextfromQuery(title)
             setOnCloseIconClickListener {
-                am_chipGroup.removeView(chipView)
+                binding.amChipGroup.removeView(chipView)
                 updateQueries()
             }
         }
 
-        am_chipGroup.addView(chipView)
+        binding.amChipGroup.addView(chipView)
     }
 
     /** This is called when the chip from chipGroup is removed.
@@ -212,7 +214,7 @@ class MoreActivity : AppCompatActivity() {
      */
     private fun updateQueries() {
         if (base == MovieBase.YTS) {
-            if (am_chipGroup.childCount <= 0) {
+            if (binding.amChipGroup.childCount <= 0) {
                 Toasty.error(applicationContext, "Cannot remove last item").show()
 
                 initQueries(query)
@@ -221,7 +223,7 @@ class MoreActivity : AppCompatActivity() {
             } else {
                 Log.e(TAG, "==> UpdateQueries")
                 val builder = YTSQuery.ListMoviesBuilder()
-                am_chipGroup.children.forEach {
+                binding.amChipGroup.children.forEach {
                     val chip = it.chip
                     when (chip.text) {
                         getString(R.string.date) ->
@@ -265,7 +267,7 @@ class MoreActivity : AppCompatActivity() {
          */
         insertGenre(queryMap ?: HashMap())
 
-        swipeRefreshLayout.isRefreshing = true
+        binding.swipeRefreshLayout.isRefreshing = true
 
         if (base == MovieBase.YTS)
             viewModel.buildNewConfig()
@@ -277,7 +279,7 @@ class MoreActivity : AppCompatActivity() {
 
         viewModel.itemPagedList?.observe(this, observer)
 
-        recyclerView.adapter = adapter
+        binding.recyclerView.adapter = adapter
 
         /** Setting up handler for callbacks */
         updateHandler.postDelayed(updateTask, 1000)
@@ -318,8 +320,6 @@ class MoreActivity : AppCompatActivity() {
                 }
             }
 
-
-
             initQueries(map)
 
             alertDialog?.dismiss()
@@ -334,10 +334,9 @@ class MoreActivity : AppCompatActivity() {
         }.create()
 
 
-        item_filter_more.setOnClickListener {
+        binding.itemFilterMore.setOnClickListener {
             showAlertDialog()
         }
-
     }
 
     private fun showAlertDialog() {
@@ -368,9 +367,6 @@ class MoreActivity : AppCompatActivity() {
         alertDialog?.show()
     }
 
-    private fun isSameArrayList(listA: ArrayList<String>, listB: ArrayList<String>) =
-        listA.containsAll(listB)
-
     /** Since fetching live data depends on network parameter, so I've created
      *  a handler task which will check if Adapter has atleast one item.
      *
@@ -379,14 +375,14 @@ class MoreActivity : AppCompatActivity() {
     private val updateTask: Runnable = object : Runnable {
         override fun run() {
             try {
-                if (recyclerView.adapter?.itemCount ?: 0 <= 0) {
+                if (binding.recyclerView.adapter?.itemCount ?: 0 <= 0) {
                     updateHandler.postDelayed(this, 1000)
                 } else {
 
                     if (base == MovieBase.YTS)
-                        am_chipLayout.visibility = View.VISIBLE
+                        binding.amChipLayout.visibility = View.VISIBLE
 
-                    swipeRefreshLayout.isRefreshing = false
+                    binding.swipeRefreshLayout.isRefreshing = false
                 }
             } catch (e: Exception) {
                 Toasty.error(applicationContext, "Error: ${e.message}").show()

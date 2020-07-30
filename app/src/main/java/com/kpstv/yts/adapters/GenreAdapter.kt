@@ -1,7 +1,5 @@
 package com.kpstv.yts.adapters
 
-import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,15 +8,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.yts.R
 import kotlinx.android.synthetic.main.item_genre.view.*
 
-class GenreAdapter(val con: Context, private val models: ArrayList<String>) :
+class GenreAdapter(private val models: ArrayList<String>) :
     RecyclerView.Adapter<GenreAdapter.GenreHolder>() {
 
     private lateinit var listener: OnClickListener;
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GenreHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_genre, parent, false)
-        return GenreHolder(view)
+        return GenreHolder(
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_genre, parent, false)
+        )
     }
 
     override fun onBindViewHolder(holder: GenreHolder, position: Int) {

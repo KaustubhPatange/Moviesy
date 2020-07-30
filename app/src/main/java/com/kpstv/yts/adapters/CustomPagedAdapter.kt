@@ -23,21 +23,23 @@ import com.bumptech.glide.request.target.Target
 import com.kpstv.yts.AppInterface.Companion.IS_DARK_THEME
 import com.kpstv.yts.AppInterface.Companion.MOVIE_ID
 import com.kpstv.yts.R
-import com.kpstv.yts.ui.activities.FinalActivity
+import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.extensions.MovieBase
 import com.kpstv.yts.extensions.hide
-import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.getBulletSymbol
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.getImdbUrl
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.launchUrl
 import com.kpstv.yts.extensions.utils.GlideApp
+import com.kpstv.yts.ui.activities.FinalActivity
 import kotlinx.android.synthetic.main.item_common_banner.view.*
 
 /** An adapter class to manage the pagination library
  */
-class CustomPagedAdapter(private val context: Context, private val base: MovieBase) :
+class CustomPagedAdapter(
+    private val context: Context,
+    private val base: MovieBase
+) :
     PagedListAdapter<MovieShort, CustomPagedAdapter.CustomHolder>(DIFF_CALLBACK) {
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         /** We will show different layout when the item count is only one.
@@ -49,7 +51,7 @@ class CustomPagedAdapter(private val context: Context, private val base: MovieBa
                     R.layout.item_search_single_main, parent, false
                 )
             )
-        }else {
+        } else {
             CustomHolder(
                 LayoutInflater.from(parent.context).inflate(
                     R.layout.item_more, parent, false
@@ -67,10 +69,11 @@ class CustomPagedAdapter(private val context: Context, private val base: MovieBa
              *  i.e there is only single search
              */
             if (itemCount == 1) {
-                holder.mainSubTextView.text = "${movie.year} ${getBulletSymbol()} ${movie.runtime} mins"
+                holder.mainSubTextView.text =
+                    "${movie.year} ${getBulletSymbol()} ${movie.runtime} mins"
                 holder.mainImdbButton.text = "imdb ${movie.rating}"
                 holder.mainImdbButton.setOnClickListener {
-                    movie.imdbCode?.let { launchUrl(context,getImdbUrl(it),IS_DARK_THEME) }
+                    movie.imdbCode?.let { launchUrl(context, getImdbUrl(it), IS_DARK_THEME) }
                 }
                 holder.mainLayout.setOnClickListener {
                     val intent = Intent(context, FinalActivity::class.java)
@@ -87,11 +90,16 @@ class CustomPagedAdapter(private val context: Context, private val base: MovieBa
                         target: Target<Bitmap>?,
                         isFirstResource: Boolean
                     ): Boolean {
-                        Log.e("CustomPagedAdapter","==> Glide failed for: ${movie.title}")
+                        Log.e("CustomPagedAdapter", "==> Glide failed for: ${movie.title}")
                         return false
                     }
 
-                    override fun onResourceReady(resource: Bitmap?, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean
+                    override fun onResourceReady(
+                        resource: Bitmap?,
+                        model: Any?,
+                        target: Target<Bitmap>?,
+                        dataSource: DataSource?,
+                        isFirstResource: Boolean
                     ): Boolean {
                         holder.mainImage.setImageBitmap(resource)
                         holder.itemView.shimmerFrame.hide()
@@ -121,7 +129,6 @@ class CustomPagedAdapter(private val context: Context, private val base: MovieBa
             }
         }
     }
-
 
     companion object {
         private val DIFF_CALLBACK: DiffUtil.ItemCallback<MovieShort?> =

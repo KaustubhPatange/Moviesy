@@ -1,6 +1,7 @@
 package com.kpstv.yts.ui.activities
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Intent
 import android.graphics.Bitmap
@@ -22,18 +23,20 @@ import com.kpstv.yts.AppInterface.Companion.setAppThemeNoAction
 import com.kpstv.yts.R
 import com.kpstv.yts.adapters.GenreAdapter
 import com.kpstv.yts.data.converters.GenreEnumConverter
+import com.kpstv.yts.data.models.Cast
+import com.kpstv.yts.data.models.Movie
+import com.kpstv.yts.data.models.TmDbMovie
+import com.kpstv.yts.databinding.ActivityFinalBinding
 import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.CafebarToast
 import com.kpstv.yts.extensions.utils.CustomMovieLayout
 import com.kpstv.yts.extensions.utils.GlideApp
+import com.kpstv.yts.extensions.viewBinding
 import com.kpstv.yts.interfaces.listener.FavouriteListener
 import com.kpstv.yts.interfaces.listener.MovieListener
 import com.kpstv.yts.interfaces.listener.SuggestionListener
-import com.kpstv.yts.data.models.Cast
-import com.kpstv.yts.data.models.Movie
-import com.kpstv.yts.data.models.TmDbMovie
 import com.kpstv.yts.ui.fragments.sheets.BottomSheetDownload
 import com.kpstv.yts.ui.fragments.sheets.BottomSheetSubtitles
 import com.kpstv.yts.ui.viewmodels.FinalViewModel
@@ -42,36 +45,35 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerListener
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
-import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.activity_final.*
-import kotlinx.android.synthetic.main.activity_final_content.*
-import kotlinx.android.synthetic.main.activity_final_content.view.*
-import kotlinx.android.synthetic.main.activity_final_previews.*
 
 
 @SuppressLint("SetTextI18n")
 @AndroidEntryPoint
 class FinalActivity : AppCompatActivity(), MovieListener {
 
+    companion object {
+        const val YOUTUBE_PLAYER_VIEW_REQUEST_CODE = 189
+    }
+
     val TAG = "FinalActivity"
 
     private val viewModel by viewModels<FinalViewModel>()
+    private val binding by viewBinding(ActivityFinalBinding::inflate)
 
     private lateinit var movie: Movie
     private lateinit var genreAdapter: GenreAdapter
-    private lateinit var subtitleFetch: Disposable
     private lateinit var player: YouTubePlayer
-    private var fetchHere = false;
     private var menu: Menu? = null
+    private var youTubePlayerCurrentPosition: Float = 0f
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setAppThemeNoAction(this)
 
-        setContentView(R.layout.activity_final)
+        setContentView(binding.root)
 
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         title = " "
 
@@ -98,8 +100,8 @@ class FinalActivity : AppCompatActivity(), MovieListener {
 
     override fun onStarted() {
         hideLayout()
-        swipeRefreshLayout.isEnabled = false
-        swipeRefreshLayout.isRefreshing = true
+        binding.swipeRefreshLayout.isEnabled = false
+        binding.swipeRefreshLayout.isRefreshing = true
     }
 
     override fun onFailure(e: Exception) {
@@ -127,7 +129,7 @@ class FinalActivity : AppCompatActivity(), MovieListener {
         loadRecommendation()
 
         setContentButtons()
-        swipeRefreshLayout.isRefreshing = false;
+        binding.swipeRefreshLayout.isRefreshing = false;
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -149,7 +151,8 @@ class FinalActivity : AppCompatActivity(), MovieListener {
                     viewModel.toggleFavourite(object : FavouriteListener {
                         override fun onToggleFavourite(id: Int?) {
                             if (id == R.drawable.ic_favorite_yes)
-                                Toasty.info(this@FinalActivity, getString(R.string.add_watchlist)).show()
+                                Toasty.info(this@FinalActivity, getString(R.string.add_watchlist))
+                                    .show()
                             menu?.getItem(0)?.icon =
                                 ContextCompat.getDrawable(this@FinalActivity, id!!)
                         }
@@ -185,20 +188,22 @@ class FinalActivity : AppCompatActivity(), MovieListener {
     private fun loadData() {
 
         /** Set top data */
-        af_title.text = movie.title
-        af_subtitle.text = "${movie.language} ${AppUtils.getBulletSymbol()} ${movie.year}"
-        af_imdb_button.text = "imdb ${movie.rating}"
-        af_imdb_button.setOnClickListener {
+        binding.activityFinalContent.afTitle.text = movie.title
+        binding.activityFinalContent.afSubtitle.text =
+            "${movie.language} ${AppUtils.getBulletSymbol()} ${movie.year}"
+        binding.activityFinalContent.afImdbButton.text = "imdb ${movie.rating}"
+        binding.activityFinalContent.afImdbButton.setOnClickListener {
             AppUtils.launchUrl(this@FinalActivity, AppUtils.getImdbUrl(movie.imdb_code))
         }
-        af_pg_button.text = if (movie.mpa_rating.isEmpty()) "R" else movie.mpa_rating
+        binding.activityFinalContent.afPgButton.text =
+            if (movie.mpa_rating.isEmpty()) "R" else movie.mpa_rating
 
         setSummary()
 
         /** Set recyclerview data */
-        recyclerView_genre.layoutManager =
+        binding.activityFinalContent.recyclerViewGenre.layoutManager =
             LinearLayoutManager(this@FinalActivity, LinearLayoutManager.HORIZONTAL, false)
-        genreAdapter = GenreAdapter(this@FinalActivity, movie.genres)
+        genreAdapter = GenreAdapter(movie.genres)
         genreAdapter.setOnClickListener(object : GenreAdapter.OnClickListener {
             override fun onClick(text: String, position: Int) {
                 val genre = GenreEnumConverter.toGenrefromString(text)
@@ -215,9 +220,9 @@ class FinalActivity : AppCompatActivity(), MovieListener {
                 } else Toasty.error(applicationContext, "Genre $text does not exist").show()
             }
         })
-        recyclerView_genre.adapter = genreAdapter
+        binding.activityFinalContent.recyclerViewGenre.adapter = genreAdapter
 
-        afc_card.visibility = View.VISIBLE
+        binding.activityFinalContent.afcCard.visibility = View.VISIBLE
 
     }
 
@@ -233,7 +238,7 @@ class FinalActivity : AppCompatActivity(), MovieListener {
                 isMoreAvailable: Boolean
             ) {
                 val recommendLayout = CustomMovieLayout(this@FinalActivity, "Recommended")
-                recommendLayout.injectViewAt(af_addLayout)
+                recommendLayout.injectViewAt(binding.afAddLayout)
                 recommendLayout.setupCallbacks(movies, "$tag/recommendations", isMoreAvailable)
             }
 
@@ -258,7 +263,7 @@ class FinalActivity : AppCompatActivity(), MovieListener {
                 isMoreAvailable: Boolean
             ) {
                 val similarLayout = CustomMovieLayout(this@FinalActivity, "Suggested")
-                similarLayout.injectViewAt(af_addLayout)
+                similarLayout.injectViewAt(binding.afAddLayout)
                 similarLayout.setupCallbacks(movies, "${movie.imdb_code}/similar", isMoreAvailable)
             }
 
@@ -279,20 +284,22 @@ class FinalActivity : AppCompatActivity(), MovieListener {
                 }
 
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    af_yt_preview_image.setImageBitmap(resource)
+                    binding.activityFinalPreviews.afYtPreviewImage.setImageBitmap(resource)
                     Log.e(TAG, "Image Loaded")
-                    af_yt_preview_image.setOnClickListener {
+                    binding.activityFinalPreviews.afYtPreviewImage.setOnClickListener {
                         Log.e(TAG, "OnClicked")
                         if (::player.isInitialized) {
                             player.loadVideo(movie.yt_trailer_id, 0f)
-                            youtube_player_view.visibility = View.VISIBLE
+                            binding.activityFinalPreviews.youtubePlayerView.visibility =
+                                View.VISIBLE
                         } else {
-                            af_yt_preview_play.visibility = View.GONE
-                            af_yt_preview_progressBar.visibility = View.VISIBLE
+                            binding.activityFinalPreviews.afYtPreviewPlay.visibility = View.GONE
+                            binding.activityFinalPreviews.afYtPreviewProgressBar.visibility =
+                                View.VISIBLE
                         }
                     }
 
-                    af_yt_preview.visibility = View.VISIBLE
+                    binding.activityFinalPreviews.afYtPreview.visibility = View.VISIBLE
                 }
             })
 
@@ -302,11 +309,11 @@ class FinalActivity : AppCompatActivity(), MovieListener {
                 }
 
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    shimmerFrame.hide()
+                    binding.activityFinalPreviews.shimmerFrame.hide()
 
-                    af_yt_banner_image.setImageBitmap(resource)
-                    af_yt_banner_image.visibility = View.VISIBLE
-                    af_yt_banner_image.setOnClickListener {
+                    binding.activityFinalPreviews.afYtBannerImage.setImageBitmap(resource)
+                    binding.activityFinalPreviews.afYtBannerImage.visibility = View.VISIBLE
+                    binding.activityFinalPreviews.afYtBannerImage.setOnClickListener {
                         val sharedImageView = findViewById<View>(R.id.af_yt_banner_image)
                         val intent = Intent(this@FinalActivity, ImageViewActivity::class.java)
                         intent.putExtra("imageUrl", movie.large_cover_image)
@@ -320,48 +327,58 @@ class FinalActivity : AppCompatActivity(), MovieListener {
                     }
                 }
             })
-        afp_scroll.visibility = View.VISIBLE
+        binding.activityFinalPreviews.root.visibility = View.VISIBLE
     }
 
     private fun setSummary() {
         val color = AppUtils.getColorFromAttr(this@FinalActivity, R.attr.colorText)
 
-        af_summary.text = "${movie.description_full}\n\n"
+        binding.activityFinalContent.afSummary.text = "${movie.description_full}\n\n"
 
         /** YTS sometimes doesn't add cast to its movie so we are checking it */
 
         if (movie.cast?.isNotEmpty() == true) {
             val builder = StringBuilder()
-            for (i in 0 until movie.cast?.size!! -1) {
+            for (i in 0 until movie.cast?.size!! - 1) {
                 builder.append(movie.cast?.get(i)?.name).append("  &#8226;  ")
             }
             builder.append(movie.cast?.get(movie.cast?.size!! - 1)?.name)
 
             /** If cast not empty add details it to summary */
-            af_summary.append(AppUtils.getColoredString("<b>Starring</b>", color))
-            af_summary.append(" ${AppUtils.getHtmlText(builder.toString())}\n\n")
+            binding.activityFinalContent.afSummary.append(
+                AppUtils.getColoredString(
+                    "<b>Starring</b>",
+                    color
+                )
+            )
+            binding.activityFinalContent.afSummary.append(" ${AppUtils.getHtmlText(builder.toString())}\n\n")
         }
 
-        af_summary.append(AppUtils.getColoredString("<b>Runtime</b>", color))
-        af_summary.append(" ${movie.runtime} mins")
+        binding.activityFinalContent.afSummary.append(
+            AppUtils.getColoredString(
+                "<b>Runtime</b>",
+                color
+            )
+        )
+        binding.activityFinalContent.afSummary.append(" ${movie.runtime} mins")
 
 
-        af_moreTxt.af_moreTxt.setOnClickListener {
-            if (af_moreTxt.text.toString() == "More") {
-                af_moreTxt.text = "Less"
-                af_summary.maxLines = Integer.MAX_VALUE;
+        binding.activityFinalContent.afMoreTxt.setOnClickListener {
+            if (binding.activityFinalContent.afMoreTxt.text.toString() == "More") {
+                binding.activityFinalContent.afMoreTxt.text = "Less"
+                binding.activityFinalContent.afSummary.maxLines = Integer.MAX_VALUE;
             } else {
-                af_moreTxt.text = "More"
-                af_summary.maxLines = 3;
+                binding.activityFinalContent.afMoreTxt.text = "More"
+                binding.activityFinalContent.afSummary.maxLines = 3;
             }
         }
     }
 
     private fun setContentButtons() {
-        af_download.setOnClickListener {
+        binding.activityFinalContent.afDownload.setOnClickListener {
             loadBottomSheetDownload("download")
         }
-        af_watch.setOnClickListener {
+        binding.activityFinalContent.afWatch.setOnClickListener {
             loadBottomSheetDownload("watch_now")
         }
     }
@@ -379,13 +396,14 @@ class FinalActivity : AppCompatActivity(), MovieListener {
     }
 
     private fun initializeYoutubePlayer() {
-        youtube_player_view.enableAutomaticInitialization = false;
-        youtube_player_view.initialize(object : YouTubePlayerListener {
+        binding.activityFinalPreviews.youtubePlayerView.enableAutomaticInitialization = false;
+        binding.activityFinalPreviews.youtubePlayerView.initialize(object : YouTubePlayerListener {
             override fun onApiChange(youTubePlayer: YouTubePlayer) {
 
             }
 
             override fun onCurrentSecond(youTubePlayer: YouTubePlayer, second: Float) {
+                youTubePlayerCurrentPosition = second
             }
 
             override fun onError(youTubePlayer: YouTubePlayer, error: PlayerConstants.PlayerError) {
@@ -406,14 +424,15 @@ class FinalActivity : AppCompatActivity(), MovieListener {
             override fun onReady(youTubePlayer: YouTubePlayer) {
                 Log.e(TAG, "YouTubePlayerInitialized")
                 player = youTubePlayer
-                af_yt_preview_progressBar.visibility = View.GONE
-                af_yt_preview_play.visibility = View.VISIBLE
+                binding.activityFinalPreviews.afYtPreviewProgressBar.visibility = View.GONE
+                binding.activityFinalPreviews.afYtPreviewPlay.visibility = View.VISIBLE
 
-                button_fullscreen.setOnClickListener {
+                binding.activityFinalPreviews.buttonFullscreen.setOnClickListener {
                     player.pause()
                     val i = Intent(this@FinalActivity, PlayerActivity::class.java)
                     i.putExtra("videoId", movie.yt_trailer_id)
-                    startActivity(i)
+                    i.putExtra("lastPlayed", youTubePlayerCurrentPosition)
+                    startActivityForResult(i, YOUTUBE_PLAYER_VIEW_REQUEST_CODE)
                 }
             }
 
@@ -422,14 +441,15 @@ class FinalActivity : AppCompatActivity(), MovieListener {
                 state: PlayerConstants.PlayerState
             ) {
                 when (state) {
-                    PlayerConstants.PlayerState.PLAYING -> button_fullscreen.visibility =
+                    PlayerConstants.PlayerState.PLAYING -> binding.activityFinalPreviews.buttonFullscreen.visibility =
                         View.VISIBLE
-                    PlayerConstants.PlayerState.PAUSED -> button_fullscreen.visibility = View.GONE
+                    PlayerConstants.PlayerState.PAUSED -> binding.activityFinalPreviews.buttonFullscreen.visibility =
+                        View.GONE
                     PlayerConstants.PlayerState.ENDED -> {
-                        af_yt_preview_play.visibility = View.VISIBLE
-                        af_yt_preview_progressBar.visibility = View.GONE
-                        youtube_player_view.visibility = View.GONE
-                        button_fullscreen.visibility = View.GONE
+                        binding.activityFinalPreviews.afYtPreviewPlay.visibility = View.VISIBLE
+                        binding.activityFinalPreviews.afYtPreviewProgressBar.visibility = View.GONE
+                        binding.activityFinalPreviews.youtubePlayerView.visibility = View.GONE
+                        binding.activityFinalPreviews.buttonFullscreen.visibility = View.GONE
                     }
                 }
             }
@@ -450,25 +470,30 @@ class FinalActivity : AppCompatActivity(), MovieListener {
     }
 
     private fun hideLayout() {
-        afc_card.visibility = View.GONE
-        afp_scroll.visibility = View.GONE
-        af_yt_preview.visibility = View.GONE
-        af_yt_banner_image.visibility = View.GONE
-        // afs_layout.visibility = View.GONE
+        binding.activityFinalContent.afcCard.visibility = View.GONE
+        binding.activityFinalPreviews.root.visibility = View.GONE
+        binding.activityFinalPreviews.afYtPreview.visibility = View.GONE
+        binding.activityFinalPreviews.afYtBannerImage.visibility = View.GONE
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == YOUTUBE_PLAYER_VIEW_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            player.seekTo(data?.getFloatExtra("lastPlayed", 0f) ?: 0f)
+            player.play()
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onDestroy() {
 
         if (::player.isInitialized) player.pause()
-        youtube_player_view.release()
+        binding.activityFinalPreviews.youtubePlayerView.release()
         super.onDestroy()
     }
 
     override fun onSupportNavigateUp(): Boolean {
         finish()
-        return true;
+        return true
     }
-
-
 }
 

@@ -39,7 +39,7 @@
                     app:tint="?attr/colorTextLight" />
 
                 <EditText
-                    android:id="@+id/as_searchEditText"
+                    android:id="@+id/searchEditText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="15dp"
@@ -63,7 +63,9 @@
         android:layout_height="wrap_content"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-        <include layout="@layout/activity_search_single" />
+        <include
+            android:id="@+id/activity_search_single"
+            layout="@layout/activity_search_single" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
@@ -83,7 +85,7 @@
             android:background="?colorSeparator" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/as_suggestionRecyclerView"
+            android:id="@+id/suggestionRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </RelativeLayout>

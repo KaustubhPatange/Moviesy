@@ -1,83 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    <LinearLayout
-        android:id="@+id/layout_noMovieFound"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
+        <LinearLayout
+            android:id="@+id/layout_noMovieFound"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
-            android:text="@string/err_movie_not_found_title"
-            android:textColor="?attr/colorText"
-            android:textSize="17sp" />
+            android:layout_marginBottom="10dp"
+            android:orientation="vertical">
 
-        <TextView
-            android:layout_marginStart="40dp"
-            android:layout_marginEnd="40dp"
-            android:layout_marginTop="5dp"
-            android:gravity="center"
-            android:text="@string/err_movie_not_found_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:text="@string/err_movie_not_found_title"
+                android:textColor="?attr/colorText"
+                android:textSize="17sp" />
 
-       <!-- <HorizontalScrollView
-            android:scrollbars="none"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <com.google.android.material.chip.ChipGroup
-                android:layout_marginStart="15dp"
-                android:layout_marginEnd="15dp"
-                android:id="@+id/as_chipGroup"
-                app:singleSelection="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="40dp"
+                android:gravity="center"
+                android:text="@string/err_movie_not_found_text" />
+        </LinearLayout>
 
-                <com.google.android.material.chip.Chip
-                    style="@style/customChipStyle"
-                    android:text="@string/download"/>
+        <!-- <HorizontalScrollView
+             android:scrollbars="none"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content">
+             <com.google.android.material.chip.ChipGroup
+                 android:layout_marginStart="15dp"
+                 android:layout_marginEnd="15dp"
+                 android:id="@+id/as_chipGroup"
+                 app:singleSelection="true"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content">
 
-                <com.google.android.material.chip.Chip
-                    style="@style/customChipStyle"
-                    android:text="@string/popular"/>
+                 <com.google.android.material.chip.Chip
+                     style="@style/customChipStyle"
+                     android:text="@string/download"/>
 
-                <com.google.android.material.chip.Chip
-                    style="@style/customChipStyle"
-                    android:text="@string/rating"/>
+                 <com.google.android.material.chip.Chip
+                     style="@style/customChipStyle"
+                     android:text="@string/popular"/>
 
-                <com.google.android.material.chip.Chip
-                    style="@style/customChipStyle"
-                    android:text="@string/year"/>
+                 <com.google.android.material.chip.Chip
+                     style="@style/customChipStyle"
+                     android:text="@string/rating"/>
 
-            </com.google.android.material.chip.ChipGroup>
-        </HorizontalScrollView>-->
+                 <com.google.android.material.chip.Chip
+                     style="@style/customChipStyle"
+                     android:text="@string/year"/>
+
+             </com.google.android.material.chip.ChipGroup>
+         </HorizontalScrollView>-->
 
         <androidx.recyclerview.widget.RecyclerView
-            android:padding="5dp"
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:padding="5dp" />
 
         <LinearLayout
-            android:orientation="vertical"
             android:id="@+id/addLayout"
-            android:layout_marginBottom="10dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:orientation="vertical" />
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>

@@ -1,6 +1,5 @@
 package com.kpstv.yts.adapters
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +9,9 @@ import com.kpstv.yts.data.models.SelectSubtitle
 import com.kpstv.yts.interfaces.listener.SingleClickListener
 import kotlinx.android.synthetic.main.item_single.view.*
 
-class SelectSubAdapter(val context: Context, val models: List<SelectSubtitle>):
+class SelectSubAdapter(
+    val models: List<SelectSubtitle>
+):
     RecyclerView.Adapter<SelectSubAdapter.SingleListHolder>() {
 
     private lateinit var singleClickListener: SingleClickListener

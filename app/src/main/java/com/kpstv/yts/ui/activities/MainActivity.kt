@@ -18,19 +18,19 @@ import com.kpstv.yts.AppInterface.Companion.setAppThemeMain
 import com.kpstv.yts.BuildConfig
 import com.kpstv.yts.R
 import com.kpstv.yts.cast.CastHelper
-import com.kpstv.yts.data.db.repository.DownloadRepository
+import com.kpstv.yts.databinding.ActivityMainBinding
+import com.kpstv.yts.extensions.viewBinding
 import com.kpstv.yts.services.DownloadService
 import com.kpstv.yts.ui.settings.SettingsActivity
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.dkbai.tinyhttpd.nanohttpd.webserver.SimpleWebServer
-import kotlinx.android.synthetic.main.activity_main.*
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     val viewModel by viewModels<MainViewModel>()
+    private val binding by viewBinding(ActivityMainBinding::inflate)
 
     val TAG = "MainActivity"
 
@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setAppThemeMain(this)
-        setContentView(R.layout.activity_main)
+        setContentView(binding.root)
 
         SimpleWebServer.init(this, BuildConfig.DEBUG)
 
@@ -53,8 +53,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         castHelper.initCastSession(this)
 
-        drawerLayout = drawer_layout
-        navigationView.setNavigationItemSelectedListener(this)
+        drawerLayout = binding.drawerLayout
+        binding.navigationView.setNavigationItemSelectedListener(this)
 
         navController = findNavController(R.id.nav_host_fragment)
 
@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
          *      transition methods.
          */
 
-        bottom_nav.setOnNavigationItemSelectedListener(bottomNavListener)
+        binding.bottomNav.setOnNavigationItemSelectedListener(bottomNavListener)
 
     }
 
@@ -108,7 +108,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onBackPressed() {
         when {
             drawerLayout.isDrawerOpen(GravityCompat.START) -> drawerLayout.closeDrawer(GravityCompat.START)
-            navController.currentDestination?.id != R.id.homeFragment -> bottom_nav?.selectedItemId =
+            navController.currentDestination?.id != R.id.homeFragment -> binding.bottomNav.selectedItemId =
                 R.id.homeFragment
             else -> super.onBackPressed()
         }

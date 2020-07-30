@@ -16,22 +16,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding2.widget.RxTextView
 import com.kpstv.yts.AppInterface.Companion.SUGGESTION_URL
 import com.kpstv.yts.AppInterface.Companion.setAppThemeNoAction
-import com.kpstv.yts.R
 import com.kpstv.yts.adapters.CustomPagedAdapter
 import com.kpstv.yts.adapters.SearchAdapter
 import com.kpstv.yts.data.CustomDataSource.Companion.INITIAL_QUERY_FETCHED
 import com.kpstv.yts.data.converters.QueryConverter
-import com.kpstv.yts.extensions.MovieBase
-import com.kpstv.yts.extensions.YTSQuery
-import com.kpstv.yts.extensions.hide
-import com.kpstv.yts.extensions.show
+import com.kpstv.yts.data.models.MovieShort
+import com.kpstv.yts.data.models.TmDbMovie
+import com.kpstv.yts.databinding.ActivitySearchBinding
+import com.kpstv.yts.extensions.*
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.hideKeyboard
 import com.kpstv.yts.extensions.utils.CustomMovieLayout
 import com.kpstv.yts.extensions.utils.RetrofitUtils
 import com.kpstv.yts.interfaces.listener.SingleClickListener
 import com.kpstv.yts.interfaces.listener.SuggestionListener
-import com.kpstv.yts.data.models.MovieShort
-import com.kpstv.yts.data.models.TmDbMovie
 import com.kpstv.yts.ui.activities.MoreActivity.Companion.base
 import com.kpstv.yts.ui.activities.MoreActivity.Companion.queryMap
 import com.kpstv.yts.ui.viewmodels.FinalViewModel
@@ -42,8 +39,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_search.*
-import kotlinx.android.synthetic.main.activity_search_single.*
 import okhttp3.Request
 import org.json.JSONArray
 import javax.inject.Inject
@@ -54,9 +49,10 @@ class SearchActivity : AppCompatActivity() {
     private val moreViewModel by viewModels<MoreViewModel>()
     private val finalViewModel by viewModels<FinalViewModel>()
 
+    private val binding by viewBinding(ActivitySearchBinding::inflate)
+
     @Inject
     lateinit var retrofitUtils: RetrofitUtils
-
 
     private val TAG = "SearchActivity"
 
@@ -74,30 +70,30 @@ class SearchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setAppThemeNoAction(this)
-        setContentView(R.layout.activity_search)
+        setContentView(binding.root)
 
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         title = " "
 
-        swipeRefreshLayout.isEnabled = false
+        binding.swipeRefreshLayout.isEnabled = false
 
         /** Hiding noMovieFound layout
          */
-        layout_noMovieFound.hide()
+        binding.activitySearchSingle.layoutNoMovieFound.hide()
 
         /** Setting suggestion RecyclerView and adapter with empty models
          */
-        as_suggestionRecyclerView.layoutManager = LinearLayoutManager(this)
-        suggestionAdapter = SearchAdapter(this, suggestionModels)
+        binding.suggestionRecyclerView.layoutManager = LinearLayoutManager(this)
+        suggestionAdapter = SearchAdapter(suggestionModels)
         suggestionAdapter.setSingleClickListener(object : SingleClickListener {
             override fun onClick(obj: Any, i: Int) {
                 updateQuery(obj as String)
             }
 
         })
-        as_suggestionRecyclerView.adapter = suggestionAdapter
+        binding.suggestionRecyclerView.adapter = suggestionAdapter
 
         /** Removing recyclerview first to see the content view first
          */
@@ -105,14 +101,14 @@ class SearchActivity : AppCompatActivity() {
 
         /** Setting close button onClickListener (shown beside editText in appBar)
          */
-        item_close.setOnClickListener {
-            as_searchEditText.text.clear()
+        binding.itemClose.setOnClickListener {
+            binding.searchEditText.text.clear()
             it.hide()
         }
 
-        as_searchEditText.setOnKeyListener(onActionSearchEvent())
+        binding.searchEditText.setOnKeyListener(onActionSearchEvent())
 
-        as_searchEditText.addTextChangedListener(searchEditTextChangeListener())
+        binding.searchEditText.addTextChangedListener(searchEditTextChangeListener())
 
         setSuggestionObservable()
     }
@@ -123,11 +119,11 @@ class SearchActivity : AppCompatActivity() {
 
         /** This focus will show the keyboard whenever this activity will be started
          */
-        as_searchEditText.requestFocus()
+        binding.searchEditText.requestFocus()
 
         /** Hiding the close button at start
          */
-        item_close.hide()
+        binding.itemClose.hide()
     }
 
     /** This will setup final RecyclerView which will show all query.
@@ -141,7 +137,7 @@ class SearchActivity : AppCompatActivity() {
      *     will be used with fluctuation of showing suggested movies or not.
      */
     private fun setupRecyclerView() {
-        swipeRefreshLayout.isRefreshing = true
+        binding.swipeRefreshLayout.isRefreshing = true
 
         /** Used for clearing MoreViewModel current instance.
          */
@@ -149,12 +145,12 @@ class SearchActivity : AppCompatActivity() {
 
         /** Remove any existing suggestion layout.
          */
-        addLayout.removeAllViews()
+        binding.activitySearchSingle.addLayout.removeAllViews()
 
         /** Setting up static queryMap and base of MoreActivity.
          */
         queryMap = YTSQuery.ListMoviesBuilder().apply {
-            setQuery(as_searchEditText.text.toString())
+            setQuery(binding.searchEditText.text.toString())
         }.build()
         base = MovieBase.YTS
 
@@ -167,9 +163,9 @@ class SearchActivity : AppCompatActivity() {
         /** Setting layout manager as grid layout at first we will update it
          *  to linear layout manager if there is only single match.
          */
-        recyclerView.layoutManager = gridLayoutManager
+        binding.activitySearchSingle.recyclerView.layoutManager = gridLayoutManager
 
-        recyclerView.adapter = adapter
+        binding.activitySearchSingle.recyclerView.adapter = adapter
 
         updateHandler.postDelayed(updateTask, 1000)
     }
@@ -187,14 +183,14 @@ class SearchActivity : AppCompatActivity() {
     private val updateTask: Runnable = object : Runnable {
         override fun run() {
             try {
-                if (recyclerView.adapter?.itemCount ?: 0 <= 0) {
+                if (binding.activitySearchSingle.recyclerView.adapter?.itemCount ?: 0 <= 0) {
 
                     /** A hack used to know if there are no results found
                      *  and certainly displaying noMovieFound layout.
                      */
                     if (INITIAL_QUERY_FETCHED) {
-                        swipeRefreshLayout.isRefreshing = false
-                        layout_noMovieFound.show()
+                        binding.swipeRefreshLayout.isRefreshing = false
+                        binding.activitySearchSingle.layoutNoMovieFound.show()
                     } else
                         updateHandler.postDelayed(this, 1000)
 
@@ -204,7 +200,7 @@ class SearchActivity : AppCompatActivity() {
                     /** Query is successful and we've some results.
                      */
 
-                    swipeRefreshLayout.isRefreshing = false
+                    binding.swipeRefreshLayout.isRefreshing = false
 
                     /** If there is only one item i.e single match, then linear layout manager
                      *  will be used and item_search_single_main will be displayed.
@@ -212,7 +208,7 @@ class SearchActivity : AppCompatActivity() {
                      *  @see CustomPagedAdapter
                      */
                     if (adapter.itemCount == 1) {
-                        recyclerView.layoutManager = linearLayoutManager
+                        binding.activitySearchSingle.recyclerView.layoutManager = linearLayoutManager
                     }
 
                     if (adapter.itemCount <= 10) {
@@ -228,7 +224,7 @@ class SearchActivity : AppCompatActivity() {
                                     isMoreAvailable: Boolean
                                 ) {
                                     val layout = CustomMovieLayout(this@SearchActivity, "Suggested")
-                                    layout.injectViewAt(addLayout)
+                                    layout.injectViewAt(binding.activitySearchSingle.addLayout)
                                     layout.setupCallbacks(
                                         movies,
                                         "${imdbCode}/similar",
@@ -261,14 +257,14 @@ class SearchActivity : AppCompatActivity() {
 
         /** Hiding noMovieFound layout if visible
          */
-        layout_noMovieFound.hide()
+        binding.activitySearchSingle.layoutNoMovieFound.hide()
 
         isSearchClicked = true
         /** Setting this boolean true because search was clicked */
 
-        as_searchEditText.clearFocus()
+        binding.searchEditText.clearFocus()
 
-        as_searchEditText.setText(text)
+        binding.searchEditText.setText(text)
         /** Autocomplete text in search EditText */
 
         hideKeyboard(this)
@@ -286,7 +282,7 @@ class SearchActivity : AppCompatActivity() {
      *  updates the recyclerView using async Consumers.
      */
     private fun setSuggestionObservable() {
-        suggestionFetch = RxTextView.textChanges(as_searchEditText)
+        suggestionFetch = RxTextView.textChanges(binding.searchEditText)
             .observeOn(Schedulers.io())
             .subscribeOn(AndroidSchedulers.mainThread())
             .subscribe(onTaskStarted(), onTaskError())
@@ -295,7 +291,7 @@ class SearchActivity : AppCompatActivity() {
     /** Whenever user press search button on keyboard we will updateQuery
      */
     private fun onActionSearchEvent() = View.OnKeyListener { _, _, _ ->
-        updateQuery(as_searchEditText.text.toString())
+        updateQuery(binding.searchEditText.text.toString())
         true
     }
 
@@ -305,8 +301,8 @@ class SearchActivity : AppCompatActivity() {
     private fun searchEditTextChangeListener() = object : TextWatcher {
         override fun afterTextChanged(s: Editable?) {
             if (s?.toString()?.isNotEmpty() == true)
-                item_close.show()
-            else item_close.hide()
+                binding.itemClose.show()
+            else binding.itemClose.hide()
         }
 
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -327,7 +323,7 @@ class SearchActivity : AppCompatActivity() {
     private fun removeSuggestionRecyclerView() {
         suggestionModels.clear()
         suggestionAdapter.notifyDataSetChanged()
-        suggestionLayout.hide()
+        binding.suggestionLayout.hide()
     }
 
     /** Since Consumers are basically an async threads. Here we are making
@@ -369,7 +365,7 @@ class SearchActivity : AppCompatActivity() {
         runOnUiThread {
             /** Showing the hidden suggestion Layout
              */
-            suggestionLayout.show()
+            binding.suggestionLayout.show()
 
             suggestionModels.clear()
             try {
@@ -399,14 +395,14 @@ class SearchActivity : AppCompatActivity() {
      */
     override fun onResume() {
         super.onResume()
-        if (as_searchEditText.text.isNotEmpty()) {
-            item_close.show()
+        if (binding.searchEditText.text.isNotEmpty()) {
+            binding.itemClose.show()
         }
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        if (suggestionLayout.isVisible) {
-            suggestionLayout.hide()
+        if (binding.suggestionLayout.isVisible) {
+            binding.suggestionLayout.hide()
             hideKeyboard(this)
         } else
             onBackPressed()

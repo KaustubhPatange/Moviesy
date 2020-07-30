@@ -58,7 +58,7 @@ class SubtitleHelper {
                 val list = ArrayList<SelectSubtitle>()
                 onlySuchFiles.mapTo(list) { SelectSubtitle(it) }
 
-                singleAdapter = SelectSubAdapter(activity.applicationContext, list)
+                singleAdapter = SelectSubAdapter(list)
                 singleAdapter?.setOnClickListener(object :
                     SingleClickListener {
                     override fun onClick(obj: Any, i: Int) {

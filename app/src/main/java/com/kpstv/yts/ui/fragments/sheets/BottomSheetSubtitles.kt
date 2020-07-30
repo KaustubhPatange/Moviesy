@@ -23,10 +23,13 @@ import com.kpstv.yts.AppInterface.Companion.SUBTITLE_LOCATION
 import com.kpstv.yts.AppInterface.Companion.YIFY_BASE_URL
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.Subtitle
+import com.kpstv.yts.databinding.BottomSheetSubtitlesBinding
+import com.kpstv.yts.extensions.ExtendedBottomSheetDialogFragment
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.FlagUtils
 import com.kpstv.yts.extensions.utils.GlideApp
 import com.kpstv.yts.extensions.utils.ZipUtility
+import com.kpstv.yts.extensions.viewBinding
 import com.kpstv.yts.interfaces.listener.SingleClickListener
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,49 +46,44 @@ import java.io.File
 import java.util.concurrent.Callable
 import javax.inject.Inject
 
+/**
+ * The class was made when I was just starting with Kotlin.
+ * At that time I wasn't familiar with coroutines so you may see
+ * some reactiveX extensions.
+ */
+
 @SuppressLint("SetTextI18n")
 @AndroidEntryPoint
-class BottomSheetSubtitles : BottomSheetDialogFragment() {
+class BottomSheetSubtitles : ExtendedBottomSheetDialogFragment(R.layout.bottom_sheet_subtitles) {
+    private val binding by viewBinding(BottomSheetSubtitlesBinding::bind)
 
     @Inject
     lateinit var flagUtils: FlagUtils
 
     private val TAG = "BottomSheetSubtiles"
-    private lateinit var v: View
+
+    private var subtitleModels = ArrayList<Subtitle>()
     private lateinit var adapter: SubtitleAdapter
     private lateinit var subtitleFetch: Disposable
     private lateinit var imdb_code: String
-    var hasEnglish = false
-    var hasSpanish = false
-    var hasArabic = false
+    private var hasEnglish = false
+    private var hasSpanish = false
+    private var hasArabic = false
 
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        v = inflater.inflate(R.layout.bottom_sheet_subtitles, container, false)
-
-        v.recyclerView_subtitles.layoutManager = LinearLayoutManager(context)
-        v.mainLayout.visibility = View.GONE
-
-        /** Fetching subtitles */
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.recyclerViewSubtitles.layoutManager = LinearLayoutManager(context)
+        binding.subtitleMainLayout.visibility = View.GONE
         imdb_code = tag as String
 
+        /** Fetching subtitles */
         fetchSubtitles()
-
-        return v
     }
 
-
-    private var subtitleModels = ArrayList<Subtitle>()
     private fun fetchSubtitles() {
-
-        subtitleFetch = Observable.fromCallable<String> {
+        subtitleFetch = Observable.fromCallable {
             return@fromCallable Jsoup.connect("${YIFY_BASE_URL}/movie-imdb/${imdb_code}").get()
                 .html()
-            // btn-icon download-subtitle --> Own text
         }.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
@@ -126,7 +124,7 @@ class BottomSheetSubtitles : BottomSheetDialogFragment() {
                     recyclerView_subtitles.setHasFixedSize(true)
                     recyclerView_subtitles.adapter = adapter
 
-                    v.mainLayout.visibility = View.VISIBLE
+                    binding.subtitleMainLayout.visibility = View.VISIBLE
 
                     handleFilter()
 
@@ -149,8 +147,8 @@ class BottomSheetSubtitles : BottomSheetDialogFragment() {
     private fun handleFilter() {
 
         if (subtitleModels.size < 10) {
-            v.filterLayout.visibility = View.GONE
-            v.separatorView.visibility = View.GONE
+            binding.filterLayout.visibility = View.GONE
+            binding.separatorView.visibility = View.GONE
             return
         }
 
@@ -214,7 +212,7 @@ class BottomSheetSubtitles : BottomSheetDialogFragment() {
                 AlertNoIconDialog.Companion.Builder(context).apply {
                     setTitle("Error")
                     setMessage("Failed to download subtitles due to: ${it.message}")
-                    setPositiveButton(getString(R.string.alright)) { dismiss()  }
+                    setPositiveButton(getString(R.string.alright)) { dismiss() }
                 }.show()
             })
 
@@ -381,6 +379,4 @@ class BottomSheetSubtitles : BottomSheetDialogFragment() {
 
 
     }
-
-
 }

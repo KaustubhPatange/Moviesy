@@ -37,8 +37,12 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-                <include layout="@layout/activity_final_content" />
-                <include layout="@layout/activity_final_previews" />
+                <include
+                    android:id="@+id/activity_final_content"
+                    layout="@layout/activity_final_content" />
+                <include
+                    android:id="@+id/activity_final_previews"
+                    layout="@layout/activity_final_previews" />
              <!--   <include layout="@layout/activity_final_suggestion" />-->
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>

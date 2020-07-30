@@ -10,7 +10,10 @@ import com.kpstv.yts.data.models.Torrent
 import com.kpstv.yts.extensions.utils.GlideApp
 import kotlinx.android.synthetic.main.item_torrent_download_1.view.*
 
-class JobQueueAdapter(val context: Context, val models: ArrayList<Torrent>) :
+class JobQueueAdapter(
+    private val context: Context,
+    private val models: ArrayList<Torrent>
+) :
     RecyclerView.Adapter<JobQueueAdapter.JobHolder>() {
 
     private lateinit var listener: CloseClickListener
@@ -49,8 +52,6 @@ class JobQueueAdapter(val context: Context, val models: ArrayList<Torrent>) :
     class JobHolder(view: View) : RecyclerView.ViewHolder(view) {
         val image = view.item_image
         val title = view.item_title
-        val progressBar = view.item_progressBar
         val closeImage = view.item_close
     }
-
 }

@@ -1,6 +1,5 @@
 package com.kpstv.yts.adapters
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +8,9 @@ import com.kpstv.yts.R
 import com.kpstv.yts.interfaces.listener.SingleClickListener
 import kotlinx.android.synthetic.main.item_search_suggestion.view.*
 
-class SearchAdapter(private val context: Context, private val list: ArrayList<String>) :
+class SearchAdapter(
+    private val list: ArrayList<String>
+) :
     RecyclerView.Adapter<SearchAdapter.SearchHolder>() {
 
     private lateinit var listener: SingleClickListener

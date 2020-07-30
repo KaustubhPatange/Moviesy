@@ -14,13 +14,19 @@ import com.kpstv.yts.data.models.Torrent
 import kotlinx.android.synthetic.main.item_download.view.*
 
 @SuppressLint("SetTextI18n")
-class DownloadAdapter(val context: Context?, val models: ArrayList<Torrent>) : RecyclerView.Adapter<DownloadAdapter.DownloadHolder>() {
+class DownloadAdapter(
+    private val context: Context?,
+    private val models: ArrayList<Torrent>
+) :
+    RecyclerView.Adapter<DownloadAdapter.DownloadHolder>() {
 
     private lateinit var listener: DownloadClickListener
     private lateinit var longListener: DownloadLongClickListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DownloadHolder {
-        return DownloadHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_download,parent,false))
+        return DownloadHolder(
+            LayoutInflater.from(parent.context).inflate(R.layout.item_download, parent, false)
+        )
     }
 
     override fun onBindViewHolder(holder: DownloadHolder, i: Int) {
@@ -31,10 +37,10 @@ class DownloadAdapter(val context: Context?, val models: ArrayList<Torrent>) : R
         holder.size.text = model.size_pretty
 
         holder.mainCard.setOnClickListener {
-            listener.onClick(model,i)
+            listener.onClick(model, i)
         }
         holder.mainCard.setOnLongClickListener {
-            longListener.onLongClick(model,i)
+            longListener.onLongClick(model, i)
             return@setOnLongClickListener true
         }
     }
@@ -66,5 +72,4 @@ class DownloadAdapter(val context: Context?, val models: ArrayList<Torrent>) : R
         val size: Button = itemView.item_size
         val mainCard: CardView = itemView.mainCard
     }
-
 }

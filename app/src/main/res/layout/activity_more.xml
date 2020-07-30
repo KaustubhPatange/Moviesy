@@ -61,13 +61,16 @@
                 android:padding="14dp"
                 android:src="@drawable/ic_filter"
                 app:tint="?colorTextLight" />
+
             <com.google.android.material.chip.ChipGroup
                 android:layout_marginStart="3dp"
                 android:id="@+id/am_chipGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent">
             </com.google.android.material.chip.ChipGroup>
+
         </LinearLayout>
+
     </RelativeLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
