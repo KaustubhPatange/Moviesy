@@ -67,7 +67,9 @@
                     android:textColor="?attr/colorText"
                     android:textSize="17sp" />
 
-                <include layout="@layout/item_torrent_download" />
+                <include
+                    android:id="@+id/item_torrent_download"
+                    layout="@layout/item_torrent_download" />
             </LinearLayout>
 
             <LinearLayout

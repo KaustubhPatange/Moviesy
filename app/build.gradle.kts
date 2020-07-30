@@ -11,6 +11,8 @@ android {
     compileSdkVersion(AndroidConfig.COMPILE_SDK_VERSION)
     buildToolsVersion(AndroidConfig.BUILD_TOOLS_VERSION)
 
+    viewBinding.isEnabled = true
+
     defaultConfig {
         applicationId = AndroidConfig.ID
         minSdkVersion(AndroidConfig.MIN_SDK_VERSION)
@@ -71,6 +73,7 @@ dependencies {
     implementation(LibraryDependency.LIFECYCLE_EXTENSIONS)
     implementation(LibraryDependency.LIFECYCLE_VIEWMODEL)
     implementation(LibraryDependency.LIFECYCLE_COMMON)
+    implementation(LibraryDependency.LIFECYCLE_RUNTIME)
     implementation(LibraryDependency.PAGING)
     implementation(LibraryDependency.RETROFIT) {
         exclude("okhttp")

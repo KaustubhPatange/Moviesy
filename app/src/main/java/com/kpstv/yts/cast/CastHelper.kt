@@ -234,8 +234,6 @@ class CastHelper {
                 )
             }
         }
-
-
     }
 
     private fun setUpCastListener() {

@@ -38,12 +38,12 @@ import com.kpstv.yts.extensions.utils.GlideApp
 import com.kpstv.yts.data.models.Torrent
 import com.kpstv.yts.data.models.TorrentJob
 import com.kpstv.yts.data.models.response.Model
+import com.kpstv.yts.databinding.ActivityDownloadBinding
+import com.kpstv.yts.extensions.viewBinding
 import com.kpstv.yts.receivers.CommonBroadCast
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_download.*
-import kotlinx.android.synthetic.main.item_torrent_download.*
 import java.io.File
 import javax.inject.Inject
 
@@ -52,6 +52,7 @@ import javax.inject.Inject
 class DownloadActivity : AppCompatActivity() {
 
     val viewModel by viewModels<MainViewModel>()
+    private val binding by viewBinding(ActivityDownloadBinding::inflate)
 
     @Inject
     lateinit var pauseRepository: PauseRepository
@@ -78,20 +79,20 @@ class DownloadActivity : AppCompatActivity() {
 
         setAppThemeNoAction(this)
 
-        setContentView(R.layout.activity_download)
+        setContentView(binding.root)
 
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
 
         title = "Download Queue"
 
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        layout_pauseQueue.hide()
+        binding.layoutPauseQueue.hide()
 
         emptyQueue()
 
-        recyclerView_download.layoutManager = LinearLayoutManager(this)
+        binding.recyclerViewDownload.layoutManager = LinearLayoutManager(this)
 
         handleReceiver(intent?.action, intent)
 
@@ -106,7 +107,7 @@ class DownloadActivity : AppCompatActivity() {
     }
 
     private fun bindUI() = Coroutines.main {
-        recyclerView_pause.layoutManager = LinearLayoutManager(this)
+        binding.recyclerViewPause.layoutManager = LinearLayoutManager(this)
         pauseAdapter = PauseAdapter(applicationContext, ArrayList())
 
         pauseAdapter.setOnMoreListener = { v, model, i ->
@@ -119,13 +120,13 @@ class DownloadActivity : AppCompatActivity() {
             popupMenu.show()
         }
 
-        recyclerView_pause.adapter = pauseAdapter
+        binding.recyclerViewPause.adapter = pauseAdapter
         viewModel.pauseMovieJob.await().observe(this, Observer {
             pauseAdapter.updateModels(it)
             if (pauseAdapter.itemCount > 0) {
-                layout_pauseQueue.show()
+                binding.layoutPauseQueue.show()
             } else
-                layout_pauseQueue.hide()
+                binding.layoutPauseQueue.hide()
             DA_LOG("Updating models")
         })
     }
@@ -158,7 +159,7 @@ class DownloadActivity : AppCompatActivity() {
                         } else if (currentModel.title == model.title) {
                             updateCurrentModel(intent, model, true)
                         } else updateCurrentModel(intent, model)
-                        layout_jobCurrentQueue.visibility = View.VISIBLE
+                        binding.layoutJobCurrentQueue.visibility = View.VISIBLE
                     }
 
                 } catch (e: Exception) {
@@ -194,25 +195,25 @@ class DownloadActivity : AppCompatActivity() {
         torrentJob: TorrentJob,
         justUpdateStatus: Boolean = false
     ) {
-        layout_JobEmptyQueue.hide()
+        binding.layoutJobEmptyQueue.hide()
 
-        item_status.text = torrentJob.status
-        item_progress.text = "${torrentJob.progress}%"
-        item_seeds_peers.text = "${torrentJob.seeds}/${torrentJob.peers}"
+        binding.itemTorrentDownload.itemStatus.text = torrentJob.status
+        binding.itemTorrentDownload.itemProgress.text = "${torrentJob.progress}%"
+        binding.itemTorrentDownload.itemSeedsPeers.text = "${torrentJob.seeds}/${torrentJob.peers}"
 
         /** Calculate total size based on progress */
 
         var totalSize = torrentJob.totalSize;
         totalSize ?: kotlin.run { totalSize = 0 }
 
-        item_current_size.text =
+        binding.itemTorrentDownload.itemCurrentSize.text =
             calculateCurrentSize(
                 torrentJob
             )
 
-        item_download_speed.text = formatDownloadSpeed(torrentJob.downloadSpeed)
-        item_progressBar.progress = torrentJob.progress
-        item_total_size.text = AppUtils.getSizePretty(torrentJob.totalSize)
+        binding.itemTorrentDownload.itemDownloadSpeed.text = formatDownloadSpeed(torrentJob.downloadSpeed)
+        binding.itemTorrentDownload.itemProgressBar.progress = torrentJob.progress
+        binding.itemTorrentDownload.itemTotalSize.text = AppUtils.getSizePretty(torrentJob.totalSize)
 
         pendingJobUpdate(intent)
 
@@ -228,15 +229,15 @@ class DownloadActivity : AppCompatActivity() {
                         resource: Bitmap,
                         transition: Transition<in Bitmap>?
                     ) {
-                        item_image.setImageBitmap(resource)
+                        binding.itemTorrentDownload.itemImage.setImageBitmap(resource)
                     }
                 }
             )
 
-            item_title.text = currentModel.title
+            binding.itemTorrentDownload.itemTitle.text = currentModel.title
 
-            item_more_imageView.setOnClickListener {
-                val menu = PopupMenu(this, item_more_imageView)
+            binding.itemTorrentDownload.itemMoreImageView.setOnClickListener {
+                val menu = PopupMenu(this, binding.itemTorrentDownload.itemMoreImageView)
                 menu.inflate(R.menu.item_torrrent_menu)
                 menu.setOnMenuItemClickListener {
                     when (it.itemId) {
@@ -277,22 +278,14 @@ class DownloadActivity : AppCompatActivity() {
                             AlertNoIconDialog.Companion.Builder(this).apply {
                                 setTitle(getString(R.string.ask_title))
                                 setMessage(getString(R.string.ask_delete))
-                                setPositiveButton(
-                                    getString(R.string.yes),
-                                    object : AlertNoIconDialog.DialogListener {
-                                        override fun onClick() {
-                                            i.putExtra("deleteFile", true)
-                                            actionCancel(i)
-                                        }
-                                    })
-                                setNegativeButton(
-                                    getString(R.string.no),
-                                    object : AlertNoIconDialog.DialogListener {
-                                        override fun onClick() {
-                                            i.putExtra("deleteFile", false)
-                                            actionCancel(i)
-                                        }
-                                    })
+                                setPositiveButton(getString(R.string.yes)) {
+                                    i.putExtra("deleteFile", true)
+                                    actionCancel(i)
+                                }
+                                setNegativeButton(getString(R.string.no)) {
+                                    i.putExtra("deleteFile", false)
+                                    actionCancel(i)
+                                }
                             }.show()
                         }
                     }
@@ -325,9 +318,9 @@ class DownloadActivity : AppCompatActivity() {
                 }
             })
 
-            recyclerView_download.adapter = adapter
-            layout_jobPendingQueue.visibility = View.VISIBLE
-        } else layout_jobPendingQueue.visibility = View.GONE
+            binding.recyclerViewDownload.adapter = adapter
+            binding.layoutJobPendingQueue.visibility = View.VISIBLE
+        } else binding.layoutJobPendingQueue.visibility = View.GONE
     }
 
     private fun handlePauseMenu(it: MenuItem, model: Model.response_pause, i: Int) {
@@ -342,33 +335,25 @@ class DownloadActivity : AppCompatActivity() {
                 AlertNoIconDialog.Companion.Builder(this).apply {
                     setTitle(getString(R.string.ask_title))
                     setMessage(getString(R.string.ask_delete))
-                    setPositiveButton(
-                        getString(R.string.yes),
-                        object : AlertNoIconDialog.DialogListener {
-                            override fun onClick() {
-                                model.saveLocation?.let {
-                                    AppUtils.deleteRecursive(File(it))
-                                }
-                                pauseRepository?.deletePause(model.hash)
-                                decideToShowNoJobLayout()
-                            }
-                        })
-                    setNegativeButton(
-                        getString(R.string.no),
-                        object : AlertNoIconDialog.DialogListener {
-                            override fun onClick() {
-                                pauseRepository?.deletePause(model.hash)
-                                decideToShowNoJobLayout()
-                            }
-                        })
+                    setPositiveButton(getString(R.string.yes)) {
+                        model.saveLocation?.let {
+                            AppUtils.deleteRecursive(File(it))
+                        }
+                        pauseRepository.deletePause(model.hash)
+                        decideToShowNoJobLayout()
+                    }
+                    setNegativeButton(getString(R.string.no)) {
+                        pauseRepository.deletePause(model.hash)
+                        decideToShowNoJobLayout()
+                    }
                 }.show()
             }
         }
     }
 
     private fun decideToShowNoJobLayout() {
-        if (pauseAdapter.itemCount <= 0 && ::adapter.isInitialized && adapter.itemCount <= 0 && layout_jobCurrentQueue.visibility == View.GONE) {
-            layout_JobEmptyQueue.show()
+        if (pauseAdapter.itemCount <= 0 && ::adapter.isInitialized && adapter.itemCount <= 0 && binding.layoutJobCurrentQueue.visibility == View.GONE) {
+            binding.layoutJobEmptyQueue.show()
             return
         }
     }
@@ -376,7 +361,7 @@ class DownloadActivity : AppCompatActivity() {
     private fun actionCancel(i: Intent) {
         LocalBroadcastManager.getInstance(this)
             .sendBroadcast(i)
-        layout_jobCurrentQueue.visibility = View.GONE
+        binding.layoutJobCurrentQueue.visibility = View.GONE
         showJobEmptyQueue()
     }
 
@@ -385,8 +370,8 @@ class DownloadActivity : AppCompatActivity() {
         DA_LOG("## EMPTYING QUEUE")
 
         showJobEmptyQueue()
-        layout_jobPendingQueue.visibility = View.GONE
-        layout_jobCurrentQueue.visibility = View.GONE
+        binding.layoutJobPendingQueue.visibility = View.GONE
+        binding.layoutJobCurrentQueue.visibility = View.GONE
     }
 
     private fun showJobEmptyQueue() {
@@ -398,8 +383,8 @@ class DownloadActivity : AppCompatActivity() {
 
         if (::pauseAdapter.isInitialized && pauseAdapter.itemCount <= 0) {
             DA_LOG("pauseAdapter: ${pauseAdapter.itemCount}")
-            layout_JobEmptyQueue.show()
-        } else layout_JobEmptyQueue.show()
+            binding.layoutJobEmptyQueue.show()
+        } else binding.layoutJobEmptyQueue.show()
     }
 
     override fun onDestroy() {

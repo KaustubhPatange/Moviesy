@@ -22,12 +22,12 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.kpstv.yts.AppInterface.Companion.SUBTITLE_LOCATION
 import com.kpstv.yts.AppInterface.Companion.YIFY_BASE_URL
 import com.kpstv.yts.R
+import com.kpstv.yts.data.models.Subtitle
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.FlagUtils
 import com.kpstv.yts.extensions.utils.GlideApp
 import com.kpstv.yts.extensions.utils.ZipUtility
 import com.kpstv.yts.interfaces.listener.SingleClickListener
-import com.kpstv.yts.data.models.Subtitle
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
@@ -141,12 +141,7 @@ class BottomSheetSubtitles : BottomSheetDialogFragment() {
                 AlertNoIconDialog.Companion.Builder(context).apply {
                     setTitle("Error")
                     setMessage("Failed to fetch subtitles due to: ${it.message}")
-                    setPositiveButton(getString(R.string.yes),
-                        object : AlertNoIconDialog.DialogListener {
-                            override fun onClick() {
-                                dismiss()
-                            }
-                        })
+                    setPositiveButton(getString(R.string.yes)) { dismiss() }
                 }.show()
             })
     }
@@ -219,12 +214,7 @@ class BottomSheetSubtitles : BottomSheetDialogFragment() {
                 AlertNoIconDialog.Companion.Builder(context).apply {
                     setTitle("Error")
                     setMessage("Failed to download subtitles due to: ${it.message}")
-                    setPositiveButton(getString(R.string.alright),
-                        object : AlertNoIconDialog.DialogListener {
-                            override fun onClick() {
-                                dismiss()
-                            }
-                        })
+                    setPositiveButton(getString(R.string.alright)) { dismiss()  }
                 }.show()
             })
 

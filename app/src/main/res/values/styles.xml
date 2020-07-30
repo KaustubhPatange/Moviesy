@@ -139,9 +139,14 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
-    <style name="SplashTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="SplashTheme" parent="Theme.MaterialComponents.NoActionBar">
         <item name="android:background">#9B68DA</item>
+        <item name="snackbarStyle">@style/CustomSnackBarStyle</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="CustomSnackBarStyle" parent="Widget.MaterialComponents.Snackbar">
+        <item name="backgroundTint">@color/background</item>
     </style>
 
     <style name="SearchViewStyle" parent="Widget.AppCompat.SearchView">

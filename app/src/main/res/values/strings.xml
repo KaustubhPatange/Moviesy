@@ -116,6 +116,6 @@ Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus d
     <string name="location">Location</string>
     <string name="delete_undone">This can\'t be undone?</string>
     <string name="error_path_exist">Path does not exist</string>
-    <string name="do_it">Do It</string>
-    <string name="no">Nope</string>
+    <string name="error">Error</string>
+    <string name="dismiss">Dismiss</string>
 </resources>

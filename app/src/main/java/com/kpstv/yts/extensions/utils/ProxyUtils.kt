@@ -20,20 +20,20 @@ class ProxyUtils @Inject constructor(
     private val retrofitUtils: RetrofitUtils
 ) {
     private val TAG = javaClass.simpleName
+
     /**
      * Method will check for updated proxy which are available on app
      * database.
      */
-    suspend fun checkAsync() {
+    private suspend fun checkAsync() {
         Log.e(TAG, "Checking for proxy")
-        val response =
-            retrofitUtils.getHttpClient()
-                .newCall(Request.Builder().url(AppInterface.APP_DATABASE_URL).build()).await()
+        val response = makeHttpCallAsync(AppInterface.APP_DATABASE_URL)
         if (response.isSuccessful) {
             val appDatabase =
                 AppDatabaseConverter.toAppDatabaseFromString(response.body?.string())
             appDatabase?.yts?.let { yts ->
                 AppInterface.YTS_BASE_URL = yts.base
+                AppInterface.YTS_BASE_API_URL = "${AppInterface.YTS_BASE_URL}/api/v2/"
                 AppInterface.YIFY_BASE_URL = yts.yify
             }
             appDatabase?.tmdb?.let { tmdb ->
@@ -51,15 +51,29 @@ class ProxyUtils @Inject constructor(
             }
 
             AppSettings.writeSettings(context)
-        }
+
+            Log.e(TAG, "Checking for YTS proxy again!")
+            val testResponse =
+                makeHttpCallAsync("${AppInterface.YTS_BASE_API_URL}list_movies.json")
+            if (!testResponse.isSuccessful) throw Exception("Updated proxy is invalid. If you see this message, contact developer to update proxies manually!")
+        } else
+            throw Exception("Failed to retrieve app database")
     }
 
     /**
      * To make this suspend worker run on non suspendable method
      * we use a callback function.
      */
-    fun check(onComplete: () -> Unit) = Coroutines.io {
-        checkAsync()
-        Coroutines.main { onComplete.invoke() }
+    fun check(onComplete: () -> Unit, onError: (Exception) -> Unit) = Coroutines.io {
+        try {
+            checkAsync()
+            Coroutines.main { onComplete.invoke() }
+        } catch (e: Exception) {
+            Coroutines.main { onError.invoke(e) }
+        }
     }
+
+    private suspend fun makeHttpCallAsync(url: String) =
+        retrofitUtils.getHttpClient()
+            .newCall(Request.Builder().url(url).build()).await()
 }

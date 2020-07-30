@@ -105,24 +105,20 @@ class LibraryFragment : Fragment() {
                         AlertNoIconDialog.Companion.Builder(context).apply {
                             setTitle("Delete?")
                             setMessage(getString(R.string.delete_undone))
-                            setNegativeButton(getString(R.string.no), object : AlertNoIconDialog.DialogListener {
-                                override fun onClick() {}
-                            })
-                            setPositiveButton(getString(R.string.do_it), object : AlertNoIconDialog.DialogListener {
-                                override fun onClick() {
-                                    val f = File(model.downloadPath!!)
-                                    if (f.exists()) {
-                                        f.deleteRecursive()
-                                    } else {
-                                        Toasty.error(
-                                            requireContext(),
-                                            getString(R.string.error_path_exist),
-                                            Toasty.LENGTH_SHORT
-                                        ).show()
-                                        mainActivity.viewModel.removeDownload(model.hash)
-                                    }
+                            setNegativeButton(getString(R.string.no)){ }
+                            setPositiveButton(getString(R.string.yes)) {
+                                val f = File(model.downloadPath!!)
+                                if (f.exists()) {
+                                    f.deleteRecursive()
+                                } else {
+                                    Toasty.error(
+                                        requireContext(),
+                                        getString(R.string.error_path_exist),
+                                        Toasty.LENGTH_SHORT
+                                    ).show()
+                                    mainActivity.viewModel.removeDownload(model.hash)
                                 }
-                            })
+                            }
                         }.show()
                     }
                 }

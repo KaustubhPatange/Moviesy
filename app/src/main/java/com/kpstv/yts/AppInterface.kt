@@ -132,7 +132,7 @@ class AppInterface {
                 .content(message)
                 .floating(true)
                 .duration(CafeBar.Duration.INDEFINITE)
-                .neutralText("Dismiss")
+                .neutralText(context.getString(R.string.dismiss))
                 .onNeutral {
                     if ((context as Activity?) != null) {
                         context.finish()

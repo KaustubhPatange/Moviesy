@@ -3,14 +3,17 @@ package com.kpstv.yts.ui.dialogs
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
-import androidx.appcompat.app.AlertDialog
 import com.kpstv.yts.AppInterface.Companion.IS_DARK_THEME
 import com.kpstv.yts.R
+import com.kpstv.yts.extensions.SimpleCallback
 import kotlinx.android.synthetic.main.custom_alert_buttons.view.*
 import kotlinx.android.synthetic.main.custom_alert_dialog.view.*
+
 
 class AlertNoIconDialog : Activity() {
 
@@ -30,22 +33,18 @@ class AlertNoIconDialog : Activity() {
         v.alertPositiveText.text =
             postiveText
 
-        if (setCancelable) {
-            setFinishOnTouchOutside(true)
-        }
-
         if (positiveListener ==null)
             v.alertCardPositive.setOnClickListener { finish() }
         else
             v.alertCardPositive.setOnClickListener {
-                positiveListener?.onClick()
+                positiveListener?.invoke()
                 finish()
             }
 
         if (negativeListener !=null) {
             v.alertCancelText.text = negativeText.toUpperCase()
             v.alertCardNegative.setOnClickListener {
-                negativeListener?.onClick()
+                negativeListener?.invoke()
                 finish()
             }
         }else {
@@ -53,35 +52,51 @@ class AlertNoIconDialog : Activity() {
         }
 
     }
-    interface DialogListener {
-        fun onClick()
+
+    /**
+     * Thanks: https://stackoverflow.com/a/9951011/10133501
+     */
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        // I only care if the event is an UP action
+        if (event.action == MotionEvent.ACTION_UP) {
+            // create a rect for storing the window rect
+            val r = Rect(0, 0, 0, 0)
+            // retrieve the windows rect
+            this.window.decorView.getHitRect(r)
+            // check if the event position is inside the window rect
+            val intersects: Boolean = r.contains(event.x.toInt(), event.y.toInt())
+            // if the event is not inside then we can close the activity
+            if (!intersects && !setCancelable) {
+                return true
+            }
+        }
+        return super.onTouchEvent(event)
     }
+
+
     companion object {
 
         var mainTitle = ""
         var mainMessage = ""
-        var positiveListener: DialogListener? = null
+        var positiveListener: SimpleCallback? = null
         var postiveText = "Alright"
 
         var setCancelable = false
         lateinit var view: View
 
-        var negativeListener: DialogListener? = null
+        var negativeListener: SimpleCallback? = null
         var negativeText = "CANCEL"
 
-        var dialog: AlertDialog?=null
-
-        class Builder(val context: Context?) {
+        class Builder(private val context: Context?) {
 
             init {
                 positiveListener = null
                 postiveText = "Alright"
-                setCancelable = false
+                setCancelable = true
                 negativeListener = null
                 negativeText = "CANCEL"
                 mainMessage = ""
                 mainTitle = ""
-                dialog = null
             }
 
             fun setTitle(title: String): Builder {
@@ -100,12 +115,12 @@ class AlertNoIconDialog : Activity() {
                 setCancelable = value
                 return this
             }
-            fun setPositiveButton(text: String, positiveListener: DialogListener?): Builder {
+            fun setPositiveButton(text: String, positiveListener: SimpleCallback?): Builder {
                 Companion.positiveListener = positiveListener
                 postiveText = text
                 return this
             }
-            fun setNegativeButton(text: String, negativeListener: DialogListener): Builder {
+            fun setNegativeButton(text: String, negativeListener: SimpleCallback): Builder {
                 Companion.negativeListener = negativeListener
                 negativeText = text
                 return this
