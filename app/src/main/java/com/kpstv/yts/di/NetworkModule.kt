@@ -1,7 +1,7 @@
 package com.kpstv.yts.di
 
 import com.kpstv.yts.AppInterface
-import com.kpstv.yts.extensions.utils.RetrofitUtils
+import com.kpstv.common_moviesy.extensions.utils.RetrofitUtils
 import com.kpstv.yts.interfaces.api.TMdbApi
 import com.kpstv.yts.interfaces.api.YTSApi
 import dagger.Module

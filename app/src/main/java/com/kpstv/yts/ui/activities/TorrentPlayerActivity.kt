@@ -21,6 +21,7 @@ import com.kpstv.yts.extensions.utils.SubtitleUtils
 import com.kpstv.yts.data.models.SubHolder
 import com.kpstv.yts.databinding.ActivityTorrentPlayerBinding
 import com.kpstv.common_moviesy.extensions.viewBinding
+import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty

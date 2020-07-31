@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
 import com.kpstv.yts.cast.CastHelper
@@ -17,6 +18,7 @@ import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.ui.activities.TorrentPlayerActivity
 import com.kpstv.yts.ui.helpers.PremiumHelper
 import com.kpstv.yts.ui.helpers.SubtitleHelper
+import com.kpstv.yts.extensions.hide
 import es.dmoral.toasty.Toasty
 
 enum class PlaybackType {

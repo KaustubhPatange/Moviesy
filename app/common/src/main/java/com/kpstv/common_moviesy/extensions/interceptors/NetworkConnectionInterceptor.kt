@@ -1,11 +1,11 @@
-package com.kpstv.yts.extensions.utils.interceptors
+package com.kpstv.common_moviesy.extensions.interceptors
 
 import android.content.Context
 import android.net.ConnectivityManager
-import com.kpstv.yts.extensions.NoInternetException
 import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.Interceptor
 import okhttp3.Response
+import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -26,3 +26,5 @@ class NetworkConnectionInterceptor @Inject constructor(
         return networkInfo != null && networkInfo.isConnected
     }
 }
+
+class NoInternetException(message: String) : IOException(message)

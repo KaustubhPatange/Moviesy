@@ -14,6 +14,8 @@ import com.kpstv.yts.R
 import com.kpstv.yts.databinding.ActivitySplashBinding
 import com.kpstv.yts.extensions.utils.ProxyUtils
 import com.kpstv.common_moviesy.extensions.viewBinding
+import com.kpstv.yts.extensions.hide
+import com.kpstv.yts.extensions.show
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope

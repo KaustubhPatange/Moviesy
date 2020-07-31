@@ -38,6 +38,8 @@ import com.kpstv.yts.data.models.TorrentJob
 import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.databinding.ActivityDownloadBinding
 import com.kpstv.common_moviesy.extensions.viewBinding
+import com.kpstv.yts.extensions.hide
+import com.kpstv.yts.extensions.show
 import com.kpstv.yts.receivers.CommonBroadCast
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import com.kpstv.yts.ui.viewmodels.MainViewModel

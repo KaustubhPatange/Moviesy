@@ -1,54 +1,34 @@
 plugins {
     java
+    `java-gradle-plugin`
     `kotlin-dsl`
     `kotlin-dsl-precompiled-script-plugins`
-    /*kotlin(GradlePluginId.ANDROID_KTX)
-    kotlin(GradlePluginId.ANDROID_EXTENSIONS_KTX)
-    kotlin(GradlePluginId.KAPT)*/
-    //id(GradlePluginId.DAGGER_HILT)
 }
 
 kotlinDslPluginOptions {
     experimentalWarning.set(false)
 }
 
-object PluginsVersion {
-
+object GradlePluginVersion {
+    const val KOTLIN = "1.3.72"
+    const val ANDROID_GRADLE = "3.6.3"
+    const val SAFE_ARGS = "2.3.0-rc01"
+    const val HILT = "2.28-alpha"
 }
 
-subprojects {
-    dependencies {
-        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.72")
-        implementation(LibraryDependency.APP_COMPAT)
-        /*implementation(LibraryDependency.APP_COMPAT)
-        implementation(LibraryDependency.CORE_KTX)
+object GradlePluginId {
+    const val ANDROID_KTX = "android"
+    const val ANDROID_EXTENSIONS_KTX = "android.extensions"
+    const val KAPT = "kapt"
+    const val SAFE_ARGS = "androidx.navigation.safeargs.kotlin"
+    const val DAGGER_HILT = "dagger.hilt.android.plugin"
+}
 
-        implementation(LibraryDependency.OKHTTP)
-        implementation(LibraryDependency.OKHTTP_LOGGING_INTERCEPTOR)
-        implementation(LibraryDependency.RETROFIT_GSON_CONVERTER)
-        implementation(LibraryDependency.RETROFIT_COROUTINES_ADAPTER)
-
-        implementation(LibraryDependency.LIFECYCLE_EXTENSIONS)
-        implementation(LibraryDependency.LIFECYCLE_VIEWMODEL)
-        implementation(LibraryDependency.LIFECYCLE_COMMON)
-        implementation(LibraryDependency.LIFECYCLE_LIVEDATA)
-        implementation(LibraryDependency.LIFECYCLE_RUNTIME)
-        implementation(LibraryDependency.LIFECYCLE_SAVEDSTATE)
-
-        implementation(LibraryDependency.HILT_ANDROID)
-        implementation(LibraryDependency.HILT_VIEWODEL)
-
-        implementation(LibraryDependency.RETROFIT) {
-            exclude("okhttp")
-        }
-        implementation(LibraryDependency.OKHTTP)
-        implementation(LibraryDependency.OKHTTP_LOGGING_INTERCEPTOR)
-        implementation(LibraryDependency.RETROFIT_GSON_CONVERTER)
-        implementation(LibraryDependency.RETROFIT_COROUTINES_ADAPTER)
-
-        kapt(LibraryDependency.HILT_COMPILER)
-        kapt(LibraryDependency.HILT_VIEWODEL_COMPILER)*/
-    }
+dependencies {
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${GradlePluginVersion.KOTLIN}")
+    implementation("com.android.tools.build:gradle:${GradlePluginVersion.ANDROID_GRADLE}")
+    implementation("androidx.navigation:navigation-safe-args-gradle-plugin:${GradlePluginVersion.SAFE_ARGS}")
+    implementation("com.google.dagger:hilt-android-gradle-plugin:${GradlePluginVersion.HILT}")
 }
 
 repositories {

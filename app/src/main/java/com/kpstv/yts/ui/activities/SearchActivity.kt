@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
@@ -26,7 +27,7 @@ import com.kpstv.yts.databinding.ActivitySearchBinding
 import com.kpstv.yts.extensions.*
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.hideKeyboard
 import com.kpstv.yts.extensions.utils.CustomMovieLayout
-import com.kpstv.yts.extensions.utils.RetrofitUtils
+import com.kpstv.common_moviesy.extensions.utils.RetrofitUtils
 import com.kpstv.yts.interfaces.listener.SingleClickListener
 import com.kpstv.yts.interfaces.listener.SuggestionListener
 import com.kpstv.yts.ui.activities.MoreActivity.Companion.base

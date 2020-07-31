@@ -8,8 +8,6 @@ import kotlinx.coroutines.*
 import java.io.File
 import java.io.IOException
 
-class NoInternetException(message: String) : IOException(message)
-
 fun<T> lazyDeferred(block: suspend CoroutineScope.() -> T): Lazy<Deferred<T>>{
     return lazy {
         GlobalScope.async(start = CoroutineStart.LAZY) {
