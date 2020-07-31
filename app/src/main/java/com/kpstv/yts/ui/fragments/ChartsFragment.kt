@@ -1,71 +1,75 @@
 package com.kpstv.yts.ui.fragments
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.fragment.app.viewModels
 import com.kpstv.yts.R
-import com.kpstv.yts.extensions.YTSQuery
-import com.kpstv.yts.ui.activities.MainActivity
-import com.kpstv.yts.interfaces.listener.MoviesListener
 import com.kpstv.yts.data.models.MovieShort
+import com.kpstv.yts.databinding.FragmentChartsBinding
+import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.extensions.utils.CustomMovieLayout
+import com.kpstv.yts.extensions.viewBinding
+import com.kpstv.yts.interfaces.listener.MoviesListener
+import com.kpstv.yts.ui.viewmodels.MainViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
-class ChartsFragment : Fragment() {
+@AndroidEntryPoint
+class ChartsFragment : Fragment(R.layout.fragment_charts) {
 
-    private var v: View? = null
-    private lateinit var mainActivity: MainActivity
+    private val viewModel by viewModels<MainViewModel>()
+    private val binding by viewBinding(FragmentChartsBinding::bind)
 
-    /** This lambda will hold method on how to remove the data */
-    private lateinit var removeData: () -> Unit
+    private lateinit var cmlFeatured: CustomMovieLayout
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return v ?: inflater.inflate(R.layout.fragment_charts, container, false).also { view ->
+    private lateinit var cmlTopRated: CustomMovieLayout
+    private lateinit var cmlTopToday: CustomMovieLayout
+    private lateinit var cmlPopular: CustomMovieLayout
+    private lateinit var cmlMostLiked: CustomMovieLayout
+    private lateinit var cmlLatest: CustomMovieLayout
 
-            mainActivity = activity as MainActivity
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-            v = view
-
-            setViewAndLayout()
-
-            setSwipeRefreshCallback()
-        }
+        setViewAndLayout()
+        setSwipeRefreshCallback()
     }
 
     private fun setSwipeRefreshCallback() {
-        val swipeRefreshLayout = v?.findViewById<SwipeRefreshLayout>(R.id.swipeRefreshLayout)
+        /** When pull down to refresh is called, all data in the layout
+         *  will be re-fetched.
+         */
+        binding.root.setOnRefreshListener {
+            resetAllViewData()
+            setViewAndLayout()
 
-        swipeRefreshLayout?.setOnRefreshListener {
-            if (::removeData.isInitialized) {
-                removeData.invoke()
-
-                setViewAndLayout()
-
-                swipeRefreshLayout.isRefreshing = false
-            }
+            binding.root.isRefreshing = false
         }
     }
 
+    private fun resetAllViewData() {
+        cmlFeatured.removeData()
+        cmlTopRated.removeData()
+        cmlTopToday.removeData()
+        cmlPopular.removeData()
+        cmlMostLiked.removeData()
+        cmlLatest.removeData()
+
+        binding.addLayout.removeAllViews()
+    }
+
     private fun setViewAndLayout() {
-        val addLayout = v?.findViewById<LinearLayout>(R.id.addLayout)!!
+        /** Featured Layout */
+        cmlFeatured = CustomMovieLayout(requireContext(), getString(R.string.featured)).apply {
+            injectViewAt(binding.addLayout)
+        }
 
-        val featureLayout = CustomMovieLayout(mainActivity, "Featured")
-        featureLayout.injectViewAt(addLayout)
-
-        mainActivity.viewModel.getFeaturedMovies(object : MoviesListener {
-            override fun onStarted() {
-
-            }
+        viewModel.getFeaturedMovies(object : MoviesListener {
+            override fun onStarted() { }
 
             override fun onFailure(e: Exception) {
                 e.printStackTrace()
-                featureLayout.removeView(addLayout)
+                cmlFeatured.removeView(binding.addLayout)
             }
 
             override fun onComplete(
@@ -73,66 +77,63 @@ class ChartsFragment : Fragment() {
                 queryMap: Map<String, String>,
                 isMoreAvailable: Boolean
             ) {
-                featureLayout.setupCallbacksNoMore(movies, queryMap, mainActivity.viewModel)
+                cmlFeatured.setupCallbacksNoMore(movies, queryMap, viewModel)
             }
-
         })
 
+        /** Top Rated Layout */
         val queryMap = YTSQuery.ListMoviesBuilder().apply {
             setSortBy(YTSQuery.SortBy.rating)
             setOrderBy(YTSQuery.OrderBy.descending)
         }.build()
 
-        val layout = CustomMovieLayout(mainActivity, "Top Rated")
-        layout.injectViewAt(addLayout)
-        layout.setupCallbacks( mainActivity.viewModel, queryMap)
+        cmlTopRated = CustomMovieLayout(requireContext(), getString(R.string.top_rated)).apply {
+            injectViewAt(binding.addLayout)
+            setupCallbacks(viewModel, queryMap)
+        }
 
+        /** Top Today Layout */
         val queryMap2 = YTSQuery.ListMoviesBuilder().apply {
             setSortBy(YTSQuery.SortBy.seeds)
             setOrderBy(YTSQuery.OrderBy.descending)
         }.build()
 
-        val layout1 = CustomMovieLayout(mainActivity, "Top Today")
-        layout1.injectViewAt(addLayout)
-        layout1.setupCallbacks( mainActivity.viewModel, queryMap2)
+       cmlTopToday = CustomMovieLayout(requireContext(), getString(R.string.top_today)).apply {
+            injectViewAt(binding.addLayout)
+            setupCallbacks(viewModel, queryMap2)
+        }
 
+        /** Popular Layout */
         val queryMap3 = YTSQuery.ListMoviesBuilder().apply {
             setSortBy(YTSQuery.SortBy.download_count)
             setOrderBy(YTSQuery.OrderBy.descending)
         }.build()
 
-        val layout2 = CustomMovieLayout(mainActivity, "Popular")
-        layout2.injectViewAt(addLayout)
-        layout2.setupCallbacks( mainActivity.viewModel, queryMap3)
+        cmlPopular = CustomMovieLayout(requireContext(), getString(R.string.popular)).apply {
+            injectViewAt(binding.addLayout)
+            setupCallbacks(viewModel, queryMap3)
+        }
 
+        /** Most Liked Layout */
         val queryMap4 = YTSQuery.ListMoviesBuilder().apply {
             setSortBy(YTSQuery.SortBy.like_count)
             setOrderBy(YTSQuery.OrderBy.descending)
         }.build()
 
-        val layout3 = CustomMovieLayout(mainActivity, "Most liked")
-        layout3.injectViewAt(addLayout)
-        layout3.setupCallbacks( mainActivity.viewModel, queryMap4)
+        cmlMostLiked = CustomMovieLayout(requireContext(), getString(R.string.most_liked)).apply {
+            injectViewAt(binding.addLayout)
+            setupCallbacks(viewModel, queryMap4)
+        }
 
+        /** Latest Layout */
         val queryMap5 = YTSQuery.ListMoviesBuilder().apply {
             setSortBy(YTSQuery.SortBy.year)
             setOrderBy(YTSQuery.OrderBy.descending)
         }.build()
 
-        val layout4 = CustomMovieLayout(mainActivity, "Latest")
-        layout4.injectViewAt(addLayout)
-        layout4.setupCallbacks( mainActivity.viewModel, queryMap5)
-
-        /** Setting this function which holds method to clear this above data. */
-        removeData = {
-            featureLayout.removeData()
-            layout1.removeData()
-            layout2.removeData()
-            layout3.removeData()
-            layout4.removeData()
-
-            addLayout.removeAllViews()
+       cmlLatest = CustomMovieLayout(requireContext(), getString(R.string.latest)).apply {
+            injectViewAt(binding.addLayout)
+            setupCallbacks(viewModel, queryMap5)
         }
     }
-
 }

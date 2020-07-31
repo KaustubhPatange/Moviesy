@@ -11,7 +11,7 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.Torrent
-import kotlinx.android.synthetic.main.item_download.view.*
+import com.kpstv.yts.databinding.ItemDownloadBinding
 
 @SuppressLint("SetTextI18n")
 class DownloadAdapter(
@@ -31,15 +31,15 @@ class DownloadAdapter(
 
     override fun onBindViewHolder(holder: DownloadHolder, i: Int) {
         val model = models[i]
-        holder.title.text = model.quality
-        holder.seeds.text = "${model.seeds} seeds"
-        holder.peers.text = "${model.peers} peers"
-        holder.size.text = model.size_pretty
+        holder.binding.itemQuality.text = model.quality
+        holder.binding.itemSeeds.text = "${model.seeds} seeds"
+        holder.binding.itemPeers.text = "${model.peers} peers"
+        holder.binding.itemSize.text = model.size_pretty
 
-        holder.mainCard.setOnClickListener {
+        holder.binding.root.setOnClickListener {
             listener.onClick(model, i)
         }
-        holder.mainCard.setOnLongClickListener {
+        holder.binding.root.setOnLongClickListener {
             longListener.onLongClick(model, i)
             return@setOnLongClickListener true
         }
@@ -66,10 +66,6 @@ class DownloadAdapter(
     }
 
     class DownloadHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val title: TextView = itemView.item_quality
-        val seeds: TextView = itemView.item_seeds
-        val peers: TextView = itemView.item_peers
-        val size: Button = itemView.item_size
-        val mainCard: CardView = itemView.mainCard
+        val binding = ItemDownloadBinding.bind(itemView)
     }
 }

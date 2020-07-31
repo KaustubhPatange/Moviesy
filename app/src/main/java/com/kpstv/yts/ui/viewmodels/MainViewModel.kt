@@ -41,8 +41,8 @@ class MainViewModel @ViewModelInject constructor(
     private val TAG = "MainViewModel"
 
     /** We will save all fragment views into this ViewModel.c
-     *  This a workaround to handle fragment save instance
-     *  which navigation component can't do.
+     *  This a workaround to handle fragment UI state easily but
+     *  memory consuming.
      */
     var homeView: View? = null
     var watchView: View? = null

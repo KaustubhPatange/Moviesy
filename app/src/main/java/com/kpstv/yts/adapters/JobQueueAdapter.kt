@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.Torrent
+import com.kpstv.yts.databinding.ItemTorrentDownload1Binding
 import com.kpstv.yts.extensions.utils.GlideApp
 import kotlinx.android.synthetic.main.item_torrent_download_1.view.*
 
@@ -29,10 +30,10 @@ class JobQueueAdapter(
     override fun onBindViewHolder(holder: JobHolder, i: Int) {
         val model = models[i]
 
-        holder.title.text = model.title
-        GlideApp.with(context.applicationContext).load(model.banner_url).into(holder.image)
+        holder.binding.itemTitle.text = model.title
+        GlideApp.with(context.applicationContext).load(model.banner_url).into(holder.binding.itemImage)
 
-        holder.closeImage.setOnClickListener {
+        holder.binding.itemClose.setOnClickListener {
             listener.onClick(model, i)
         }
     }
@@ -50,8 +51,6 @@ class JobQueueAdapter(
     }
 
     class JobHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val image = view.item_image
-        val title = view.item_title
-        val closeImage = view.item_close
+        val binding = ItemTorrentDownload1Binding.bind(view)
     }
 }

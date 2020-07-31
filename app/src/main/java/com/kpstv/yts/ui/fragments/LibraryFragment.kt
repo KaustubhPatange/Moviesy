@@ -32,8 +32,6 @@ import java.io.File
 @AndroidEntryPoint
 class LibraryFragment : Fragment() {
 
-    private val viewModel by viewModels<MainViewModel>()
-
     private lateinit var mainActivity: MainActivity
     private val TAG = "LibraryFragment"
     private lateinit var downloadAdapter: LibraryDownloadAdapter
@@ -67,7 +65,7 @@ class LibraryFragment : Fragment() {
             toolbar = view.toolbar,
             onSessionDisconnected = { model, lastSavedPosition ->
                 if (model == null) return@init
-                viewModel.updateDownload(model.hash, true, lastSavedPosition)
+                mainActivity.viewModel.updateDownload(model.hash, true, lastSavedPosition)
             }
         )
     }
@@ -75,7 +73,7 @@ class LibraryFragment : Fragment() {
     private fun setRecyclerView(view: View) {
         view.recyclerView_download.layoutManager = LinearLayoutManager(context)
         downloadAdapter = LibraryDownloadAdapter(ArrayList())
-        downloadAdapter.OnClickListener = { model, _ ->
+        downloadAdapter.onClickListener = { model, _ ->
             /** OnClick for download item */
             val sheet = if (mainActivity.castHelper.isCastActive()) {
                 /** Show cast to device button */
@@ -89,7 +87,7 @@ class LibraryFragment : Fragment() {
             sheet.arguments = bundle
             sheet.show(mainActivity.supportFragmentManager, "")
         }
-        downloadAdapter.OnMoreClickListener = { innerView, model, _ ->
+        downloadAdapter.onMoreClickListener = { innerView, model, _ ->
             val popupMenu = PopupMenu(requireContext(), innerView)
             popupMenu.inflate(R.menu.library_menu)
             popupMenu.setOnMenuItemClickListener {

@@ -74,6 +74,7 @@ dependencies {
     implementation(LibraryDependency.LIFECYCLE_VIEWMODEL)
     implementation(LibraryDependency.LIFECYCLE_COMMON)
     implementation(LibraryDependency.LIFECYCLE_RUNTIME)
+    implementation(LibraryDependency.LIFECYCLE_SAVEDSTATE)
     implementation(LibraryDependency.PAGING)
     implementation(LibraryDependency.RETROFIT) {
         exclude("okhttp")

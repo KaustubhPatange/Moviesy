@@ -1,34 +1,34 @@
 package com.kpstv.yts.ui.fragments.sheets
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.data.models.response.Model
+import com.kpstv.yts.databinding.BottomSheetQuickinfoBinding
+import com.kpstv.yts.extensions.ExtendedBottomSheetDialogFragment
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.getBulletSymbol
 import com.kpstv.yts.extensions.utils.CustomBottomItem
 import com.kpstv.yts.extensions.utils.GlideApp
+import com.kpstv.yts.extensions.viewBinding
 import com.kpstv.yts.ui.viewmodels.MainViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
-import kotlinx.android.synthetic.main.bottom_sheet_quickinfo.*
-import kotlinx.android.synthetic.main.bottom_sheet_quickinfo.view.*
 
-class BottomSheetQuickInfo(private val viewModel: MainViewModel) : BottomSheetDialogFragment() {
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return layoutInflater.inflate(R.layout.bottom_sheet_quickinfo, container, false)
-    }
+@AndroidEntryPoint
+class BottomSheetQuickInfo : ExtendedBottomSheetDialogFragment(R.layout.bottom_sheet_quickinfo) {
 
+    private val viewModel by viewModels<MainViewModel>()
+    private val binding by viewBinding(BottomSheetQuickinfoBinding::bind)
+
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -36,17 +36,15 @@ class BottomSheetQuickInfo(private val viewModel: MainViewModel) : BottomSheetDi
 
         GlideApp.with(requireContext().applicationContext).asBitmap().load(movie.bannerUrl)
             .into(object : CustomTarget<Bitmap>() {
-                override fun onLoadCleared(placeholder: Drawable?) {
-
-                }
+                override fun onLoadCleared(placeholder: Drawable?) {}
 
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    shimmerImageView.setImage(resource)
+                    binding.shimmerImageView.setImage(resource)
                 }
             })
 
-        view.item_title.text = movie.title
-        view.item_subText.text = "${movie.year} ${getBulletSymbol()} ${movie.runtime} mins"
+        binding.itemTitle.text = movie.title
+        binding.itemSubText.text = "${movie.year} ${getBulletSymbol()} ${movie.runtime} mins"
 
         /** Injecting view options */
         viewModel.isFavourite({ b ->
@@ -59,7 +57,7 @@ class BottomSheetQuickInfo(private val viewModel: MainViewModel) : BottomSheetDi
             }
 
             val watchlistLayout = CustomBottomItem(requireContext())
-            watchlistLayout.setUp(icon, title, view.addLayout)
+            watchlistLayout.setUp(icon, title, binding.addLayout)
             watchlistLayout.onClickListener = {
                 if (b) {
                     viewModel.removeFavourite(movie.movieId!!)

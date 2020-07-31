@@ -118,4 +118,14 @@ Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus d
     <string name="error_path_exist">Path does not exist</string>
     <string name="error">Error</string>
     <string name="dismiss">Dismiss</string>
+    <string name="featured">Featured</string>
+    <string name="top_rated">Top Rated</string>
+    <string name="top_today">Top Today</string>
+    <string name="most_liked">Most liked</string>
+    <string name="latest">Latest</string>
+    <string name="premium_download_limit">No download limit queues</string>
+    <string name="premium_subtitle_limit">Subtitles while casting</string>
+    <string name="premium_support">Support development</string>
+    <string name="purchase">Purchase</string>
+    <string name="buy_premium">Buy Premium</string>
 </resources>

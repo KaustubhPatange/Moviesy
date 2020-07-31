@@ -27,7 +27,7 @@ enum class PlaybackType {
 }
 
 class BottomSheetLibraryDownload(
-    private val castHelper: CastHelper, // TODO: Remove this unused parameter
+    private val castHelper: CastHelper,
     private val playbackType: PlaybackType
 ) : ExtendedBottomSheetDialogFragment(R.layout.bottom_sheet_library_download) {
 
@@ -71,7 +71,7 @@ class BottomSheetLibraryDownload(
                 } else {
                     PremiumHelper.insertSubtitlePremiumTip(
                         requireActivity(), binding.addLayout
-                    )
+                    ) { dismiss() }
                 }
             }
         }

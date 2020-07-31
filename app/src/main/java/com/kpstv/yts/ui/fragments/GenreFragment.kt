@@ -11,38 +11,34 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.yts.AppInterface.Companion.GENRE_CATEGORY_LIST
 import com.kpstv.yts.R
+import com.kpstv.yts.databinding.FragmentGenreBinding
+import com.kpstv.yts.databinding.ItemLocalGenreBinding
 import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.extensions.utils.CustomMovieLayout
-import kotlinx.android.synthetic.main.fragment_genre.view.*
-import kotlinx.android.synthetic.main.item_local_genre.view.*
+import com.kpstv.yts.extensions.viewBinding
 
-class GenreFragment : Fragment() {
+class GenreFragment : Fragment(R.layout.fragment_genre) {
 
-    private var v: View? = null
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return v ?: inflater.inflate(R.layout.fragment_genre, container, false).also { view ->
-            view.recyclerView.layoutManager = LinearLayoutManager(view.context)
+    private val binding by viewBinding(FragmentGenreBinding::bind)
 
-            val adapter = LocalGenreAdapter(view.context, GENRE_CATEGORY_LIST) { model, _ ->
-                val queryMap = YTSQuery.ListMoviesBuilder().apply {
-                    setGenre(model.genre)
-                    setOrderBy(YTSQuery.OrderBy.descending)
-                }.build()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-                CustomMovieLayout.invokeMoreFunction(
-                    view.context, "Based on ${model.title}", queryMap
-                )
-            }
+        binding.recyclerView.layoutManager = LinearLayoutManager(view.context)
 
-            view.recyclerView.adapter = adapter
+        val adapter = LocalGenreAdapter(view.context, GENRE_CATEGORY_LIST) { model, _ ->
+            val queryMap = YTSQuery.ListMoviesBuilder().apply {
+                setGenre(model.genre)
+                setOrderBy(YTSQuery.OrderBy.descending)
+            }.build()
 
-            v = view
+            CustomMovieLayout.invokeMoreFunction(
+                requireContext(), "Based on ${model.title}", queryMap
+            )
         }
-    }
 
+        binding.recyclerView.adapter = adapter
+    }
 
     data class LocalGenreModel(
         val title: String, @DrawableRes val drawable: Int,
@@ -65,11 +61,11 @@ class GenreFragment : Fragment() {
             )
 
         override fun onBindViewHolder(holder: LocalGenreHolder, i: Int) {
-            holder.title.text = list[i].title
-            holder.image.setImageDrawable(
+            holder.binding.itemTitle.text = list[i].title
+            holder.binding.itemImage.setImageDrawable(
                 context.getDrawable(list[i].drawable)
             )
-            holder.mainLayout.setOnClickListener {
+            holder.binding.root.setOnClickListener {
 
                 listener(list[i], i)
             }
@@ -78,11 +74,8 @@ class GenreFragment : Fragment() {
         override fun getItemCount() = list.size
 
         class LocalGenreHolder(view: View) : RecyclerView.ViewHolder(view) {
-            val mainLayout = view.mainLayout
-            val title = view.item_title
-            val image = view.item_image
+            val binding = ItemLocalGenreBinding.bind(view)
         }
-
     }
 }
 

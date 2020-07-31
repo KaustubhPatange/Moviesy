@@ -3,10 +3,9 @@ package com.kpstv.yts.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.yts.R
-import kotlinx.android.synthetic.main.item_genre.view.*
+import com.kpstv.yts.databinding.ItemGenreBinding
 
 class GenreAdapter(private val models: ArrayList<String>) :
     RecyclerView.Adapter<GenreAdapter.GenreHolder>() {
@@ -21,8 +20,13 @@ class GenreAdapter(private val models: ArrayList<String>) :
     }
 
     override fun onBindViewHolder(holder: GenreHolder, position: Int) {
-        holder.title.text = models[position]
-        holder.title.setOnClickListener { listener.onClick(models[position], position) }
+        holder.binding.itemGenreTitle.text = models[position]
+        holder.binding.itemGenreTitle.setOnClickListener {
+            listener.onClick(
+                models[position],
+                position
+            )
+        }
     }
 
     override fun getItemCount(): Int {
@@ -38,6 +42,6 @@ class GenreAdapter(private val models: ArrayList<String>) :
     }
 
     class GenreHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val title: TextView = itemView.item_genre_title
+        val binding = ItemGenreBinding.bind(itemView)
     }
 }

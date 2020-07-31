@@ -222,8 +222,8 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
         val adapter = CustomAdapter(context, list, base)
 
         if (viewModel != null && context is Activity)
-            adapter.setOnLongListener = { movieShort, view ->
-                val sheet = BottomSheetQuickInfo(viewModel)
+            adapter.setOnLongListener = { movieShort, _ ->
+                val sheet = BottomSheetQuickInfo()
                 val bundle = Bundle()
                 bundle.putSerializable("model", movieShort);
                 sheet.arguments = bundle
