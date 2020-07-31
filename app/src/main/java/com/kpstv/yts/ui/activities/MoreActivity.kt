@@ -9,7 +9,6 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.children
 import androidx.core.view.forEach
 import androidx.lifecycle.Observer
 import androidx.paging.PagedList
@@ -23,7 +22,7 @@ import com.kpstv.yts.extensions.MovieBase
 import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.databinding.ActivityMoreBinding
-import com.kpstv.yts.extensions.viewBinding
+import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.ui.viewmodels.MoreViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty

@@ -9,7 +9,7 @@ import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.databinding.FragmentChartsBinding
 import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.extensions.utils.CustomMovieLayout
-import com.kpstv.yts.extensions.viewBinding
+import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.interfaces.listener.MoviesListener
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint

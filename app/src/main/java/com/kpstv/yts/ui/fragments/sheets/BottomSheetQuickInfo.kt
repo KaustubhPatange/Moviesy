@@ -8,7 +8,6 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.data.models.response.Model
@@ -17,7 +16,7 @@ import com.kpstv.yts.extensions.ExtendedBottomSheetDialogFragment
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.getBulletSymbol
 import com.kpstv.yts.extensions.utils.CustomBottomItem
 import com.kpstv.yts.extensions.utils.GlideApp
-import com.kpstv.yts.extensions.viewBinding
+import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty

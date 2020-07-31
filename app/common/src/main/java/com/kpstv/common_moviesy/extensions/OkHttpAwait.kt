@@ -1,4 +1,4 @@
-package com.kpstv.yts.extensions
+package com.kpstv.common_moviesy.extensions
 
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.Call

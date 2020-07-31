@@ -1,11 +1,10 @@
 package com.kpstv.yts.ui.activities
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.kpstv.yts.databinding.ActivityPlayerBinding
-import com.kpstv.yts.extensions.viewBinding
+import com.kpstv.common_moviesy.extensions.viewBinding
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerListener

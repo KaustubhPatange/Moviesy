@@ -1,6 +1,7 @@
 package com.kpstv.yts.ui.activities
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
@@ -12,6 +13,7 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
+import com.kpstv.purchase.PurchaseHelper
 import com.kpstv.yts.AppInterface.Companion.IS_DARK_THEME
 import com.kpstv.yts.AppInterface.Companion.animationOptions
 import com.kpstv.yts.AppInterface.Companion.setAppThemeMain
@@ -19,11 +21,12 @@ import com.kpstv.yts.BuildConfig
 import com.kpstv.yts.R
 import com.kpstv.yts.cast.CastHelper
 import com.kpstv.yts.databinding.ActivityMainBinding
-import com.kpstv.yts.extensions.viewBinding
+import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.services.DownloadService
 import com.kpstv.yts.ui.settings.SettingsActivity
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import es.dmoral.toasty.Toasty
 import io.github.dkbai.tinyhttpd.nanohttpd.webserver.SimpleWebServer
 
 @AndroidEntryPoint
@@ -94,6 +97,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             startActivity(downloadIntent)
         }
         return true
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == PurchaseHelper.PURCHASE_CLIENT_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK)
+                Toasty.info(this, "Purchase Complete").show()
+            else
+                Toasty.warning(this, "Cancelled").show()
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onResume() {

@@ -30,8 +30,6 @@ import com.kpstv.yts.adapters.JobQueueAdapter
 import com.kpstv.yts.adapters.PauseAdapter
 import com.kpstv.yts.data.db.repository.PauseRepository
 import com.kpstv.yts.extensions.Coroutines
-import com.kpstv.yts.extensions.hide
-import com.kpstv.yts.extensions.show
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.getMagnetUrl
 import com.kpstv.yts.extensions.utils.GlideApp
@@ -39,7 +37,7 @@ import com.kpstv.yts.data.models.Torrent
 import com.kpstv.yts.data.models.TorrentJob
 import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.databinding.ActivityDownloadBinding
-import com.kpstv.yts.extensions.viewBinding
+import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.receivers.CommonBroadCast
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import com.kpstv.yts.ui.viewmodels.MainViewModel

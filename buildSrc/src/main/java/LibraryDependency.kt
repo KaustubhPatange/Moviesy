@@ -33,9 +33,11 @@ private object LibraryVersion {
     const val MEDIA_ROUTER = "1.1.0"
     const val CAST_FRAMEWORK = "18.1.0"
     const val CAST_SAMPLE = "0.01"
+    const val ACTIVITY_KTX = "1.2.0-alpha05"
 }
 
 object LibraryDependency {
+    const val ACTIVITY_KTX = "androidx.activity:activity-ktx:${LibraryVersion.ACTIVITY_KTX}"
     const val ANDROID_LOCAL_CAST_SAMPLE = "com.github.KaustubhPatange:Android-Cast-Local-Sample:${LibraryVersion.CAST_SAMPLE}"
     const val MEDIA_ROUTER = "androidx.mediarouter:mediarouter:${LibraryVersion.MEDIA_ROUTER}"
     const val CAST_FRAMEWORK = "com.google.android.gms:play-services-cast-framework:${LibraryVersion.CAST_FRAMEWORK}"
@@ -71,8 +73,10 @@ object LibraryDependency {
     const val PAGING = "androidx.paging:paging-runtime-ktx:${LibraryVersion.PAGING}"
     const val LIFECYCLE_RUNTIME = "androidx.lifecycle:lifecycle-runtime:${LibraryVersion.LIFECYCLE}"
     const val LIFECYCLE_EXTENSIONS = "androidx.lifecycle:lifecycle-extensions:${LibraryVersion.LIFECYCLE}"
+    const val LIFECYCLE_LIVEDATA = "androidx.lifecycle:lifecycle-livedata-ktx:${LibraryVersion.LIFECYCLE}"
     const val LIFECYCLE_VIEWMODEL = "androidx.lifecycle:lifecycle-viewmodel-ktx:${LibraryVersion.LIFECYCLE}"
     const val LIFECYCLE_COMMON = "androidx.lifecycle:lifecycle-common-java8:${LibraryVersion.LIFECYCLE}"
+    const val LIFECYCLE_SAVEDSTATE = "androidx.lifecycle:lifecycle-viewmodel-savedstate:${LibraryVersion.LIFECYCLE}"
     const val ROOM_RUNTIME = "androidx.room:room-runtime:${LibraryVersion.ROOM}"
     const val ROOM_KTX = "androidx.room:room-ktx:${LibraryVersion.ROOM}"
     const val ROOM_COMPILER_KAPT = "androidx.room:room-compiler:${LibraryVersion.ROOM}"

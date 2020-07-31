@@ -18,7 +18,6 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.kpstv.yts.AppInterface.Companion.SUBTITLE_LOCATION
 import com.kpstv.yts.AppInterface.Companion.YIFY_BASE_URL
 import com.kpstv.yts.R
@@ -29,7 +28,7 @@ import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.FlagUtils
 import com.kpstv.yts.extensions.utils.GlideApp
 import com.kpstv.yts.extensions.utils.ZipUtility
-import com.kpstv.yts.extensions.viewBinding
+import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.interfaces.listener.SingleClickListener
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,7 +38,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.bottom_sheet_subtitles.*
-import kotlinx.android.synthetic.main.bottom_sheet_subtitles.view.*
 import kotlinx.android.synthetic.main.item_subtitles.view.*
 import org.jsoup.Jsoup
 import java.io.File

@@ -8,7 +8,7 @@ import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppSettings
 import com.kpstv.yts.data.converters.AppDatabaseConverter
 import com.kpstv.yts.extensions.Coroutines
-import com.kpstv.yts.extensions.await
+import com.kpstv.common_moviesy.extensions.await
 import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.Request
 import javax.inject.Inject

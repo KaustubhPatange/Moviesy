@@ -15,7 +15,7 @@ import com.kpstv.yts.databinding.FragmentGenreBinding
 import com.kpstv.yts.databinding.ItemLocalGenreBinding
 import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.extensions.utils.CustomMovieLayout
-import com.kpstv.yts.extensions.viewBinding
+import com.kpstv.common_moviesy.extensions.viewBinding
 
 class GenreFragment : Fragment(R.layout.fragment_genre) {
 

@@ -4,7 +4,7 @@
  * @link https://medium.com/@Zhuinden/simple-one-liner-viewbinding-in-fragments-and-activities-with-kotlin-961430c6c07c}
  */
 
-package com.kpstv.yts.extensions
+package com.kpstv.common_moviesy.extensions
 
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
@@ -15,7 +15,6 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.observe
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
@@ -29,7 +28,10 @@ inline fun <T : ViewBinding> AppCompatActivity.viewBinding(
 ) = lazy(LazyThreadSafetyMode.NONE) { bindingInflater.invoke(layoutInflater) }
 
 fun <T : ViewBinding> Fragment.viewBinding(viewBindingFactory: (View) -> T) =
-    FragmentViewBindingDelegate(this, viewBindingFactory)
+    FragmentViewBindingDelegate(
+        this,
+        viewBindingFactory
+    )
 
 class FragmentViewBindingDelegate<T : ViewBinding>(
     val fragment: Fragment,

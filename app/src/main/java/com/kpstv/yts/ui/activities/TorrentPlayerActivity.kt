@@ -17,11 +17,10 @@ import com.github.se_bastiaan.torrentstream.listeners.TorrentListener
 import com.kpstv.yts.AppInterface.Companion.ANONYMOUS_TORRENT_DOWNLOAD
 import com.kpstv.yts.AppInterface.Companion.STREAM_LOCATION
 import com.kpstv.yts.AppInterface.Companion.SUBTITLE_LOCATION
-import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.extensions.utils.SubtitleUtils
 import com.kpstv.yts.data.models.SubHolder
 import com.kpstv.yts.databinding.ActivityTorrentPlayerBinding
-import com.kpstv.yts.extensions.viewBinding
+import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty

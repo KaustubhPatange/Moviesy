@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.core.view.isVisible
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
 import com.kpstv.yts.cast.CastHelper
@@ -14,8 +13,7 @@ import com.kpstv.yts.databinding.ButtonCastPlayBinding
 import com.kpstv.yts.databinding.ButtonLocalPlayBinding
 import com.kpstv.yts.databinding.CustomProgressBinding
 import com.kpstv.yts.extensions.ExtendedBottomSheetDialogFragment
-import com.kpstv.yts.extensions.hide
-import com.kpstv.yts.extensions.viewBinding
+import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.ui.activities.TorrentPlayerActivity
 import com.kpstv.yts.ui.helpers.PremiumHelper
 import com.kpstv.yts.ui.helpers.SubtitleHelper
@@ -47,6 +45,11 @@ class BottomSheetLibraryDownload(
             binding.checkBoxPlayFrom.text =
                 "Play from last save position (${model.lastSavedPosition / (1000 * 60)} mins)"
         } else binding.checkBoxPlayFrom.hide()
+
+        // TODO: Testing purpose only...
+        PremiumHelper.insertSubtitlePremiumTip(
+            requireActivity(), binding.addLayout
+        ) { dismiss() }
 
         /** Set view according to playback type */
         when (playbackType) {

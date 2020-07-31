@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.kpstv.yts.databinding.ActivityImageViewBinding
 import com.kpstv.yts.extensions.utils.GlideApp
-import com.kpstv.yts.extensions.viewBinding
+import com.kpstv.common_moviesy.extensions.viewBinding
 
 class ImageViewActivity : AppCompatActivity() {
 

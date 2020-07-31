@@ -28,12 +28,11 @@ import com.kpstv.yts.data.models.Movie
 import com.kpstv.yts.data.models.TmDbMovie
 import com.kpstv.yts.databinding.ActivityFinalBinding
 import com.kpstv.yts.extensions.YTSQuery
-import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.CafebarToast
 import com.kpstv.yts.extensions.utils.CustomMovieLayout
 import com.kpstv.yts.extensions.utils.GlideApp
-import com.kpstv.yts.extensions.viewBinding
+import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.interfaces.listener.FavouriteListener
 import com.kpstv.yts.interfaces.listener.MovieListener
 import com.kpstv.yts.interfaces.listener.SuggestionListener

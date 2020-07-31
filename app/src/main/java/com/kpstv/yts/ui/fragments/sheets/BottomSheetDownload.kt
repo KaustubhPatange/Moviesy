@@ -5,9 +5,7 @@ import android.content.Intent
 import android.content.Intent.ACTION_VIEW
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -16,10 +14,9 @@ import com.kpstv.yts.R
 import com.kpstv.yts.adapters.DownloadAdapter
 import com.kpstv.yts.data.models.Torrent
 import com.kpstv.yts.databinding.BottomSheetDownloadBinding
-import com.kpstv.yts.databinding.BottomSheetQuickinfoBinding
 import com.kpstv.yts.extensions.ExtendedBottomSheetDialogFragment
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.getMagnetUrl
-import com.kpstv.yts.extensions.viewBinding
+import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.services.DownloadService
 import com.kpstv.yts.ui.activities.TorrentPlayerActivity
 import com.kpstv.yts.ui.helpers.SubtitleHelper
