@@ -75,6 +75,8 @@ class AppInterface {
         const val IS_FIRST_LAUNCH_PREF = "is_first_launch_pref"
         const val PROXY_CHECK_PREF = "proxy_check_pref"
 
+        const val USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.21 (KHTML, like Gecko) Chrome/19.0.1042.0 Safari/535.21"
+
         val GENRE_CATEGORY_LIST = ArrayList<GenreFragment.LocalGenreModel>().apply {
             add("Action", R.drawable.ic_action_genre, YTSQuery.Genre.action)
             add("Adventure", R.drawable.ic_adventure_genre, YTSQuery.Genre.adventure)

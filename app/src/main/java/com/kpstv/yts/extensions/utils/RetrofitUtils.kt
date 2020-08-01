@@ -1,8 +1,7 @@
-package com.kpstv.common_moviesy.extensions.utils
+package com.kpstv.yts.extensions.utils
 
 import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
-import com.kpstv.common_moviesy.extensions.interceptors.NetworkConnectionInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -19,7 +18,7 @@ import javax.inject.Singleton
  */
 @Singleton
 class RetrofitUtils @Inject constructor(
-    private val interceptor: NetworkConnectionInterceptor
+    private val interceptor: com.kpstv.yts.extensions.interceptors.NetworkConnectionInterceptor
 ) {
     private var retrofitBuilder: Retrofit.Builder? = null
     private var httpBuilder: OkHttpClient.Builder? = null
@@ -54,7 +53,6 @@ class RetrofitUtils @Inject constructor(
             val loggingInterceptor = HttpLoggingInterceptor()
             loggingInterceptor.level =
                 HttpLoggingInterceptor.Level.BODY
-
             client.addInterceptor(loggingInterceptor)
         }
         return client.build()

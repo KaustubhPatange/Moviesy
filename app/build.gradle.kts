@@ -52,6 +52,7 @@ dependencies {
     implementation(LibraryDependency.CORE_KTX)
     implementation(LibraryDependency.COROUTINES_CORE)
     implementation(LibraryDependency.COROUTINES_ANDROID)
+    implementation(LibraryDependency.GOOGLE_OAUTH)
 
     implementation(LibraryDependency.MEDIA_ROUTER)
     implementation(LibraryDependency.CAST_FRAMEWORK)
@@ -61,6 +62,7 @@ dependencies {
     api(LibraryDependency.GIRAFFE_PLAYER2)
 
     implementation(LibraryDependency.GSON)
+    implementation(LibraryDependency.LOTTIE)
     implementation(LibraryDependency.ANDROID_BROWSER)
     implementation(LibraryDependency.CONSTRAINT_LAYOUT)
     implementation(LibraryDependency.ANDROIDX_PREFERENCES)

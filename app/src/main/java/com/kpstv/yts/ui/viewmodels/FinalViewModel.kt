@@ -12,7 +12,7 @@ import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.data.db.repository.FavouriteRepository
 import com.kpstv.yts.data.db.repository.MovieRepository
 import com.kpstv.yts.data.db.repository.TMdbRepository
-import com.kpstv.yts.extensions.Coroutines
+import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.yts.extensions.MovieType
 import com.kpstv.yts.interfaces.api.TMdbApi
 import com.kpstv.yts.interfaces.api.YTSApi

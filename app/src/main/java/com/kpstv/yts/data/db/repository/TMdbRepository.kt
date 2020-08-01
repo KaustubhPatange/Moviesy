@@ -2,7 +2,7 @@ package com.kpstv.yts.data.db.repository
 
 import com.kpstv.yts.data.db.localized.RecommendDatabase
 import com.kpstv.yts.data.db.localized.SuggestionDatabase
-import com.kpstv.yts.extensions.Coroutines
+import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.yts.data.models.data.data_tmdb
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

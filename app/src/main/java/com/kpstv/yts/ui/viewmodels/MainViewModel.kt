@@ -15,7 +15,7 @@ import com.kpstv.yts.data.db.repository.DownloadRepository
 import com.kpstv.yts.data.db.repository.FavouriteRepository
 import com.kpstv.yts.data.db.repository.MainRepository
 import com.kpstv.yts.data.db.repository.PauseRepository
-import com.kpstv.yts.extensions.Coroutines
+import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.yts.extensions.lazyDeferred
 import com.kpstv.yts.interfaces.api.YTSApi
 import com.kpstv.yts.interfaces.listener.MoviesListener
@@ -145,7 +145,7 @@ class MainViewModel @ViewModelInject constructor(
     private suspend fun fetchFeaturedData(moviesListener: MoviesListener, queryString: String) {
         val list = ArrayList<MovieShort>()
         val doc = withContext(Dispatchers.IO) {
-            Jsoup.connect(AppInterface.YTS_BASE_URL).get()
+            Jsoup.connect(AppInterface.YTS_BASE_URL).userAgent(AppInterface.USER_AGENT).get()
         }
         val elements = doc.getElementsByClass("browse-movie-link")
         for (i in 0..3) {
@@ -158,15 +158,15 @@ class MainViewModel @ViewModelInject constructor(
                 subDoc.getElementById("movie-info").attr("data-movie-id").toString().toInt()
             var imdbCode = ""
             var rating = 0.0
-            subDoc.getElementsByClass("rating-row").forEach {
-                if (it.hasAttr("itemscope")) {
-                    imdbCode = it.getElementsByClass("icon")[0]
+            subDoc.getElementsByClass("rating-row").forEach { row ->
+                if (row.hasAttr("itemscope")) {
+                    imdbCode = row.getElementsByClass("icon")[0]
                         .attr("href").toString().split("/")[4]
-                    it.allElements.forEach {
-                        if (it.hasAttr("itemprop") && it.attr("itemprop")
+                    row.allElements.forEach { element ->
+                        if (element.hasAttr("itemprop") && element.attr("itemprop")
                                 .toString() == "ratingValue"
                         ) {
-                            rating = it.ownText().toDouble()
+                            rating = element.ownText().toDouble()
                         }
                     }
                 }

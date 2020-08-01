@@ -23,6 +23,10 @@ fun ArrayList<GenreFragment.LocalGenreModel>.add(title: String, @DrawableRes dra
 typealias SessionCallback = (Model.response_download?, Int) -> Unit
 typealias SimpleCallback = () -> Unit
 
+fun View.invisible() {
+    visibility = View.INVISIBLE
+}
+
 fun View.hide() {
     visibility = View.GONE
 }

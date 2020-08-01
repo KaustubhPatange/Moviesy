@@ -29,7 +29,7 @@ import com.kpstv.yts.R
 import com.kpstv.yts.adapters.JobQueueAdapter
 import com.kpstv.yts.adapters.PauseAdapter
 import com.kpstv.yts.data.db.repository.PauseRepository
-import com.kpstv.yts.extensions.Coroutines
+import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.getMagnetUrl
 import com.kpstv.yts.extensions.utils.GlideApp

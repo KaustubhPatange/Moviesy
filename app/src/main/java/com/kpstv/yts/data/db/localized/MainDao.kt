@@ -9,7 +9,7 @@ interface MainDao {
     fun upsert(data: data_main)
 
     @Query("select * from table_main where `query` = :query")
-    fun getMovies(query: String): data_main
+    fun getMovies(query: String): data_main?
 
     @Delete()
     fun delete(data: data_main)

@@ -1,81 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="?colorForeground"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.Toolbar
-        android:background="?colorSeparator"
-        android:padding="13dp"
-        android:gravity="center_vertical"
+    <RelativeLayout
+        android:gravity="center"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
-        <ImageView
-            android:tint="#F7D969"
-            android:layout_width="27dp"
-            android:layout_height="27dp"
-            android:src="@drawable/ic_diamond"/>
+        <ProgressBar
+            android:visibility="gone"
+            android:id="@+id/progressLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:id="@+id/lottie_purchaseComplete"
+            android:layout_height="200dp"
+            app:lottie_autoPlay="false"
+            app:lottie_speed="0.5"
+            app:lottie_enableMergePathsForKitKatAndAbove="true"
+            app:lottie_loop="false"
+            app:lottie_rawRes="@raw/check" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/purchaseLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <androidx.appcompat.widget.Toolbar
+            android:background="?colorSeparator"
+            android:padding="13dp"
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:tint="#F7D969"
+                android:layout_width="27dp"
+                android:layout_height="27dp"
+                android:src="@drawable/ic_diamond"/>
+
+            <TextView
+                android:layout_marginStart="20dp"
+                android:textSize="17sp"
+                android:textColor="#F7D969"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/buy_premium"/>
+
+        </androidx.appcompat.widget.Toolbar>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?colorSeparator"/>
 
         <TextView
-            android:layout_marginStart="20dp"
-            android:textSize="17sp"
-            android:textColor="#F7D969"
+            android:layout_marginTop="7dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/buy_premium"/>
+            android:fontFamily="@font/google_sans_regular"
+            android:drawableStart="@drawable/ic_trending"
+            android:drawablePadding="20dp"
+            android:padding="15dp"
+            android:text="@string/premium_download_limit"
+            android:textSize="15sp" />
 
-    </androidx.appcompat.widget.Toolbar>
+        <TextView
+            android:layout_width="match_parent"
+            android:fontFamily="@font/google_sans_regular"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_cast_connected"
+            android:drawablePadding="20dp"
+            android:padding="15dp"
+            android:text="@string/premium_subtitle_limit"
+            android:textSize="15sp" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?colorSeparator"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/google_sans_regular"
+            android:drawableStart="@drawable/ic_support"
+            android:drawablePadding="20dp"
+            android:padding="15dp"
+            android:text="@string/premium_support"
+            android:textSize="15sp" />
 
-    <TextView
-        android:layout_marginTop="7dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/google_sans_regular"
-        android:drawableStart="@drawable/ic_trending"
-        android:drawablePadding="20dp"
-        android:padding="15dp"
-        android:text="@string/premium_download_limit"
-        android:textSize="15sp" />
+        <TextView
+            android:layout_marginTop="7dp"
+            android:id="@+id/purchaseButton"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/button_local_background"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="Purchase (2$)"
+            android:textAllCaps="true"
+            android:textColor="?colorTextLight"
+            android:textSize="18sp" />
+    </LinearLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:fontFamily="@font/google_sans_regular"
-        android:layout_height="wrap_content"
-        android:drawableStart="@drawable/ic_cast_connected"
-        android:drawablePadding="20dp"
-        android:padding="15dp"
-        android:text="@string/premium_subtitle_limit"
-        android:textSize="15sp" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/google_sans_regular"
-        android:drawableStart="@drawable/ic_support"
-        android:drawablePadding="20dp"
-        android:padding="15dp"
-        android:text="@string/premium_support"
-        android:textSize="15sp" />
-
-    <TextView
-        android:layout_marginTop="7dp"
-        android:id="@+id/purchaseButton"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@drawable/button_local_background"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="center"
-        android:text="Purchase (2$)"
-        android:textAllCaps="true"
-        android:textColor="?colorTextLight"
-        android:textSize="18sp" />
-
-</LinearLayout>
+</FrameLayout>

@@ -1,4 +1,4 @@
-package com.kpstv.common_moviesy.extensions.interceptors
+package com.kpstv.yts.extensions.interceptors
 
 import android.content.Context
 import android.net.ConnectivityManager

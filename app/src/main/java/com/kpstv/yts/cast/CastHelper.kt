@@ -21,7 +21,7 @@ import com.kpstv.yts.cast.ui.ExpandedControlsActivity
 import com.kpstv.yts.cast.utils.SubtitleConverter
 import com.kpstv.yts.cast.utils.Utils
 import com.kpstv.yts.data.models.response.Model
-import com.kpstv.yts.extensions.Coroutines
+import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.yts.extensions.SessionCallback
 import com.kpstv.yts.extensions.toFile
 import es.dmoral.toasty.Toasty

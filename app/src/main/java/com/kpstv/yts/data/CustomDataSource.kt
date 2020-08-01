@@ -3,7 +3,7 @@ package com.kpstv.yts.data
 import android.content.Context
 import androidx.paging.PageKeyedDataSource
 import com.kpstv.yts.AppInterface.Companion.TMDB_IMAGE_PREFIX
-import com.kpstv.yts.extensions.Coroutines
+import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.yts.extensions.MovieBase
 import com.kpstv.yts.interfaces.api.TMdbApi
 import com.kpstv.yts.interfaces.api.YTSApi

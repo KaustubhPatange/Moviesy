@@ -2,7 +2,7 @@ package com.kpstv.yts.data.db.repository
 
 import androidx.lifecycle.LiveData
 import com.kpstv.yts.data.db.localized.MainDatabase
-import com.kpstv.yts.extensions.Coroutines
+import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.yts.data.models.response.Model
 import javax.inject.Inject
 

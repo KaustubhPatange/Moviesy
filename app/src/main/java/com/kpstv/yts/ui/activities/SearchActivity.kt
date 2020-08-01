@@ -27,7 +27,7 @@ import com.kpstv.yts.databinding.ActivitySearchBinding
 import com.kpstv.yts.extensions.*
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.hideKeyboard
 import com.kpstv.yts.extensions.utils.CustomMovieLayout
-import com.kpstv.common_moviesy.extensions.utils.RetrofitUtils
+import com.kpstv.yts.extensions.utils.RetrofitUtils
 import com.kpstv.yts.interfaces.listener.SingleClickListener
 import com.kpstv.yts.interfaces.listener.SuggestionListener
 import com.kpstv.yts.ui.activities.MoreActivity.Companion.base

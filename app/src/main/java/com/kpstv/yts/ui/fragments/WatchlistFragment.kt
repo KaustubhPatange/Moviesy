@@ -5,27 +5,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.SavedStateViewModelFactory
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.danimahardhika.cafebar.CafeBar
-import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppInterface.Companion.MOVIE_ID
-import com.kpstv.yts.AppInterface.Companion.animationOptions
 import com.kpstv.yts.R
 import com.kpstv.yts.ui.activities.FinalActivity
 import com.kpstv.yts.ui.activities.MainActivity
 import com.kpstv.yts.ui.activities.SearchActivity
 import com.kpstv.yts.adapters.WatchlistAdapter
-import com.kpstv.yts.extensions.Coroutines
+import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.extensions.show
-import com.kpstv.yts.ui.viewmodels.MainViewModel
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_watchlist.view.*
 
 class WatchlistFragment : Fragment() {

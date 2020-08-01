@@ -1,6 +1,10 @@
 private object LibraryVersion {
     const val GIRAFFE_PLAYER = "0.1.25-lazyLoad"
-    const val APP_COMPAT = "1.1.0"
+    /**
+     * If you change this to any other version, app will crash on Android 5.0
+     * This is due to webView component issue in YouTubePlayerView library.
+     */
+    const val APP_COMPAT = "1.2.0-beta01"
     const val CORE_KTX = "1.3.0"
     const val CONSTRAINT_LAYOUT = "1.1.3"
     const val MATERIAL = "1.2.0-beta01"
@@ -32,12 +36,16 @@ private object LibraryVersion {
     const val HILT_VIEWMODEL = "1.0.0-alpha01"
     const val MEDIA_ROUTER = "1.1.0"
     const val CAST_FRAMEWORK = "18.1.0"
+    const val GOOGLE_OAUTH = "18.1.0"
     const val CAST_SAMPLE = "0.01"
     const val ACTIVITY_KTX = "1.2.0-alpha05"
+    const val LOTTIE = "3.4.1"
 }
 
 object LibraryDependency {
     const val ACTIVITY_KTX = "androidx.activity:activity-ktx:${LibraryVersion.ACTIVITY_KTX}"
+    const val LOTTIE = "com.airbnb.android:lottie:${LibraryVersion.LOTTIE}"
+    const val GOOGLE_OAUTH = "com.google.android.gms:play-services-auth:${LibraryVersion.GOOGLE_OAUTH}"
     const val ANDROID_LOCAL_CAST_SAMPLE = "com.github.KaustubhPatange:Android-Cast-Local-Sample:${LibraryVersion.CAST_SAMPLE}"
     const val MEDIA_ROUTER = "androidx.mediarouter:mediarouter:${LibraryVersion.MEDIA_ROUTER}"
     const val CAST_FRAMEWORK = "com.google.android.gms:play-services-cast-framework:${LibraryVersion.CAST_FRAMEWORK}"

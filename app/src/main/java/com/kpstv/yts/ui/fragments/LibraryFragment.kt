@@ -8,12 +8,11 @@ import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kpstv.yts.R
 import com.kpstv.yts.adapters.LibraryDownloadAdapter
-import com.kpstv.yts.extensions.Coroutines
+import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.yts.extensions.deleteRecursive
 import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.extensions.show
@@ -22,7 +21,6 @@ import com.kpstv.yts.ui.activities.SearchActivity
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import com.kpstv.yts.ui.fragments.sheets.BottomSheetLibraryDownload
 import com.kpstv.yts.ui.fragments.sheets.PlaybackType
-import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_library.view.*

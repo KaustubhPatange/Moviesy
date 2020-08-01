@@ -128,4 +128,5 @@ Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus d
     <string name="premium_support">Support development</string>
     <string name="purchase">Purchase</string>
     <string name="buy_premium">Buy Premium</string>
+    <string name="premium_unlocked">Premium is unlocked</string>
 </resources>
