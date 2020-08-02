@@ -9,6 +9,7 @@ import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppSettings
 import com.kpstv.yts.extensions.SimpleCallback
 import com.kpstv.yts.ui.fragments.sheets.BottomSheetPurchase
+import es.dmoral.toasty.Toasty
 
 class PremiumHelper {
     companion object {
@@ -29,6 +30,14 @@ class PremiumHelper {
                     .build()
                     .populateView()
             }
+
+        /**
+         * Displays a toast and then open the purchase bottom sheet
+         */
+        fun showDownloadPremium(activity: FragmentActivity) {
+            Toasty.warning(activity, "Buy premium to remove download limit").show()
+            openPurchaseFragment(activity)
+        }
 
         fun wasPurchased(context: Context) = with(context) {
             PreferenceManager.getDefaultSharedPreferences(this)

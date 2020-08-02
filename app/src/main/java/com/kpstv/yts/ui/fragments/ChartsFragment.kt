@@ -13,6 +13,7 @@ import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.interfaces.listener.MoviesListener
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import es.dmoral.toasty.Toasty
 
 @AndroidEntryPoint
 class ChartsFragment : Fragment(R.layout.fragment_charts) {
@@ -70,6 +71,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
             override fun onFailure(e: Exception) {
                 e.printStackTrace()
                 cmlFeatured.removeView(binding.addLayout)
+                Toasty.warning(requireContext(), getString(R.string.featured_movies)).show()
             }
 
             override fun onComplete(

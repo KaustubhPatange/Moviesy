@@ -48,11 +48,6 @@ class BottomSheetLibraryDownload(
                 "Play from last save position (${model.lastSavedPosition / (1000 * 60)} mins)"
         } else binding.checkBoxPlayFrom.hide()
 
-        // TODO: Testing purpose only...
-        PremiumHelper.insertSubtitlePremiumTip(
-            requireActivity(), binding.addLayout
-        ) { dismiss() }
-
         /** Set view according to playback type */
         when (playbackType) {
             PlaybackType.LOCAL -> { // Local mode

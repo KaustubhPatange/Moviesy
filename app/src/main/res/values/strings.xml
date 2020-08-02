@@ -125,8 +125,11 @@ Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus d
     <string name="latest">Latest</string>
     <string name="premium_download_limit">No download limit queues</string>
     <string name="premium_subtitle_limit">Subtitles while casting</string>
-    <string name="premium_support">Support development</string>
+    <string name="premium_ads">No irritating pop-up ads</string>
     <string name="purchase">Purchase</string>
     <string name="buy_premium">Buy Premium</string>
     <string name="premium_unlocked">Premium is unlocked</string>
+    <string name="download_started">Download started, check notification</string>
+    <string name="featured_movies">Couldn\'t fetch featured movies</string>
+    <string name="unlock">Unlock</string>
 </resources>

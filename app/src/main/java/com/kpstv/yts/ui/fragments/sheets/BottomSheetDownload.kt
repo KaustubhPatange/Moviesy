@@ -1,30 +1,44 @@
 package com.kpstv.yts.ui.fragments.sheets
 
-import android.content.Context
 import android.content.Intent
 import android.content.Intent.ACTION_VIEW
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.CompoundButton
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.kpstv.common_moviesy.extensions.viewBinding
+import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
 import com.kpstv.yts.adapters.DownloadAdapter
 import com.kpstv.yts.data.models.Torrent
 import com.kpstv.yts.databinding.BottomSheetDownloadBinding
 import com.kpstv.yts.extensions.ExtendedBottomSheetDialogFragment
+import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.getMagnetUrl
-import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.services.DownloadService
 import com.kpstv.yts.ui.activities.TorrentPlayerActivity
+import com.kpstv.yts.ui.helpers.InterstitialAdHelper
+import com.kpstv.yts.ui.helpers.PremiumHelper
 import com.kpstv.yts.ui.helpers.SubtitleHelper
+import dagger.hilt.android.AndroidEntryPoint
+import es.dmoral.toasty.Toasty
+import javax.inject.Inject
 
+/**
+ * Serves two purpose...
+ * 1. Handles when "Download" button is clicked
+ * 2. Handles when "Watch" button is clicked
+ */
 @Suppress("NAME_SHADOWING")
+@AndroidEntryPoint
 class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sheet_download) {
 
     private val binding by viewBinding(BottomSheetDownloadBinding::bind)
+
+    @Inject
+    lateinit var interstitialAdHelper: InterstitialAdHelper
 
     val TAG = "BottomSheetDownload"
     private var bluray = ArrayList<Torrent>()
@@ -83,16 +97,6 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
         setUpForWatch()
     }
 
-    fun startService(model: Torrent) {
-        model.title = title
-        model.banner_url = imageUri
-        model.imdbCode = imdbCode
-        model.movieId = movieId as Int
-        val serviceIntent = Intent(context, DownloadService::class.java)
-        serviceIntent.putExtra("addJob", model)
-        ContextCompat.startForegroundService(context as Context, serviceIntent)
-    }
-
     private fun filterChips() {
         if (binding.chipBlueray.isChecked) {
             adapter = DownloadAdapter(context, bluray)
@@ -102,30 +106,32 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
 
         adapter.setDownloadClickListener(object : DownloadAdapter.DownloadClickListener {
             override fun onClick(torrent: Torrent, pos: Int) {
-                when (tag) {
-                    "watch_now" -> {
-                        val i = Intent(
-                            context,
-                            TorrentPlayerActivity::class.java
-                        )
-                        i.putExtra("torrentLink", torrent.url)
+                /** @Admob Show ads and then do something on complete */
+                interstitialAdHelper.showAd {
+                    when (tag) {
+                        "watch_now" -> { // When watch button is clicked
+                            val i = Intent(
+                                context,
+                                TorrentPlayerActivity::class.java
+                            )
+                            i.putExtra("torrentLink", torrent.url)
 
-                        if (::subtitleHelper.isInitialized) {
-                            i.putExtra("sub", subtitleHelper.getSelectedSubtitle()?.name)
+                            if (::subtitleHelper.isInitialized) {
+                                i.putExtra("sub", subtitleHelper.getSelectedSubtitle()?.name)
+                            }
+
+                            context?.startActivity(i)
                         }
-
-                        context?.startActivity(i)
+                        else -> { // When download button is clicked
+                            if (startService(torrent))
+                                Toasty.info(
+                                    requireContext(),
+                                    getString(R.string.download_started)
+                                ).show()
+                        }
                     }
-                    else -> {
-                        startService(torrent)
-                        Toast.makeText(
-                            context,
-                            "Download started, check notification",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+                    dismiss()
                 }
-                dismiss()
             }
         })
 
@@ -139,7 +145,7 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
                             torrent.url.substring(torrent.url.lastIndexOf("/") + 1), title
                         )
                     )
-                    context?.startActivity(intent)
+                    startActivity(intent)
                 }
             }
         })
@@ -147,12 +153,32 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
         binding.recyclerViewDownload.adapter = adapter
     }
 
+    fun startService(model: Torrent): Boolean {
+        if (!AppUtils.checkIfServiceIsRunning(
+                requireContext(),
+                DownloadService::class
+            ) && !AppInterface.IS_PREMIUM_UNLOCKED
+        ) {
+            model.title = title
+            model.banner_url = imageUri
+            model.imdbCode = imdbCode
+            model.movieId = movieId as Int
+            val serviceIntent = Intent(context, DownloadService::class.java)
+            serviceIntent.putExtra("addJob", model)
+            ContextCompat.startForegroundService(requireContext(), serviceIntent)
+
+            return true
+        } else {
+            PremiumHelper.showDownloadPremium(requireActivity())
+            return false
+        }
+    }
+
     private fun setUpForWatch() {
         if (tag == "watch_now") {
             binding.itemTipText.visibility = View.GONE
 
             /** Show subtitles */
-
             showSubtitle()
         }
     }

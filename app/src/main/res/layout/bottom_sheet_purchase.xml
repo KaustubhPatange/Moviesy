@@ -44,7 +44,7 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:tint="#F7D969"
+                app:tint="@color/premium"
                 android:layout_width="27dp"
                 android:layout_height="27dp"
                 android:src="@drawable/ic_diamond"/>
@@ -52,7 +52,7 @@
             <TextView
                 android:layout_marginStart="20dp"
                 android:textSize="17sp"
-                android:textColor="#F7D969"
+                android:textColor="@color/premium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/buy_premium"/>
@@ -69,7 +69,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/google_sans_regular"
-            android:drawableStart="@drawable/ic_trending"
+            app:drawableStartCompat="@drawable/ic_trending"
             android:drawablePadding="20dp"
             android:padding="15dp"
             android:text="@string/premium_download_limit"
@@ -79,7 +79,7 @@
             android:layout_width="match_parent"
             android:fontFamily="@font/google_sans_regular"
             android:layout_height="wrap_content"
-            android:drawableStart="@drawable/ic_cast_connected"
+            app:drawableStartCompat="@drawable/ic_cast_connected"
             android:drawablePadding="20dp"
             android:padding="15dp"
             android:text="@string/premium_subtitle_limit"
@@ -89,10 +89,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/google_sans_regular"
-            android:drawableStart="@drawable/ic_support"
+            app:drawableStartCompat="@drawable/ic_no_ads"
             android:drawablePadding="20dp"
             android:padding="15dp"
-            android:text="@string/premium_support"
+            android:text="@string/premium_ads"
             android:textSize="15sp" />
 
         <TextView

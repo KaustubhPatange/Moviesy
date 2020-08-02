@@ -39,12 +39,14 @@ import com.kpstv.yts.interfaces.listener.MovieListener
 import com.kpstv.yts.interfaces.listener.SuggestionListener
 import com.kpstv.yts.ui.fragments.sheets.BottomSheetDownload
 import com.kpstv.yts.ui.fragments.sheets.BottomSheetSubtitles
+import com.kpstv.yts.ui.helpers.InterstitialAdHelper
 import com.kpstv.yts.ui.viewmodels.FinalViewModel
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerListener
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
+import javax.inject.Inject
 
 
 @SuppressLint("SetTextI18n")

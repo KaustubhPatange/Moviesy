@@ -31,6 +31,7 @@ class ProxyUtils @Inject constructor(
         if (response.isSuccessful) {
             val appDatabase =
                 AppDatabaseConverter.toAppDatabaseFromString(response.body?.string())
+            response.close() // Close response for memory leaks
             appDatabase?.yts?.let { yts ->
                 AppInterface.YTS_BASE_URL = yts.base
                 AppInterface.YTS_BASE_API_URL = "${AppInterface.YTS_BASE_URL}/api/v2/"
@@ -56,6 +57,7 @@ class ProxyUtils @Inject constructor(
             val testResponse =
                 makeHttpCallAsync("${AppInterface.YTS_BASE_API_URL}list_movies.json")
             if (!testResponse.isSuccessful) throw Exception("Updated proxy is invalid. If you see this message, contact developer to update proxies manually!")
+            testResponse.close() // Close response for memory leaks
         } else
             throw Exception("Failed to retrieve app database")
     }

@@ -26,7 +26,7 @@ private object LibraryVersion {
     const val RXANDROID = "2.1.1"
     const val RXBINDING = "2.0.0"
     const val BLURRY = "3.0.0"
-    const val JSOUP = "1.12.1"
+    const val JSOUP = "1.13.1"
     const val YOUTUBE_PLAYER = "10.0.5"
     const val TORRENT = "2.5.0"
     const val CAFEBAR = "1.3.1"
@@ -40,10 +40,12 @@ private object LibraryVersion {
     const val CAST_SAMPLE = "0.01"
     const val ACTIVITY_KTX = "1.2.0-alpha05"
     const val LOTTIE = "3.4.1"
+    const val GOOGLE_ADS = "19.3.0"
 }
 
 object LibraryDependency {
     const val ACTIVITY_KTX = "androidx.activity:activity-ktx:${LibraryVersion.ACTIVITY_KTX}"
+    const val GOOGLE_ADS = "com.google.android.gms:play-services-ads:${LibraryVersion.GOOGLE_ADS}"
     const val LOTTIE = "com.airbnb.android:lottie:${LibraryVersion.LOTTIE}"
     const val GOOGLE_OAUTH = "com.google.android.gms:play-services-auth:${LibraryVersion.GOOGLE_OAUTH}"
     const val ANDROID_LOCAL_CAST_SAMPLE = "com.github.KaustubhPatange:Android-Cast-Local-Sample:${LibraryVersion.CAST_SAMPLE}"

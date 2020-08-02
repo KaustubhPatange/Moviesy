@@ -2,6 +2,7 @@ package com.kpstv.yts.extensions.utils
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageInfo
@@ -21,8 +22,6 @@ import androidx.annotation.AttrRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
-import androidx.preference.PreferenceManager
-import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppInterface.Companion.handleRetrofitError
 import com.kpstv.yts.R
 import com.kpstv.yts.data.db.repository.FavouriteRepository
@@ -32,6 +31,7 @@ import java.io.*
 import java.net.HttpURLConnection
 import java.net.URL
 import java.text.DecimalFormat
+import kotlin.reflect.KClass
 
 class AppUtils {
 
@@ -312,6 +312,17 @@ class AppUtils {
                 Log.e(TAG, "downloadFile: ${e.message}}")
                 return
             }
+        }
+
+        fun checkIfServiceIsRunning(context: Context, serviceClass: KClass<*>) = with(context) {
+            val manager: ActivityManager =
+                getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+            for (service in manager.getRunningServices(Int.MAX_VALUE)) {
+                if (serviceClass.qualifiedName == service.service.className) {
+                    return@with true
+                }
+            }
+            return@with false
         }
 
         private val TAG = "Utils"

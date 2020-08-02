@@ -18,6 +18,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.AppInterface.Companion.SUBTITLE_LOCATION
 import com.kpstv.yts.AppInterface.Companion.YIFY_BASE_URL
 import com.kpstv.yts.R
@@ -28,9 +29,9 @@ import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.FlagUtils
 import com.kpstv.yts.extensions.utils.GlideApp
 import com.kpstv.yts.extensions.utils.ZipUtility
-import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.interfaces.listener.SingleClickListener
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
+import com.kpstv.yts.ui.helpers.InterstitialAdHelper
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import io.reactivex.Observable
@@ -57,6 +58,8 @@ class BottomSheetSubtitles : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
 
     @Inject
     lateinit var flagUtils: FlagUtils
+    @Inject
+    lateinit var interstitialAdHelper: InterstitialAdHelper
 
     private val TAG = "BottomSheetSubtiles"
 
@@ -109,14 +112,17 @@ class BottomSheetSubtitles : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
                 if (subtitleModels.size > 0) {
                     adapter =
                         SubtitleAdapter(
-                            context = context as Context,
+                            context = requireContext(),
                             flagUtils = flagUtils,
                             models = subtitleModels
                         )
                     adapter.setOnSingleClickListener(object :
                         SingleClickListener {
                         override fun onClick(obj: Any, i: Int) {
-                            parseSubtitle(obj as Subtitle, i)
+                            /** @Admob Show ad first and then download subtitles */
+                            interstitialAdHelper.showAd {
+                                parseSubtitle(obj as Subtitle, i)
+                            }
                         }
                     })
                     recyclerView_subtitles.setHasFixedSize(true)

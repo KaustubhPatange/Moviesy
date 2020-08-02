@@ -201,7 +201,6 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
         } else hideMoreCallbacks()
     }
 
-
     private fun setupMoreButton(endPointUrl: String) {
 
         val listener = View.OnClickListener {

@@ -13,6 +13,7 @@ import com.kpstv.yts.extensions.add
 import com.kpstv.yts.interfaces.listener.ObservableListener
 import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.ui.fragments.GenreFragment
+import es.dmoral.toasty.Toasty
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -130,21 +131,22 @@ class AppInterface {
                 putBoolean(PROXY_CHECK_PREF, true)
             }.apply()
 
-            CafeBar.builder(context)
-                .content(message)
-                .floating(true)
-                .duration(CafeBar.Duration.INDEFINITE)
-                .neutralText(context.getString(R.string.dismiss))
-                .onNeutral {
-                    if ((context as Activity?) != null) {
+            if (context is Activity) {
+                CafeBar.builder(context)
+                    .content(message)
+                    .floating(true)
+                    .duration(CafeBar.Duration.INDEFINITE)
+                    .neutralText(context.getString(R.string.dismiss))
+                    .onNeutral {
                         context.finish()
                     }
-                }
-                .autoDismiss(false)
-                .showShadow(true)
-                .show()
+                    .autoDismiss(false)
+                    .showShadow(true)
+                    .show()
+            } else {
+                Toasty.error(context, message, Toasty.LENGTH_LONG).show()
+            }
         }
-
 
         fun formatDownloadSpeed(downloadSpeed: Float): String {
             val speed = downloadSpeed.toDouble() / 1000.00

@@ -15,6 +15,7 @@ android {
 
     defaultConfig {
         applicationId = AndroidConfig.ID
+        vectorDrawables.useSupportLibrary = true
         minSdkVersion(AndroidConfig.MIN_SDK_VERSION)
         targetSdkVersion(AndroidConfig.TARGET_SDK_VERSION)
         versionCode = AndroidConfig.VERSION_CODE
@@ -53,6 +54,7 @@ dependencies {
     implementation(LibraryDependency.COROUTINES_CORE)
     implementation(LibraryDependency.COROUTINES_ANDROID)
     implementation(LibraryDependency.GOOGLE_OAUTH)
+    implementation(LibraryDependency.GOOGLE_ADS)
 
     implementation(LibraryDependency.MEDIA_ROUTER)
     implementation(LibraryDependency.CAST_FRAMEWORK)
