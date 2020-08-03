@@ -31,7 +31,6 @@ import javax.inject.Inject
  * 1. Handles when "Download" button is clicked
  * 2. Handles when "Watch" button is clicked
  */
-@Suppress("NAME_SHADOWING")
 @AndroidEntryPoint
 class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sheet_download) {
 

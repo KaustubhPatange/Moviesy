@@ -2,11 +2,17 @@ package com.kpstv.yts.extensions
 
 import android.view.View
 import androidx.annotation.DrawableRes
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.ui.fragments.GenreFragment
 import kotlinx.coroutines.*
 import java.io.File
 import java.io.IOException
+
+typealias SessionCallback = (Model.response_download?, Int) -> Unit
+typealias SimpleCallback = () -> Unit
+typealias AccountCallback = (GoogleSignInAccount) -> Unit
+typealias ExceptionCallback = (Exception) -> Unit
 
 fun<T> lazyDeferred(block: suspend CoroutineScope.() -> T): Lazy<Deferred<T>>{
     return lazy {
@@ -20,9 +26,6 @@ fun ArrayList<GenreFragment.LocalGenreModel>.add(title: String, @DrawableRes dra
     this.add(GenreFragment.LocalGenreModel(title, drawable, genre))
 }
 
-typealias SessionCallback = (Model.response_download?, Int) -> Unit
-typealias SimpleCallback = () -> Unit
-
 fun View.invisible() {
     visibility = View.INVISIBLE
 }
@@ -31,16 +34,16 @@ fun View.hide() {
     visibility = View.GONE
 }
 
+fun View.show() {
+    visibility = View.VISIBLE
+}
+
 fun File.deleteRecursive() {
     if (this.isDirectory)
         for (child in this.listFiles()) {
             child.deleteRecursive()
         }
     this.delete();
-}
-
-fun View.show() {
-    visibility = View.VISIBLE
 }
 
 fun String?.toFile(): File? {

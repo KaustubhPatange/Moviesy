@@ -33,7 +33,7 @@ class AlertNoIconDialog : Activity() {
         v.alertPositiveText.text =
             postiveText
 
-        if (positiveListener ==null)
+        if (positiveListener == null)
             v.alertCardPositive.setOnClickListener { finish() }
         else
             v.alertCardPositive.setOnClickListener {
@@ -41,7 +41,7 @@ class AlertNoIconDialog : Activity() {
                 finish()
             }
 
-        if (negativeListener !=null) {
+        if (negativeListener != null) {
             v.alertCancelText.text = negativeText.toUpperCase()
             v.alertCardNegative.setOnClickListener {
                 negativeListener?.invoke()
@@ -52,6 +52,8 @@ class AlertNoIconDialog : Activity() {
         }
 
     }
+
+    fun dismiss() = finish()
 
     /**
      * Thanks: https://stackoverflow.com/a/9951011/10133501

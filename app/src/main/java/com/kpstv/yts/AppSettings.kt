@@ -128,6 +128,9 @@ object AppSettings {
     const val ANONYMOUS_TORRENT_DOWNLOAD_PREF = "anonymous_torrent_download_pref"
     const val STORAGE_LOCATION_PREF = "storage_location_pref"
 
+    const val SHOW_ACCOUNT_ID_PREF = "show_account_id_pref"
+    const val PURCHASE_ACCOUNT_ERROR_PREF = "purchase_account_error_pref"
+
     const val AUTHOR_OWNER_PREF = "author_owner_pref"
     const val AUTHOR_EMAIL_PREF = "author_email_pref"
     const val APP_PACKAGE_PREF = "app_package_pref"

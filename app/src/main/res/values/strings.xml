@@ -132,4 +132,11 @@ Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus d
     <string name="download_started">Download started, check notification</string>
     <string name="featured_movies">Couldn\'t fetch featured movies</string>
     <string name="unlock">Unlock</string>
+    <string name="account_info_title">Account Info</string>
+    <string name="account_info_summary">Tap to see your account information</string>
+    <string name="account_info">Account Information</string>
+    <string name="copy">Copy</string>
+    <string name="copy_clipboard">Copied to clipboard</string>
+    <string name="premium_already_unlock">Premium is already purchased</string>
+    <string name="mail_it">Mail It</string>
 </resources>

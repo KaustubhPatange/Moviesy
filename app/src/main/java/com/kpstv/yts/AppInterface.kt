@@ -68,6 +68,7 @@ class AppInterface {
         const val GENERAL_FRAG = "com.kpstv.yts.GENERAL_FRAG"
         const val STORAGE_FRAG = "com.kpstv.yts.STORAGE_FRAG"
         const val LOOK_FEEL_FRAG = "com.kpstv.yts.LOOK_FEEL_FRAG"
+        const val ACCOUNT_FRAG = "com.kpstv.yts.ACCOUNT_FRAG"
         const val DEVELOPER_FRAG = "com.kpstv.yts.DEVELOPER_FRAG"
         const val ABOUT_FRAG = "com.kpstv.yts.ABOUT_FRAG"
 
@@ -75,6 +76,8 @@ class AppInterface {
 
         const val IS_FIRST_LAUNCH_PREF = "is_first_launch_pref"
         const val PROXY_CHECK_PREF = "proxy_check_pref"
+
+        const val PURCHASE_REGEX_PATTERN = "moviesy_premium_[\\d]+.json"
 
         const val USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.21 (KHTML, like Gecko) Chrome/19.0.1042.0 Safari/535.21"
 

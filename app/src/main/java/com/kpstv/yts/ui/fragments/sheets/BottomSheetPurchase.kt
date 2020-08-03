@@ -22,17 +22,14 @@ import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.extensions.invisible
 import com.kpstv.yts.extensions.show
 import com.kpstv.yts.ui.helpers.PremiumHelper
+import com.kpstv.yts.ui.helpers.SignInHelper
 import es.dmoral.toasty.Toasty
 
 
 class BottomSheetPurchase : ExtendedBottomSheetDialogFragment(R.layout.bottom_sheet_purchase) {
 
-    companion object {
-        const val GOOGLE_SIGNIN_REQUEST_CODE = 129
-    }
-
     private val TAG = javaClass.simpleName
-    private lateinit var mGoogleSignInClient: GoogleSignInClient
+    private lateinit var signInHelper: SignInHelper
 
     private val binding by viewBinding(BottomSheetPurchaseBinding::bind)
 
@@ -40,30 +37,21 @@ class BottomSheetPurchase : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
         super.onViewCreated(view, savedInstanceState)
 
         if (PremiumHelper.wasPurchased(requireContext())) {
-            Toasty.info(requireContext(), "Premium is already purchased").show()
+            Toasty.info(requireContext(), getString(R.string.premium_already_unlock)).show()
             dismiss()
         }
 
-        val gso =
-            GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build()
-
-        mGoogleSignInClient = GoogleSignIn.getClient(requireContext(), gso)
-        mGoogleSignInClient.signOut() /** Always sign-out */
+        initializeSignIn()
 
         binding.purchaseButton.setOnClickListener {
             binding.purchaseLayout.invisible()
             binding.progressLayout.show()
-            signIn()
+            signInHelper.signIn()
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == GOOGLE_SIGNIN_REQUEST_CODE) {
-            val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(data)
-            handleSignInResult(task)
-        }
+        signInHelper.handleSignInRequest(requestCode, data)
         if (requestCode == PurchaseHelper.PURCHASE_CLIENT_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 Handler().postDelayed({
@@ -92,11 +80,6 @@ class BottomSheetPurchase : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
             )
     }
 
-    private fun signIn() {
-        val signInIntent = mGoogleSignInClient.signInIntent
-        startActivityForResult(signInIntent, GOOGLE_SIGNIN_REQUEST_CODE)
-    }
-
     private fun commonUnlock() {
         PremiumHelper.activatePurchase(requireContext())
         binding.lottiePurchaseComplete.addAnimatorListener(object : Animator.AnimatorListener {
@@ -116,14 +99,18 @@ class BottomSheetPurchase : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
         binding.lottiePurchaseComplete.playAnimation()
     }
 
-    private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
-        try {
-            val account =
-                completedTask.getResult(ApiException::class.java)!!
-            checkout(account)
-        } catch (e: ApiException) {
-            Toasty.error(requireContext(), "Failed: ${e.message}").show()
-            dismiss()
-        }
+    private fun initializeSignIn() {
+        signInHelper = SignInHelper.Builder(requireContext())
+            .setParent(this)
+            .setOnSignInComplete {
+                checkout(it)
+            }
+            .setOnSignInFailed { e ->
+                Toasty.error(requireContext(), "Failed: ${e.message}").show()
+                dismiss()
+            }
+            .build()
+
+        signInHelper.init()
     }
 }

@@ -8,6 +8,7 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.kpstv.yts.AppInterface.Companion.ABOUT_FRAG
+import com.kpstv.yts.AppInterface.Companion.ACCOUNT_FRAG
 import com.kpstv.yts.AppInterface.Companion.DEVELOPER_FRAG
 import com.kpstv.yts.AppInterface.Companion.GENERAL_FRAG
 import com.kpstv.yts.AppInterface.Companion.IS_DARK_THEME
@@ -49,6 +50,7 @@ class SettingsActivity : AppCompatActivity() {
                 GENERAL_FRAG -> replaceFragment(GeneralSettingsFragment())
                 STORAGE_FRAG -> replaceFragment(StorageSettingFragment())
                 LOOK_FEEL_FRAG -> replaceFragment(lookSettingsFragment)
+                ACCOUNT_FRAG -> replaceFragment(AccountSettingFragment())
                 DEVELOPER_FRAG -> replaceFragment(DevSettingsFragment())
                 ABOUT_FRAG -> replaceFragment(AboutSettingFragment())
             }
@@ -121,6 +123,12 @@ class SettingsActivity : AppCompatActivity() {
             lookFeel.setUp(R.drawable.ic_look_feel, "Look & Feel", mainLayout, true)
             lookFeel.onClickListener = {
                 listener.invoke(LOOK_FEEL_FRAG)
+            }
+
+            val account = CustomBottomItem(requireContext())
+            account.setUp(R.drawable.ic_account, "Account", mainLayout, true)
+            account.onClickListener = {
+                listener.invoke(ACCOUNT_FRAG)
             }
 
             // Developer Settings

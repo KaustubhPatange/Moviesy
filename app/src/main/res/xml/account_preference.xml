@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+    <Preference
+        app:key="show_account_id_pref"
+        app:summary="@string/account_info_summary"
+        app:title="@string/account_info_title" />
+
+   <PreferenceCategory app:title="Support">
+       <Preference
+           app:key="purchase_account_error_pref"
+           app:summary="If your purchase is complete but premium not unlock, use this option"
+           app:title="Send purchase report" />
+   </PreferenceCategory>
+</PreferenceScreen>
