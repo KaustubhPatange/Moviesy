@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DrawableRes
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,16 +18,24 @@ import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.extensions.utils.CustomMovieLayout
 import com.kpstv.common_moviesy.extensions.viewBinding
 
-class GenreFragment : Fragment(R.layout.fragment_genre) {
+class GenreFragment : Fragment() {
 
-    private val binding by viewBinding(FragmentGenreBinding::bind)
+    private lateinit var binding: FragmentGenreBinding
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        if (::binding.isInitialized) return binding.root
+        else
+            binding = FragmentGenreBinding.bind(
+                inflater.inflate(R.layout.fragment_genre, container, false)
+            )
 
-        binding.recyclerView.layoutManager = LinearLayoutManager(view.context)
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        val adapter = LocalGenreAdapter(view.context, GENRE_CATEGORY_LIST) { model, _ ->
+        val adapter = LocalGenreAdapter(requireContext(), GENRE_CATEGORY_LIST) { model, _ ->
             val queryMap = YTSQuery.ListMoviesBuilder().apply {
                 setGenre(model.genre)
                 setOrderBy(YTSQuery.OrderBy.descending)
@@ -38,6 +47,8 @@ class GenreFragment : Fragment(R.layout.fragment_genre) {
         }
 
         binding.recyclerView.adapter = adapter
+
+        return binding.root
     }
 
     data class LocalGenreModel(
@@ -63,7 +74,7 @@ class GenreFragment : Fragment(R.layout.fragment_genre) {
         override fun onBindViewHolder(holder: LocalGenreHolder, i: Int) {
             holder.binding.itemTitle.text = list[i].title
             holder.binding.itemImage.setImageDrawable(
-                context.getDrawable(list[i].drawable)
+                ContextCompat.getDrawable(context, list[i].drawable)
             )
             holder.binding.root.setOnClickListener {
 

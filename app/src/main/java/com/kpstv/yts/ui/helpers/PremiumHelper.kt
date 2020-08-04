@@ -51,7 +51,7 @@ class PremiumHelper {
             AppInterface.IS_DARK_THEME = true
         }
 
-        private fun openPurchaseFragment(activity: FragmentActivity) {
+        fun openPurchaseFragment(activity: FragmentActivity) {
             val sheet = BottomSheetPurchase()
             sheet.show(activity.supportFragmentManager, "blank")
         }

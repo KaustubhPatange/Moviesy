@@ -47,4 +47,10 @@
 
     <color name="premium">#F7D969</color>
 
+    <color name="paypal">#03488E</color>
+    <color name="paypal_DARK">#073667</color>
+
+    <color name="gpay">#FFFFFF</color>
+    <color name="gpay_DARK">#B8B4B4</color>
+
 </resources>

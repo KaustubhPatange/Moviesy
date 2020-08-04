@@ -1,7 +1,6 @@
 package com.kpstv.yts.ui.activities
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
@@ -14,7 +13,7 @@ import androidx.navigation.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.kpstv.common_moviesy.extensions.viewBinding
-import com.kpstv.purchase.PurchaseHelper
+import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppInterface.Companion.IS_DARK_THEME
 import com.kpstv.yts.AppInterface.Companion.animationOptions
 import com.kpstv.yts.AppInterface.Companion.setAppThemeMain
@@ -22,12 +21,12 @@ import com.kpstv.yts.BuildConfig
 import com.kpstv.yts.R
 import com.kpstv.yts.cast.CastHelper
 import com.kpstv.yts.databinding.ActivityMainBinding
+import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.services.DownloadService
 import com.kpstv.yts.ui.helpers.PremiumHelper
 import com.kpstv.yts.ui.settings.SettingsActivity
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import es.dmoral.toasty.Toasty
 import io.github.dkbai.tinyhttpd.nanohttpd.webserver.SimpleWebServer
 
 @AndroidEntryPoint
@@ -60,6 +59,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawerLayout = binding.drawerLayout
         binding.navigationView.setNavigationItemSelectedListener(this)
 
+        setPremiumButtonClicked()
+
         navController = findNavController(R.id.nav_host_fragment)
 
         /** I am not using setupWithNavController options to let it automatically
@@ -85,6 +86,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             navController.navigate(it.itemId, null, animationOptions)
 
         return@OnNavigationItemSelectedListener true
+    }
+
+    private fun setPremiumButtonClicked() {
+        if (!AppInterface.IS_PREMIUM_UNLOCKED)
+            binding.customDrawerPremium.root.setOnClickListener {
+                drawerLayout.closeDrawer(GravityCompat.START)
+
+                PremiumHelper.openPurchaseFragment(this)
+            }
+        else
+            binding.customDrawerPremium.root.hide()
     }
 
     override fun onNavigationItemSelected(p0: MenuItem): Boolean {

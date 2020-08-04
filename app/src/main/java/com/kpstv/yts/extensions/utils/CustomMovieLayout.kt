@@ -22,25 +22,27 @@ import com.kpstv.yts.AppInterface.Companion.TMDB_IMAGE_PREFIX
 import com.kpstv.yts.AppInterface.Companion.YTS_BASE_URL
 import com.kpstv.yts.AppInterface.Companion.handleRetrofitError
 import com.kpstv.yts.R
-import com.kpstv.yts.ui.viewmodels.MainViewModel
-import com.kpstv.yts.extensions.MovieBase
-import com.kpstv.yts.extensions.hide
-import com.kpstv.yts.interfaces.listener.MoviesListener
 import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.data.models.TmDbMovie
+import com.kpstv.yts.extensions.MovieBase
+import com.kpstv.yts.extensions.hide
+import com.kpstv.yts.extensions.utils.AppUtils.Companion.refactorYTSUrl
+import com.kpstv.yts.interfaces.listener.MoviesListener
 import com.kpstv.yts.ui.activities.FinalActivity
 import com.kpstv.yts.ui.activities.MoreActivity
 import com.kpstv.yts.ui.fragments.sheets.BottomSheetQuickInfo
-import com.kpstv.yts.extensions.utils.AppUtils.Companion.refactorYTSUrl
+import com.kpstv.yts.ui.viewmodels.MainViewModel
 import kotlinx.android.synthetic.main.custom_movie_layout.view.*
 import kotlinx.android.synthetic.main.item_common_banner.view.*
 import kotlinx.android.synthetic.main.item_suggestion.view.*
 
-/** @Usage
+/** Usage
  *
  *  Create a new instance of this class
  *  Use injectViewAt function to add this on a layout
  *  Setup on of the follow backs as per the need
+ *
+ *  @param context must be an activity to trigger item longClickListener
  */
 class CustomMovieLayout(private val context: Context, private val titleText: String) {
 

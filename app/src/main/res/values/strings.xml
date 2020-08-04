@@ -139,4 +139,13 @@ Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus d
     <string name="copy_clipboard">Copied to clipboard</string>
     <string name="premium_already_unlock">Premium is already purchased</string>
     <string name="mail_it">Mail It</string>
+    <string name="general">General</string>
+    <string name="storage">Storage</string>
+    <string name="look_feel"><![CDATA[Look & Feel]]></string>
+    <string name="account">Account</string>
+    <string name="developer_untouched">Developer (untouched)</string>
+    <string name="about">About</string>
+    <string name="premium">Premium</string>
+    <string name="gpay_payment_url">https://github.com/KaustubhPatange/Moviesy/wiki/GPay-Payment-Flow</string>
+    <string name="payment_gateway">Payment Gateway</string>
 </resources>

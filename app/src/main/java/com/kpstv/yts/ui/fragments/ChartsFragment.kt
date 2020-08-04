@@ -1,25 +1,28 @@
 package com.kpstv.yts.ui.fragments
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.databinding.FragmentChartsBinding
 import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.extensions.utils.CustomMovieLayout
-import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.interfaces.listener.MoviesListener
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 
 @AndroidEntryPoint
-class ChartsFragment : Fragment(R.layout.fragment_charts) {
+class ChartsFragment : Fragment() {
 
     private val viewModel by viewModels<MainViewModel>()
-    private val binding by viewBinding(FragmentChartsBinding::bind)
+
+    private lateinit var binding: FragmentChartsBinding
 
     private lateinit var cmlFeatured: CustomMovieLayout
 
@@ -29,11 +32,21 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
     private lateinit var cmlMostLiked: CustomMovieLayout
     private lateinit var cmlLatest: CustomMovieLayout
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        if (::binding.isInitialized) return binding.root
+        else
+            binding = FragmentChartsBinding.bind(
+                inflater.inflate(R.layout.fragment_charts, container, false)
+            )
 
         setViewAndLayout()
         setSwipeRefreshCallback()
+
+        return binding.root
     }
 
     private fun setSwipeRefreshCallback() {
@@ -61,17 +74,17 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
 
     private fun setViewAndLayout() {
         /** Featured Layout */
-        cmlFeatured = CustomMovieLayout(requireContext(), getString(R.string.featured)).apply {
+        cmlFeatured = CustomMovieLayout(requireActivity(), getString(R.string.featured)).apply {
             injectViewAt(binding.addLayout)
         }
 
         viewModel.getFeaturedMovies(object : MoviesListener {
-            override fun onStarted() { }
+            override fun onStarted() {}
 
             override fun onFailure(e: Exception) {
                 e.printStackTrace()
                 cmlFeatured.removeView(binding.addLayout)
-                Toasty.warning(requireContext(), getString(R.string.featured_movies)).show()
+                Toasty.warning(requireActivity(), getString(R.string.featured_movies)).show()
             }
 
             override fun onComplete(
@@ -89,7 +102,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
             setOrderBy(YTSQuery.OrderBy.descending)
         }.build()
 
-        cmlTopRated = CustomMovieLayout(requireContext(), getString(R.string.top_rated)).apply {
+        cmlTopRated = CustomMovieLayout(requireActivity(), getString(R.string.top_rated)).apply {
             injectViewAt(binding.addLayout)
             setupCallbacks(viewModel, queryMap)
         }
@@ -100,7 +113,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
             setOrderBy(YTSQuery.OrderBy.descending)
         }.build()
 
-       cmlTopToday = CustomMovieLayout(requireContext(), getString(R.string.top_today)).apply {
+        cmlTopToday = CustomMovieLayout(requireActivity(), getString(R.string.top_today)).apply {
             injectViewAt(binding.addLayout)
             setupCallbacks(viewModel, queryMap2)
         }
@@ -111,7 +124,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
             setOrderBy(YTSQuery.OrderBy.descending)
         }.build()
 
-        cmlPopular = CustomMovieLayout(requireContext(), getString(R.string.popular)).apply {
+        cmlPopular = CustomMovieLayout(requireActivity(), getString(R.string.popular)).apply {
             injectViewAt(binding.addLayout)
             setupCallbacks(viewModel, queryMap3)
         }
@@ -122,7 +135,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
             setOrderBy(YTSQuery.OrderBy.descending)
         }.build()
 
-        cmlMostLiked = CustomMovieLayout(requireContext(), getString(R.string.most_liked)).apply {
+        cmlMostLiked = CustomMovieLayout(requireActivity(), getString(R.string.most_liked)).apply {
             injectViewAt(binding.addLayout)
             setupCallbacks(viewModel, queryMap4)
         }
@@ -133,7 +146,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
             setOrderBy(YTSQuery.OrderBy.descending)
         }.build()
 
-       cmlLatest = CustomMovieLayout(requireContext(), getString(R.string.latest)).apply {
+        cmlLatest = CustomMovieLayout(requireActivity(), getString(R.string.latest)).apply {
             injectViewAt(binding.addLayout)
             setupCallbacks(viewModel, queryMap5)
         }

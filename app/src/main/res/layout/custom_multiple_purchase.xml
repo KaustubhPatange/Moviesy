@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="10dp"
+    android:background="?colorForeground"
+    android:layout_height="wrap_content">
+
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?colorSeparator"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="10dp"
+        android:padding="13dp">
+
+        <TextView
+            android:textSize="17sp"
+            android:textColor="@color/premium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/payment_gateway"/>
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <ImageView
+        android:id="@+id/button_paypal"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@drawable/button_paypal_background"
+        android:padding="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:src="@drawable/premium_paypal"/>
+
+    <ImageView
+        android:id="@+id/button_gpay"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@drawable/button_gpay_background"
+        android:padding="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:src="@drawable/premium_gpay"/>
+
+</LinearLayout>

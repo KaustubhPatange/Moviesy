@@ -6,21 +6,18 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
-import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.Task
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.purchase.Options
 import com.kpstv.purchase.PurchaseHelper
+import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
 import com.kpstv.yts.databinding.BottomSheetPurchaseBinding
 import com.kpstv.yts.extensions.ExtendedBottomSheetDialogFragment
 import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.extensions.invisible
 import com.kpstv.yts.extensions.show
+import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.ui.helpers.PremiumHelper
 import com.kpstv.yts.ui.helpers.SignInHelper
 import es.dmoral.toasty.Toasty
@@ -43,10 +40,28 @@ class BottomSheetPurchase : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
 
         initializeSignIn()
 
+        setMultiplePurchaseButtonClicks()
+
         binding.purchaseButton.setOnClickListener {
+            binding.purchaseLayout.hide()
+            binding.customMultiplePurchaseLayout.show()
+        }
+    }
+
+    private fun setMultiplePurchaseButtonClicks() {
+        binding.customMultiplePurchase.buttonPaypal.setOnClickListener {
             binding.purchaseLayout.invisible()
+            binding.customMultiplePurchaseLayout.hide()
             binding.progressLayout.show()
             signInHelper.signIn()
+        }
+        binding.customMultiplePurchase.buttonGpay.setOnClickListener {
+            AppUtils.launchUrl(
+                requireContext(),
+                getString(R.string.gpay_payment_url),
+                AppInterface.IS_DARK_THEME
+            )
+            dismiss()
         }
     }
 

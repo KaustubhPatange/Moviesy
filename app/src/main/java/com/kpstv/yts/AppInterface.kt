@@ -72,6 +72,8 @@ class AppInterface {
         const val DEVELOPER_FRAG = "com.kpstv.yts.DEVELOPER_FRAG"
         const val ABOUT_FRAG = "com.kpstv.yts.ABOUT_FRAG"
 
+        const val ACTION_REPLACE_FRAG = "com.kpstv.yts.action_replace_frag"
+
         const val REPLACE_FRAG = "com.kpstv.yts.REPLACE_FRAG"
 
         const val IS_FIRST_LAUNCH_PREF = "is_first_launch_pref"
