@@ -94,7 +94,7 @@ Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus d
     <string name="theme_subtitle">Sometimes you might\'ve to restart the app for theme to get applied properly.</string>
     <string name="downloads">Downloads</string>
     <string name="show_location">Show location</string>
-    <string name="delete_storage">Delete from storage</string>
+    <string name="delete_storage">Remove from storage</string>
     <string name="play">Play</string>
     <string name="invalid_movieId">Invalid movieId parameter</string>
     <string name="movie_not_loaded">Movie not loaded yet!</string>
@@ -148,4 +148,10 @@ Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus d
     <string name="premium">Premium</string>
     <string name="gpay_payment_url">https://github.com/KaustubhPatange/Moviesy/wiki/GPay-Payment-Flow</string>
     <string name="payment_gateway">Payment Gateway</string>
+    <string name="no_download_found">No Download Found</string>
+    <string name="no_download_text">Download some movies to watch them even from here.</string>
+    <string name="details">Details</string>
+    <string name="update_title">Update Available</string>
+    <string name="update_message">An update is available to download</string>
+    <string name="update_text">Do you want to install this update?</string>
 </resources>

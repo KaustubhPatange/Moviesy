@@ -99,6 +99,8 @@ dependencies {
     implementation(LibraryDependency.PHOTOVIEW)
     implementation(LibraryDependency.TORRENT_STREAM_ANDROID)
     implementation(LibraryDependency.CAFEBAR)
+    implementation(LibraryDependency.WORK_MANAGER)
+
     implementation(LibraryDependency.HILT_ANDROID)
     implementation(LibraryDependency.HILT_VIEWODEL)
 

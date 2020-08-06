@@ -86,9 +86,7 @@ class SplashActivity : AppCompatActivity(), Animation.AnimationListener {
     }
 
     private val TAG = javaClass.simpleName
-    override fun onAnimationRepeat(animation: Animation?) {
-
-    }
+    override fun onAnimationRepeat(animation: Animation?) { }
 
     override fun onAnimationEnd(animation: Animation?) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -98,7 +96,5 @@ class SplashActivity : AppCompatActivity(), Animation.AnimationListener {
         }
     }
 
-    override fun onAnimationStart(animation: Animation?) {
-
-    }
+    override fun onAnimationStart(animation: Animation?) { }
 }

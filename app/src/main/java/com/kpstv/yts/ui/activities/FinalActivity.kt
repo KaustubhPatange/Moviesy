@@ -48,7 +48,11 @@ import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import javax.inject.Inject
 
-
+/**
+ * Pass movieId as extras in Intent
+ * as String: routes for TMDB movie
+ * as Int: routes for YTS movie
+ */
 @SuppressLint("SetTextI18n")
 @AndroidEntryPoint
 class FinalActivity : AppCompatActivity(), MovieListener {

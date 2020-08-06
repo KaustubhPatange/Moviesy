@@ -3,7 +3,9 @@ package com.kpstv.yts.extensions.utils
 import android.util.Log
 import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
+import com.kpstv.common_moviesy.extensions.await
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -62,32 +64,7 @@ class RetrofitUtils @Inject constructor(
         return client.build()
     }
 
-    /**
-     * https://gist.github.com/maiconhellmann/c61a533eca6d41880fd2b3f8459c07f7
-     */
-   /* private fun unsafeHttpBuilder(): OkHttpClient.Builder {
-       try {
-           val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
-               @Throws(CertificateException::class)
-               override fun checkClientTrusted(chain: Array<java.security.cert.X509Certificate>, authType: String) { }
-
-               @Throws(CertificateException::class)
-               override fun checkServerTrusted(chain: Array<java.security.cert.X509Certificate>, authType: String) { }
-
-               override fun getAcceptedIssuers(): Array<java.security.cert.X509Certificate> {
-                   return arrayOf()
-               }
-           })
-           val sslContext = SSLContext.getInstance("SSL")
-           sslContext.init(null, trustAllCerts, java.security.SecureRandom())
-           val sslSocketFactory = sslContext.socketFactory
-           return getHttpBuilder()
-               .sslSocketFactory(sslSocketFactory, trustAllCerts[0] as X509TrustManager)
-               .hostnameVerifier(HostnameVerifier { _, _ -> true })
-               .also { httpBuilder = it }
-       }catch (e: Exception) {
-           Log.w(TAG, "unsafeHttpBuilder: ${e.message}", e)
-       }
-        return getHttpBuilder()
-    }*/
+    suspend fun makeHttpCallAsync(url: String) =
+        getHttpClient()
+            .newCall(Request.Builder().url(url).build()).await()
 }

@@ -101,7 +101,7 @@ class DownloadService : IntentService("blank") {
 
             val channel = NotificationChannel(
                 getString(R.string.CHANNEL_ID_2),
-                "Download",
+                context.getString(R.string.download),
                 NotificationManager.IMPORTANCE_LOW
             )
             notificationManager?.createNotificationChannel(channel)

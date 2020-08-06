@@ -3,6 +3,7 @@ package com.kpstv.yts.ui.activities
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -22,17 +23,23 @@ import com.kpstv.yts.R
 import com.kpstv.yts.cast.CastHelper
 import com.kpstv.yts.databinding.ActivityMainBinding
 import com.kpstv.yts.extensions.hide
+import com.kpstv.yts.extensions.utils.UpdateUtils
+import com.kpstv.yts.services.AppWorker
 import com.kpstv.yts.services.DownloadService
+import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import com.kpstv.yts.ui.helpers.PremiumHelper
 import com.kpstv.yts.ui.settings.SettingsActivity
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import es.dmoral.toasty.Toasty
 import io.github.dkbai.tinyhttpd.nanohttpd.webserver.SimpleWebServer
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-    val viewModel by viewModels<MainViewModel>()
+    @Inject lateinit var updateUtils: UpdateUtils
+
     private val binding by viewBinding(ActivityMainBinding::inflate)
 
     val TAG = "MainActivity"
@@ -110,6 +117,26 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             startActivity(downloadIntent)
         }
         return true
+    }
+
+    override fun onStart() {
+        super.onStart()
+        AppWorker.schedule(applicationContext)
+        updateUtils.check(
+            onUpdateAvailable = {
+                AlertNoIconDialog.Companion.Builder(this)
+                    .setTitle(getString(R.string.update_title))
+                    .setMessage(getString(R.string.update_text))
+                    .setPositiveButton(getString(R.string.yes)) {
+                        updateUtils.processUpdate(it)
+                    }
+                    .setNegativeButton(getString(R.string.no)) { }
+                    .show()
+            },
+            onError = {
+                Toasty.error(this, "Failed: ${it.message}").show()
+            }
+        )
     }
 
     override fun onResume() {

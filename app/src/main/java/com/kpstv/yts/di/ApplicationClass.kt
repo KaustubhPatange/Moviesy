@@ -3,16 +3,16 @@ package com.kpstv.yts.di
 import android.app.Application
 import androidx.core.content.res.ResourcesCompat
 import com.google.android.gms.ads.MobileAds
-import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
+import com.kpstv.yts.extensions.Notifications
+import com.kpstv.yts.services.AppWorker
+import com.kpstv.yts.services.DownloadService
 import dagger.hilt.android.HiltAndroidApp
 import es.dmoral.toasty.Toasty
-import kotlinx.coroutines.DEBUG_PROPERTY_NAME
-import kotlinx.coroutines.DEBUG_PROPERTY_VALUE_ON
 
 @Suppress("unused")
 @HiltAndroidApp
-class ApplicationClass: Application() {
+class ApplicationClass : Application() {
     override fun onCreate() {
         super.onCreate()
 
@@ -25,5 +25,9 @@ class ApplicationClass: Application() {
 
         /** Initialize mobile ads */
         MobileAds.initialize(this) {}
+
+        /** Setting up notifications */
+        Notifications.setup(applicationContext)
+        //PRDownloader.initialize(applicationContext)
     }
 }

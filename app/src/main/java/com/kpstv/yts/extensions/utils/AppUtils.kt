@@ -251,7 +251,7 @@ class AppUtils {
             return 0
         }
 
-        fun getSizePretty(size: Long?): String? {
+        fun getSizePretty(size: Long?, addPrefix: Boolean = true): String? {
             val df = DecimalFormat("0.00")
             val sizeKb = 1024.0f
             val sizeMb = sizeKb * sizeKb
@@ -259,14 +259,14 @@ class AppUtils {
             val sizeTerra = sizeGb * sizeKb
             return if (size != null) {
                 when {
-                    size < sizeMb -> df.format(size / sizeKb).toString() + " KB"
+                    size < sizeMb -> df.format(size / sizeKb).toString() + if (addPrefix) " KB" else ""
                     size < sizeGb -> df.format(
                         size / sizeMb
                     ).toString() + " MB"
-                    size < sizeTerra -> df.format(size / sizeGb).toString() + " GB"
+                    size < sizeTerra -> df.format(size / sizeGb).toString() + if (addPrefix) " GB" else ""
                     else -> ""
                 }
-            } else "0 B"
+            } else "0" + if (addPrefix) " B" else ""
         }
 
         fun join(list: ArrayList<String>, separator: String): String {
@@ -293,7 +293,7 @@ class AppUtils {
             try {
                 val u = URL(url);
                 val conn = u.openConnection();
-                val contentLength = conn.getContentLength();
+                val contentLength = conn.contentLength;
 
                 val stream = DataInputStream(u.openStream());
 

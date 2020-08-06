@@ -128,9 +128,7 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
         base = MovieBase.YTS
 
         val listener = object : MoviesListener {
-            override fun onStarted() {
-                // TODO: Show some progress bar
-            }
+            override fun onStarted() { }
 
             override fun onFailure(e: Exception) {
                 handleRetrofitError(context, e)

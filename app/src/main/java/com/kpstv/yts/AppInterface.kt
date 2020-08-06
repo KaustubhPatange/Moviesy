@@ -35,7 +35,7 @@ class AppInterface {
         var TMDB_IMAGE_PREFIX = "https://image.tmdb.org/t/p/w500"
         var TMDB_API_KEY = "dbaba3594e59e4ff47c003b2ddb82c2a"
         var COUNTRY_FLAG_JSON_URL = "https://pastebin.com/raw/H0CYRdJ9"
-        var APP_DATABASE_URL = "https://pastebin.com/raw/rq6KYdgC" // TODO: Change this url
+        var APP_DATABASE_URL = "https://pastebin.com/raw/Vg7bahGJ" // TODO: Change this url (no update - https://pastebin.com/raw/FdC9m81R)
         var APP_IMAGE_URL = "https://raw.githubusercontent.com/KaustubhPatange/Moviesy/master/app/src/main/ic_launcher-playstore.png"
         var SUGGESTION_URL =
             "https://suggestqueries.google.com/complete/search?ds=yt&client=firefox&q="
@@ -64,6 +64,7 @@ class AppInterface {
         const val REMOVE_CURRENT_JOB = "com.kpstv.yts.REMOVE_CURRENT_JOB"
 
         const val MOVIE_ID = "com.kpstv.yts.MOVIE_ID"
+        const val UPDATE_URL = "com.kpstv.yts.UPDATE_URL"
 
         const val GENERAL_FRAG = "com.kpstv.yts.GENERAL_FRAG"
         const val STORAGE_FRAG = "com.kpstv.yts.STORAGE_FRAG"

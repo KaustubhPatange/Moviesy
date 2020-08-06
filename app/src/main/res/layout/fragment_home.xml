@@ -53,6 +53,7 @@
                     android:text="@string/searchmovies"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.tabs.TabLayout
@@ -66,12 +67,10 @@
             android:layout_height="wrap_content">
 
             <com.google.android.material.tabs.TabItem
-                android:id="@+id/tab_charts"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:text="@string/charts"/>
             <com.google.android.material.tabs.TabItem
-                android:id="@+id/tab_categories"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:text="@string/categories"/>
@@ -80,15 +79,6 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!--<fragment
-        android:id="@+id/nav_host_fragment"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-        android:name="androidx.navigation.fragment.NavHostFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        app:navGraph="@navigation/home_nav_graph" />-->
-
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
@@ -96,16 +86,3 @@
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
-<!--
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".fragments.HomeFragment">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Home Fragment" />
-
-</FrameLayout>-->

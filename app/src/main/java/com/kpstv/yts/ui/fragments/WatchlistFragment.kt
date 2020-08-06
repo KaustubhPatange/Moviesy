@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.danimahardhika.cafebar.CafeBar
@@ -17,13 +18,21 @@ import com.kpstv.yts.ui.activities.MainActivity
 import com.kpstv.yts.ui.activities.SearchActivity
 import com.kpstv.yts.adapters.WatchlistAdapter
 import com.kpstv.common_moviesy.extensions.Coroutines
+import com.kpstv.yts.databinding.FragmentWatchlistBinding
 import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.extensions.show
+import com.kpstv.yts.ui.viewmodels.MainViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_watchlist.view.*
 
+@AndroidEntryPoint
 class WatchlistFragment : Fragment() {
 
+    private val viewModel by viewModels<MainViewModel>()
+    private lateinit var binding: FragmentWatchlistBinding
+
     private lateinit var mainActivity: MainActivity
+
     private val TAG = "WatchListFragment"
     private lateinit var adapter: WatchlistAdapter
 
@@ -33,52 +42,56 @@ class WatchlistFragment : Fragment() {
     ): View? {
         mainActivity = activity as MainActivity
 
-        mainActivity.viewModel.watchView?.let {
-          return it
-        } ?:
-        return inflater.inflate(R.layout.fragment_watchlist, container, false).also { view ->
-            view.layout_noFavourite.hide()
+         viewModel.watchView?.let {
+          binding = FragmentWatchlistBinding.bind(it)
+        } ?: run {
+             binding = FragmentWatchlistBinding.bind(
+                 inflater.inflate(R.layout.fragment_watchlist, container, false)
+             )
 
-            setToolBar(view)
+             binding.layoutNoFavourite.hide()
 
-            initRecyclerView(view)
+             setToolBar()
 
-            bindUI(view)
+             initRecyclerView()
 
-            mainActivity.viewModel.watchView = view
-        }
+             bindUI()
+
+             viewModel.watchView = binding.root
+         }
+        return binding.root
     }
 
     /** This will bind the fragment with the viewModel returning LiveData.
      */
-    private fun bindUI(view: View) = Coroutines.main {
-        mainActivity.viewModel.favouriteMovieIds.await().observe(mainActivity, Observer {
+    private fun bindUI() = Coroutines.main {
+        viewModel.favouriteMovieIds.await().observe(viewLifecycleOwner, Observer {
             adapter.updateModels(it)
             if (adapter.itemCount > 0) {
-                view.layout_noFavourite.hide()
+                binding.layoutNoFavourite.hide()
             } else
-                view.layout_noFavourite.show()
+                binding.layoutNoFavourite.show()
         })
     }
 
-    private fun initRecyclerView(view: View) {
-        view.recyclerView.layoutManager = LinearLayoutManager(context)
-        adapter = WatchlistAdapter(mainActivity, ArrayList())
+    private fun initRecyclerView() {
+        binding.recyclerView.layoutManager = LinearLayoutManager(context)
+        adapter = WatchlistAdapter(requireContext(), ArrayList())
         adapter.onClickListener = { model, _ ->
-            val intent = Intent(mainActivity, FinalActivity::class.java)
+            val intent = Intent(requireContext(), FinalActivity::class.java)
             intent.putExtra(MOVIE_ID, model.movieId)
             startActivity(intent)
         }
 
         adapter.onItemRemoveListener = { model, _ ->
-            mainActivity.viewModel.removeFavourite(model.movieId)
+            viewModel.removeFavourite(model.movieId)
 
-            CafeBar.builder(requireContext()).apply {
+            CafeBar.builder(mainActivity).apply {
                 floating(true)
                 content(getString(R.string.remove_watchlist))
                 neutralText(getString(R.string.undo))
                 onNeutral {
-                    mainActivity.viewModel.addToFavourite(model)
+                    viewModel.addToFavourite(model)
                     it.dismiss()
                 }
                 autoDismiss(true)
@@ -86,19 +99,19 @@ class WatchlistFragment : Fragment() {
             }.show()
         }
 
-        view.recyclerView.setHasFixedSize(true)
-        view.recyclerView.adapter = adapter
+        binding.recyclerView.setHasFixedSize(true)
+        binding.recyclerView.adapter = adapter
     }
 
-    private fun setToolBar(view: View) {
-        view.toolbar.title = getString(R.string.watchlist)
-        view.toolbar.setNavigationIcon(R.drawable.ic_menu)
-        view.toolbar.setNavigationOnClickListener {
+    private fun setToolBar() {
+        binding.toolbar.title = getString(R.string.watchlist)
+        binding.toolbar.setNavigationIcon(R.drawable.ic_menu)
+        binding.toolbar.setNavigationOnClickListener {
             mainActivity.drawerLayout.openDrawer(GravityCompat.START)
         }
-        view.toolbar.inflateMenu(R.menu.fragment_watchlist_menu)
+        binding.toolbar.inflateMenu(R.menu.fragment_watchlist_menu)
 
-        view.toolbar.setOnMenuItemClickListener {
+        binding.toolbar.setOnMenuItemClickListener {
             if (it.itemId == R.id.action_search) {
                 val intent = Intent(mainActivity, SearchActivity::class.java)
                 startActivity(intent)
@@ -106,5 +119,4 @@ class WatchlistFragment : Fragment() {
             return@setOnMenuItemClickListener true
         }
     }
-
 }

@@ -15,10 +15,6 @@ interface YTSApi {
     @GET("movie_details.json")
     fun getMovie(@QueryMap params: Map<String, String>): Deferred<Model.response_movie>
 
-    // TODO: Remove this block
-    @GET("movie_suggestions.json")
-    fun getSuggestion(@Query("movie_id") movieId: Int): Call<Model.response_movie>
-
     /** List movies by passing certain queries build using
      *  YTSQuery.ListMovieBuilder class*/
 

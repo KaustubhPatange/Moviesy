@@ -36,7 +36,9 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <include layout="@layout/fragment_library_no_download" />
+            <include
+                android:id="@+id/fragment_library_no_download"
+                layout="@layout/fragment_library_no_download" />
 
             <LinearLayout
                 android:id="@+id/fl_downloadLayout"

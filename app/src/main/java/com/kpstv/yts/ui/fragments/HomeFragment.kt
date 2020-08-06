@@ -5,19 +5,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
-import androidx.navigation.NavController
-import androidx.navigation.fragment.findNavController
+import androidx.fragment.app.viewModels
 import com.google.android.material.tabs.TabLayout
 import com.kpstv.yts.R
+import com.kpstv.yts.databinding.FragmentHomeBinding
 import com.kpstv.yts.ui.activities.MainActivity
 import com.kpstv.yts.ui.activities.SearchActivity
-import kotlinx.android.synthetic.main.fragment_home.view.*
+import com.kpstv.yts.ui.viewmodels.MainViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class HomeFragment : Fragment(), TabLayout.OnTabSelectedListener {
+
+    private val viewModel by viewModels<MainViewModel>()
+    private lateinit var binding: FragmentHomeBinding
 
     private lateinit var mainActivity: MainActivity
     var chartsFragment = ChartsFragment()
@@ -29,26 +32,30 @@ class HomeFragment : Fragment(), TabLayout.OnTabSelectedListener {
     ): View? {
         mainActivity = activity as MainActivity
 
-        mainActivity.viewModel.homeView?.let {
-            return it
-        } ?:
-        return inflater.inflate(R.layout.fragment_home, container, false).also { view->
+        viewModel.homeView?.let {
+            binding = FragmentHomeBinding.bind(it)
+        } ?: run {
+            binding = FragmentHomeBinding.bind(
+                inflater.inflate(R.layout.fragment_home, container, false)
+            )
 
-            view.searchImage.setOnClickListener {
+            binding.searchImage.setOnClickListener {
                 mainActivity.drawerLayout.openDrawer(GravityCompat.START)
             }
 
-            view.searchCard.setOnClickListener {
+            binding.searchCard.setOnClickListener {
                 val intent = Intent(mainActivity, SearchActivity::class.java)
                 startActivity(intent)
             }
 
-            view.tabLayout.addOnTabSelectedListener(this)
+            binding.tabLayout.addOnTabSelectedListener(this)
 
             setFragment(chartsFragment)
 
-            mainActivity.viewModel.homeView = view
+            viewModel.homeView = binding.root
         }
+
+        return binding.root
     }
 
     override fun onTabReselected(tab: TabLayout.Tab?) { }

@@ -9,6 +9,7 @@ import com.kpstv.yts.AppSettings
 import com.kpstv.yts.data.converters.AppDatabaseConverter
 import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.common_moviesy.extensions.await
+import com.kpstv.yts.data.models.AppDatabase
 import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.Request
 import javax.inject.Inject
@@ -22,12 +23,25 @@ class ProxyUtils @Inject constructor(
     private val TAG = javaClass.simpleName
 
     /**
+     * To make this suspend worker run on non suspendable method
+     * we use a callback function.
+     */
+    fun check(onComplete: () -> Unit, onError: (Exception) -> Unit) = Coroutines.io {
+        try {
+            checkAsync()
+            Coroutines.main { onComplete.invoke() }
+        } catch (e: Exception) {
+            Coroutines.main { onError.invoke(e) }
+        }
+    }
+
+    /**
      * Method will check for updated proxy which are available on app
      * database.
      */
     private suspend fun checkAsync() {
         Log.e(TAG, "Checking for proxy")
-        val response = makeHttpCallAsync(AppInterface.APP_DATABASE_URL)
+        val response = retrofitUtils.makeHttpCallAsync(AppInterface.APP_DATABASE_URL)
         if (response.isSuccessful) {
             val appDatabase =
                 AppDatabaseConverter.toAppDatabaseFromString(response.body?.string())
@@ -55,27 +69,10 @@ class ProxyUtils @Inject constructor(
 
             Log.e(TAG, "Checking for YTS proxy again!")
             val testResponse =
-                makeHttpCallAsync("${AppInterface.YTS_BASE_API_URL}list_movies.json")
+                retrofitUtils.makeHttpCallAsync("${AppInterface.YTS_BASE_API_URL}list_movies.json")
             if (!testResponse.isSuccessful) throw Exception("Updated proxy is invalid. If you see this message, contact developer to update proxies manually!")
             testResponse.close() // Close response for memory leaks
         } else
             throw Exception("Failed to retrieve app database")
     }
-
-    /**
-     * To make this suspend worker run on non suspendable method
-     * we use a callback function.
-     */
-    fun check(onComplete: () -> Unit, onError: (Exception) -> Unit) = Coroutines.io {
-        try {
-            checkAsync()
-            Coroutines.main { onComplete.invoke() }
-        } catch (e: Exception) {
-            Coroutines.main { onError.invoke(e) }
-        }
-    }
-
-    private suspend fun makeHttpCallAsync(url: String) =
-        retrofitUtils.getHttpClient()
-            .newCall(Request.Builder().url(url).build()).await()
 }
