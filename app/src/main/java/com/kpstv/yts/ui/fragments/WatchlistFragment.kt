@@ -28,7 +28,9 @@ import kotlinx.android.synthetic.main.fragment_watchlist.view.*
 @AndroidEntryPoint
 class WatchlistFragment : Fragment() {
 
-    private val viewModel by viewModels<MainViewModel>()
+    private val viewModel by viewModels<MainViewModel>(
+        ownerProducer = { requireActivity() }
+    )
     private lateinit var binding: FragmentWatchlistBinding
 
     private lateinit var mainActivity: MainActivity

@@ -16,6 +16,7 @@ import com.kpstv.yts.data.db.repository.FavouriteRepository
 import com.kpstv.yts.data.db.repository.MainRepository
 import com.kpstv.yts.data.db.repository.PauseRepository
 import com.kpstv.common_moviesy.extensions.Coroutines
+import com.kpstv.yts.AppInterface.Companion.FEATURED_QUERY
 import com.kpstv.yts.extensions.lazyDeferred
 import com.kpstv.yts.interfaces.api.YTSApi
 import com.kpstv.yts.interfaces.listener.MoviesListener
@@ -42,13 +43,13 @@ class MainViewModel @ViewModelInject constructor(
 ) : AndroidViewModel(application) {
     private val TAG = "MainViewModel"
 
-    /** We will save all fragment views into this ViewModel.c
+    /** We will save all fragment views into this ViewModel
      *  This a workaround to handle fragment UI state easily but
      *  memory consuming.
      */
     var homeView: View? = null
     var watchView: View? = null
-    var librayView: View? = null
+    var libraryView: View? = null
 
     private val context = application.applicationContext
 
@@ -120,19 +121,18 @@ class MainViewModel @ViewModelInject constructor(
 
         Coroutines.main {
             try {
-                val queryString = "movies=featured&client=yts"
-                val queryMap = QueryConverter.toMapfromString(queryString)
-                if (isFetchNeeded(queryString)) {
+                val queryMap = QueryConverter.toMapfromString(FEATURED_QUERY)
+                if (isFetchNeeded(FEATURED_QUERY)) {
 
                     Log.e(TAG, "==> Fetching new data")
 
-                    fetchFeaturedData(moviesListener,queryString)
+                    fetchFeaturedData(moviesListener,FEATURED_QUERY)
 
                 } else {
                     Log.e(TAG, "==> Getting data from repository")
 
                     repository.getMoviesByQuery(
-                        queryString
+                        FEATURED_QUERY
                     )?.let {
                         moviesListener.onComplete(it.movies ,queryMap, it.isMore)
                     }

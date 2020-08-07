@@ -3,6 +3,7 @@ package com.kpstv.yts.ui.activities
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.view.MenuItem
 import androidx.activity.viewModels
@@ -11,6 +12,8 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.kpstv.common_moviesy.extensions.viewBinding
@@ -23,16 +26,19 @@ import com.kpstv.yts.R
 import com.kpstv.yts.cast.CastHelper
 import com.kpstv.yts.databinding.ActivityMainBinding
 import com.kpstv.yts.extensions.hide
+import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.UpdateUtils
 import com.kpstv.yts.services.AppWorker
 import com.kpstv.yts.services.DownloadService
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
+import com.kpstv.yts.ui.helpers.MainHelper
 import com.kpstv.yts.ui.helpers.PremiumHelper
 import com.kpstv.yts.ui.settings.SettingsActivity
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import io.github.dkbai.tinyhttpd.nanohttpd.webserver.SimpleWebServer
+import java.io.File
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -121,6 +127,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onStart() {
         super.onStart()
+        MainHelper.askNoBatteryOptimization(applicationContext)
         AppWorker.schedule(applicationContext)
         updateUtils.check(
             onUpdateAvailable = {

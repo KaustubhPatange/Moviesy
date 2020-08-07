@@ -35,7 +35,9 @@ import java.io.File
 class LibraryFragment : Fragment() {
     private val TAG = "LibraryFragment"
 
-    private val viewModel by viewModels<MainViewModel>()
+    private val viewModel by viewModels<MainViewModel>(
+        ownerProducer = { requireActivity() }
+    )
 
     private lateinit var mainActivity: MainActivity
     private lateinit var downloadAdapter: LibraryDownloadAdapter
@@ -48,7 +50,7 @@ class LibraryFragment : Fragment() {
     ): View? {
         mainActivity = activity as MainActivity
 
-        viewModel.librayView?.let {
+        viewModel.libraryView?.let {
             binding = FragmentLibraryBinding.bind(it)
         } ?: run {
             binding = FragmentLibraryBinding.bind(
@@ -63,7 +65,7 @@ class LibraryFragment : Fragment() {
 
             bindUI()
 
-            viewModel.librayView = binding.root
+            viewModel.libraryView = binding.root
         }
         return binding.root
     }

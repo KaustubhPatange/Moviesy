@@ -28,26 +28,25 @@ class GenreFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         if (::binding.isInitialized) return binding.root
-        else
+        else {
             binding = FragmentGenreBinding.bind(
                 inflater.inflate(R.layout.fragment_genre, container, false)
             )
+            binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+            val adapter = LocalGenreAdapter(requireContext(), GENRE_CATEGORY_LIST) { model, _ ->
+                val queryMap = YTSQuery.ListMoviesBuilder().apply {
+                    setGenre(model.genre)
+                    setOrderBy(YTSQuery.OrderBy.descending)
+                }.build()
 
-        val adapter = LocalGenreAdapter(requireContext(), GENRE_CATEGORY_LIST) { model, _ ->
-            val queryMap = YTSQuery.ListMoviesBuilder().apply {
-                setGenre(model.genre)
-                setOrderBy(YTSQuery.OrderBy.descending)
-            }.build()
+                CustomMovieLayout.invokeMoreFunction(
+                    requireContext(), "Based on ${model.title}", queryMap
+                )
+            }
 
-            CustomMovieLayout.invokeMoreFunction(
-                requireContext(), "Based on ${model.title}", queryMap
-            )
+            binding.recyclerView.adapter = adapter
         }
-
-        binding.recyclerView.adapter = adapter
-
         return binding.root
     }
 

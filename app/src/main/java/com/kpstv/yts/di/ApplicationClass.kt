@@ -2,6 +2,8 @@ package com.kpstv.yts.di
 
 import android.app.Application
 import androidx.core.content.res.ResourcesCompat
+import androidx.hilt.work.HiltWorkerFactory
+import androidx.work.Configuration
 import com.google.android.gms.ads.MobileAds
 import com.kpstv.yts.R
 import com.kpstv.yts.extensions.Notifications
@@ -9,10 +11,15 @@ import com.kpstv.yts.services.AppWorker
 import com.kpstv.yts.services.DownloadService
 import dagger.hilt.android.HiltAndroidApp
 import es.dmoral.toasty.Toasty
+import javax.inject.Inject
 
 @Suppress("unused")
 @HiltAndroidApp
-class ApplicationClass : Application() {
+class ApplicationClass : Application(), Configuration.Provider {
+
+    @Inject
+    lateinit var workerFactory: HiltWorkerFactory
+
     override fun onCreate() {
         super.onCreate()
 
@@ -24,10 +31,17 @@ class ApplicationClass : Application() {
             .apply()
 
         /** Initialize mobile ads */
-        MobileAds.initialize(this) {}
+        MobileAds.initialize(this) { }
 
         /** Setting up notifications */
         Notifications.setup(applicationContext)
-        //PRDownloader.initialize(applicationContext)
+
+        /** Scheduling work manager */
+        AppWorker.schedule(applicationContext)
     }
+
+    override fun getWorkManagerConfiguration() =
+        Configuration.Builder()
+            .setWorkerFactory(workerFactory)
+            .build()
 }

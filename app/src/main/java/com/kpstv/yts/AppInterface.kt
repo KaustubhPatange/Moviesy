@@ -53,6 +53,8 @@ class AppInterface {
         var IS_DARK_THEME = true
         var IS_PREMIUM_UNLOCKED = false
 
+        const val FEATURED_QUERY = "movies=featured&client=yts"
+
         const val TORRENT_NOT_SUPPORTED = "com.kpstv.yts.TORRENT_NOT_SUPPORTED"
         const val MODEL_UPDATE = "com.kpstv.yts.MODEL_UPDATE"
         const val STOP_SERVICE = "com.kpstv.yts.STOP_SERVICE"
@@ -74,6 +76,7 @@ class AppInterface {
         const val ABOUT_FRAG = "com.kpstv.yts.ABOUT_FRAG"
 
         const val ACTION_REPLACE_FRAG = "com.kpstv.yts.action_replace_frag"
+        const val ACTION_UPDATE = "com.kpstv.yts.action_update"
 
         const val REPLACE_FRAG = "com.kpstv.yts.REPLACE_FRAG"
 

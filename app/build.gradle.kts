@@ -103,6 +103,7 @@ dependencies {
 
     implementation(LibraryDependency.HILT_ANDROID)
     implementation(LibraryDependency.HILT_VIEWODEL)
+    implementation(LibraryDependency.HILT_WORK_MANAGER)
 
     kapt(LibraryDependency.ROOM_COMPILER_KAPT)
     kapt(LibraryDependency.GLIDE_COMPILER)

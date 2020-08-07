@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.MovieShort
@@ -20,7 +21,9 @@ import es.dmoral.toasty.Toasty
 @AndroidEntryPoint
 class ChartsFragment : Fragment() {
 
-    private val viewModel by viewModels<MainViewModel>()
+    private val viewModel by viewModels<MainViewModel>(
+        ownerProducer = { requireActivity() }
+    )
 
     private lateinit var binding: FragmentChartsBinding
 
@@ -38,14 +41,14 @@ class ChartsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         if (::binding.isInitialized) return binding.root
-        else
+        else {
             binding = FragmentChartsBinding.bind(
                 inflater.inflate(R.layout.fragment_charts, container, false)
             )
 
-        setViewAndLayout()
-        setSwipeRefreshCallback()
-
+            setViewAndLayout()
+            setSwipeRefreshCallback()
+        }
         return binding.root
     }
 

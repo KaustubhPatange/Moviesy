@@ -154,4 +154,6 @@ Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus d
     <string name="update_title">Update Available</string>
     <string name="update_message">An update is available to download</string>
     <string name="update_text">Do you want to install this update?</string>
+    <string name="doze_title">Battery Optimization</string>
+    <string name="doze_text">You need to disable battery optimization in order to prevent unexpected app shutdowns from background.</string>
 </resources>

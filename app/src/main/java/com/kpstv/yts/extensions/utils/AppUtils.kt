@@ -22,6 +22,7 @@ import androidx.annotation.AttrRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import com.kpstv.yts.AppInterface.Companion.handleRetrofitError
 import com.kpstv.yts.R
 import com.kpstv.yts.data.db.repository.FavouriteRepository
@@ -323,6 +324,19 @@ class AppUtils {
                 }
             }
             return@with false
+        }
+
+        fun installApp(context: Context, apk: File) {
+            val install = Intent(Intent.ACTION_INSTALL_PACKAGE)
+            install.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            install.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                install.data = FileProvider.getUriForFile(context,context.packageName + ".provider", apk)
+            } else {
+                apk.setReadable(true, false)
+                install.data = Uri.fromFile(apk)
+            }
+            context.startActivity(install)
         }
 
         private val TAG = "Utils"

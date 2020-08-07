@@ -19,7 +19,9 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class HomeFragment : Fragment(), TabLayout.OnTabSelectedListener {
 
-    private val viewModel by viewModels<MainViewModel>()
+    private val viewModel by viewModels<MainViewModel>(
+        ownerProducer = { requireActivity() }
+    )
     private lateinit var binding: FragmentHomeBinding
 
     private lateinit var mainActivity: MainActivity

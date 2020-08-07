@@ -5,15 +5,23 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.core.content.ContextCompat
-import com.kpstv.yts.AppInterface.Companion.UNPAUSE_JOB
+import com.kpstv.yts.AppInterface
+import com.kpstv.yts.AppInterface.Companion.ACTION_UPDATE
 import com.kpstv.yts.AppInterface.Companion.STOP_SERVICE
 import com.kpstv.yts.AppInterface.Companion.TORRENT_NOT_SUPPORTED
+import com.kpstv.yts.AppInterface.Companion.UNPAUSE_JOB
 import com.kpstv.yts.R
-import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import com.kpstv.yts.data.models.Torrent
+import com.kpstv.yts.extensions.utils.UpdateUtils
 import com.kpstv.yts.services.DownloadService
+import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class CommonBroadCast : BroadcastReceiver() {
+
+    @Inject lateinit var updateUtils: UpdateUtils
 
     private val TAG = "CommonBroadCast"
 
@@ -27,7 +35,7 @@ class CommonBroadCast : BroadcastReceiver() {
                 AlertNoIconDialog.Companion.Builder(context!!).apply {
                     setTitle(context.getString(R.string.timeout_error_title))
                     setMessage(context.getString(R.string.timeout_error_text))
-                    setPositiveButton(context.getString(R.string.alright),null)
+                    setPositiveButton(context.getString(R.string.alright), null)
                 }.show()
             }
             UNPAUSE_JOB -> {

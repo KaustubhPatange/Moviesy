@@ -2,6 +2,7 @@ package com.kpstv.yts.di
 
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.extensions.utils.RetrofitUtils
+import com.kpstv.yts.interfaces.api.AppApi
 import com.kpstv.yts.interfaces.api.TMdbApi
 import com.kpstv.yts.interfaces.api.YTSApi
 import dagger.Module
@@ -16,13 +17,24 @@ import javax.inject.Singleton
 object NetworkModule {
     @Provides
     @Singleton
+    fun provideAppApi(
+        retrofitUtils: RetrofitUtils
+    ): AppApi {
+        return retrofitUtils.getRetrofitBuilder()
+            .baseUrl(AppInterface.YTS_BASE_API_URL) // baseUrl currently does not matter
+            .build()
+            .create(AppApi::class.java)
+    }
+
+    @Provides
+    @Singleton
     fun provideYTSApi(
         retrofitUtils: RetrofitUtils
     ): YTSApi {
         return retrofitUtils.getRetrofitBuilder()
-                .baseUrl(AppInterface.YTS_BASE_API_URL)
-                .build()
-                .create(YTSApi::class.java)
+            .baseUrl(AppInterface.YTS_BASE_API_URL)
+            .build()
+            .create(YTSApi::class.java)
     }
 
     @Provides
