@@ -90,7 +90,7 @@ class CustomPagedAdapter(
                         target: Target<Bitmap>?,
                         isFirstResource: Boolean
                     ): Boolean {
-                        Log.e("CustomPagedAdapter", "==> Glide failed for: ${movie.title}")
+                        Log.e("CustomPagedAdapter", "=> Glide failed for: ${movie.title}")
                         return false
                     }
 

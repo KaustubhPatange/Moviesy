@@ -144,7 +144,7 @@ class FinalViewModel @ViewModelInject constructor(
             try {
 
                 if (isFetchNeeded(imdbId, MovieType.Recommend)) {
-                    Log.e(TAG, "==> Fetching New data")
+                    Log.e(TAG, "=> Fetching New data")
 
                     /** Since Recommendation query needs only TMDB movie id,
                      *  we first get the movie from tMdbApi to fetch the movie id
@@ -163,7 +163,7 @@ class FinalViewModel @ViewModelInject constructor(
                         response.id.toString()
                     )
                 } else {
-                    Log.e(TAG, "==> Getting data from repository")
+                    Log.e(TAG, "=> Getting data from repository")
 
                     tMdbRepository.getRecommendMoviesByIMDB(imdbId)?.also {
                         suggestionListener.onComplete(it.movies, it.tag, it.isMore)
@@ -181,7 +181,7 @@ class FinalViewModel @ViewModelInject constructor(
         Coroutines.main {
             try {
                 if (isFetchNeeded(imdbId, MovieType.Suggestion)) {
-                    Log.e(TAG, "==> Fetching New data")
+                    Log.e(TAG, "=> Fetching New data")
 
                     val response = tMdbApi.getSimilars(imdbId).await()
 
@@ -192,7 +192,7 @@ class FinalViewModel @ViewModelInject constructor(
                         MovieType.Suggestion
                     )
                 } else {
-                    Log.e(TAG, "==> Getting data from repository")
+                    Log.e(TAG, "=> Getting data from repository")
 
                     tMdbRepository.getSuggestMoviesByIMDB(imdbId)?.also {
                         suggestionListener.onComplete(it.movies, it.tag, it.isMore)

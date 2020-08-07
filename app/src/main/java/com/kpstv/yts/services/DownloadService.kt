@@ -18,6 +18,7 @@ import com.github.se_bastiaan.torrentstream.StreamStatus
 import com.github.se_bastiaan.torrentstream.TorrentOptions
 import com.github.se_bastiaan.torrentstream.TorrentStream
 import com.github.se_bastiaan.torrentstream.listeners.TorrentListener
+import com.google.gson.Gson
 import com.kpstv.yts.AppInterface.Companion.ANONYMOUS_TORRENT_DOWNLOAD
 import com.kpstv.yts.AppInterface.Companion.DOWNLOAD_CONNECTION_TIMEOUT
 import com.kpstv.yts.AppInterface.Companion.DOWNLOAD_TIMEOUT_SECOND
@@ -56,6 +57,7 @@ class DownloadService : IntentService("blank") {
 
     @Inject
     lateinit var pauseRepository: PauseRepository
+
     @Inject
     lateinit var downloadRepository: DownloadRepository
 
@@ -82,7 +84,7 @@ class DownloadService : IntentService("blank") {
 
     override fun onCreate() {
 
-        DS_LOG("==> onCreate() called")
+        DS_LOG("=> onCreate() called")
 
         context = applicationContext
 
@@ -142,7 +144,7 @@ class DownloadService : IntentService("blank") {
         val config: Torrent = intent.getSerializableExtra("addJob") as Torrent
         pendingJobs.add(config)
 
-        DS_LOG("==> onStartCommand(): ${config.title}")
+        DS_LOG("=> onStartCommand(): ${config.title}")
 
         setContentIntent(config)
 
@@ -182,7 +184,7 @@ class DownloadService : IntentService("blank") {
 
         pauseRepository.deletePause(model.hash)
 
-        DS_LOG("==> onHandleIntent(): ${model.title}")
+        DS_LOG("=> onHandleIntent(): ${model.title}")
 
         var isExist = false
         for (c in pendingJobs) {
@@ -205,25 +207,25 @@ class DownloadService : IntentService("blank") {
             .build()
 
         updateNotification(model, null, true)
-        DS_LOG("==> Loading Job: ${model.title}")
+        DS_LOG("=> Loading Job: ${model.title}")
 
         torrentStream = TorrentStream.init(torrentOptions)
         torrentStream.addListener(object : TorrentListener {
             override fun onStreamReady(torrent: com.github.se_bastiaan.torrentstream.Torrent?) {
-                DS_LOG("==> Stream Ready")
+                DS_LOG("=> Stream Ready")
             }
 
             override fun onStreamPrepared(torrent: com.github.se_bastiaan.torrentstream.Torrent?) {
                 updateNotification(model, torrent, true)
                 currentModel = torrent
-                DS_LOG("==> Preparing Job: ${torrent?.saveLocation}")
+                DS_LOG("=> Preparing Job: ${torrent?.saveLocation}")
                 lastProgress = 0f
                 totalGap = getCurrentTimeSecond()
                 isConnected = true
             }
 
             override fun onStreamStopped() {
-                DS_LOG("==> Stream Stopped")
+                DS_LOG("=> Stream Stopped")
                 if (currentModel != null && toDelete) {
                     AppUtils.deleteRecursive(currentModel?.saveLocation)
                 }
@@ -232,7 +234,7 @@ class DownloadService : IntentService("blank") {
             }
 
             override fun onStreamStarted(torrent: com.github.se_bastiaan.torrentstream.Torrent?) {
-                DS_LOG("==> Stream Started")
+                DS_LOG("=> Stream Started")
             }
 
             override fun onStreamProgress(
@@ -242,7 +244,7 @@ class DownloadService : IntentService("blank") {
                 if (lastProgress == 0f || lastProgress != status?.progress) {
                     updateNotification(model, torrent, false, status)
                     DS_LOG(
-                        "==> Progress: ${status?.progress}, Download queue: ${torrent?.torrentHandle?.downloadQueue?.size}, " +
+                        "=> Progress: ${status?.progress}, Download queue: ${torrent?.torrentHandle?.downloadQueue?.size}, " +
                                 "Piece availability: ${torrent?.torrentHandle?.pieceAvailability?.size}, " +
                                 "Piece size: ${torrent?.torrentHandle?.torrentFile()
                                     ?.numPieces()}, " +
@@ -250,7 +252,7 @@ class DownloadService : IntentService("blank") {
                     )
                     if (status?.progress?.toInt() == 100) {
                         isJobCompleted = true
-                        DS_LOG("==> JobCompleted")
+                        DS_LOG("=> JobCompleted")
                     }
                 }
                 totalGap = getCurrentTimeSecond()
@@ -262,7 +264,7 @@ class DownloadService : IntentService("blank") {
                 torrent: com.github.se_bastiaan.torrentstream.Torrent?,
                 e: Exception?
             ) {
-                DS_LOG("==> Stream Error")
+                DS_LOG("=> Stream Error")
                 isJobCompleted = true
                 isError = true
             }
@@ -274,7 +276,7 @@ class DownloadService : IntentService("blank") {
             if ((isCurrentProgressUpdated && getCurrentTimeSecond() > totalGap + DOWNLOAD_TIMEOUT_SECOND && lastProgress?.toInt()!! >= 98)
                 || (isConnected && getCurrentTimeSecond() > totalGap + DOWNLOAD_CONNECTION_TIMEOUT && lastProgress?.toInt()!! == 0)
             ) {
-                DS_LOG("==> Auto Stopping Stream")
+                DS_LOG("=> Auto Stopping Stream")
                 toDelete = false
                 isAutoStopped = true
                 torrentStream.stopStream()
@@ -412,9 +414,7 @@ class DownloadService : IntentService("blank") {
         val contentText = model.title
         if (!isError) {
 
-            /** Save details of file in database.
-             */
-
+            /** Save details of file in database. */
             val imagePath = File(currentModel?.saveLocation, "banner.png")
             saveImageFromUrl(model.banner_url, imagePath)
 
@@ -424,20 +424,24 @@ class DownloadService : IntentService("blank") {
             val movieSize = getVideoDuration(this, currentModel?.videoFile!!)
                 .takeUnless { it == null } ?: 0L
 
-            downloadRepository.saveDownload(
-                Model.response_download(
-                    title = model.title,
-                    imagePath = imagePath.path,
-                    downloadPath = currentModel?.saveLocation?.path,
-                    size = model.size,
-                    date_downloaded = todayDate,
-                    hash = model.hash,
-                    total_video_length = movieSize,
-                    videoPath = currentModel?.videoFile?.path,
-                    movieId = currentTorrentModel?.movieId,
-                    imdbCode = currentTorrentModel?.imdbCode
-                )
+            val downloadResponse = Model.response_download(
+                title = model.title,
+                imagePath = imagePath.path,
+                downloadPath = currentModel?.saveLocation?.path,
+                size = model.size,
+                date_downloaded = todayDate,
+                hash = model.hash,
+                total_video_length = movieSize,
+                videoPath = currentModel?.videoFile?.path,
+                movieId = currentTorrentModel?.movieId,
+                imdbCode = currentTorrentModel?.imdbCode
             )
+
+            downloadRepository.saveDownload(downloadResponse)
+
+            /** Save a detail.json file. */
+            val detailPath = File(currentModel?.saveLocation, "details.json")
+            detailPath.writeText(Gson().toJson(downloadResponse))
 
             // TODO: Set content intent to do something when notification is clicked
 
@@ -448,14 +452,6 @@ class DownloadService : IntentService("blank") {
                 setAutoCancel(true)
                 priority = Notification.PRIORITY_LOW
             }.build()
-            /* .setContentTitle("Download Complete")
-             .setContentText(contentText)
-             .setSmallIcon(R.drawable.ic_check)
-           //  .setContentIntent(opensongService)
-             .setAutoCancel(true)
-             .setPriority(Notification.PRIORITY_LOW)
-             //.addAction(R.mipmap.ic_launcher, "Share", openshareService)
-             .build()*/
         } else {
             not = NotificationCompat.Builder(context, getString(R.string.CHANNEL_ID_2)).apply {
                 setDefaults(Notification.DEFAULT_ALL)
@@ -496,20 +492,6 @@ class DownloadService : IntentService("blank") {
 
                     torrentStream.stopStream()
                 }
-                /* UNPAUSE_JOB_NORMAL -> {
-                     val modelJob = intent.getSerializableExtra("model") as Model.response_pause
-                     pendingJobs.add(modelJob.torrent!!)
-                     PauseRepository(MainDatabase.invoke(applicationContext)).deletePause(modelJob.hash)
-                     updatePendingJobs()
-                 }
-                 UNPAUSE_JOB_TOP -> {
-                     val modelJob = intent.getSerializableExtra("model") as Model.response_pause
-                     pendingJobs.add(0, currentTorrentModel!!)
-                     pendingJobs.add(0, modelJob.torrent!!)
-                     torrentStream.stopStream()
-                     PauseRepository(MainDatabase.invoke(applicationContext)).deletePause(modelJob.hash)
-                     updatePendingJobs()
-                 }*/
                 REMOVE_JOB -> {
                     val model: Torrent = intent.extras?.getSerializable("model") as Torrent
                     for (c in pendingJobs) {
@@ -534,7 +516,7 @@ class DownloadService : IntentService("blank") {
 
     override fun onDestroy() {
 
-        DS_LOG("==> onDestroy() called")
+        DS_LOG("=> onDestroy() called")
 
         /** Update receiver to know that all jobs completed */
         updateEmptyQueue()
@@ -554,6 +536,4 @@ class DownloadService : IntentService("blank") {
         if (SHOW_LOG_FROM_THIS_CLASS)
             Log.e(TAG, message)
     }
-
-
 }

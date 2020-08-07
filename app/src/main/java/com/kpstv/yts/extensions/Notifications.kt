@@ -1,6 +1,5 @@
 package com.kpstv.yts.extensions
 
-import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -13,7 +12,6 @@ import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.AppDatabase
 import com.kpstv.yts.extensions.utils.AppUtils
-import com.kpstv.yts.services.UpdateService
 import com.kpstv.yts.ui.activities.FinalActivity
 import com.kpstv.yts.ui.activities.SplashActivity
 import java.util.*
@@ -53,7 +51,11 @@ object Notifications {
                 )
                 .setSmallIcon(android.R.drawable.stat_sys_download)
                 .setOngoing(true)
-                .setProgress(100, ((progress.currentBytes * 100)/progress.totalBytes).toInt(), false)
+                .setProgress(
+                    100,
+                    ((progress.currentBytes * 100) / progress.totalBytes).toInt(),
+                    false
+                )
                 .setShowWhen(false)
                 .build()
 

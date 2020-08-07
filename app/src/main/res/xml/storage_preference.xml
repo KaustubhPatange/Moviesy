@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
     <Preference
         app:key="storage_location_pref"
-        app:title="Download location"
-        app:summary=""/>
+        app:summary=""
+        app:title="Download location" />
+
+    <PreferenceCategory app:title="Restore">
+        <Preference
+            app:title="Scan existing downloads"
+            app:key="scan_downloads_pref"
+            app:summary="This will scan download location for any existing downloads"/>
+    </PreferenceCategory>
 </PreferenceScreen>

@@ -156,4 +156,8 @@ Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus d
     <string name="update_text">Do you want to install this update?</string>
     <string name="doze_title">Battery Optimization</string>
     <string name="doze_text">You need to disable battery optimization in order to prevent unexpected app shutdowns from background.</string>
+    <string name="scanning">Scanning…</string>
+    <string name="scan_complete">downloads found</string>
+    <string name="less">Less</string>
+    <string name="more">More</string>
 </resources>

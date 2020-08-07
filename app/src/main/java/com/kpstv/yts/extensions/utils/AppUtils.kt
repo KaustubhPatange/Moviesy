@@ -96,11 +96,11 @@ class AppUtils {
 
         suspend fun toggleFavourite(favouriteRepository: FavouriteRepository, movie: Movie): Int? {
             return if (isMovieFavourite(favouriteRepository, movie.id)) {
-                Log.e(TAG, "==> AppUtils.toggleFavId: already yes")
+                Log.e(TAG, "=> AppUtils.toggleFavId: already yes")
                 favouriteRepository.deleteMovie(movie.id)
                 R.drawable.ic_favorite_no
             } else {
-                Log.e(TAG, "==> AppUtils.toggleFavId: already no")
+                Log.e(TAG, "=> AppUtils.toggleFavId: already no")
                 favouriteRepository.saveMovie(
                     Model.response_favourite(
                         movieId = movie.id,

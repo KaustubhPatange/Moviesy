@@ -155,7 +155,7 @@ class SearchActivity : AppCompatActivity() {
         }.build()
         base = MovieBase.YTS
 
-        Log.e(TAG, "==> Query: ${QueryConverter.fromMapToString(queryMap!!)}")
+        Log.e(TAG, "=> Query: ${QueryConverter.fromMapToString(queryMap!!)}")
 
         adapter = CustomPagedAdapter(this, MovieBase.YTS)
 
@@ -174,7 +174,7 @@ class SearchActivity : AppCompatActivity() {
     /** This will be observing the live-data coming from DataSource.
      */
     private val observer = Observer<PagedList<MovieShort>?> {
-        Log.e(TAG, "==> Called submit list")
+        Log.e(TAG, "=> Called submit list")
         adapter.submitList(it)
     }
 
@@ -343,7 +343,7 @@ class SearchActivity : AppCompatActivity() {
          *
          *  Now whenever user click on suggestion it auto-completes the searchEdit text by
          *  changing the selected item text with current one. But RxJava is still watching
-         *  this change and process it as a new query and runs the sequence ==> val response
+         *  this change and process it as a new query and runs the sequence => val response
          *  which eventually displays suggestion RecyclerView event after hiding it.
          *
          *  Hence in order to prevent it we are using a boolean which will detect if autocomplete

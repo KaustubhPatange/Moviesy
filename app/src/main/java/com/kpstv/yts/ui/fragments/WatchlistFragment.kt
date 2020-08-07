@@ -70,8 +70,8 @@ class WatchlistFragment : Fragment() {
 
     /** This will bind the fragment with the viewModel returning LiveData.
      */
-    private fun bindUI() {
-        viewModel.favouriteMovieIds.observe(viewLifecycleOwner, Observer {
+    private fun bindUI() = Coroutines.main {
+        viewModel.favouriteMovieIds.await().observe(viewLifecycleOwner, Observer {
             adapter.updateModels(it)
             if (adapter.itemCount > 0) {
                 binding.layoutNoFavourite.hide()

@@ -96,10 +96,10 @@ class MainViewModel @ViewModelInject constructor(
                 val queryString = QueryConverter.fromMapToString(queryMap)
 
                 if (isFetchNeeded(queryString)) {
-                    Log.e(TAG, "==> Fetching New data")
+                    Log.e(TAG, "=> Fetching New data")
                     fetchNewData(moviesListener, queryMap)
                 } else {
-                    Log.e(TAG, "==> Getting data from repository")
+                    Log.e(TAG, "=> Getting data from repository")
 
                     repository.getMoviesByQuery(
                         queryString
@@ -122,12 +122,12 @@ class MainViewModel @ViewModelInject constructor(
                 val queryMap = QueryConverter.toMapfromString(FEATURED_QUERY)
                 if (isFetchNeeded(FEATURED_QUERY)) {
 
-                    Log.e(TAG, "==> Fetching new data")
+                    Log.e(TAG, "=> Fetching new data")
 
                     fetchFeaturedData(moviesListener,FEATURED_QUERY)
 
                 } else {
-                    Log.e(TAG, "==> Getting data from repository")
+                    Log.e(TAG, "=> Getting data from repository")
 
                     repository.getMoviesByQuery(
                         FEATURED_QUERY

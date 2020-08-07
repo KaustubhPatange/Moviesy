@@ -70,7 +70,7 @@ class MoreActivity : AppCompatActivity() {
      */
     override fun onPause() {
 
-        Log.e(TAG, "==> onPause()")
+        Log.e(TAG, "=> onPause()")
 
         localEndpoint =
             endPoint
@@ -82,7 +82,7 @@ class MoreActivity : AppCompatActivity() {
 
     override fun onResume() {
 
-        Log.e(TAG, "==> onResume()")
+        Log.e(TAG, "=> onResume()")
 
         if (localBase != null) {
             endPoint = localEndpoint
@@ -174,7 +174,7 @@ class MoreActivity : AppCompatActivity() {
 
         binding.amChipGroup.removeAllViews()
 
-        Log.e(TAG, "==> InitQueries")
+        Log.e(TAG, "=> InitQueries")
 
         val keys = ArrayList(map?.keys!!)
         val values = ArrayList(map.values)
@@ -193,7 +193,7 @@ class MoreActivity : AppCompatActivity() {
      */
     private fun createChip(title: String) {
 
-        Log.e(TAG, "==> Adding chip: $title")
+        Log.e(TAG, "=> Adding chip: $title")
 
         val chipView = LayoutInflater.from(this)
             .inflate(R.layout.item_chip, null)
@@ -221,7 +221,7 @@ class MoreActivity : AppCompatActivity() {
 
                 return
             } else {
-                Log.e(TAG, "==> UpdateQueries")
+                Log.e(TAG, "=> UpdateQueries")
                 val builder = YTSQuery.ListMoviesBuilder()
                 binding.amChipGroup.children.forEach {
                     val chip = it.chip
@@ -273,7 +273,7 @@ class MoreActivity : AppCompatActivity() {
             viewModel.buildNewConfig()
 
         if (queryMap != null)
-            Log.e(TAG, "==> Query: ${QueryConverter.fromMapToString(queryMap!!)}")
+            Log.e(TAG, "=> Query: ${QueryConverter.fromMapToString(queryMap!!)}")
 
         adapter = CustomPagedAdapter(this, base!!)
 

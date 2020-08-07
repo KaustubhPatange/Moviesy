@@ -10,7 +10,7 @@ interface DownloadDao {
     fun upsert(data: Model.response_download)
 
     @Query("select * from table_download where hash = :hash")
-    fun getDownload(hash: String): Model.response_download
+    fun getDownload(hash: String): Model.response_download?
 
     @Query("update table_download set recentlyPlayed = :updateRecentlyPlayed, lastSavedPosition = :updateLastPosition where hash = :hash")
     fun updateDownload(hash: String, updateRecentlyPlayed: Boolean, updateLastPosition: Int)
@@ -18,7 +18,7 @@ interface DownloadDao {
     @Query("update table_download set recentlyPlayed = :updateRecentlyPlayed where hash = :hash")
     suspend fun updateDownload(hash: String, updateRecentlyPlayed: Boolean)
 
-    @Delete()
+    @Delete
     fun delete(data: Model.response_download)
 
     @Query("select * from table_download")

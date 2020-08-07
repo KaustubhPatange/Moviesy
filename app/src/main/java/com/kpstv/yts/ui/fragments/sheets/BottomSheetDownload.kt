@@ -34,6 +34,19 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sheet_download) {
 
+    enum class ViewType {
+        DOWNLOAD,
+        WATCH
+    }
+
+    companion object {
+        const val TORRENTS = "com.kpstv.yts.torrent_models"
+        const val TITLE = "com.kpstv.yts.title"
+        const val IMAGE_URI = "com.kpstv.yts.image_url"
+        const val IMDB_CODE = "com.kpstv.yts.imdb_code"
+        const val MOVIE_ID = "com.kpstv.yts.movie_id"
+    }
+
     private val binding by viewBinding(BottomSheetDownloadBinding::bind)
 
     @Inject
@@ -49,16 +62,20 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
     private lateinit var imageUri: String
     private lateinit var movieId: Integer
 
+    private lateinit var viewType: ViewType
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val list = arguments?.getSerializable("models") as ArrayList<Torrent>
-        title = arguments?.getString("title") as String
-        imageUri = arguments?.getString("imageUri") as String
-        imdbCode = arguments?.getString("imdbCode") as String
-        movieId = arguments?.getInt("movieId") as Integer
+        val list = arguments?.getSerializable(TORRENTS) as ArrayList<Torrent>
+        title = arguments?.getString(TITLE) as String
+        imageUri = arguments?.getString(IMAGE_URI) as String
+        imdbCode = arguments?.getString(IMDB_CODE) as String
+        movieId = arguments?.getInt(MOVIE_ID) as Integer
         binding.recyclerViewDownload.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+
+        viewType = ViewType.valueOf(tag ?: ViewType.DOWNLOAD.name)
 
         for (t in list) {
             if (t.type == "bluray") bluray.add(t)
@@ -106,8 +123,8 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
             override fun onClick(torrent: Torrent, pos: Int) {
                 /** @Admob Show ads and then do something on complete */
                 interstitialAdHelper.showAd {
-                    when (tag) {
-                        "watch_now" -> { // When watch button is clicked
+                    when (viewType) {
+                        ViewType.WATCH -> { // When watch button is clicked
                             val i = Intent(
                                 context,
                                 TorrentPlayerActivity::class.java
@@ -120,7 +137,7 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
 
                             context?.startActivity(i)
                         }
-                        else -> { // When download button is clicked
+                        ViewType.DOWNLOAD -> { // When download button is clicked
                             if (startService(torrent))
                                 Toasty.info(
                                     requireContext(),
@@ -135,7 +152,7 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
 
         adapter.setDownloadLongClickListener(object : DownloadAdapter.DownloadLongClickListener {
             override fun onLongClick(torrent: Torrent, pos: Int) {
-                if (tag != "watch_now") {
+                if (viewType == ViewType.DOWNLOAD) {
                     val intent = Intent(ACTION_VIEW)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     intent.data = Uri.parse(
@@ -173,7 +190,7 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
     }
 
     private fun setUpForWatch() {
-        if (tag == "watch_now") {
+        if (viewType == ViewType.WATCH) {
             binding.itemTipText.visibility = View.GONE
 
             /** Show subtitles */

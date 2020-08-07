@@ -11,6 +11,11 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.You
 
 class PlayerActivity : AppCompatActivity() {
 
+    companion object {
+        const val VIDEO_ID = "com.kpstv,yts.video_id"
+        const val LAST_PLAYED = "com.kpstv,yts.last_played"
+    }
+
     private var youTubePlayerCurrentPosition = 0f
     private val binding by viewBinding(ActivityPlayerBinding::inflate)
 
@@ -22,7 +27,7 @@ class PlayerActivity : AppCompatActivity() {
         binding.youtubePlayerView.initialize(object : YouTubePlayerListener {
 
             override fun onReady(youTubePlayer: YouTubePlayer) {
-                youTubePlayer.loadVideo(intent.extras?.getString("videoId")!!, intent.extras?.getFloat("lastPlayed") ?: 0f)
+                youTubePlayer.loadVideo(intent.extras?.getString(VIDEO_ID)!!, intent.extras?.getFloat(LAST_PLAYED) ?: 0f)
             }
 
             override fun onApiChange(youTubePlayer: YouTubePlayer) {}

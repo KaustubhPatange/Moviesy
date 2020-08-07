@@ -1,8 +1,8 @@
 package com.kpstv.yts.data.db.repository
 
 import androidx.lifecycle.LiveData
-import com.kpstv.yts.data.db.localized.MainDatabase
 import com.kpstv.common_moviesy.extensions.Coroutines
+import com.kpstv.yts.data.db.localized.MainDatabase
 import com.kpstv.yts.data.models.response.Model
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -13,15 +13,19 @@ import javax.inject.Singleton
 class DownloadRepository @Inject constructor(
     private val db: MainDatabase
 ) {
-    suspend fun getDownload(hash: String): Model.response_download? {
+    private suspend fun getDownload(hash: String): Model.response_download? {
         return withContext(Dispatchers.IO) {
             db.getDownloadDao().getDownload(hash)
         }
     }
 
+    private val lock = Any()
     fun saveDownload(data: Model.response_download) {
         Coroutines.io {
-            db.getDownloadDao().upsert(data)
+            synchronized(lock) {
+                if (db.getDownloadDao().getDownload(data.hash) == null)
+                    db.getDownloadDao().upsert(data)
+            }
         }
     }
 

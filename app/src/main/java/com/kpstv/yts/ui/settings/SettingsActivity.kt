@@ -19,8 +19,10 @@ import com.kpstv.yts.AppInterface.Companion.STORAGE_FRAG
 import com.kpstv.yts.AppInterface.Companion.setAppThemeNoAction
 import com.kpstv.yts.R
 import com.kpstv.yts.extensions.utils.CustomBottomItem
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_settings.*
 
+@AndroidEntryPoint
 class SettingsActivity : AppCompatActivity() {
 
     val settingsMainFragment = SettingsMainFragment()

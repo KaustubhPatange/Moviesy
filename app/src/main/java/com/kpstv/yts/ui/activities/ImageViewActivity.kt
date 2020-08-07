@@ -8,6 +8,10 @@ import com.kpstv.common_moviesy.extensions.viewBinding
 
 class ImageViewActivity : AppCompatActivity() {
 
+    companion object {
+        const val IMAGE_URL = "com.kpstv.yts.image_url"
+    }
+
     private val binding by viewBinding(ActivityImageViewBinding::inflate)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,7 +22,7 @@ class ImageViewActivity : AppCompatActivity() {
             onBackPressed()
         }
 
-        GlideApp.with(applicationContext).load(intent.extras?.getString("imageUrl"))
+        GlideApp.with(applicationContext).load(intent.extras?.getString(IMAGE_URL))
             .into(binding.photoView)
     }
 }

@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.AppInterface.Companion.MOVIE_ID
 import com.kpstv.yts.AppInterface.Companion.handleRetrofitError
 import com.kpstv.yts.AppInterface.Companion.setAppThemeNoAction
@@ -27,26 +28,24 @@ import com.kpstv.yts.data.models.Cast
 import com.kpstv.yts.data.models.Movie
 import com.kpstv.yts.data.models.TmDbMovie
 import com.kpstv.yts.databinding.ActivityFinalBinding
+import com.kpstv.yts.extensions.Permissions
 import com.kpstv.yts.extensions.YTSQuery
+import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.CafebarToast
 import com.kpstv.yts.extensions.utils.CustomMovieLayout
 import com.kpstv.yts.extensions.utils.GlideApp
-import com.kpstv.common_moviesy.extensions.viewBinding
-import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.interfaces.listener.FavouriteListener
 import com.kpstv.yts.interfaces.listener.MovieListener
 import com.kpstv.yts.interfaces.listener.SuggestionListener
 import com.kpstv.yts.ui.fragments.sheets.BottomSheetDownload
 import com.kpstv.yts.ui.fragments.sheets.BottomSheetSubtitles
-import com.kpstv.yts.ui.helpers.InterstitialAdHelper
 import com.kpstv.yts.ui.viewmodels.FinalViewModel
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerListener
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
-import javax.inject.Inject
 
 /**
  * Pass movieId as extras in Intent
@@ -320,13 +319,12 @@ class FinalActivity : AppCompatActivity(), MovieListener {
                     binding.activityFinalPreviews.afYtBannerImage.setImageBitmap(resource)
                     binding.activityFinalPreviews.afYtBannerImage.visibility = View.VISIBLE
                     binding.activityFinalPreviews.afYtBannerImage.setOnClickListener {
-                        val sharedImageView = findViewById<View>(R.id.af_yt_banner_image)
                         val intent = Intent(this@FinalActivity, ImageViewActivity::class.java)
-                        intent.putExtra("imageUrl", movie.large_cover_image)
+                        intent.putExtra(ImageViewActivity.IMAGE_URL, movie.large_cover_image)
                         val options = ActivityOptions
                             .makeSceneTransitionAnimation(
                                 this@FinalActivity,
-                                sharedImageView,
+                                binding.activityFinalPreviews.afYtBannerImage,
                                 "banner_photo"
                             )
                         startActivity(intent, options.toBundle())
@@ -370,11 +368,11 @@ class FinalActivity : AppCompatActivity(), MovieListener {
 
 
         binding.activityFinalContent.afMoreTxt.setOnClickListener {
-            if (binding.activityFinalContent.afMoreTxt.text.toString() == "More") {
-                binding.activityFinalContent.afMoreTxt.text = "Less"
+            if (binding.activityFinalContent.afMoreTxt.text.toString() == getString(R.string.more)) {
+                binding.activityFinalContent.afMoreTxt.text = getString(R.string.less)
                 binding.activityFinalContent.afSummary.maxLines = Integer.MAX_VALUE;
             } else {
-                binding.activityFinalContent.afMoreTxt.text = "More"
+                binding.activityFinalContent.afMoreTxt.text = getString(R.string.more)
                 binding.activityFinalContent.afSummary.maxLines = 3;
             }
         }
@@ -382,23 +380,34 @@ class FinalActivity : AppCompatActivity(), MovieListener {
 
     private fun setContentButtons() {
         binding.activityFinalContent.afDownload.setOnClickListener {
-            loadBottomSheetDownload("download")
+            loadBottomSheetDownload(BottomSheetDownload.ViewType.DOWNLOAD)
         }
         binding.activityFinalContent.afWatch.setOnClickListener {
-            loadBottomSheetDownload("watch_now")
+            loadBottomSheetDownload(BottomSheetDownload.ViewType.WATCH)
         }
     }
 
-    private fun loadBottomSheetDownload(tag: String) {
-        val sheet = BottomSheetDownload()
-        val bundle = Bundle();
-        bundle.putSerializable("models", movie.torrents)
-        bundle.putString("title", movie.title)
-        bundle.putString("imdbCode", movie.imdb_code)
-        bundle.putString("imageUri", movie.medium_cover_image)
-        bundle.putInt("movieId", movie.id)
-        sheet.arguments = bundle
-        sheet.show(supportFragmentManager, tag)
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        Permissions.processStoragePermission(requestCode, grantResults)
+    }
+
+    private fun loadBottomSheetDownload(type: BottomSheetDownload.ViewType) {
+        Permissions.verifyStoragePermission(this) {
+            val sheet = BottomSheetDownload()
+            val bundle = Bundle();
+            bundle.putSerializable(BottomSheetDownload.TORRENTS, movie.torrents)
+            bundle.putString(BottomSheetDownload.TITLE, movie.title)
+            bundle.putString(BottomSheetDownload.IMDB_CODE, movie.imdb_code)
+            bundle.putString(BottomSheetDownload.IMAGE_URI, movie.medium_cover_image)
+            bundle.putInt(BottomSheetDownload.MOVIE_ID, movie.id)
+            sheet.arguments = bundle
+            sheet.show(supportFragmentManager, type.name)
+        }
     }
 
     private fun initializeYoutubePlayer() {
@@ -436,8 +445,8 @@ class FinalActivity : AppCompatActivity(), MovieListener {
                 binding.activityFinalPreviews.buttonFullscreen.setOnClickListener {
                     player.pause()
                     val i = Intent(this@FinalActivity, PlayerActivity::class.java)
-                    i.putExtra("videoId", movie.yt_trailer_id)
-                    i.putExtra("lastPlayed", youTubePlayerCurrentPosition)
+                    i.putExtra(PlayerActivity.VIDEO_ID, movie.yt_trailer_id)
+                    i.putExtra(PlayerActivity.LAST_PLAYED, youTubePlayerCurrentPosition)
                     startActivityForResult(i, YOUTUBE_PLAYER_VIEW_REQUEST_CODE)
                 }
             }
@@ -471,7 +480,6 @@ class FinalActivity : AppCompatActivity(), MovieListener {
                 loadedFraction: Float
             ) {
             }
-
         })
     }
 

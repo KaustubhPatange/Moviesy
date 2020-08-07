@@ -112,7 +112,7 @@ class TorrentPlayerActivity : AppCompatActivity() {
     }
 
     override fun onPause() {
-        Log.e(TAG, "==> onPause() called")
+        Log.e(TAG, "=> onPause() called")
         try {
 
             if (filePath == null) return super.onPause()
@@ -121,7 +121,7 @@ class TorrentPlayerActivity : AppCompatActivity() {
              *  so that we can retrieve and show Play from checkbox in bottom sheet.
              */
             val position = binding.giraffePlayer.player.currentPosition
-            Log.e(TAG, "==> LastSavedPosition: $position")
+            Log.e(TAG, "=> LastSavedPosition: $position")
             viewModel.updateDownload(
                 hash, true, position
             )
@@ -199,7 +199,7 @@ class TorrentPlayerActivity : AppCompatActivity() {
 
             override fun onStreamProgress(torrent: Torrent, status: StreamStatus) {
                 if (lastProgress != status.progress) {
-                    Log.e(TAG, "onStreamProgress() ==> ${status.progress}")
+                    Log.e(TAG, "onStreamProgress() => ${status.progress}")
                     lastProgress = status.progress
                     binding.progressText.text = "${lastProgress.toInt()}%"
                 }
@@ -273,7 +273,7 @@ class TorrentPlayerActivity : AppCompatActivity() {
                     if (currentPosition < lastSubtitlePosition || currentPosition > lastSubtitlePosition + 7 * 1000) {
                         /** Player either seekTo backwards  || currentPosition > lastPostion + 1000*/
 
-                        Log.e(TAG, "==> Player seekTo change")
+                        Log.e(TAG, "=> Player seekTo change")
                         subShowing = false
                         binding.giraffePlayer.player.pause()
                         handlerHandler()
@@ -310,7 +310,7 @@ class TorrentPlayerActivity : AppCompatActivity() {
         try {
             binding.giraffePlayer.player.release()
         } catch (e: Exception) {
-            Log.e(TAG, "==> Error: ${e.message}")
+            Log.e(TAG, "=> Error: ${e.message}")
         }
         subtitleHandler.removeCallbacks(updateTask)
         if (::torrentStream.isInitialized) torrentStream.stopStream()
@@ -327,7 +327,7 @@ class TorrentPlayerActivity : AppCompatActivity() {
         }
 
         override fun onPrepared(giraffePlayer: GiraffePlayer?) {
-            Log.e(TAG, "==> onPrepared $lastPausePosition")
+            Log.e(TAG, "=> onPrepared $lastPausePosition")
             giraffePlayer?.seekTo(lastPausePosition!!)
         }
 
@@ -350,7 +350,7 @@ class TorrentPlayerActivity : AppCompatActivity() {
         }
 
         override fun onSeekComplete(giraffePlayer: GiraffePlayer?) {
-            Log.e(TAG, "==> SeekChange() ")
+            Log.e(TAG, "=> SeekChange() ")
             if (lastPausePosition != 0 && !isLoadedfromLast) {
                 giraffePlayer?.pause()
                 noPlayerStartHandler = true
@@ -419,7 +419,7 @@ class TorrentPlayerActivity : AppCompatActivity() {
         }
 
         override fun onInfo(giraffePlayer: GiraffePlayer?, what: Int, extra: Int): Boolean {
-            Log.e(TAG, "==> Info() What = $what & Extra = $extra")
+            Log.e(TAG, "=> Info() What = $what & Extra = $extra")
             return true
         }
 
@@ -433,7 +433,7 @@ class TorrentPlayerActivity : AppCompatActivity() {
         }
 
         override fun onError(giraffePlayer: GiraffePlayer?, what: Int, extra: Int): Boolean {
-            Log.e(TAG, "==> OnError() What = $what & Extra = $extra")
+            Log.e(TAG, "=> OnError() What = $what & Extra = $extra")
             return true
         }
 
