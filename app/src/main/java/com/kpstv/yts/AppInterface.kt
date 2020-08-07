@@ -95,7 +95,7 @@ class AppInterface {
             add("Crime", R.drawable.ic_crime_genre, YTSQuery.Genre.crime)
             add("Documentary", R.drawable.ic_documentary_genre, YTSQuery.Genre.documentary)
             add("Drama", R.drawable.ic_drama_genre, YTSQuery.Genre.drama)
-            add("Family", R.drawable.ic_animation_genre, YTSQuery.Genre.family)
+            add("Family", R.drawable.ic_family_genre, YTSQuery.Genre.family)
             add("Fantasy", R.drawable.ic_fantasy_genre, YTSQuery.Genre.fantasy)
             add("History", R.drawable.ic_history_genre, YTSQuery.Genre.history)
             add("Horror", R.drawable.ic_horror_genre, YTSQuery.Genre.horror)

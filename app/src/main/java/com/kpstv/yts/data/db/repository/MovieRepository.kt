@@ -7,7 +7,9 @@ import com.kpstv.yts.data.models.Movie
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class MovieRepository @Inject constructor(
     private val db: MainDatabase,
     private val ytsApi: YTSApi

@@ -24,8 +24,6 @@ object MainModule {
             "main.db"
         )
             .allowMainThreadQueries()
-            .fallbackToDestructiveMigration()
-            .fallbackToDestructiveMigrationOnDowngrade()
             .build()
     }
 }

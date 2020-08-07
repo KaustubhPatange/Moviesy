@@ -34,9 +34,9 @@ import kotlin.collections.ArrayList
 class FinalViewModel @ViewModelInject constructor(
     private val movieRepository: MovieRepository,
     private val tMdbRepository: TMdbRepository,
+    private val favouriteRepository: FavouriteRepository,
     private val ytsApi: YTSApi,
-    private val tMdbApi: TMdbApi,
-    private val favouriteRepository: FavouriteRepository
+    private val tMdbApi: TMdbApi
 ) : ViewModel() {
 
     @Volatile

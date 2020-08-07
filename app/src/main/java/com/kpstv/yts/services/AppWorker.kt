@@ -79,7 +79,7 @@ class AppWorker @WorkerInject constructor(
             val constraints = Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
-             val request = PeriodicWorkRequestBuilder<AppWorker>(2, TimeUnit.HOURS, 15, TimeUnit.MINUTES)
+             val request = PeriodicWorkRequestBuilder<AppWorker>(15, TimeUnit.MINUTES, 2, TimeUnit.MINUTES)
                  .setConstraints(constraints)
                  .build()
              WorkManager.getInstance(context).enqueueUniquePeriodicWork(

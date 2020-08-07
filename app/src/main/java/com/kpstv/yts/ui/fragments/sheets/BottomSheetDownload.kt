@@ -79,12 +79,11 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
         if (webrip.size > 0 && bluray.size > 0)
             binding.chipBlueray.isChecked = true
 
-
         binding.chipBlueray.setOnCheckedChangeListener { _: CompoundButton, b: Boolean ->
             if (b) binding.chipWebrip.isChecked = false
             filterChips()
         }
-
+        
         binding.chipWebrip.setOnCheckedChangeListener { _: CompoundButton, b: Boolean ->
             if (b) binding.chipBlueray.isChecked = false
             filterChips()

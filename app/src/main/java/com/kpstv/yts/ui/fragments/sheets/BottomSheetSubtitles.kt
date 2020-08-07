@@ -25,10 +25,7 @@ import com.kpstv.yts.R
 import com.kpstv.yts.data.models.Subtitle
 import com.kpstv.yts.databinding.BottomSheetSubtitlesBinding
 import com.kpstv.yts.extensions.ExtendedBottomSheetDialogFragment
-import com.kpstv.yts.extensions.utils.AppUtils
-import com.kpstv.yts.extensions.utils.FlagUtils
-import com.kpstv.yts.extensions.utils.GlideApp
-import com.kpstv.yts.extensions.utils.ZipUtility
+import com.kpstv.yts.extensions.utils.*
 import com.kpstv.yts.interfaces.listener.SingleClickListener
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import com.kpstv.yts.ui.helpers.InterstitialAdHelper
@@ -231,7 +228,6 @@ class BottomSheetSubtitles : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
 
     private fun downloadSubtitle(model: Subtitle, downloadLink: String, i: Int) {
 
-        // val saveLocation = File(SUBTITLE_LOCATION,"${model.text}-${model.country}.srt")
         val tempLocation = File(context?.externalCacheDir, imdb_code)
         if (!tempLocation.exists()) tempLocation.mkdirs()
 

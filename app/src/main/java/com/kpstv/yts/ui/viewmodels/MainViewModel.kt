@@ -51,8 +51,6 @@ class MainViewModel @ViewModelInject constructor(
     var watchView: View? = null
     var libraryView: View? = null
 
-    private val context = application.applicationContext
-
     val favouriteMovieIds by lazyDeferred {
         favouriteRepository.getAllMovieId()
     }

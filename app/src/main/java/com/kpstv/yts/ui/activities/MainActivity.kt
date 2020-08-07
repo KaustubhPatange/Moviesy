@@ -90,7 +90,25 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
          */
 
         binding.bottomNav.setOnNavigationItemSelectedListener(bottomNavListener)
+    }
 
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+        updateUtils.check(
+            onUpdateAvailable = {
+                AlertNoIconDialog.Companion.Builder(this)
+                    .setTitle(getString(R.string.update_title))
+                    .setMessage(getString(R.string.update_text))
+                    .setPositiveButton(getString(R.string.yes)) {
+                        updateUtils.processUpdate(it)
+                    }
+                    .setNegativeButton(getString(R.string.no)) { }
+                    .show()
+            },
+            onError = {
+                Toasty.error(this, "Failed: ${it.message}").show()
+            }
+        )
     }
 
     private val bottomNavListener = BottomNavigationView.OnNavigationItemSelectedListener {
@@ -123,27 +141,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             startActivity(downloadIntent)
         }
         return true
-    }
-
-    override fun onStart() {
-        super.onStart()
-        MainHelper.askNoBatteryOptimization(applicationContext)
-        AppWorker.schedule(applicationContext)
-        updateUtils.check(
-            onUpdateAvailable = {
-                AlertNoIconDialog.Companion.Builder(this)
-                    .setTitle(getString(R.string.update_title))
-                    .setMessage(getString(R.string.update_text))
-                    .setPositiveButton(getString(R.string.yes)) {
-                        updateUtils.processUpdate(it)
-                    }
-                    .setNegativeButton(getString(R.string.no)) { }
-                    .show()
-            },
-            onError = {
-                Toasty.error(this, "Failed: ${it.message}").show()
-            }
-        )
     }
 
     override fun onResume() {

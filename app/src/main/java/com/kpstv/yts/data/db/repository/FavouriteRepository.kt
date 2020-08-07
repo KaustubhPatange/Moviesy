@@ -5,7 +5,9 @@ import com.kpstv.yts.data.db.localized.MainDatabase
 import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.yts.data.models.response.Model
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class FavouriteRepository @Inject constructor (
     private val db: MainDatabase
 ) {
@@ -16,12 +18,6 @@ class FavouriteRepository @Inject constructor (
     fun saveMovie(data: Model.response_favourite) {
         Coroutines.io {
             db.getFavDao().upsert(data)
-        }
-    }
-
-    private fun saveAllMovieId(quotes: List<Model.response_favourite>) {
-        Coroutines.io {
-            db.getFavDao().saveAllData(quotes)
         }
     }
 
@@ -36,5 +32,4 @@ class FavouriteRepository @Inject constructor (
    fun getAllMovieId(): LiveData<List<Model.response_favourite>> {
         return db.getFavDao().getAllData()
     }
-
 }

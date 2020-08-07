@@ -61,10 +61,6 @@ class LibraryFragment : Fragment() {
 
             setToolBar()
 
-            setRecyclerView()
-
-            bindUI()
-
             viewModel.libraryView = binding.root
         }
         return binding.root
@@ -72,6 +68,11 @@ class LibraryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        setRecyclerView()
+
+        bindUI()
+
         mainActivity.castHelper.init(
             activity = mainActivity,
             toolbar = view.toolbar,

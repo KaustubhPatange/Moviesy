@@ -7,7 +7,9 @@ import com.kpstv.yts.data.models.data.data_tmdb
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class TMdbRepository @Inject constructor(
     private val suggestDb: SuggestionDatabase,
     private val recommendDb: RecommendDatabase

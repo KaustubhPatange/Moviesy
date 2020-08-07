@@ -2,6 +2,7 @@ package com.kpstv.yts.ui.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,8 +32,8 @@ class WatchlistFragment : Fragment() {
     private val viewModel by viewModels<MainViewModel>(
         ownerProducer = { requireActivity() }
     )
-    private lateinit var binding: FragmentWatchlistBinding
 
+    private lateinit var binding: FragmentWatchlistBinding
     private lateinit var mainActivity: MainActivity
 
     private val TAG = "WatchListFragment"
@@ -44,30 +45,33 @@ class WatchlistFragment : Fragment() {
     ): View? {
         mainActivity = activity as MainActivity
 
-         viewModel.watchView?.let {
-          binding = FragmentWatchlistBinding.bind(it)
+        viewModel.watchView?.let {
+            binding = FragmentWatchlistBinding.bind(it)
         } ?: run {
-             binding = FragmentWatchlistBinding.bind(
-                 inflater.inflate(R.layout.fragment_watchlist, container, false)
-             )
+            binding = FragmentWatchlistBinding.bind(
+                inflater.inflate(R.layout.fragment_watchlist, container, false)
+            )
 
-             binding.layoutNoFavourite.hide()
+            binding.layoutNoFavourite.hide()
 
-             setToolBar()
+            setToolBar()
 
-             initRecyclerView()
-
-             bindUI()
-
-             viewModel.watchView = binding.root
-         }
+            viewModel.watchView = binding.root
+        }
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        initRecyclerView()
+        bindUI()
     }
 
     /** This will bind the fragment with the viewModel returning LiveData.
      */
-    private fun bindUI() = Coroutines.main {
-        viewModel.favouriteMovieIds.await().observe(viewLifecycleOwner, Observer {
+    private fun bindUI() {
+        viewModel.favouriteMovieIds.observe(viewLifecycleOwner, Observer {
             adapter.updateModels(it)
             if (adapter.itemCount > 0) {
                 binding.layoutNoFavourite.hide()

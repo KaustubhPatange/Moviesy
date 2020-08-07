@@ -7,7 +7,9 @@ import com.kpstv.yts.data.models.data.data_main
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class MainRepository @Inject constructor(
     private val db: MainDatabase,
     private val ytsApi: YTSApi

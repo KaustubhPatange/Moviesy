@@ -43,9 +43,6 @@ class UpdateUtils @Inject constructor(
 
     fun processUpdate(update: AppDatabase.Update) = with(context) {
         UpdateWorker.schedule(applicationContext, update.url)
-        /*startService(Intent(this, UpdateService::class.java).apply {
-            putExtra(UPDATE_URI, update.url)
-        })*/
     }
 
     private suspend fun fetchUpdateDetails(): Pair<AppDatabase, Boolean> {
