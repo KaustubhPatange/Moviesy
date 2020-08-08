@@ -13,4 +13,4 @@ jobs:
       - run: dir
       - run: tar -xvzf art/module.tar.gz
       - name: Build Gradle
-        run: ./gradlew build
+        run: ./gradlew app:assembleDebug

@@ -487,13 +487,11 @@ class DownloadService : IntentService("blank") {
                     )
 
                     /** Saving current job to database and making it pause*/
-
                     pauseRepository.savePauseModel(
                         modelPause
                     )
 
                     /** Removing current job */
-
                     torrentStream.stopStream()
                 }
                 REMOVE_JOB -> { // TODO: Looks like an unused method...
