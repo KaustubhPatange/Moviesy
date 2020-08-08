@@ -16,5 +16,8 @@ jobs:
       - run: echo "${{ secrets.APP_BUILD_GRADLE_KTS }}" > app\purchase\build.gradle.kts
       - run: echo "${{ secrets.APP_ANDROID_MANIFEST }}" > app\purchase\src\main\AndroidManifest.xml
       - run: echo "${{ secrets.APP_PURCHASE_HELPER }}" > app\purchase\src\main\java\com\com\kpstv\purchase\PurchaseHelper.kt
+      - run: type app\purchase\build.gradle.kts
+      - run: type app\purchase\src\main\AndroidManifest.xml
+      - run: type app\purchase\src\main\java\com\com\kpstv\purchase\PurchaseHelper.kt
       - name: Build Gradle
         run: ./gradlew build
