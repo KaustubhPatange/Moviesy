@@ -35,17 +35,23 @@ import kotlinx.android.synthetic.main.item_chip.view.*
 @AndroidEntryPoint
 class MoreActivity : AppCompatActivity() {
 
-    private val viewModel by viewModels<MoreViewModel>()
-    private val binding by viewBinding(ActivityMoreBinding::inflate)
-
-    private val TAG = "MoreActivity"
-
     companion object {
         var endPoint: String? = null
         var base: MovieBase? = null
         var queryMap: Map<String, String>? = null
         var genre: String? = null
+
+        const val ARG_TITLE = "com.kpstv.yts.arg_title"
+        const val ARG_BASE_VALUE = "com.kpstv.yts.arg_base_value"
+        const val ARG_ENDPOINT = "com.kpstv.yts.arg_endpoint"
+        const val ARG_VALUES = "com.kpstv.yts.arg_values"
+        const val ARG_KEYS = "com.kpstv.yts.arg_keys"
     }
+
+    private val viewModel by viewModels<MoreViewModel>()
+    private val binding by viewBinding(ActivityMoreBinding::inflate)
+
+    private val TAG = "MoreActivity"
 
     /** This query map will be used to reset the values
      */
@@ -107,7 +113,7 @@ class MoreActivity : AppCompatActivity() {
 
         /** Setting title for the activity and updating views
          */
-        title = intent?.extras?.getString("title")
+        title = intent?.extras?.getString(ARG_TITLE)
 
         binding.swipeRefreshLayout.isEnabled = false
         binding.recyclerView.layoutManager = GridLayoutManager(this, 3)
@@ -115,16 +121,16 @@ class MoreActivity : AppCompatActivity() {
 
         /** Updating the base, endpoint static object
          */
-        endPoint = intent?.extras?.getString("endPoint")
-        base = MovieBase.valueOf(intent?.extras?.getString("baseValue")!!)
+        endPoint = intent?.extras?.getString(ARG_ENDPOINT)
+        base = MovieBase.valueOf(intent?.extras?.getString(ARG_BASE_VALUE)!!)
 
         viewModel.buildNewConfig()
 
         /** If the base is YTS we will show we will set query coming from intent
          */
         if (base == MovieBase.YTS) {
-            val keys = intent?.extras?.getStringArrayList("keys")
-            val values = intent?.extras?.getStringArrayList("values")
+            val keys = intent?.extras?.getStringArrayList(ARG_KEYS)
+            val values = intent?.extras?.getStringArrayList(ARG_VALUES)
 
             val map = HashMap<String, String>()
             (0 until keys?.size!!).forEach { i ->

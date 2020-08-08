@@ -10,7 +10,7 @@ interface FavouriteDao {
     fun upsert(data: Model.response_favourite)
 
     @Query("select * from table_favourites where movieId = :id")
-    fun getData(id: Int): Model.response_favourite
+    fun getData(id: Int): Model.response_favourite?
 
     @Query("select * from table_favourites")
     fun getAllData(): LiveData<List<Model.response_favourite>>

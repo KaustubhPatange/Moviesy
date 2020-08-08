@@ -126,16 +126,16 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
                     when (viewType) {
                         ViewType.WATCH -> { // When watch button is clicked
                             val i = Intent(
-                                context,
+                                requireContext(),
                                 TorrentPlayerActivity::class.java
                             )
-                            i.putExtra("torrentLink", torrent.url)
+                            i.putExtra(TorrentPlayerActivity.ARG_TORRENT_LINK, torrent.url)
 
                             if (::subtitleHelper.isInitialized) {
-                                i.putExtra("sub", subtitleHelper.getSelectedSubtitle()?.name)
+                                i.putExtra(TorrentPlayerActivity.ARG_SUBTITLE_NAME, subtitleHelper.getSelectedSubtitle()?.name)
                             }
 
-                            context?.startActivity(i)
+                            requireContext().startActivity(i)
                         }
                         ViewType.DOWNLOAD -> { // When download button is clicked
                             if (startService(torrent))
@@ -179,7 +179,7 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
             model.imdbCode = imdbCode
             model.movieId = movieId as Int
             val serviceIntent = Intent(context, DownloadService::class.java)
-            serviceIntent.putExtra("addJob", model)
+            serviceIntent.putExtra(DownloadService.TORRENT_JOB, model)
             ContextCompat.startForegroundService(requireContext(), serviceIntent)
 
             return true

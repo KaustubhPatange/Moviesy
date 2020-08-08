@@ -57,16 +57,14 @@ class AppWorker @WorkerInject constructor(
 
             repository.saveMovies(mainModel)
 
-            val difference = list.minus(featuredMovies?.movies ?: listOf())
-            difference.forEach { movie ->
-                Notifications.sendMovieNotification(
-                    context = applicationContext,
-                    movieName = movie.title,
-                    movieId = movie.movieId!!
-                )
+            list.forEach { movie ->
+                if (featuredMovies?.movies?.contains(movie) == false)
+                    Notifications.sendMovieNotification(
+                        context = applicationContext,
+                        movieName = movie.title,
+                        movieId = movie.movieId!!
+                    )
             }
-            if (difference.isEmpty())
-                Log.e(TAG, "No new movies are available")
         } catch (e: Exception) {
             Log.w(TAG, "Failed: ${e.message}", e)
         }
@@ -79,7 +77,7 @@ class AppWorker @WorkerInject constructor(
             val constraints = Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
-             val request = PeriodicWorkRequestBuilder<AppWorker>(15, TimeUnit.MINUTES, 2, TimeUnit.MINUTES)
+             val request = PeriodicWorkRequestBuilder<AppWorker>(3, TimeUnit.HOURS, 15, TimeUnit.MINUTES)
                  .setConstraints(constraints)
                  .build()
              WorkManager.getInstance(context).enqueueUniquePeriodicWork(

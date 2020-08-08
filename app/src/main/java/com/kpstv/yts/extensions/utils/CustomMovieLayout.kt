@@ -66,17 +66,17 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
             base: MovieBase = MovieBase.YTS
         ) {
             val intent = Intent(context, MoreActivity::class.java)
-            intent.putExtra("title", titleText)
-            intent.putExtra("baseValue", base.toString())
+            intent.putExtra(MoreActivity.ARG_TITLE, titleText)
+            intent.putExtra(MoreActivity.ARG_BASE_VALUE, base.toString())
 
             /** Passing empty endPoint for safe null checks */
-            intent.putExtra("endPoint", "")
+            intent.putExtra(MoreActivity.ARG_ENDPOINT, "")
 
             val values = ArrayList<String>(queryMap.values)
             val keys = ArrayList<String>(queryMap.keys)
 
-            intent.putExtra("values", values)
-            intent.putExtra("keys", keys)
+            intent.putExtra(MoreActivity.ARG_KEYS, keys)
+            intent.putExtra(MoreActivity.ARG_VALUES, values)
             context.startActivity(intent)
         }
     }
@@ -205,9 +205,9 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
 
         val listener = View.OnClickListener {
             val intent = Intent(context, MoreActivity::class.java)
-            intent.putExtra("title", view.cm_text.text.toString())
-            intent.putExtra("endPoint", endPointUrl)
-            intent.putExtra("baseValue", base.toString())
+            intent.putExtra(MoreActivity.ARG_TITLE, view.cm_text.text.toString())
+            intent.putExtra(MoreActivity.ARG_ENDPOINT, endPointUrl)
+            intent.putExtra(MoreActivity.ARG_BASE_VALUE, base.toString())
             context.startActivity(intent)
         }
 

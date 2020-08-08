@@ -6,6 +6,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build.VERSION.SDK_INT
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.kpstv.yts.AppInterface
@@ -18,7 +19,9 @@ import java.util.*
 
 object Notifications {
 
-    const val UPDATE_REQUEST_CODE = 129
+    private val TAG = javaClass.simpleName
+
+    private const val UPDATE_REQUEST_CODE = 129
     private const val UPDATE_NOTIFICATION_ID = 7
     private const val UPDATE_PROGRESS_NOTIFICATION_ID = 21
 
@@ -92,28 +95,30 @@ object Notifications {
     }
 
     fun sendMovieNotification(context: Context, movieName: String, movieId: Int) = with(context) {
+        Log.e(TAG, "Sending notification with movieId: $movieId")
         val movieIntent = Intent(this, FinalActivity::class.java)
             .apply {
                 putExtra(AppInterface.MOVIE_ID, movieId)
             }
         val pendingIntent = PendingIntent.getActivity(
             context,
-            UPDATE_REQUEST_CODE,
+            getRandomNumberCode(),
             movieIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT
+            0
         )
 
         val notification = NotificationCompat.Builder(context, getString(R.string.CHANNEL_ID_2))
             .setContentTitle(getString(R.string.app_name))
-            .setContentText("\"$movieName\" movie is available")
+            .setContentText("\"$movieName\" is available")
             .setSmallIcon(R.drawable.ic_movie)
             .setColor(ContextCompat.getColor(applicationContext, R.color.colorPrimary_New_DARK))
             .setColorized(true)
+            .setAutoCancel(true)
             .setContentIntent(pendingIntent)
             .build()
 
-        mgr.notify(getRandomNotificationId(), notification)
+        mgr.notify(getRandomNumberCode(), notification)
     }
 
-    private fun getRandomNotificationId() = Random().nextInt(400) + 150
+    private fun getRandomNumberCode() = Random().nextInt(400) + 150
 }

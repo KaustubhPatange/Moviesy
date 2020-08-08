@@ -73,7 +73,7 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        this.setResult(RESULT_OK, Intent().apply { putExtra("lastPlayed", youTubePlayerCurrentPosition) })
+        this.setResult(RESULT_OK, Intent().apply { putExtra(LAST_PLAYED, youTubePlayerCurrentPosition) })
         super.onBackPressed()
     }
 

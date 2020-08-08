@@ -116,15 +116,15 @@ class BottomSheetLibraryDownload(
 
     private fun localPlayButtonClicked() {
         val i = Intent(context, TorrentPlayerActivity::class.java)
-        i.putExtra("normalLink", model.videoPath)
-        i.putExtra("hash", model.hash)
+        i.putExtra(TorrentPlayerActivity.ARG_NORMAL_LINK, model.videoPath)
+        i.putExtra(TorrentPlayerActivity.ARG_TORRENT_HASH, model.hash)
 
         if (binding.checkBoxPlayFrom.isVisible && binding.checkBoxPlayFrom.isChecked) {
-            i.putExtra("lastPosition", model.lastSavedPosition)
+            i.putExtra(TorrentPlayerActivity.ARG_LAST_SAVE_POS, model.lastSavedPosition)
         }
 
         if (::subtitleHelper.isInitialized) {
-            i.putExtra("sub", subtitleHelper.getSelectedSubtitle()?.name)
+            i.putExtra(TorrentPlayerActivity.ARG_SUBTITLE_NAME, subtitleHelper.getSelectedSubtitle()?.name)
         }
 
         startActivity(i)

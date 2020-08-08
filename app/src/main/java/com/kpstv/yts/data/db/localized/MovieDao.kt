@@ -16,5 +16,5 @@ interface MovieDao {
 
     /** Eg title_long = name (year) */
     @Query("select * from table_movie where title_long = :queryString")
-    fun getMovieByTitleLong(queryString: String): Movie
+    fun getMovieByTitleLong(queryString: String): Movie?
 }

@@ -228,7 +228,6 @@ class FinalActivity : AppCompatActivity(), MovieListener {
         binding.activityFinalContent.recyclerViewGenre.adapter = genreAdapter
 
         binding.activityFinalContent.afcCard.visibility = View.VISIBLE
-
     }
 
     private fun loadRecommendation() {
@@ -242,7 +241,7 @@ class FinalActivity : AppCompatActivity(), MovieListener {
                 tag: String?,
                 isMoreAvailable: Boolean
             ) {
-                val recommendLayout = CustomMovieLayout(this@FinalActivity, "Recommended")
+                val recommendLayout = CustomMovieLayout(this@FinalActivity, getString(R.string.recommend))
                 recommendLayout.injectViewAt(binding.afAddLayout)
                 recommendLayout.setupCallbacks(movies, "$tag/recommendations", isMoreAvailable)
             }
@@ -267,7 +266,7 @@ class FinalActivity : AppCompatActivity(), MovieListener {
                 tag: String?,
                 isMoreAvailable: Boolean
             ) {
-                val similarLayout = CustomMovieLayout(this@FinalActivity, "Suggested")
+                val similarLayout = CustomMovieLayout(this@FinalActivity, getString(R.string.suggested))
                 similarLayout.injectViewAt(binding.afAddLayout)
                 similarLayout.setupCallbacks(movies, "${movie.imdb_code}/similar", isMoreAvailable)
             }
@@ -492,14 +491,13 @@ class FinalActivity : AppCompatActivity(), MovieListener {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == YOUTUBE_PLAYER_VIEW_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            player.seekTo(data?.getFloatExtra("lastPlayed", 0f) ?: 0f)
+            player.seekTo(data?.getFloatExtra(PlayerActivity.LAST_PLAYED, 0f) ?: 0f)
             player.play()
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onDestroy() {
-
         if (::player.isInitialized) player.pause()
         binding.activityFinalPreviews.youtubePlayerView.release()
         super.onDestroy()

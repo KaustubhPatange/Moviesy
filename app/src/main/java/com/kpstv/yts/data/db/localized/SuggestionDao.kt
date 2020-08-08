@@ -9,7 +9,7 @@ interface SuggestionDao {
     fun upsert(data: data_tmdb)
 
     @Query("select * from table_dataTMDB where imdbCode = :imdbCode")
-    fun getMovieData(imdbCode: String): data_tmdb
+    fun getMovieData(imdbCode: String): data_tmdb?
 
     @Delete
     fun delete(data: data_tmdb)

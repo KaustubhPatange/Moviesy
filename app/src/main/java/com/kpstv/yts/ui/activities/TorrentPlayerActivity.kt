@@ -41,6 +41,14 @@ import java.io.File
 @AndroidEntryPoint
 class TorrentPlayerActivity : AppCompatActivity() {
 
+    companion object {
+        const val ARG_TORRENT_LINK = "com.kpstv.yts.arg_torrent_link"
+        const val ARG_NORMAL_LINK = "com.kpstv.yts.arg_normal_link"
+        const val ARG_TORRENT_HASH = "com.kpstv.yts.arg_torrent_hash"
+        const val ARG_LAST_SAVE_POS = "com.kpstv.yts.arg_last_save_pos"
+        const val ARG_SUBTITLE_NAME = "com.kpstv.yts.arg_subtitle_name"
+    }
+
     private val viewModel by viewModels<MainViewModel>()
     private val binding by viewBinding(ActivityTorrentPlayerBinding::inflate)
 
@@ -54,7 +62,6 @@ class TorrentPlayerActivity : AppCompatActivity() {
 
     private lateinit var hash: String
     private var hasSubtitle: Boolean = false
-    private var isTorrentLink: Boolean = false
     private var isLoadedfromLast: Boolean = false
 
     private var lastPausePosition: Int? = 0
@@ -69,7 +76,7 @@ class TorrentPlayerActivity : AppCompatActivity() {
 
         /** Here we retrieve last saved position from database (if exist).
          */
-        intent.getIntExtra("lastPosition", 0).let {
+        intent.getIntExtra(ARG_LAST_SAVE_POS, 0).let {
             lastPausePosition = it
             lastSubtitlePosition = it
             isLoadedfromLast = true
@@ -77,15 +84,15 @@ class TorrentPlayerActivity : AppCompatActivity() {
 
         /** Check if the callback is for torrentLink and recreate that methods.
          */
-        intent.getStringExtra("torrentLink")?.let { torrentLink ->
+        intent.getStringExtra(ARG_TORRENT_LINK)?.let { torrentLink ->
             torrentSpecific(torrentLink)
         } ?:
         /** Check if the callback is for normalLink i.e playing from local storage.
          */
-        intent.getStringExtra("normalLink")?.let { filePath ->
+        intent.getStringExtra(ARG_NORMAL_LINK)?.let { filePath ->
             this.filePath = filePath
             binding.progressText.hide()
-            hash = intent.getStringExtra("hash")!!
+            hash = intent.getStringExtra(ARG_TORRENT_HASH)!!
 
             val file = File(filePath)
             startPlayer(
@@ -96,7 +103,7 @@ class TorrentPlayerActivity : AppCompatActivity() {
 
         /** Getting subtitle local path and parsing subtitles.
          */
-        intent?.getStringExtra("sub")?.let { filename ->
+        intent?.getStringExtra(ARG_SUBTITLE_NAME)?.let { filename ->
             hasSubtitle = true
             subHolders = SubtitleUtils.parseSubtitles(File(SUBTITLE_LOCATION, filename).path)
         }

@@ -32,7 +32,6 @@ import com.kpstv.yts.data.db.repository.PauseRepository
 import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.getMagnetUrl
-import com.kpstv.yts.extensions.utils.GlideApp
 import com.kpstv.yts.data.models.Torrent
 import com.kpstv.yts.data.models.TorrentJob
 import com.kpstv.yts.data.models.response.Model
@@ -40,6 +39,7 @@ import com.kpstv.yts.databinding.ActivityDownloadBinding
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.extensions.show
+import com.kpstv.yts.extensions.utils.GlideApp
 import com.kpstv.yts.receivers.CommonBroadCast
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import com.kpstv.yts.ui.viewmodels.MainViewModel
@@ -50,6 +50,15 @@ import javax.inject.Inject
 @SuppressLint("SetTextI18n")
 @AndroidEntryPoint
 class DownloadActivity : AppCompatActivity() {
+
+    companion object {
+        fun calculateCurrentSize(torrentJob: TorrentJob): String? {
+            val currentSize =
+                (torrentJob.progress.toLong() * (torrentJob.totalSize as Long)) / (100).toLong()
+            return AppUtils.getSizePretty(currentSize)
+        }
+
+    }
 
     val viewModel by viewModels<MainViewModel>()
     private val binding by viewBinding(ActivityDownloadBinding::inflate)
@@ -65,14 +74,6 @@ class DownloadActivity : AppCompatActivity() {
     private var PAUSE_BUTTON_CLICKED = false
 
     private val SHOW_LOG_FROM_THIS_CLASS = true
-
-    companion object {
-        fun calculateCurrentSize(torrentJob: TorrentJob): String? {
-            val currentSize =
-                (torrentJob.progress.toLong() * (torrentJob.totalSize as Long)) / (100).toLong()
-            return AppUtils.getSizePretty(currentSize)
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

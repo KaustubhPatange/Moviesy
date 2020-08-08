@@ -43,7 +43,7 @@ class CommonBroadCast : BroadcastReceiver() {
                 Log.e(TAG, "=> UNPAUSE JOB")
 
                 val serviceDownload = Intent(context, DownloadService::class.java)
-                serviceDownload.putExtra("addJob", intent.getSerializableExtra("model") as Torrent)
+                serviceDownload.putExtra(DownloadService.TORRENT_JOB, intent.getSerializableExtra("model") as Torrent)
                 ContextCompat.startForegroundService(context!!, serviceDownload)
             }
         }

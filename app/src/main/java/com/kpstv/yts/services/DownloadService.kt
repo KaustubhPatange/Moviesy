@@ -55,6 +55,10 @@ import kotlin.collections.ArrayList
 @AndroidEntryPoint
 class DownloadService : IntentService("blank") {
 
+    companion object {
+        const val TORRENT_JOB = "com.kpstv.yts.add_job"
+    }
+
     @Inject
     lateinit var pauseRepository: PauseRepository
 
@@ -141,7 +145,7 @@ class DownloadService : IntentService("blank") {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent == null) return super.onStartCommand(intent, flags, startId)
-        val config: Torrent = intent.getSerializableExtra("addJob") as Torrent
+        val config: Torrent = intent.getSerializableExtra(TORRENT_JOB) as Torrent
         pendingJobs.add(config)
 
         DS_LOG("=> onStartCommand(): ${config.title}")
@@ -176,7 +180,7 @@ class DownloadService : IntentService("blank") {
         var isAutoStopped = false
         toDelete = false
 
-        val model = intent?.getSerializableExtra("addJob") as Torrent
+        val model = intent?.getSerializableExtra(TORRENT_JOB) as Torrent
 
         currentTorrentModel = model
 
@@ -492,7 +496,7 @@ class DownloadService : IntentService("blank") {
 
                     torrentStream.stopStream()
                 }
-                REMOVE_JOB -> {
+                REMOVE_JOB -> { // TODO: Looks like an unused method...
                     val model: Torrent = intent.extras?.getSerializable("model") as Torrent
                     for (c in pendingJobs) {
                         if (model.title == c.title) {

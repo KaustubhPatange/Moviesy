@@ -10,7 +10,7 @@ interface PauseDao {
     fun upsert(data: Model.response_pause)
 
     @Query("select * from table_pause where hash = :hash")
-    fun getTorrentJob(hash: String): Model.response_pause
+    fun getTorrentJob(hash: String): Model.response_pause?
 
     @Delete
     fun delete(data: Model.response_pause)

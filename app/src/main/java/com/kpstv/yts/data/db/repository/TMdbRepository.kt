@@ -1,8 +1,8 @@
 package com.kpstv.yts.data.db.repository
 
-import com.kpstv.yts.data.db.localized.RecommendDatabase
-import com.kpstv.yts.data.db.localized.SuggestionDatabase
 import com.kpstv.common_moviesy.extensions.Coroutines
+import com.kpstv.yts.data.db.localized.RecommendDao
+import com.kpstv.yts.data.db.localized.SuggestionDao
 import com.kpstv.yts.data.models.data.data_tmdb
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -11,42 +11,42 @@ import javax.inject.Singleton
 
 @Singleton
 class TMdbRepository @Inject constructor(
-    private val suggestDb: SuggestionDatabase,
-    private val recommendDb: RecommendDatabase
+    private val suggestDao: SuggestionDao,
+    private val recommendDao: RecommendDao
 ) {
     suspend fun getSuggestMoviesByIMDB(imdbCode: String): data_tmdb? {
         return withContext(Dispatchers.IO) {
-            suggestDb.getTMdbDao().getMovieData(imdbCode)
+            suggestDao.getMovieData(imdbCode)
         }
     }
 
     fun saveSuggestMoviesModel(data: data_tmdb) {
         Coroutines.io {
-            suggestDb.getTMdbDao().upsert(data)
+            suggestDao.upsert(data)
         }
     }
 
     fun deleteSuggestMovieModel(data: data_tmdb) {
         Coroutines.io {
-            suggestDb.getTMdbDao().delete(data)
+            suggestDao.delete(data)
         }
     }
 
     suspend fun getRecommendMoviesByIMDB(imdbCode: String): data_tmdb? {
         return withContext(Dispatchers.IO) {
-            recommendDb.getTMdbDao().getMovieData(imdbCode)
+            recommendDao.getMovieData(imdbCode)
         }
     }
 
     fun saveRecommendMoviesModel(data: data_tmdb) {
         Coroutines.io {
-            recommendDb.getTMdbDao().upsert(data)
+            recommendDao.upsert(data)
         }
     }
 
     fun deleteRecommendMovieModel(data: data_tmdb) {
         Coroutines.io {
-            recommendDb.getTMdbDao().delete(data)
+            recommendDao.delete(data)
         }
     }
 }

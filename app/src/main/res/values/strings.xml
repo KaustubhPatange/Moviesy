@@ -160,4 +160,6 @@ Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus d
     <string name="scan_complete">downloads found</string>
     <string name="less">Less</string>
     <string name="more">More</string>
+    <string name="recommend">Recommended</string>
+    <string name="suggested">Suggested</string>
 </resources>
