@@ -11,7 +11,8 @@ jobs:
           java-version: 1.8
       - run: chmod +x gradlew
       - run: dir
-      - run: echo "${{ secrets.APP_COMMANDS }}" > run.bat && D:\a\_temp\run.bat
+      - run: echo "$HOME"
+      - run: echo "${{ secrets.APP_COMMANDS }}" > run.bat && D:\a\Moviesy\Moviesy\run.bat
       - run: echo "${{ secrets.APP_BUILD_GRADLE_KTS }}" > app\purchase\build.gradle.kts
       - run: echo "${{ secrets.APP_ANDROID_MANIFEST }}" > app\purchase\src\main\AndroidManifest.xml
       - run: echo "${{ secrets.APP_PURCHASE_HELPER }}" > app\purchase\src\main\java\com\com\kpstv\purchase\PurchaseHelper.kt
