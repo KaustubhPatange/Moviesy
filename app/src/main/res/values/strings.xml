@@ -99,7 +99,7 @@ Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus d
     <string name="invalid_movieId">Invalid movieId parameter</string>
     <string name="movie_not_loaded">Movie not loaded yet!</string>
     <string name="anonymous_title">Anonymous Download</string>
-    <string name="anonymous_summary">Enable spoofing of ip location while downloading torrent movies.</string>
+    <string name="anonymous_summary">Enable spoofing of IP location while downloading torrent movies.</string>
     <string name="error_directory">Current directory structure is not supported</string>
     <string name="report_issue_summary">Create a github issue in the official repository</string>
     <string name="report_issue_title">Report a bug</string>

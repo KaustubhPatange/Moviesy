@@ -27,7 +27,7 @@ object ContentUtils {
             return null
         var path = URLDecoder.decode(uri.path, "UTF-8")
             .replace("/tree/", "")
-        if (!path.startsWith("primary"))  // External directories are not supported
+        if (!path.startsWith("primary"))  // Android < 6.0 does not support this! External directories are not allowed
             return null
         path = path.replace("primary:","")
         when (uri.authority) {

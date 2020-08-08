@@ -11,8 +11,6 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.kpstv.yts.extensions.AccountCallback
 import com.kpstv.yts.extensions.ExceptionCallback
-import com.kpstv.yts.extensions.SimpleCallback
-import com.kpstv.yts.ui.fragments.sheets.BottomSheetPurchase
 
 /**
  * Usage:
@@ -23,6 +21,12 @@ import com.kpstv.yts.ui.fragments.sheets.BottomSheetPurchase
  */
 class SignInHelper {
     companion object {
+        private val SignInErrorCodes =
+            mutableMapOf(
+                12501 to "Sign in cancelled",
+                12502 to "Sign in currently in progress",
+                12500 to "Sign in attempt didn't succeed with the current account"
+            )
         const val GOOGLE_SIGNIN_REQUEST_CODE = 129
     }
 
@@ -34,21 +38,26 @@ class SignInHelper {
 
     data class Builder(private val context: Context) {
         private val signInHelper = SignInHelper()
+
         init {
             signInHelper.context = context
         }
+
         fun setParent(value: Fragment): Builder {
             signInHelper.fragment = value
             return this
         }
+
         fun setOnSignInComplete(value: AccountCallback): Builder {
             signInHelper.onSignInComplete = value
             return this
         }
+
         fun setOnSignInFailed(value: ExceptionCallback): Builder {
             signInHelper.onSignInFailed = value
             return this
         }
+
         fun build() = signInHelper
     }
 
@@ -64,8 +73,8 @@ class SignInHelper {
     }
 
     fun signIn() {
-       if (::fragment.isInitialized)
-           signInFragment()
+        if (::fragment.isInitialized)
+            signInFragment()
         // TODO: Remaining stuff for Activity
     }
 
@@ -81,6 +90,13 @@ class SignInHelper {
             }
         }
     }
+
+    fun parseErrorCode(e: Exception): String {
+        if (e is ApiException)
+            return SignInErrorCodes[e.statusCode] ?: e.message ?: "Unknown Error"
+        return e.message ?: "Unknown Error"
+    }
+
 
     private fun signInFragment() {
         val signInIntent = mGoogleSignInClient.signInIntent

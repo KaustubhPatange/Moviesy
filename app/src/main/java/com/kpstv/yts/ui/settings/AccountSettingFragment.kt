@@ -94,7 +94,7 @@ Email: ${jsonObject.getString("email")}""".trimIndent())
                     .show()
             }
             .setOnSignInFailed { e ->
-                Toasty.error(requireContext(), "Failed: ${e.message}").show()
+                Toasty.error(requireContext(), "Failed: ${signInHelper.parseErrorCode(e)}").show()
             }
             .build()
         signInHelper.init()

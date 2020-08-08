@@ -44,8 +44,9 @@ class DevSettingsFragment: PreferenceFragmentCompat() {
         val tak = findPreference<EditTextPreference>(TMDB_API_KEY_PREF)
         tak?.text = AppInterface.TMDB_API_KEY
         tak?.summary = AppInterface.TMDB_API_KEY
-        tak?.setOnPreferenceChangeListener { _, newValue ->
+        tak?.setOnPreferenceChangeListener { b, newValue ->
             AppInterface.TMDB_API_KEY = newValue.toString()
+            b.summary = AppInterface.TMDB_API_KEY
             return@setOnPreferenceChangeListener true
         }
 

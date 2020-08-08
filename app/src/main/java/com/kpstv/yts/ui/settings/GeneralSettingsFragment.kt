@@ -27,8 +27,8 @@ class GeneralSettingsFragment: PreferenceFragmentCompat() {
         tmdbPref?.text = AppInterface.TMDB_BASE_URL
         tmdbPref?.summary = AppInterface.TMDB_BASE_URL
         tmdbPref?.setOnPreferenceChangeListener { _, newValue ->
-            tmdbPref.summary = AppInterface.TMDB_BASE_URL
             AppInterface.TMDB_BASE_URL = newValue.toString().trim()
+            tmdbPref.summary = AppInterface.TMDB_BASE_URL
             return@setOnPreferenceChangeListener true
         }
 
@@ -36,8 +36,8 @@ class GeneralSettingsFragment: PreferenceFragmentCompat() {
         yifyPref?.text = AppInterface.YIFY_BASE_URL
         yifyPref?.summary = AppInterface.YIFY_BASE_URL
         yifyPref?.setOnPreferenceChangeListener { _, newValue ->
-            yifyPref.summary = AppInterface.YIFY_BASE_URL
             AppInterface.YIFY_BASE_URL = newValue.toString().trim()
+            yifyPref.summary = AppInterface.YIFY_BASE_URL
             return@setOnPreferenceChangeListener true
         }
 
@@ -45,8 +45,8 @@ class GeneralSettingsFragment: PreferenceFragmentCompat() {
         ytsPref?.text = AppInterface.YTS_BASE_URL
         ytsPref?.summary = AppInterface.YTS_BASE_URL
         ytsPref?.setOnPreferenceChangeListener { _, newValue ->
-            ytsPref.summary = AppInterface.YTS_BASE_URL
             AppInterface.YTS_BASE_URL = newValue.toString().trim()
+            ytsPref.summary = AppInterface.YTS_BASE_URL
             return@setOnPreferenceChangeListener true
         }
     }

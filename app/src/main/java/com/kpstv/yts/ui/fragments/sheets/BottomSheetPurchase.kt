@@ -121,7 +121,7 @@ class BottomSheetPurchase : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
                 checkout(it)
             }
             .setOnSignInFailed { e ->
-                Toasty.error(requireContext(), "Failed: ${e.message}").show()
+                Toasty.error(requireContext(), "Failed: ${signInHelper.parseErrorCode(e)}").show()
                 dismiss()
             }
             .build()
