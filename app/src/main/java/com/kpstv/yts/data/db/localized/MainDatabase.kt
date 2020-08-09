@@ -5,6 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.kpstv.yts.data.converters.*
 import com.kpstv.yts.data.models.Movie
+import com.kpstv.yts.data.models.data.data_history
 import com.kpstv.yts.data.models.data.data_main
 import com.kpstv.yts.data.models.response.Model
 
@@ -14,7 +15,8 @@ import com.kpstv.yts.data.models.response.Model
         Model.response_favourite::class,
         Model.response_download::class,
         Model.response_pause::class,
-        Movie::class],
+        Movie::class,
+        data_history::class],
     version = 1
 )
 @TypeConverters(
@@ -32,4 +34,5 @@ abstract class MainDatabase : RoomDatabase() {
     abstract fun getDownloadDao(): DownloadDao
     abstract fun getMovieDao(): MovieDao
     abstract fun getPauseDao(): PauseDao
+    abstract fun getHistoryDao(): HistoryDao
 }

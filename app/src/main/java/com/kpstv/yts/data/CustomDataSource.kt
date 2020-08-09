@@ -1,6 +1,7 @@
 package com.kpstv.yts.data
 
 import android.content.Context
+import android.util.Log
 import androidx.paging.PageKeyedDataSource
 import com.kpstv.yts.AppInterface.Companion.TMDB_IMAGE_PREFIX
 import com.kpstv.common_moviesy.extensions.Coroutines
@@ -103,6 +104,7 @@ class CustomDataSource(
         params: LoadInitialParams<Int>,
         callback: LoadInitialCallback<Int, MovieShort>
     ) {
+        Log.e(TAG, "Loading Initial")
         INITIAL_QUERY_FETCHED = false
         Coroutines.main {
             try {
@@ -128,6 +130,7 @@ class CustomDataSource(
     }
 
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, MovieShort>) {
+        Log.e(TAG, "Loading Before")
         try {
             Coroutines.main {
                 when (base) {
@@ -153,6 +156,7 @@ class CustomDataSource(
     }
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, MovieShort>) {
+        Log.e(TAG, "Loading After")
         try {
             Coroutines.main {
                 when (base) {

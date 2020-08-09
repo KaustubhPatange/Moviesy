@@ -214,7 +214,7 @@ class AppUtils {
         }
 
         fun saveImageFromUrl(src: String, file: File) {
-             try {
+            try {
                 val url = URL(src)
                 val connection: HttpURLConnection = url
                     .openConnection() as HttpURLConnection
@@ -260,11 +260,13 @@ class AppUtils {
             val sizeTerra = sizeGb * sizeKb
             return if (size != null) {
                 when {
-                    size < sizeMb -> df.format(size / sizeKb).toString() + if (addPrefix) " KB" else ""
+                    size < sizeMb -> df.format(size / sizeKb)
+                        .toString() + if (addPrefix) " KB" else ""
                     size < sizeGb -> df.format(
                         size / sizeMb
                     ).toString() + " MB"
-                    size < sizeTerra -> df.format(size / sizeGb).toString() + if (addPrefix) " GB" else ""
+                    size < sizeTerra -> df.format(size / sizeGb)
+                        .toString() + if (addPrefix) " GB" else ""
                     else -> ""
                 }
             } else "0" + if (addPrefix) " B" else ""
@@ -331,7 +333,8 @@ class AppUtils {
             install.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             install.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                install.data = FileProvider.getUriForFile(context,context.packageName + ".provider", apk)
+                install.data =
+                    FileProvider.getUriForFile(context, context.packageName + ".provider", apk)
             } else {
                 apk.setReadable(true, false)
                 install.data = Uri.fromFile(apk)

@@ -49,6 +49,10 @@ object MainModule {
     @Singleton
     @Provides
     fun providePauseDao(mainDatabase: MainDatabase) = mainDatabase.getPauseDao()
+
+    @Singleton
+    @Provides
+    fun provideHistoryDao(mainDatabase: MainDatabase) = mainDatabase.getHistoryDao()
 }
 
 @Module

@@ -4,8 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:focusable="true"
-    android:focusableInTouchMode="true"
     tools:context=".ui.activities.SearchActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -44,7 +42,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="15dp"
                     android:background="@android:color/transparent"
-                    android:focusable="true"
                     android:hint="@string/searchmovies"
                     android:imeOptions="actionSearch"
                     android:singleLine="true"
@@ -68,7 +65,6 @@
             layout="@layout/activity_search_single" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
 
     <RelativeLayout
         android:id="@+id/suggestionLayout"

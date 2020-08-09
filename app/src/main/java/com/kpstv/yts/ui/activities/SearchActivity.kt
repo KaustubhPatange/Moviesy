@@ -5,9 +5,13 @@ import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.View
+import android.view.KeyEvent
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.inputmethod.EditorInfoCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.paging.PagedList
@@ -17,23 +21,29 @@ import com.jakewharton.rxbinding2.widget.RxTextView
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.AppInterface.Companion.SUGGESTION_URL
 import com.kpstv.yts.AppInterface.Companion.setAppThemeNoAction
+import com.kpstv.yts.R
 import com.kpstv.yts.adapters.CustomPagedAdapter
+import com.kpstv.yts.adapters.HistoryModel
 import com.kpstv.yts.adapters.SearchAdapter
 import com.kpstv.yts.data.CustomDataSource.Companion.INITIAL_QUERY_FETCHED
 import com.kpstv.yts.data.converters.QueryConverter
 import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.data.models.TmDbMovie
 import com.kpstv.yts.databinding.ActivitySearchBinding
-import com.kpstv.yts.extensions.*
+import com.kpstv.yts.extensions.MovieBase
+import com.kpstv.yts.extensions.YTSQuery
+import com.kpstv.yts.extensions.hide
+import com.kpstv.yts.extensions.show
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.hideKeyboard
 import com.kpstv.yts.extensions.utils.CustomMovieLayout
 import com.kpstv.yts.extensions.utils.RetrofitUtils
-import com.kpstv.yts.interfaces.listener.SingleClickListener
 import com.kpstv.yts.interfaces.listener.SuggestionListener
 import com.kpstv.yts.ui.activities.MoreActivity.Companion.base
 import com.kpstv.yts.ui.activities.MoreActivity.Companion.queryMap
+import com.kpstv.yts.ui.helpers.AdaptiveSearchHelper
 import com.kpstv.yts.ui.viewmodels.FinalViewModel
 import com.kpstv.yts.ui.viewmodels.MoreViewModel
+import com.kpstv.yts.ui.viewmodels.SearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -49,6 +59,7 @@ class SearchActivity : AppCompatActivity() {
 
     private val moreViewModel by viewModels<MoreViewModel>()
     private val finalViewModel by viewModels<FinalViewModel>()
+    private val searchViewModel by viewModels<SearchViewModel>()
 
     private val binding by viewBinding(ActivitySearchBinding::inflate)
 
@@ -60,13 +71,16 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var suggestionFetch: Disposable
     private lateinit var suggestionAdapter: SearchAdapter
 
-    private val suggestionModels = ArrayList<String>()
+    private val suggestionModels = ArrayList<HistoryModel>()
     private var isSearchClicked = false
     private lateinit var adapter: CustomPagedAdapter
     private var updateHandler = Handler()
     private var gridLayoutManager = GridLayoutManager(this, 3)
     private var linearLayoutManager = LinearLayoutManager(this)
 
+    private val adaptiveSearchHelper by lazy {
+        AdaptiveSearchHelper(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,25 +89,29 @@ class SearchActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
         title = " "
 
         binding.swipeRefreshLayout.isEnabled = false
 
-        /** Hiding noMovieFound layout
+        /** Hiding noMovieFound layout & initializing adaptive search
          */
         binding.activitySearchSingle.layoutNoMovieFound.hide()
+        adaptiveSearchHelper.bindLayout(binding.activitySearchSingle.AdaptiveSearch)
 
         /** Setting suggestion RecyclerView and adapter with empty models
          */
         binding.suggestionRecyclerView.layoutManager = LinearLayoutManager(this)
-        suggestionAdapter = SearchAdapter(suggestionModels)
-        suggestionAdapter.setSingleClickListener(object : SingleClickListener {
-            override fun onClick(obj: Any, i: Int) {
-                updateQuery(obj as String)
+        suggestionAdapter = SearchAdapter(
+            context = this,
+            list = suggestionModels,
+            onClick = { model, _ ->
+                updateQuery(model.query)
+            },
+            onLongClick = { model, pos ->
+                if (model.type == HistoryModel.Type.HISTORY)
+                    showAlertAndDelete(model, pos)
             }
-
-        })
+        )
         binding.suggestionRecyclerView.adapter = suggestionAdapter
 
         /** Removing recyclerview first to see the content view first
@@ -107,13 +125,13 @@ class SearchActivity : AppCompatActivity() {
             it.hide()
         }
 
-        binding.searchEditText.setOnKeyListener(onActionSearchEvent())
+        binding.searchEditText.setOnEditorActionListener(onActionSearchEvent())
+        // binding.searchEditText.setOnKeyListener(onActionSearchEvent())
 
         binding.searchEditText.addTextChangedListener(searchEditTextChangeListener())
 
         setSuggestionObservable()
     }
-
 
     override fun onStart() {
         super.onStart()
@@ -209,7 +227,8 @@ class SearchActivity : AppCompatActivity() {
                      *  @see CustomPagedAdapter
                      */
                     if (adapter.itemCount == 1) {
-                        binding.activitySearchSingle.recyclerView.layoutManager = linearLayoutManager
+                        binding.activitySearchSingle.recyclerView.layoutManager =
+                            linearLayoutManager
                     }
 
                     if (adapter.itemCount <= 10) {
@@ -249,9 +268,15 @@ class SearchActivity : AppCompatActivity() {
     private fun updateQuery(text: String) {
 
         if (text.isEmpty()) {
-            Toasty.error(this, "Query cannot be empty").show()
+            Toasty.error(this, getString(R.string.empty_query)).show()
             return
         }
+
+        /** Saving raw query to history */
+        searchViewModel.addToHistory(text)
+
+        /** Get the adaptive query */
+        val searchQuery = adaptiveSearchHelper.querySearch(text)
 
         /** We need to recreate pagination list */
         moreViewModel.buildNewConfig()
@@ -260,16 +285,16 @@ class SearchActivity : AppCompatActivity() {
          */
         binding.activitySearchSingle.layoutNoMovieFound.hide()
 
-        isSearchClicked = true
         /** Setting this boolean true because search was clicked */
+        isSearchClicked = true
 
         binding.searchEditText.clearFocus()
 
-        binding.searchEditText.setText(text)
         /** Autocomplete text in search EditText */
+        binding.searchEditText.setText(searchQuery)
 
-        hideKeyboard(this)
         /** Hide the keyboard after search was clicked */
+        hideKeyboard(this)
 
         removeSuggestionRecyclerView()
 
@@ -291,8 +316,9 @@ class SearchActivity : AppCompatActivity() {
 
     /** Whenever user press search button on keyboard we will updateQuery
      */
-    private fun onActionSearchEvent() = View.OnKeyListener { _, _, _ ->
-        updateQuery(binding.searchEditText.text.toString())
+    private fun onActionSearchEvent() = TextView.OnEditorActionListener { v, actionId, event ->
+        if (actionId == EditorInfo.IME_ACTION_SEARCH)
+            updateQuery(binding.searchEditText.text.toString())
         true
     }
 
@@ -306,7 +332,7 @@ class SearchActivity : AppCompatActivity() {
             else binding.itemClose.hide()
         }
 
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, cReount: Int, after: Int) {
 
         }
 
@@ -327,13 +353,29 @@ class SearchActivity : AppCompatActivity() {
         binding.suggestionLayout.hide()
     }
 
+    /** Method will show an alert dialog to delete the history item.
+     */
+    private fun showAlertAndDelete(model: HistoryModel, pos: Int) {
+        AlertDialog.Builder(this)
+            .setTitle(model.query)
+            .setMessage(getString(R.string.remove_history))
+            .setPositiveButton(getString(R.string.remove)) { _, _ ->
+                searchViewModel.deleteFromHistory(model.query)
+                suggestionModels.removeAt(pos)
+                suggestionAdapter.notifyDataSetChanged()
+            }
+            .setNegativeButton(getString(R.string.cancel), null)
+            .show()
+    }
+
+
     /** Since Consumers are basically an async threads. Here we are making
      *  call to api using OkHttp for returning suggestion Json.
      *
      *  We will filter it and update the recyclerView adapter using
      *  runOnUiThread coroutine call.
      */
-    private fun onTaskStarted() = Consumer<CharSequence> {
+    private fun onTaskStarted() = Consumer<CharSequence> { charSequence ->
 
         /** Here, apart from checking if editText is empty we also have a boolean
          *  which serves an important purpose.
@@ -349,7 +391,29 @@ class SearchActivity : AppCompatActivity() {
          *  Hence in order to prevent it we are using a boolean which will detect if autocomplete
          *  was performed. If yes it won't run next code.
          */
-        if (it.isEmpty() || isSearchClicked) {
+        if (charSequence.isEmpty() && !isSearchClicked) {
+            /** Load last saved search history if exist else remove
+             *  suggestion layout */
+            searchViewModel.getLastSavedSearchHistory(5) { list ->
+                if (list.isNotEmpty()) {
+                    Log.e(TAG, "Loading previous history")
+                    suggestionModels.clear()
+                    suggestionModels.addAll(list.map {
+                        HistoryModel(
+                            query = it.query,
+                            type = HistoryModel.Type.HISTORY
+                        )
+                    })
+                    suggestionAdapter.notifyDataSetChanged()
+
+                    binding.suggestionLayout.show()
+                } else {
+                    Log.e(TAG, "No previous search history")
+                    removeSuggestionRecyclerView()
+                }
+            }
+            return@Consumer
+        } else if (charSequence.isEmpty() || isSearchClicked) {
             runOnUiThread {
                 isSearchClicked = false
                 removeSuggestionRecyclerView()
@@ -359,28 +423,33 @@ class SearchActivity : AppCompatActivity() {
 
         val response = retrofitUtils.getHttpClient().newCall(
             Request.Builder()
-                .url("${SUGGESTION_URL}$it")
+                .url("${SUGGESTION_URL}$charSequence")
                 .build()
         ).execute()
+
+        suggestionModels.clear()
+        try {
+            val json = response.body?.string()
+            if (json?.isNotEmpty() == true) {
+                val jsonArray = JSONArray(json).getJSONArray(1)
+                for (i in 0 until jsonArray.length()) {
+                    suggestionModels.add(
+                        HistoryModel(
+                            query = jsonArray.getString(i),
+                            type = HistoryModel.Type.SEARCH
+                        )
+                    )
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
 
         runOnUiThread {
             /** Showing the hidden suggestion Layout
              */
             binding.suggestionLayout.show()
 
-            suggestionModels.clear()
-            try {
-                val json = response.body?.string()
-                if (json?.isNotEmpty() == true) {
-
-                    val jsonArray = JSONArray(json).getJSONArray(1)
-                    for (i in 0 until jsonArray.length()) {
-                        suggestionModels.add(jsonArray.getString(i))
-                    }
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
             suggestionAdapter.notifyDataSetChanged()
         }
     }
@@ -402,18 +471,19 @@ class SearchActivity : AppCompatActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+    }
+
+    override fun onBackPressed() {
         if (binding.suggestionLayout.isVisible) {
             binding.suggestionLayout.hide()
             hideKeyboard(this)
         } else
-            onBackPressed()
-        return true
+            super.onBackPressed()
     }
 
-
     override fun onDestroy() {
-        super.onDestroy()
-
         /** Dispose the RxText watcher and remove handler callbacks
          *  for safer side.
          */
@@ -421,5 +491,7 @@ class SearchActivity : AppCompatActivity() {
             suggestionFetch.dispose()
 
         updateHandler.removeCallbacks(updateTask)
+
+        super.onDestroy()
     }
 }

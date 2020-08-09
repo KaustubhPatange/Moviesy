@@ -162,4 +162,11 @@ Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus d
     <string name="more">More</string>
     <string name="recommend">Recommended</string>
     <string name="suggested">Suggested</string>
+    <string name="empty_query">Query cannot be empty</string>
+    <string name="adaptive_search">Adaptive Search</string>
+    <string name="adaptive_search_text">Automatically match the best suitable search text based on your query. Often times we type something invalid, this option will fix those typos automatically and improve search results.\n\nCan be tweak from settings.</string>
+    <string name="close">Close</string>
+    <string name="results_for">Showing results for</string>
+    <string name="remove_history">Remove from search history?</string>
+    <string name="remove">REMOVE</string>
 </resources>

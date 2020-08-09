@@ -1,19 +1,32 @@
 package com.kpstv.yts.adapters
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.yts.R
 import com.kpstv.yts.interfaces.listener.SingleClickListener
 import kotlinx.android.synthetic.main.item_search_suggestion.view.*
 
+data class HistoryModel(
+    val query: String,
+    val type: Type
+) {
+    enum class Type {
+        HISTORY,
+        SEARCH
+    }
+}
+
 class SearchAdapter(
-    private val list: ArrayList<String>
+    private val context: Context,
+    private val list: ArrayList<HistoryModel>,
+    private val onClick: (HistoryModel, Int) -> Unit,
+    private val onLongClick: (HistoryModel, Int) -> Unit
 ) :
     RecyclerView.Adapter<SearchAdapter.SearchHolder>() {
-
-    private lateinit var listener: SingleClickListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         SearchHolder(
@@ -25,13 +38,20 @@ class SearchAdapter(
         )
 
     override fun onBindViewHolder(holder: SearchHolder, i: Int) {
-        holder.title.text = list[i]
+        val item = list[i]
 
-        holder.mainLayout.setOnClickListener { listener.onClick(list[i],i) }
-    }
+        holder.title.text = item.query
 
-    fun setSingleClickListener(listener: SingleClickListener) {
-        this.listener = listener
+        when (item.type) {
+            HistoryModel.Type.HISTORY ->
+                holder.image.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_restore))
+            HistoryModel.Type.SEARCH ->
+                holder.image.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_search))
+
+        }
+
+        holder.mainLayout.setOnClickListener { onClick.invoke(item, i) }
+        holder.mainLayout.setOnLongClickListener { onLongClick.invoke(item, i); true }
     }
 
     override fun getItemCount() = list.size

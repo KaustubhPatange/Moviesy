@@ -52,6 +52,7 @@ class AppInterface {
         const val MOVIE_FETCH_SIZE = 10
         var IS_DARK_THEME = true
         var IS_PREMIUM_UNLOCKED = false
+        var IS_ADAPTIVE_SEARCH = true
 
         const val FEATURED_QUERY = "movies=featured&client=yts"
 
@@ -122,6 +123,9 @@ class AppInterface {
 
         @SuppressLint("SimpleDateFormat")
         val MainDateFormatter = SimpleDateFormat("yyyyMMddHH")
+
+        @SuppressLint("SimpleDateFormat")
+        val HistoryDateFormatter = SimpleDateFormat("yyyyMMddHHmmss")
 
         @SuppressLint("Range")
         fun handleRetrofitError(context: Context, t: Exception?) {

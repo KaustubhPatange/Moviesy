@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
+import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -241,7 +242,8 @@ class FinalActivity : AppCompatActivity(), MovieListener {
                 tag: String?,
                 isMoreAvailable: Boolean
             ) {
-                val recommendLayout = CustomMovieLayout(this@FinalActivity, getString(R.string.recommend))
+                val recommendLayout =
+                    CustomMovieLayout(this@FinalActivity, getString(R.string.recommend))
                 recommendLayout.injectViewAt(binding.afAddLayout)
                 recommendLayout.setupCallbacks(movies, "$tag/recommendations", isMoreAvailable)
             }
@@ -266,7 +268,8 @@ class FinalActivity : AppCompatActivity(), MovieListener {
                 tag: String?,
                 isMoreAvailable: Boolean
             ) {
-                val similarLayout = CustomMovieLayout(this@FinalActivity, getString(R.string.suggested))
+                val similarLayout =
+                    CustomMovieLayout(this@FinalActivity, getString(R.string.suggested))
                 similarLayout.injectViewAt(binding.afAddLayout)
                 similarLayout.setupCallbacks(movies, "${movie.imdb_code}/similar", isMoreAvailable)
             }
@@ -365,15 +368,23 @@ class FinalActivity : AppCompatActivity(), MovieListener {
         )
         binding.activityFinalContent.afSummary.append(" ${movie.runtime} mins")
 
-
+        /** Following code is optimized for handling,
+         *  1. Auto resizing the textView when this button is clicked.
+         *  2. TextView will only be selected in expanded view.
+         *  3. When textView is in selection mode, it will auto cancel it
+         *     when this button is clicked.
+         */
         binding.activityFinalContent.afMoreTxt.setOnClickListener {
+            binding.activityFinalContent.afSummary.setTextIsSelectable(false)
             if (binding.activityFinalContent.afMoreTxt.text.toString() == getString(R.string.more)) {
+                binding.activityFinalContent.afSummary.setTextIsSelectable(true)
                 binding.activityFinalContent.afMoreTxt.text = getString(R.string.less)
-                binding.activityFinalContent.afSummary.maxLines = Integer.MAX_VALUE;
+                binding.activityFinalContent.afSummary.maxLines = Integer.MAX_VALUE
             } else {
                 binding.activityFinalContent.afMoreTxt.text = getString(R.string.more)
-                binding.activityFinalContent.afSummary.maxLines = 3;
+                binding.activityFinalContent.afSummary.maxLines = 3
             }
+            binding.activityFinalContent.afSummary.moveCursorToVisibleOffset()
         }
     }
 
