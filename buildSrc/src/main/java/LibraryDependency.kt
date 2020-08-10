@@ -41,14 +41,14 @@ private object LibraryVersion {
     const val ACTIVITY_KTX = "1.2.0-alpha05"
     const val LOTTIE = "3.4.1"
     const val GOOGLE_ADS = "19.3.0"
-    const val PR_DOWNLOADER = "0.6.0"
     const val WORK_MANAGER = "2.4.0"
+    const val COIL = "0.9.5"
 }
 
 object LibraryDependency {
     const val ACTIVITY_KTX = "androidx.activity:activity-ktx:${LibraryVersion.ACTIVITY_KTX}"
+    const val COIL = "io.coil-kt:coil:${LibraryVersion.COIL}"
     const val WORK_MANAGER = "androidx.work:work-runtime-ktx:${LibraryVersion.WORK_MANAGER}"
-    const val PR_DOWNLOADER = "com.mindorks.android:prdownloader:${LibraryVersion.PR_DOWNLOADER}"
     const val GOOGLE_ADS = "com.google.android.gms:play-services-ads:${LibraryVersion.GOOGLE_ADS}"
     const val LOTTIE = "com.airbnb.android:lottie:${LibraryVersion.LOTTIE}"
     const val GOOGLE_OAUTH = "com.google.android.gms:play-services-auth:${LibraryVersion.GOOGLE_OAUTH}"

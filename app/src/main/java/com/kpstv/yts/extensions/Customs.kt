@@ -1,5 +1,7 @@
 package com.kpstv.yts.extensions
 
+import android.app.Activity
+import android.content.Intent
 import android.view.View
 import androidx.annotation.DrawableRes
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -7,14 +9,13 @@ import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.ui.fragments.GenreFragment
 import kotlinx.coroutines.*
 import java.io.File
-import java.io.IOException
 
 typealias SessionCallback = (Model.response_download?, Int) -> Unit
 typealias SimpleCallback = () -> Unit
 typealias AccountCallback = (GoogleSignInAccount) -> Unit
 typealias ExceptionCallback = (Exception) -> Unit
 
-fun<T> lazyDeferred(block: suspend CoroutineScope.() -> T): Lazy<Deferred<T>>{
+fun <T> lazyDeferred(block: suspend CoroutineScope.() -> T): Lazy<Deferred<T>> {
     return lazy {
         GlobalScope.async(start = CoroutineStart.LAZY) {
             block.invoke(this)
@@ -22,7 +23,11 @@ fun<T> lazyDeferred(block: suspend CoroutineScope.() -> T): Lazy<Deferred<T>>{
     }
 }
 
-fun ArrayList<GenreFragment.LocalGenreModel>.add(title: String, @DrawableRes drawable: Int, genre: YTSQuery.Genre) {
+fun ArrayList<GenreFragment.LocalGenreModel>.add(
+    title: String,
+    @DrawableRes drawable: Int,
+    genre: YTSQuery.Genre
+) {
     this.add(GenreFragment.LocalGenreModel(title, drawable, genre))
 }
 
@@ -36,6 +41,11 @@ fun View.hide() {
 
 fun View.show() {
     visibility = View.VISIBLE
+}
+
+fun Activity.startActivityAndFinish(intent: Intent) {
+    startActivity(intent)
+    finish()
 }
 
 fun File.deleteRecursive() {

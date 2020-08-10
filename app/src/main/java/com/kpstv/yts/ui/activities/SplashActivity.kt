@@ -6,16 +6,17 @@ import android.util.Log
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
-import androidx.preference.PreferenceManager
+import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.AppInterface.Companion.IS_FIRST_LAUNCH_PREF
 import com.kpstv.yts.AppInterface.Companion.PROXY_CHECK_PREF
 import com.kpstv.yts.AppSettings.parseSettings
 import com.kpstv.yts.R
 import com.kpstv.yts.databinding.ActivitySplashBinding
-import com.kpstv.yts.extensions.utils.ProxyUtils
-import com.kpstv.common_moviesy.extensions.viewBinding
+import com.kpstv.yts.defaultPreference
 import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.extensions.show
+import com.kpstv.yts.extensions.startActivityAndFinish
+import com.kpstv.yts.extensions.utils.ProxyUtils
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -33,6 +34,7 @@ class SplashActivity : AppCompatActivity(), Animation.AnimationListener {
     lateinit var proxyUtils: ProxyUtils
 
     private val binding by viewBinding(ActivitySplashBinding::inflate)
+    private val appPreference by defaultPreference()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,9 +61,8 @@ class SplashActivity : AppCompatActivity(), Animation.AnimationListener {
     }
 
     private fun proxyCheckPreference(block: () -> Unit) {
-        val settingPref = PreferenceManager.getDefaultSharedPreferences(this)
-        if (settingPref.getBoolean(PROXY_CHECK_PREF, false) ||
-            settingPref.getBoolean(IS_FIRST_LAUNCH_PREF, true)
+        if (appPreference.getBoolean(PROXY_CHECK_PREF, false) ||
+            appPreference.getBoolean(IS_FIRST_LAUNCH_PREF, true)
         ) {
             binding.progressBar.show()
             /** A progressBar effect */
@@ -86,15 +87,16 @@ class SplashActivity : AppCompatActivity(), Animation.AnimationListener {
     }
 
     private val TAG = javaClass.simpleName
-    override fun onAnimationRepeat(animation: Animation?) { }
+    override fun onAnimationRepeat(animation: Animation?) {}
 
     override fun onAnimationEnd(animation: Animation?) {
         CoroutineScope(Dispatchers.IO).launch {
             delay(300)
-            startActivity(Intent(this@SplashActivity, MainActivity::class.java))
-            finish()
+            if (appPreference.getBoolean(AgreementActivity.SHOW_AGREEMENT_PREF, false))
+                startActivityAndFinish(Intent(this@SplashActivity, MainActivity::class.java))
+            else startActivityAndFinish(Intent(this@SplashActivity, AgreementActivity::class.java))
         }
     }
 
-    override fun onAnimationStart(animation: Animation?) { }
+    override fun onAnimationStart(animation: Animation?) {}
 }

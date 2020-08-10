@@ -5,6 +5,7 @@ plugins {
     kotlin(GradlePluginId.KAPT)
     id(GradlePluginId.SAFE_ARGS)
     id(GradlePluginId.DAGGER_HILT)
+    id("kotlin-android")
 }
 
 android {
@@ -64,6 +65,7 @@ dependencies {
     api(LibraryDependency.GIRAFFE_PLAYER2)
 
     implementation(LibraryDependency.GSON)
+    implementation(LibraryDependency.COIL)
     implementation(LibraryDependency.LOTTIE)
     implementation(LibraryDependency.ANDROID_BROWSER)
     implementation(LibraryDependency.CONSTRAINT_LAYOUT)
@@ -104,6 +106,8 @@ dependencies {
     implementation(LibraryDependency.HILT_ANDROID)
     implementation(LibraryDependency.HILT_VIEWODEL)
     implementation(LibraryDependency.HILT_WORK_MANAGER)
+    implementation("androidx.appcompat:appcompat:1.1.0")
+    implementation("androidx.constraintlayout:constraintlayout:1.1.3")
 
     kapt(LibraryDependency.ROOM_COMPILER_KAPT)
     kapt(LibraryDependency.GLIDE_COMPILER)

@@ -8,9 +8,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
-
-    <!-- Required for Google cast -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" /> <!-- Required for Google cast -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
@@ -19,23 +17,25 @@
         android:allowBackup="false"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
-        android:usesCleartextTraffic="true"
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.Dark.NoAction"
+        android:usesCleartextTraffic="true"
         tools:ignore="LockedOrientationActivity,UnusedAttribute"
         tools:replace="android:allowBackup">
 
         <meta-data
             android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
             android:value="com.kpstv.yts.cast.provider.CastOptionsProvider" />
-
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713"/>
+            android:value="ca-app-pub-3940256099942544~3347511713" />
 
+        <activity
+            android:name=".ui.activities.AgreementActivity"
+            android:theme="@style/AppTheme.Transparent" />
         <activity
             android:name=".ui.settings.SettingsActivity"
             android:screenOrientation="portrait"
@@ -46,13 +46,14 @@
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".ui.activities.SearchActivity"
-            android:theme="@style/AppTheme.Dark.NoAction"
-            android:windowSoftInputMode="stateVisible" />
+            android:windowSoftInputMode="stateVisible"
+            android:theme="@style/AppTheme.Dark.NoAction" />
         <activity
             android:name=".ui.activities.MoreActivity"
             android:theme="@style/AppTheme.Dark.NoAction" />
@@ -61,7 +62,7 @@
             android:screenOrientation="landscape"
             android:theme="@style/TorrentPlayerTheme" />
         <activity
-            android:name="com.kpstv.yts.ui.dialogs.AlertNoIconDialog"
+            android:name=".ui.dialogs.AlertNoIconDialog"
             android:excludeFromRecents="true"
             android:theme="@style/DialogTheme.Dark" />
         <activity
@@ -91,12 +92,12 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.kpstv.yts.ui.activities.MainActivity" />
         </activity>
 
-        <service android:name=".services.DownloadService" />
         <service android:name=".cast.service.WebService" />
 
         <receiver
@@ -114,7 +115,6 @@
             android:name="androidx.work.impl.WorkManagerInitializer"
             android:authorities="com.kpstv.yts.workmanager-init"
             tools:node="remove" />
-
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -124,7 +124,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
-
     </application>
 
 </manifest>

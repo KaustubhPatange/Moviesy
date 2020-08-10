@@ -5,13 +5,11 @@ import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.inputmethod.EditorInfoCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.paging.PagedList
@@ -34,6 +32,7 @@ import com.kpstv.yts.extensions.MovieBase
 import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.extensions.show
+import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.hideKeyboard
 import com.kpstv.yts.extensions.utils.CustomMovieLayout
 import com.kpstv.yts.extensions.utils.RetrofitUtils
@@ -126,7 +125,6 @@ class SearchActivity : AppCompatActivity() {
         }
 
         binding.searchEditText.setOnEditorActionListener(onActionSearchEvent())
-        // binding.searchEditText.setOnKeyListener(onActionSearchEvent())
 
         binding.searchEditText.addTextChangedListener(searchEditTextChangeListener())
 
@@ -316,7 +314,7 @@ class SearchActivity : AppCompatActivity() {
 
     /** Whenever user press search button on keyboard we will updateQuery
      */
-    private fun onActionSearchEvent() = TextView.OnEditorActionListener { v, actionId, event ->
+    private fun onActionSearchEvent() = TextView.OnEditorActionListener { _, actionId, _ ->
         if (actionId == EditorInfo.IME_ACTION_SEARCH)
             updateQuery(binding.searchEditText.text.toString())
         true
@@ -332,13 +330,9 @@ class SearchActivity : AppCompatActivity() {
             else binding.itemClose.hide()
         }
 
-        override fun beforeTextChanged(s: CharSequence?, start: Int, cReount: Int, after: Int) {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-        }
-
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
-        }
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
     }
 
     /** Instead of removing recyclerView we are clearing it's item models
@@ -427,8 +421,8 @@ class SearchActivity : AppCompatActivity() {
                 .build()
         ).execute()
 
-        suggestionModels.clear()
         try {
+            suggestionModels.clear()
             val json = response.body?.string()
             if (json?.isNotEmpty() == true) {
                 val jsonArray = JSONArray(json).getJSONArray(1)

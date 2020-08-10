@@ -2,11 +2,10 @@ package com.kpstv.yts.ui.helpers
 
 import android.content.Context
 import android.view.ViewGroup
-import androidx.core.content.edit
 import androidx.fragment.app.FragmentActivity
-import androidx.preference.PreferenceManager
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppSettings
+import com.kpstv.yts.defaultPreference
 import com.kpstv.yts.extensions.SimpleCallback
 import com.kpstv.yts.ui.fragments.sheets.BottomSheetPurchase
 import es.dmoral.toasty.Toasty
@@ -40,14 +39,11 @@ class PremiumHelper {
         }
 
         fun wasPurchased(context: Context) = with(context) {
-            PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean(AppSettings.PREMIUM_PURCHASE_PREF, false)
+            defaultPreference().value.getBoolean(AppSettings.PREMIUM_PURCHASE_PREF, false)
         }
 
         fun activatePurchase(context: Context) = with(context) {
-            PreferenceManager.getDefaultSharedPreferences(this).edit {
-                    putBoolean(AppSettings.PREMIUM_PURCHASE_PREF, true)
-                }
+            defaultPreference().value.writeBoolean(AppSettings.PREMIUM_PURCHASE_PREF, true)
             AppInterface.IS_DARK_THEME = true
         }
 

@@ -169,4 +169,6 @@ Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus d
     <string name="results_for">Showing results for</string>
     <string name="remove_history">Remove from search history?</string>
     <string name="remove">REMOVE</string>
+    <string name="agree">Agree</string>
+    <string name="disclaimer_text"><![CDATA[Disclaimer,\n\n\nApp let\'s you download & stream HD movies on the go (illegally).\n\nIf this is something you don\'t want, you must stop using it.\n\nThis app is made out of my hobby!]]></string>
 </resources>

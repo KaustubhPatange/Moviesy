@@ -25,7 +25,7 @@ import kotlinx.android.synthetic.main.activity_settings.*
 @AndroidEntryPoint
 class SettingsActivity : AppCompatActivity() {
 
-    val settingsMainFragment = SettingsMainFragment()
+    private val settingsMainFragment = SettingsMainFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +54,7 @@ class SettingsActivity : AppCompatActivity() {
          *  current fragment with lookSettingsFragment due to result
          *  of theme being changed i.e activity recreated.
          */
-        if (intent.getBooleanExtra(REPLACE_FRAG, false))
+        if (intent.getBooleanExtra(ACTION_REPLACE_FRAG, false))
             replaceFragment(LookSettingsFragment(::onThemeChanged), getString(R.string.look_feel))
     }
 

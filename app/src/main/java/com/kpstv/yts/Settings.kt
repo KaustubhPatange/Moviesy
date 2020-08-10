@@ -1,8 +1,25 @@
 package com.kpstv.yts
 
 import android.content.Context
+import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import java.io.File
+
+class AppPreference(context: Context) {
+
+    private val pm = PreferenceManager.getDefaultSharedPreferences(context)
+
+    fun getBoolean(key: String, default: Boolean) =
+        pm.getBoolean(key, default)
+
+    fun writeBoolean(key: String, value: Boolean) =
+        pm.edit {
+            putBoolean(key, value)
+        }
+}
+
+fun Context.defaultPreference() =
+    lazy { AppPreference(this) }
 
 object AppSettings {
     fun parseSettings(context: Context) {
@@ -110,7 +127,6 @@ object AppSettings {
             putBoolean(ANONYMOUS_TORRENT_DOWNLOAD_PREF, AppInterface.ANONYMOUS_TORRENT_DOWNLOAD)
         }.apply()
     }
-
 
     const val TMDB_IMAGE_PREFIX_PREF = "tmdb_image_prefix_pref"
     const val IS_DARK_THEME_PREF = "is_dark_theme_pref"

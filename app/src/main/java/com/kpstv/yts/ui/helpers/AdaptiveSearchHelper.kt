@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.preference.PreferenceManager
 import com.kpstv.yts.R
 import com.kpstv.yts.databinding.CustomAdaptiveSearchBinding
+import com.kpstv.yts.defaultPreference
 import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.extensions.show
 import com.kpstv.yts.extensions.utils.AppUtils
@@ -20,6 +21,8 @@ class AdaptiveSearchHelper(
 ) {
 
     constructor(activity: AppCompatActivity) : this(activity, activity)
+
+    private val appPreference = context.defaultPreference().value
 
     companion object {
         private const val SHOW_ADAPTIVE_TIP_PREF = "show_adaptive_tip_pref"
@@ -34,8 +37,7 @@ class AdaptiveSearchHelper(
     private val toShowTip: Boolean
 
     init {
-        toShowTip = PreferenceManager.getDefaultSharedPreferences(context)
-            .getBoolean(SHOW_ADAPTIVE_TIP_PREF, true)
+        toShowTip = appPreference.getBoolean(SHOW_ADAPTIVE_TIP_PREF, true)
         filters.observe(viewLifecycleOwner, Observer {
             if (it?.first == true) {
                 showFilterLayout(it.second)
@@ -55,9 +57,7 @@ class AdaptiveSearchHelper(
             binding.adaptiveTip.hide()
 
         binding.btnClose.setOnClickListener {
-            PreferenceManager.getDefaultSharedPreferences(context).edit {
-                putBoolean(SHOW_ADAPTIVE_TIP_PREF, false)
-            }
+            appPreference.writeBoolean(SHOW_ADAPTIVE_TIP_PREF, false)
             binding.adaptiveTip.hide()
         }
     }
