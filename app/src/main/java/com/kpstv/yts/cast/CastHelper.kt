@@ -4,9 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Handler
+import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import com.google.android.gms.cast.MediaInfo
 import com.google.android.gms.cast.MediaLoadRequestData
 import com.google.android.gms.cast.MediaMetadata
@@ -14,6 +14,7 @@ import com.google.android.gms.cast.MediaTrack
 import com.google.android.gms.cast.framework.*
 import com.google.android.gms.cast.framework.media.RemoteMediaClient
 import com.google.android.gms.common.images.WebImage
+import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.yts.AppInterface.Companion.APP_IMAGE_URL
 import com.kpstv.yts.R
 import com.kpstv.yts.cast.service.WebService
@@ -21,7 +22,6 @@ import com.kpstv.yts.cast.ui.ExpandedControlsActivity
 import com.kpstv.yts.cast.utils.SubtitleConverter
 import com.kpstv.yts.cast.utils.Utils
 import com.kpstv.yts.data.models.response.Model
-import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.yts.extensions.SessionCallback
 import com.kpstv.yts.extensions.toFile
 import es.dmoral.toasty.Toasty
@@ -41,7 +41,6 @@ class CastHelper {
     }
 
     private lateinit var mCastContext: CastContext
-    private lateinit var mediaRouteMenuItem: MenuItem
     private var mCastSession: CastSession? = null
     private lateinit var mSessionManagerListener: SessionManagerListener<CastSession>
 
@@ -49,7 +48,6 @@ class CastHelper {
 
     private lateinit var mActivity: AppCompatActivity
     private lateinit var mApplicationContext: Context
-    private lateinit var mToolbar: Toolbar
 
     private var model: Model.response_download? = null
 
@@ -73,12 +71,11 @@ class CastHelper {
      */
     fun init(
         activity: AppCompatActivity,
-        toolbar: Toolbar,
         /** Use this to save last play position, Integer value returns the last
          *  played position. */
-        onSessionDisconnected: SessionCallback
+        onSessionDisconnected: SessionCallback,
+        onNeedToShowIntroductoryOverlay: (() -> Unit)? = null
     ) {
-        mToolbar = toolbar
         mActivity = activity
         mApplicationContext = mActivity.applicationContext
         this.onSessionDisconnected = onSessionDisconnected
@@ -101,7 +98,7 @@ class CastHelper {
 
         mCastContext.addCastStateListener { state ->
             if (state != CastState.NO_DEVICES_AVAILABLE)
-                showIntroductoryOverlay()
+                onNeedToShowIntroductoryOverlay?.invoke()
             if (state == CastState.NOT_CONNECTED) {
                 /** When casting is disconnected we post updateLastModel */
                 postUpdateLastModel()
@@ -109,12 +106,16 @@ class CastHelper {
             }
         }
 
-        mediaRouteMenuItem = CastButtonFactory.setUpMediaRouteButton(
+
+    }
+
+    fun setMediaRouteMenu(menu: Menu): MenuItem? =
+        CastButtonFactory.setUpMediaRouteButton(
             mApplicationContext,
-            mToolbar.menu,
+            menu,
             R.id.media_route_menu_item
         )
-    }
+
 
     fun loadMedia(
         downloadModel: Model.response_download,
@@ -273,20 +274,18 @@ class CastHelper {
             private fun onApplicationConnected(castSession: CastSession?) {
                 mCastSession = castSession
                 mActivity.invalidateOptionsMenu()
-                //    mToolbar.invalidate()
             }
 
             private fun onApplicationDisconnected() {
                 mActivity.invalidateOptionsMenu()
-                //  mToolbar.invalidate()
             }
         }
     }
 
-    private fun showIntroductoryOverlay() {
+    fun showIntroductoryOverlay(mediaRouteMenuItem: MenuItem?) {
         mIntroductoryOverlay?.remove()
 
-        if (::mediaRouteMenuItem.isInitialized && mediaRouteMenuItem.isVisible) {
+        if (mediaRouteMenuItem != null && mediaRouteMenuItem.isVisible)
             Handler().post {
                 mIntroductoryOverlay = IntroductoryOverlay.Builder(
                     mActivity, mediaRouteMenuItem
@@ -297,6 +296,5 @@ class CastHelper {
                     .build()
                 mIntroductoryOverlay?.show()
             }
-        }
     }
 }

@@ -3,7 +3,6 @@ package com.kpstv.yts.adapters
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -16,10 +15,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import com.kpstv.yts.AppInterface.Companion.IS_DARK_THEME
 import com.kpstv.yts.AppInterface.Companion.MOVIE_ID
 import com.kpstv.yts.R
@@ -29,7 +24,7 @@ import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.getBulletSymbol
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.getImdbUrl
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.launchUrl
-import com.kpstv.yts.extensions.utils.GlideApp
+import com.kpstv.yts.extensions.load
 import com.kpstv.yts.ui.activities.FinalActivity
 import kotlinx.android.synthetic.main.item_common_banner.view.*
 
@@ -40,6 +35,8 @@ class CustomPagedAdapter(
     private val base: MovieBase
 ) :
     PagedListAdapter<MovieShort, CustomPagedAdapter.CustomHolder>(DIFF_CALLBACK) {
+
+    private val TAG = javaClass.simpleName
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         /** We will show different layout when the item count is only one.
@@ -82,31 +79,17 @@ class CustomPagedAdapter(
                 }
             }
 
-            GlideApp.with(context.applicationContext).asBitmap().load(movie.bannerUrl)
-                .listener(object : RequestListener<Bitmap> {
-                    override fun onLoadFailed(
-                        e: GlideException?,
-                        model: Any?,
-                        target: Target<Bitmap>?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        Log.e("CustomPagedAdapter", "=> Glide failed for: ${movie.title}")
-                        return false
-                    }
+            holder.mainImage.load(
+                uri = movie.bannerUrl,
+                onSuccess = { resource ->
+                    holder.mainImage.setImageBitmap(resource)
+                    holder.itemView.shimmerFrame.hide()
+                },
+                onError = {
+                    Log.e(TAG, "=> Glide failed for: ${movie.title}")
+                }
+            )
 
-                    override fun onResourceReady(
-                        resource: Bitmap?,
-                        model: Any?,
-                        target: Target<Bitmap>?,
-                        dataSource: DataSource?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        holder.mainImage.setImageBitmap(resource)
-                        holder.itemView.shimmerFrame.hide()
-                        return true
-                    }
-
-                }).into(holder.mainImage)
             holder.mainText.text = movie.title
 
             holder.mainCard.setOnClickListener {

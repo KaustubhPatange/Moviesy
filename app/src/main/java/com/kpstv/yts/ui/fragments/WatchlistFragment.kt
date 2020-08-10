@@ -65,6 +65,7 @@ class WatchlistFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initRecyclerView()
+
         bindUI()
     }
 

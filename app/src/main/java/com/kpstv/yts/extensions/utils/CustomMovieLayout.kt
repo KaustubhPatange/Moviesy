@@ -26,6 +26,7 @@ import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.data.models.TmDbMovie
 import com.kpstv.yts.extensions.MovieBase
 import com.kpstv.yts.extensions.hide
+import com.kpstv.yts.extensions.load
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.refactorYTSUrl
 import com.kpstv.yts.interfaces.listener.MoviesListener
 import com.kpstv.yts.ui.activities.FinalActivity
@@ -267,19 +268,13 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
                 imageUri = refactorYTSUrl(imageUri)
             }
 
-            GlideApp.with(context.applicationContext).asBitmap().load(imageUri)
-                .into(object : CustomTarget<Bitmap>() {
-                    override fun onLoadCleared(placeholder: Drawable?) {
-                    }
-
-                    override fun onResourceReady(
-                        resource: Bitmap,
-                        transition: Transition<in Bitmap>?
-                    ) {
-                        holder.mainImage.setImageBitmap(resource)
-                        holder.itemView.shimmerFrame.hide()
-                    }
-                })
+            holder.mainImage.load(
+                uri = imageUri,
+                onSuccess = { bitmap ->
+                    holder.mainImage.setImageBitmap(bitmap)
+                    holder.itemView.shimmerFrame.hide()
+                }
+            )
 
             holder.mainText.text = movie.title
 

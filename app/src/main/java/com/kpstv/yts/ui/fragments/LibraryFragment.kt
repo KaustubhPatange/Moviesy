@@ -3,6 +3,7 @@ package com.kpstv.yts.ui.fragments
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
@@ -15,6 +16,7 @@ import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.yts.AppInterface.Companion.MOVIE_ID
 import com.kpstv.yts.R
 import com.kpstv.yts.adapters.LibraryDownloadAdapter
+import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.databinding.FragmentLibraryBinding
 import com.kpstv.yts.extensions.deleteRecursive
 import com.kpstv.yts.extensions.hide
@@ -28,7 +30,6 @@ import com.kpstv.yts.ui.fragments.sheets.PlaybackType
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
-import kotlinx.android.synthetic.main.fragment_library.view.*
 import java.io.File
 
 @AndroidEntryPoint
@@ -41,6 +42,7 @@ class LibraryFragment : Fragment() {
 
     private lateinit var mainActivity: MainActivity
     private lateinit var downloadAdapter: LibraryDownloadAdapter
+    private var mediaRouteMenuItem: MenuItem? = null
 
     private lateinit var binding: FragmentLibraryBinding
 
@@ -75,12 +77,15 @@ class LibraryFragment : Fragment() {
 
         mainActivity.castHelper.init(
             activity = mainActivity,
-            toolbar = view.toolbar,
             onSessionDisconnected = { model, lastSavedPosition ->
                 if (model == null) return@init
                 viewModel.updateDownload(model.hash, true, lastSavedPosition)
+            },
+            onNeedToShowIntroductoryOverlay = {
+                mainActivity.castHelper.showIntroductoryOverlay(mediaRouteMenuItem)
             }
         )
+        mediaRouteMenuItem = mainActivity.castHelper.setMediaRouteMenu(binding.toolbar.menu)
     }
 
     private fun setRecyclerView() {
@@ -146,16 +151,18 @@ class LibraryFragment : Fragment() {
     }
 
     private fun bindUI() = Coroutines.main {
-        viewModel.downloadMovieIds.await().observe(mainActivity, Observer {
-            downloadAdapter.updateModels(it)
-            if (it.isNotEmpty()) {
-                binding.fragmentLibraryNoDownload.root.hide()
-                binding.flDownloadLayout.show()
-            } else {
-                binding.fragmentLibraryNoDownload.root.show()
-                binding.flDownloadLayout.hide()
-            }
-        })
+        viewModel.downloadMovieIds.await().observe(viewLifecycleOwner, downloadObserver)
+    }
+
+    private val downloadObserver = Observer<List<Model.response_download>> {
+        downloadAdapter.updateModels(it)
+        if (it.isNotEmpty()) {
+            binding.fragmentLibraryNoDownload.root.hide()
+            binding.flDownloadLayout.show()
+        } else {
+            binding.fragmentLibraryNoDownload.root.show()
+            binding.flDownloadLayout.hide()
+        }
     }
 
     private fun setToolBar() {

@@ -156,10 +156,6 @@ class SearchActivity : AppCompatActivity() {
     private fun setupRecyclerView() {
         binding.swipeRefreshLayout.isRefreshing = true
 
-        /** Used for clearing MoreViewModel current instance.
-         */
-        viewModelStore.clear()
-
         /** Remove any existing suggestion layout.
          */
         binding.activitySearchSingle.addLayout.removeAllViews()

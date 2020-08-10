@@ -13,6 +13,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.kpstv.yts.R
 import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.data.models.response.Model
+import com.kpstv.yts.extensions.load
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.GlideApp
 import kotlinx.android.synthetic.main.item_watchlist.view.*
@@ -36,17 +37,14 @@ class WatchlistAdapter(
     override fun onBindViewHolder(holder: WatchlistHolder, i: Int) {
         val model = models[i]
 
-        GlideApp.with(context).asBitmap().load(model.imageUrl).into(object: CustomTarget<Bitmap>(){
-            override fun onLoadCleared(placeholder: Drawable?) {
-
-            }
-
-            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+        holder.image.load(
+            uri = model.imageUrl,
+            onSuccess = { resource ->
                 holder.image.setImageBitmap(resource)
                 holder.itemView.shimmerFrame.hideShimmer()
                 holder.itemView.shimmerFrame.hide()
             }
-        })
+        )
 
         holder.title.text = model.title
         holder.subTitle.text = "${model.year} ${AppUtils.getBulletSymbol()} ${model.runtime} mins"

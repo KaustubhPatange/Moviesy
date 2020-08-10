@@ -65,7 +65,6 @@ dependencies {
     api(LibraryDependency.GIRAFFE_PLAYER2)
 
     implementation(LibraryDependency.GSON)
-    implementation(LibraryDependency.COIL)
     implementation(LibraryDependency.LOTTIE)
     implementation(LibraryDependency.ANDROID_BROWSER)
     implementation(LibraryDependency.CONSTRAINT_LAYOUT)
@@ -115,6 +114,7 @@ dependencies {
     kapt(LibraryDependency.HILT_VIEWODEL_COMPILER)
 
     debugImplementation(TestLibraryDependency.ANDROID_DEBUG_DB)
+    debugImplementation(TestLibraryDependency.LEAK_CANARY)
 
     annotationProcessor(LibraryDependency.GLIDE_COMPILER)
     testImplementation(TestLibraryDependency.JUNIT)

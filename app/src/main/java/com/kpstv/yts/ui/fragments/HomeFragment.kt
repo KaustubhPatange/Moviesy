@@ -25,8 +25,8 @@ class HomeFragment : Fragment(), TabLayout.OnTabSelectedListener {
     private lateinit var binding: FragmentHomeBinding
 
     private lateinit var mainActivity: MainActivity
-    var chartsFragment = ChartsFragment()
-    var categoryFragment = GenreFragment()
+   /* var chartsFragment = ChartsFragment()
+    var categoryFragment = GenreFragment()*/
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,7 +52,7 @@ class HomeFragment : Fragment(), TabLayout.OnTabSelectedListener {
 
             binding.tabLayout.addOnTabSelectedListener(this)
 
-            setFragment(chartsFragment)
+            setFragment(ChartsFragment())
 
             viewModel.homeView = binding.root
         }
@@ -66,9 +66,9 @@ class HomeFragment : Fragment(), TabLayout.OnTabSelectedListener {
 
     override fun onTabSelected(tab: TabLayout.Tab?) {
        if (tab?.position == 0) {
-           setFragment(chartsFragment)
+           setFragment(ChartsFragment())
        }else if (tab?.position == 1) {
-           setFragment(categoryFragment)
+           setFragment(GenreFragment())
        }
     }
 
