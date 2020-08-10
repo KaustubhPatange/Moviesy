@@ -43,13 +43,16 @@ class MainViewModel @ViewModelInject constructor(
 ) : AndroidViewModel(application) {
     private val TAG = "MainViewModel"
 
-    /** We will save all fragment views into this ViewModel
+    /**
+     *  TODO: See if we can resolve this memory leak.
+     *
+     *  We will save all fragment views into this ViewModel
      *  This a workaround to handle fragment UI state easily but
      *  memory consuming.
      */
     var homeView: View? = null
-    var watchView: View? = null
-    var libraryView: View? = null
+    //var watchView: View? = null
+   // var libraryView: View? = null
 
     val favouriteMovieIds by lazyDeferred {
         favouriteRepository.getAllMovieId()

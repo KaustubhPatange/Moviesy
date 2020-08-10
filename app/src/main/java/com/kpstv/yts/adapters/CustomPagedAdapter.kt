@@ -117,10 +117,10 @@ class CustomPagedAdapter(
         private val DIFF_CALLBACK: DiffUtil.ItemCallback<MovieShort?> =
             object : DiffUtil.ItemCallback<MovieShort?>() {
                 override fun areItemsTheSame(oldItem: MovieShort, newItem: MovieShort) =
-                    oldItem.title == newItem.title
+                    oldItem.imdbCode == newItem.imdbCode
 
                 override fun areContentsTheSame(oldItem: MovieShort, newItem: MovieShort) =
-                    oldItem.bannerUrl == oldItem.bannerUrl
+                    oldItem == newItem
             }
     }
 

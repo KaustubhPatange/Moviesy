@@ -2,10 +2,8 @@ package com.kpstv.yts.ui.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
@@ -13,10 +11,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kpstv.common_moviesy.extensions.Coroutines
+import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.AppInterface.Companion.MOVIE_ID
 import com.kpstv.yts.R
 import com.kpstv.yts.adapters.LibraryDownloadAdapter
-import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.databinding.FragmentLibraryBinding
 import com.kpstv.yts.extensions.deleteRecursive
 import com.kpstv.yts.extensions.hide
@@ -33,7 +31,7 @@ import es.dmoral.toasty.Toasty
 import java.io.File
 
 @AndroidEntryPoint
-class LibraryFragment : Fragment() {
+class LibraryFragment : Fragment(R.layout.fragment_library) {
     private val TAG = "LibraryFragment"
 
     private val viewModel by viewModels<MainViewModel>(
@@ -44,32 +42,14 @@ class LibraryFragment : Fragment() {
     private lateinit var downloadAdapter: LibraryDownloadAdapter
     private var mediaRouteMenuItem: MenuItem? = null
 
-    private lateinit var binding: FragmentLibraryBinding
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        mainActivity = activity as MainActivity
-
-        viewModel.libraryView?.let {
-            binding = FragmentLibraryBinding.bind(it)
-        } ?: run {
-            binding = FragmentLibraryBinding.bind(
-                inflater.inflate(R.layout.fragment_library, container, false)
-            )
-
-            binding.fragmentLibraryNoDownload.root.hide()
-
-            setToolBar()
-
-            viewModel.libraryView = binding.root
-        }
-        return binding.root
-    }
+    private val binding by viewBinding(FragmentLibraryBinding::bind)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        mainActivity = activity as MainActivity
+
+        setToolBar()
 
         setRecyclerView()
 
@@ -88,81 +68,86 @@ class LibraryFragment : Fragment() {
         mediaRouteMenuItem = mainActivity.castHelper.setMediaRouteMenu(binding.toolbar.menu)
     }
 
+    override fun onDestroyView() {
+        mainActivity.castHelper.unInit()
+        super.onDestroyView()
+    }
+
     private fun setRecyclerView() {
         binding.recyclerViewDownload.layoutManager = LinearLayoutManager(context)
-        downloadAdapter = LibraryDownloadAdapter(ArrayList())
-        downloadAdapter.onClickListener = { model, _ ->
-            /** OnClick for download item */
-            val sheet = if (mainActivity.castHelper.isCastActive()) {
-                /** Show cast to device button */
-                BottomSheetLibraryDownload(mainActivity.castHelper, PlaybackType.REMOTE)
-            } else {
-                /** Show local play button */
-                BottomSheetLibraryDownload(mainActivity.castHelper, PlaybackType.LOCAL)
-            }
-            val bundle = Bundle()
-            bundle.putSerializable("model", model)
-            sheet.arguments = bundle
-            sheet.show(mainActivity.supportFragmentManager, "")
-        }
-        downloadAdapter.onMoreClickListener = { innerView, model, _ ->
-            val popupMenu = PopupMenu(requireContext(), innerView)
-            popupMenu.inflate(R.menu.library_menu)
-            popupMenu.setOnMenuItemClickListener {
-                when (it.itemId) {
-                    R.id.action_details -> startActivity(
-                        Intent(requireContext(), FinalActivity::class.java).apply {
-                            putExtra(MOVIE_ID, model.movieId)
-                        }
-                    )
-                    R.id.action_show_location -> {
-                        AlertNoIconDialog.Companion.Builder(context).apply {
-                            setTitle(getString(R.string.location))
-                            setMessage("${model.downloadPath}")
-                            setPositiveButton("OK", null)
-                        }.show()
-                    }
-                    R.id.action_delete -> {
-                        AlertNoIconDialog.Companion.Builder(context).apply {
-                            setTitle("Delete?")
-                            setMessage(getString(R.string.delete_undone))
-                            setNegativeButton(getString(R.string.no)) { }
-                            setPositiveButton(getString(R.string.yes)) {
-                                val f = File(model.downloadPath!!)
-                                if (f.exists()) {
-                                    f.deleteRecursive()
-                                } else {
-                                    Toasty.error(
-                                        requireContext(),
-                                        getString(R.string.error_path_exist),
-                                        Toasty.LENGTH_SHORT
-                                    ).show()
-                                    viewModel.removeDownload(model.hash)
-                                }
-                            }
-                        }.show()
-                    }
+        downloadAdapter = LibraryDownloadAdapter(
+
+            onClickListener = { model, _ ->
+                val sheet = if (mainActivity.castHelper.isCastActive()) {
+                    /** Show cast to device button */
+                    BottomSheetLibraryDownload(mainActivity.castHelper, PlaybackType.REMOTE)
+                } else {
+                    /** Show local play button */
+                    BottomSheetLibraryDownload(mainActivity.castHelper, PlaybackType.LOCAL)
                 }
-                return@setOnMenuItemClickListener true
+                val bundle = Bundle()
+                bundle.putSerializable("model", model)
+                sheet.arguments = bundle
+                sheet.show(mainActivity.supportFragmentManager, "")
+            },
+
+            onMoreClickListener = { innerView, model, _ ->
+                val popupMenu = PopupMenu(requireContext(), innerView)
+                popupMenu.inflate(R.menu.library_menu)
+                popupMenu.setOnMenuItemClickListener {
+                    when (it.itemId) {
+                        R.id.action_details -> startActivity(
+                            Intent(requireContext(), FinalActivity::class.java).apply {
+                                putExtra(MOVIE_ID, model.movieId)
+                            }
+                        )
+                        R.id.action_show_location -> {
+                            AlertNoIconDialog.Companion.Builder(context).apply {
+                                setTitle(getString(R.string.location))
+                                setMessage("${model.downloadPath}")
+                                setPositiveButton("OK", null)
+                            }.show()
+                        }
+                        R.id.action_delete -> {
+                            AlertNoIconDialog.Companion.Builder(context).apply {
+                                setTitle("Delete?")
+                                setMessage(getString(R.string.delete_undone))
+                                setNegativeButton(getString(R.string.no)) { }
+                                setPositiveButton(getString(R.string.yes)) {
+                                    val f = File(model.downloadPath!!)
+                                    if (f.exists()) {
+                                        f.deleteRecursive()
+                                    } else {
+                                        Toasty.error(
+                                            requireContext(),
+                                            getString(R.string.error_path_exist),
+                                            Toasty.LENGTH_SHORT
+                                        ).show()
+                                        viewModel.removeDownload(model.hash)
+                                    }
+                                }
+                            }.show()
+                        }
+                    }
+                    return@setOnMenuItemClickListener true
+                }
+                popupMenu.show()
             }
-            popupMenu.show()
-        }
+        )
         binding.recyclerViewDownload.adapter = downloadAdapter
     }
 
     private fun bindUI() = Coroutines.main {
-        viewModel.downloadMovieIds.await().observe(viewLifecycleOwner, downloadObserver)
-    }
-
-    private val downloadObserver = Observer<List<Model.response_download>> {
-        downloadAdapter.updateModels(it)
-        if (it.isNotEmpty()) {
-            binding.fragmentLibraryNoDownload.root.hide()
-            binding.flDownloadLayout.show()
-        } else {
-            binding.fragmentLibraryNoDownload.root.show()
-            binding.flDownloadLayout.hide()
-        }
+        viewModel.downloadMovieIds.await().observe(viewLifecycleOwner, Observer {
+            downloadAdapter.submitList(it)
+            if (it.isNotEmpty()) {
+                binding.fragmentLibraryNoDownload.root.hide()
+                binding.flDownloadLayout.show()
+            } else {
+                binding.fragmentLibraryNoDownload.root.show()
+                binding.flDownloadLayout.hide()
+            }
+        })
     }
 
     private fun setToolBar() {

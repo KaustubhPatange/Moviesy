@@ -23,6 +23,7 @@ import com.kpstv.yts.cast.utils.SubtitleConverter
 import com.kpstv.yts.cast.utils.Utils
 import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.extensions.SessionCallback
+import com.kpstv.yts.extensions.SimpleCallback
 import com.kpstv.yts.extensions.toFile
 import es.dmoral.toasty.Toasty
 import io.github.dkbai.tinyhttpd.nanohttpd.webserver.SimpleWebServer
@@ -52,6 +53,7 @@ class CastHelper {
     private var model: Model.response_download? = null
 
     private var onSessionDisconnected: SessionCallback? = null
+    private var onNeedToShowIntroductoryOverlay: SimpleCallback? = null
 
     fun isCastActive() =
         mCastSession?.castDevice != null
@@ -74,11 +76,12 @@ class CastHelper {
         /** Use this to save last play position, Integer value returns the last
          *  played position. */
         onSessionDisconnected: SessionCallback,
-        onNeedToShowIntroductoryOverlay: (() -> Unit)? = null
+        onNeedToShowIntroductoryOverlay: SimpleCallback? = null
     ) {
         mActivity = activity
         mApplicationContext = mActivity.applicationContext
         this.onSessionDisconnected = onSessionDisconnected
+        this.onNeedToShowIntroductoryOverlay = onNeedToShowIntroductoryOverlay
 
         deviceIpAddress = Utils.findIPAddress(mApplicationContext)
         if (deviceIpAddress == null) {
@@ -98,15 +101,19 @@ class CastHelper {
 
         mCastContext.addCastStateListener { state ->
             if (state != CastState.NO_DEVICES_AVAILABLE)
-                onNeedToShowIntroductoryOverlay?.invoke()
+                this.onNeedToShowIntroductoryOverlay?.invoke()
             if (state == CastState.NOT_CONNECTED) {
                 /** When casting is disconnected we post updateLastModel */
                 postUpdateLastModel()
                 SimpleWebServer.stopServer()
             }
         }
+    }
 
-
+    /** Destroy the session callbacks */
+    fun unInit() {
+        onSessionDisconnected = null
+        onNeedToShowIntroductoryOverlay = null
     }
 
     fun setMediaRouteMenu(menu: Menu): MenuItem? =

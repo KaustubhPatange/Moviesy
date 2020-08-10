@@ -37,6 +37,7 @@
             android:orientation="vertical">
 
             <include
+                android:visibility="gone"
                 android:id="@+id/fragment_library_no_download"
                 layout="@layout/fragment_library_no_download" />
 
