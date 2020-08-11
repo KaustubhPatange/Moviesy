@@ -3,10 +3,8 @@ package com.kpstv.yts.ui.viewmodels
 import android.app.Application
 import android.util.Log
 import android.view.View
-import androidx.core.text.isDigitsOnly
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
-import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppInterface.Companion.CUSTOM_LAYOUT_YTS_SPAN
 import com.kpstv.yts.AppInterface.Companion.MainDateFormatter
 import com.kpstv.yts.AppInterface.Companion.QUERY_SPAN_DIFFERENCE
@@ -25,9 +23,8 @@ import com.kpstv.yts.data.models.data.data_main
 import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.YTSFeaturedUtils
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import org.jsoup.Jsoup
+import com.kpstv.yts.ui.viewmodels.providers.SaveStateProvider
+import com.kpstv.yts.ui.viewmodels.providers.WatchState
 import retrofit2.await
 import java.util.*
 import kotlin.collections.ArrayList
@@ -42,6 +39,9 @@ class MainViewModel @ViewModelInject constructor(
     private val ytsFeaturedUtils: YTSFeaturedUtils
 ) : AndroidViewModel(application) {
     private val TAG = "MainViewModel"
+
+    val watchFragmentState = WatchState()
+    val libraryFragmentState = WatchState()
 
     /**
      *  TODO: See if we can resolve this memory leak.

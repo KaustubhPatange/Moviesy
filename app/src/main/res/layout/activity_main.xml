@@ -24,6 +24,14 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:navGraph="@navigation/bottom_nav_graph" />
 
+        <fragment
+            android:layout_gravity="bottom"
+            android:id="@+id/castMiniController"
+            class="com.google.android.gms.cast.framework.media.widget.MiniControllerFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_nav"
             app:itemTextAppearanceActive="@style/BottomViewActive"

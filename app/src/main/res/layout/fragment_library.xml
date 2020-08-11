@@ -18,14 +18,6 @@
             app:navigationIcon="@drawable/ic_menu" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <fragment
-        android:layout_gravity="bottom"
-        android:id="@+id/castMiniController"
-        class="com.google.android.gms.cast.framework.media.widget.MiniControllerFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
-
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

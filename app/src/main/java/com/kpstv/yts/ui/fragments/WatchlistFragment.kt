@@ -5,9 +5,11 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.danimahardhika.cafebar.CafeBar
 import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.common_moviesy.extensions.viewBinding
@@ -26,9 +28,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class WatchlistFragment : Fragment(R.layout.fragment_watchlist) {
 
-    private val viewModel by viewModels<MainViewModel>(
-        ownerProducer = { requireActivity() }
-    )
+    private val viewModel by activityViewModels<MainViewModel>()
 
     private val binding by viewBinding(FragmentWatchlistBinding::bind)
     private lateinit var mainActivity: MainActivity
@@ -38,6 +38,8 @@ class WatchlistFragment : Fragment(R.layout.fragment_watchlist) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        mainActivity = requireActivity() as MainActivity
 
         setToolBar()
 
@@ -51,15 +53,22 @@ class WatchlistFragment : Fragment(R.layout.fragment_watchlist) {
     private fun bindUI() = Coroutines.main {
         viewModel.favouriteMovieIds.await().observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
-            if (adapter.itemCount > 0) {
+
+            if (it.isNotEmpty()) {
                 binding.layoutNoFavourite.root.hide()
             } else
                 binding.layoutNoFavourite.root.show()
+
+            /** Restore previous state of recyclerView */
+            if (viewModel.watchFragmentState.recyclerViewState != null) {
+                binding.recyclerView.layoutManager?.onRestoreInstanceState(viewModel.watchFragmentState.recyclerViewState)
+                viewModel.watchFragmentState.recyclerViewState = null
+            }
         })
     }
 
     private fun initRecyclerView() {
-        binding.recyclerView.layoutManager = LinearLayoutManager(context)
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         adapter = WatchlistAdapter(
             onClickListener = { model, _ ->
                 val intent = Intent(requireContext(), FinalActivity::class.java)
@@ -102,5 +111,13 @@ class WatchlistFragment : Fragment(R.layout.fragment_watchlist) {
             }
             return@setOnMenuItemClickListener true
         }
+    }
+
+    /**
+     * Save all your view state here
+     */
+    override fun onStop() {
+        super.onStop()
+        viewModel.watchFragmentState.recyclerViewState = binding.recyclerView.layoutManager?.onSaveInstanceState()
     }
 }

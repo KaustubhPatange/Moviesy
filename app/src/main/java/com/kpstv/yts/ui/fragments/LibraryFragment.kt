@@ -7,7 +7,7 @@ import android.view.View
 import android.widget.PopupMenu
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kpstv.common_moviesy.extensions.Coroutines
@@ -34,9 +34,7 @@ import java.io.File
 class LibraryFragment : Fragment(R.layout.fragment_library) {
     private val TAG = "LibraryFragment"
 
-    private val viewModel by viewModels<MainViewModel>(
-        ownerProducer = { requireActivity() }
-    )
+    private val viewModel by activityViewModels<MainViewModel>()
 
     private lateinit var mainActivity: MainActivity
     private lateinit var downloadAdapter: LibraryDownloadAdapter
@@ -47,7 +45,7 @@ class LibraryFragment : Fragment(R.layout.fragment_library) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mainActivity = activity as MainActivity
+        mainActivity = requireActivity() as MainActivity
 
         setToolBar()
 
@@ -74,7 +72,7 @@ class LibraryFragment : Fragment(R.layout.fragment_library) {
     }
 
     private fun setRecyclerView() {
-        binding.recyclerViewDownload.layoutManager = LinearLayoutManager(context)
+        binding.recyclerViewDownload.layoutManager = LinearLayoutManager(requireContext())
         downloadAdapter = LibraryDownloadAdapter(
 
             onClickListener = { model, _ ->
@@ -147,6 +145,12 @@ class LibraryFragment : Fragment(R.layout.fragment_library) {
                 binding.fragmentLibraryNoDownload.root.show()
                 binding.flDownloadLayout.hide()
             }
+
+            /** Restore previous state of recyclerView */
+            if (viewModel.libraryFragmentState.recyclerViewState != null) {
+                binding.recyclerViewDownload.layoutManager?.onRestoreInstanceState(viewModel.libraryFragmentState.recyclerViewState)
+                viewModel.libraryFragmentState.recyclerViewState = null
+            }
         })
     }
 
@@ -165,5 +169,15 @@ class LibraryFragment : Fragment(R.layout.fragment_library) {
             }
             return@setOnMenuItemClickListener true
         }
+    }
+
+    /**
+     * Save all your state here
+     */
+    override fun onStop() {
+        super.onStop()
+
+        viewModel.libraryFragmentState.recyclerViewState =
+            binding.recyclerViewDownload.layoutManager?.onSaveInstanceState()
     }
 }

@@ -99,21 +99,27 @@ class CastHelper {
             mSessionManagerListener, CastSession::class.java
         )
 
-        mCastContext.addCastStateListener { state ->
-            if (state != CastState.NO_DEVICES_AVAILABLE)
-                this.onNeedToShowIntroductoryOverlay?.invoke()
-            if (state == CastState.NOT_CONNECTED) {
-                /** When casting is disconnected we post updateLastModel */
-                postUpdateLastModel()
-                SimpleWebServer.stopServer()
-            }
-        }
+        mCastContext.addCastStateListener(castListener)
     }
 
     /** Destroy the session callbacks */
     fun unInit() {
+        mCastContext.removeCastStateListener(castListener)
+        mCastContext.sessionManager.removeSessionManagerListener(
+            mSessionManagerListener, CastSession::class.java
+        )
         onSessionDisconnected = null
         onNeedToShowIntroductoryOverlay = null
+    }
+
+    private val castListener : (Int) -> Unit = { state ->
+        if (state != CastState.NO_DEVICES_AVAILABLE)
+            this.onNeedToShowIntroductoryOverlay?.invoke()
+        if (state == CastState.NOT_CONNECTED) {
+            /** When casting is disconnected we post updateLastModel */
+            postUpdateLastModel()
+            SimpleWebServer.stopServer()
+        }
     }
 
     fun setMediaRouteMenu(menu: Menu): MenuItem? =

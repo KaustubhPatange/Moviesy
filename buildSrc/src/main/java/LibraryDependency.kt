@@ -42,10 +42,12 @@ private object LibraryVersion {
     const val LOTTIE = "3.4.1"
     const val GOOGLE_ADS = "19.3.0"
     const val WORK_MANAGER = "2.4.0"
+    const val RECYCLERVIEW = "1.2.0-alpha05"
 }
 
 object LibraryDependency {
     const val ACTIVITY_KTX = "androidx.activity:activity-ktx:${LibraryVersion.ACTIVITY_KTX}"
+    const val RECYCLERVIEW = "androidx.recyclerview:recyclerview:${LibraryVersion.RECYCLERVIEW}"
     const val WORK_MANAGER = "androidx.work:work-runtime-ktx:${LibraryVersion.WORK_MANAGER}"
     const val GOOGLE_ADS = "com.google.android.gms:play-services-ads:${LibraryVersion.GOOGLE_ADS}"
     const val LOTTIE = "com.airbnb.android:lottie:${LibraryVersion.LOTTIE}"

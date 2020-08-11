@@ -1,5 +1,7 @@
 import kotlin.reflect.full.memberProperties
 
+const val NKO = ":app"
+
 @Suppress("unused")
 object ModuleDependency {
     const val APP = ":app"
