@@ -7,7 +7,7 @@ open class SaveStateProvider {
 }
 
 class WatchState: SaveStateProvider() {
-
+    var isAppBarExpanded: Boolean? = null
 }
 
 class LibraryState: SaveStateProvider() {

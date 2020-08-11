@@ -2,14 +2,13 @@ package com.kpstv.yts.ui.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.danimahardhika.cafebar.CafeBar
 import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.common_moviesy.extensions.viewBinding
@@ -111,6 +110,10 @@ class WatchlistFragment : Fragment(R.layout.fragment_watchlist) {
             }
             return@setOnMenuItemClickListener true
         }
+
+        /** Restoring AppBarLayout State */
+        if (viewModel.watchFragmentState.isAppBarExpanded == false)
+            binding.appBarLayout.setExpanded(false)
     }
 
     /**
@@ -118,6 +121,10 @@ class WatchlistFragment : Fragment(R.layout.fragment_watchlist) {
      */
     override fun onStop() {
         super.onStop()
-        viewModel.watchFragmentState.recyclerViewState = binding.recyclerView.layoutManager?.onSaveInstanceState()
+        viewModel.watchFragmentState.recyclerViewState =
+            binding.recyclerView.layoutManager?.onSaveInstanceState()
+        viewModel.watchFragmentState.isAppBarExpanded =
+            binding.appBarLayout.isAppBarExpanded
+        Log.e(TAG, "Expanded: ${binding.appBarLayout.isAppBarExpanded}")
     }
 }

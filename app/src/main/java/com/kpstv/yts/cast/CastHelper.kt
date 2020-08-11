@@ -122,7 +122,7 @@ class CastHelper {
         }
     }
 
-    fun setMediaRouteMenu(menu: Menu): MenuItem? =
+    fun setMediaRouteMenu(context: Context, menu: Menu): MenuItem? =
         CastButtonFactory.setUpMediaRouteButton(
             mApplicationContext,
             menu,

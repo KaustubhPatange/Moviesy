@@ -63,7 +63,7 @@ class LibraryFragment : Fragment(R.layout.fragment_library) {
                 mainActivity.castHelper.showIntroductoryOverlay(mediaRouteMenuItem)
             }
         )
-        mediaRouteMenuItem = mainActivity.castHelper.setMediaRouteMenu(binding.toolbar.menu)
+        mediaRouteMenuItem = mainActivity.castHelper.setMediaRouteMenu(requireContext(), binding.toolbar.menu)
     }
 
     override fun onDestroyView() {
@@ -176,7 +176,6 @@ class LibraryFragment : Fragment(R.layout.fragment_library) {
      */
     override fun onStop() {
         super.onStop()
-
         viewModel.libraryFragmentState.recyclerViewState =
             binding.recyclerViewDownload.layoutManager?.onSaveInstanceState()
     }

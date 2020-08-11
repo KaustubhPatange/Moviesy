@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".ui.fragments.WatchlistFragment">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <com.kpstv.yts.extensions.ExtendedAppBarLayout
+        android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -16,14 +17,13 @@
             android:layout_height="?actionBarSize"
             app:layout_scrollFlags="scroll|snap|enterAlways"
             app:navigationIcon="@drawable/ic_menu" />
-    </com.google.android.material.appbar.AppBarLayout>
+    </com.kpstv.yts.extensions.ExtendedAppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp"
-        android:scrollbars="vertical"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
 
     <include

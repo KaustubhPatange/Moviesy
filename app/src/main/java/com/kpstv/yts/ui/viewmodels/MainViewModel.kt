@@ -23,6 +23,7 @@ import com.kpstv.yts.data.models.data.data_main
 import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.YTSFeaturedUtils
+import com.kpstv.yts.ui.viewmodels.providers.LibraryState
 import com.kpstv.yts.ui.viewmodels.providers.SaveStateProvider
 import com.kpstv.yts.ui.viewmodels.providers.WatchState
 import retrofit2.await
@@ -41,7 +42,7 @@ class MainViewModel @ViewModelInject constructor(
     private val TAG = "MainViewModel"
 
     val watchFragmentState = WatchState()
-    val libraryFragmentState = WatchState()
+    val libraryFragmentState = LibraryState()
 
     /**
      *  TODO: See if we can resolve this memory leak.
