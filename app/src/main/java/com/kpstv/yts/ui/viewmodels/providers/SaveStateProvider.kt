@@ -12,9 +12,14 @@ class LibraryState {
 }
 
 class HomeState {
+    var tabPosition: Int? = null
     var isAppBarExpanded: Boolean? = null
 }
 
 class ChartState {
     var nestedScrollState: Parcelable? = null
+}
+
+class GenreState {
+    var recyclerViewState: Parcelable? = null
 }

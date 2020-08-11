@@ -40,23 +40,30 @@ class HomeFragment : Fragment(R.layout.fragment_home), TabLayout.OnTabSelectedLi
 
         binding.tabLayout.addOnTabSelectedListener(this)
 
-        setFragment(ChartsFragment())
+        /** Restore tab position */
+        setCurrentTab(viewModel.homeFragmentState.tabPosition)
 
         /** Restore app bar state */
         if (viewModel.homeFragmentState.isAppBarExpanded == false)
             binding.appBarLayout.collapse()
     }
 
-    override fun onTabReselected(tab: TabLayout.Tab?) { }
+    override fun onTabReselected(tab: TabLayout.Tab?) {}
 
-    override fun onTabUnselected(tab: TabLayout.Tab?) { }
+    override fun onTabUnselected(tab: TabLayout.Tab?) {}
 
     override fun onTabSelected(tab: TabLayout.Tab?) {
-       if (tab?.position == 0) {
-           setFragment(ChartsFragment())
-       }else if (tab?.position == 1) {
-           setFragment(GenreFragment())
-       }
+        setCurrentTab(tab?.position)
+    }
+
+    private fun setCurrentTab(position: Int?) {
+        if (position == 0 || position == null) {
+            binding.tabLayout.getTabAt(0)?.select()
+            setFragment(ChartsFragment())
+        } else if (position == 1) {
+            binding.tabLayout.getTabAt(1)?.select()
+            setFragment(GenreFragment())
+        }
     }
 
     private fun setFragment(fragment: Fragment) {
@@ -73,5 +80,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), TabLayout.OnTabSelectedLi
         super.onStop()
         viewModel.homeFragmentState.isAppBarExpanded =
             binding.appBarLayout.isAppBarExpanded
+        viewModel.homeFragmentState.tabPosition =
+            binding.tabLayout.selectedTabPosition
     }
 }
