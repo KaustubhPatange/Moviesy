@@ -2,18 +2,19 @@ package com.kpstv.yts.ui.viewmodels.providers
 
 import android.os.Parcelable
 
-open class SaveStateProvider {
+class WatchState {
     var recyclerViewState: Parcelable? = null
-}
-
-class WatchState: SaveStateProvider() {
     var isAppBarExpanded: Boolean? = null
 }
 
-class LibraryState: SaveStateProvider() {
-
+class LibraryState {
+    var recyclerViewState: Parcelable? = null
 }
 
-class ChartsState: SaveStateProvider() {
-    var featuredMap: Map<String, Parcelable?>? = null
+class HomeState {
+    var isAppBarExpanded: Boolean? = null
+}
+
+class ChartState {
+    var nestedScrollState: Parcelable? = null
 }

@@ -13,7 +13,7 @@ fun ImageView.load(
     onSuccess: ((Bitmap?) -> Unit)? = null,
     onError: ((GlideException?) -> Unit)? = null
 ) {
-    GlideApp.with(context.applicationContext).asBitmap().load(uri)
+    GlideApp.with(this).asBitmap().load(uri)
         .listener(object :
             RequestListener<Bitmap> {
             override fun onLoadFailed(
@@ -39,4 +39,3 @@ fun ImageView.load(
 
         }).into(this)
 }
-

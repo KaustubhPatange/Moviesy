@@ -23,10 +23,7 @@ import com.kpstv.yts.data.models.data.data_main
 import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.YTSFeaturedUtils
-import com.kpstv.yts.ui.viewmodels.providers.ChartsState
-import com.kpstv.yts.ui.viewmodels.providers.LibraryState
-import com.kpstv.yts.ui.viewmodels.providers.SaveStateProvider
-import com.kpstv.yts.ui.viewmodels.providers.WatchState
+import com.kpstv.yts.ui.viewmodels.providers.*
 import retrofit2.await
 import java.util.*
 import kotlin.collections.ArrayList
@@ -44,7 +41,8 @@ class MainViewModel @ViewModelInject constructor(
 
     val watchFragmentState = WatchState()
     val libraryFragmentState = LibraryState()
-    val chartFragmentState = ChartsState()
+    val homeFragmentState = HomeState()
+    val chartFragmentState = ChartState()
 
     /**
      *  TODO: See if we can resolve this memory leak.

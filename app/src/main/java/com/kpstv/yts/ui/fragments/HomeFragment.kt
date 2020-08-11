@@ -2,13 +2,12 @@ package com.kpstv.yts.ui.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.android.material.tabs.TabLayout
+import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.R
 import com.kpstv.yts.databinding.FragmentHomeBinding
 import com.kpstv.yts.ui.activities.MainActivity
@@ -17,45 +16,35 @@ import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class HomeFragment : Fragment(), TabLayout.OnTabSelectedListener {
+class HomeFragment : Fragment(R.layout.fragment_home), TabLayout.OnTabSelectedListener {
 
     private val viewModel by viewModels<MainViewModel>(
         ownerProducer = { requireActivity() }
     )
-    private lateinit var binding: FragmentHomeBinding
+    private val binding by viewBinding(FragmentHomeBinding::bind)
 
     private lateinit var mainActivity: MainActivity
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         mainActivity = activity as MainActivity
 
-        viewModel.homeView?.let {
-            binding = FragmentHomeBinding.bind(it)
-        } ?: run {
-            binding = FragmentHomeBinding.bind(
-                inflater.inflate(R.layout.fragment_home, container, false)
-            )
-
-            binding.searchImage.setOnClickListener {
-                mainActivity.drawerLayout.openDrawer(GravityCompat.START)
-            }
-
-            binding.searchCard.setOnClickListener {
-                val intent = Intent(mainActivity, SearchActivity::class.java)
-                startActivity(intent)
-            }
-
-            binding.tabLayout.addOnTabSelectedListener(this)
-
-            setFragment(ChartsFragment())
-
-            viewModel.homeView = binding.root
+        binding.searchImage.setOnClickListener {
+            mainActivity.drawerLayout.openDrawer(GravityCompat.START)
         }
 
-        return binding.root
+        binding.searchCard.setOnClickListener {
+            val intent = Intent(mainActivity, SearchActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.tabLayout.addOnTabSelectedListener(this)
+
+        setFragment(ChartsFragment())
+
+        /** Restore app bar state */
+        if (viewModel.homeFragmentState.isAppBarExpanded == false)
+            binding.appBarLayout.collapse()
     }
 
     override fun onTabReselected(tab: TabLayout.Tab?) { }
@@ -71,9 +60,18 @@ class HomeFragment : Fragment(), TabLayout.OnTabSelectedListener {
     }
 
     private fun setFragment(fragment: Fragment) {
-        mainActivity.supportFragmentManager
+        parentFragmentManager
             .beginTransaction()
             .replace(R.id.container, fragment)
             .commit()
+    }
+
+    /**
+     * Save your state here
+     */
+    override fun onStop() {
+        super.onStop()
+        viewModel.homeFragmentState.isAppBarExpanded =
+            binding.appBarLayout.isAppBarExpanded
     }
 }

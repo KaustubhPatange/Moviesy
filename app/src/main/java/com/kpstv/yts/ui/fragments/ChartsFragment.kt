@@ -1,17 +1,12 @@
 package com.kpstv.yts.ui.fragments
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
-import com.google.android.gms.common.api.internal.LifecycleCallback
+import androidx.navigation.fragment.NavHostFragment
+import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.R
-import com.kpstv.yts.data.converters.QueryConverter
 import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.databinding.FragmentChartsBinding
 import com.kpstv.yts.extensions.YTSQuery
@@ -22,14 +17,13 @@ import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 
 @AndroidEntryPoint
-class ChartsFragment : Fragment() {
+class ChartsFragment : Fragment(R.layout.fragment_charts) {
 
     private val viewModel by viewModels<MainViewModel>(
         ownerProducer = { requireActivity() }
     )
 
-    private lateinit var binding: FragmentChartsBinding
-
+    private val binding by viewBinding(FragmentChartsBinding::bind)
     private lateinit var cmlFeatured: CustomMovieLayout
 
     private lateinit var cmlTopRated: CustomMovieLayout
@@ -38,22 +32,16 @@ class ChartsFragment : Fragment() {
     private lateinit var cmlMostLiked: CustomMovieLayout
     private lateinit var cmlLatest: CustomMovieLayout
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        if (::binding.isInitialized)
-            return binding.root
-        else {
-            binding = FragmentChartsBinding.bind(
-                inflater.inflate(R.layout.fragment_charts, container, false)
-            )
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-            setViewAndLayout()
-            setSwipeRefreshCallback()
-        }
-        return binding.root
+        setViewAndLayout()
+        setSwipeRefreshCallback()
+
+        /** Restoring previous state of nestedScrollView */
+        binding.nestedScrollView.onRestoreInstanceState(
+            viewModel.chartFragmentState.nestedScrollState
+        )
     }
 
     private fun setSwipeRefreshCallback() {
@@ -83,6 +71,7 @@ class ChartsFragment : Fragment() {
         /** Featured Layout */
         cmlFeatured = CustomMovieLayout(requireActivity(), getString(R.string.featured)).apply {
             injectViewAt(binding.addLayout)
+            setLifeCycleOwner(requireHomeFragment()?.viewLifecycleOwner)
         }
 
         viewModel.getFeaturedMovies(object : MoviesListener {
@@ -111,7 +100,7 @@ class ChartsFragment : Fragment() {
 
         cmlTopRated = CustomMovieLayout(requireActivity(), getString(R.string.top_rated)).apply {
             injectViewAt(binding.addLayout)
-            setLifeCycleOwner(viewLifecycleOwner)
+            setLifeCycleOwner(requireHomeFragment()?.viewLifecycleOwner)
             setupCallbacks(viewModel, queryMap)
         }
 
@@ -123,6 +112,7 @@ class ChartsFragment : Fragment() {
 
         cmlTopToday = CustomMovieLayout(requireActivity(), getString(R.string.top_today)).apply {
             injectViewAt(binding.addLayout)
+            setLifeCycleOwner(requireHomeFragment()?.viewLifecycleOwner)
             setupCallbacks(viewModel, queryMap2)
         }
 
@@ -134,6 +124,7 @@ class ChartsFragment : Fragment() {
 
         cmlPopular = CustomMovieLayout(requireActivity(), getString(R.string.popular)).apply {
             injectViewAt(binding.addLayout)
+            setLifeCycleOwner(requireHomeFragment()?.viewLifecycleOwner)
             setupCallbacks(viewModel, queryMap3)
         }
 
@@ -145,6 +136,7 @@ class ChartsFragment : Fragment() {
 
         cmlMostLiked = CustomMovieLayout(requireActivity(), getString(R.string.most_liked)).apply {
             injectViewAt(binding.addLayout)
+            setLifeCycleOwner(requireHomeFragment()?.viewLifecycleOwner)
             setupCallbacks(viewModel, queryMap4)
         }
 
@@ -156,15 +148,33 @@ class ChartsFragment : Fragment() {
 
         cmlLatest = CustomMovieLayout(requireActivity(), getString(R.string.latest)).apply {
             injectViewAt(binding.addLayout)
+            setLifeCycleOwner(requireHomeFragment()?.viewLifecycleOwner)
             setupCallbacks(viewModel, queryMap5)
         }
     }
 
-    private fun restoreRecyclerViewState(cml: CustomMovieLayout) {
-        cml.setOnNeedToRestoreRecyclerView {
-            viewModel.chartFragmentState.featuredMap?.get(cml.getTag())?.let { savedState ->
-                cml.setRecyclerViewState(savedState)
+    /**
+     * Seems like parent fragment of this FragmentContainerView is NavHostFragment.
+     * We need to find the HomeFragment from it's child fragment.
+     *
+     * This will be used to pass LifeCycleOwner to CustomMovieLayout (above) to
+     * automatically save the state of the fragment.
+     *
+     * I can't pass this fragment's lifeCycle since it's anonymous behaviour is not
+     * properly invoking onStop() and onDestroy() as I want.
+     */
+    private fun requireHomeFragment() =
+        (requireParentFragment() as NavHostFragment)
+            .childFragmentManager.fragments.firstOrNull {
+                it.javaClass.name == HomeFragment::class.java.name
             }
-        }
+
+    /**
+     * Save your state here.
+     */
+    override fun onStop() {
+        super.onStop()
+        viewModel.chartFragmentState.nestedScrollState =
+            binding.nestedScrollView.onSaveInstanceState()
     }
 }

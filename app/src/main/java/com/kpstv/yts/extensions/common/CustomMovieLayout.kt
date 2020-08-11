@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Parcelable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +12,9 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.*
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.yts.AppInterface.Companion.TMDB_IMAGE_PREFIX
@@ -47,7 +48,6 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
     private lateinit var moreButton: ImageView
     private lateinit var clickableLayout: RelativeLayout
     private lateinit var removeBlock: () -> Unit
-    private var onNeedToRestoreRecyclerViewState: SimpleCallback? = null
     private val viewModel: CustomViewModel? = if (context is AppCompatActivity)
         ViewModelProvider(context).get(CustomViewModel::class.java)
     else null
@@ -149,8 +149,13 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
         removeBlock = { viewModel.removeYtsQuery(queryMap) }
     }
 
-    fun setLifeCycleOwner(owner: LifecycleOwner) {
-        owner.lifecycle.addObserver(stateObserver)
+    /** Setting this will enable auto saving of state.
+     *
+     *  Make sure to pass [AppCompatActivity] as [context] while initializing this layout.
+     * @param owner LifeCycleOwner of the view
+     */
+    fun setLifeCycleOwner(owner: LifecycleOwner?) {
+        owner?.lifecycle?.addObserver(stateObserver)
     }
 
     /**
@@ -159,14 +164,6 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
     fun removeData() {
         if (::removeBlock.isInitialized)
             removeBlock.invoke()
-    }
-
-    /**
-     * This will be invoked when recyclerview is created & attached
-     * to an adapter containing children.
-     */
-    fun setOnNeedToRestoreRecyclerView(callback: SimpleCallback) {
-        onNeedToRestoreRecyclerViewState = callback
     }
 
     private fun setupMoreButton(queryMap: Map<String, String>) {
@@ -255,26 +252,36 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
             view.visibility = View.GONE
         } else {
             restoreRecyclerViewState()
-            onNeedToRestoreRecyclerViewState?.invoke()
         }
     }
 
-    /** Some methods for saving state */
+    /** Some methods for saving state of RecyclerView and maybe other stuff.
+     *
+     * What it does is it subscribe [stateObserver] to a lifecycle owner through
+     * [setLifeCycleOwner] and save all the state to viewModel in onStop method.
+     *
+     * It then restore the state at appropriate places as well.
+     */
 
     private fun restoreRecyclerViewState() {
         if (viewModel?.customLayoutMap?.containsKey(getTag()) == true)
             recyclerView.layoutManager?.onRestoreInstanceState(viewModel.customLayoutMap?.get(getTag()))
     }
 
-    private val stateObserver = object : LifecycleObserver {
-        @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-        fun onStop() {
+    private val stateObserver = object : DefaultLifecycleObserver {
+        override fun onStop(owner: LifecycleOwner) {
+            super.onStop(owner)
             if (viewModel?.customLayoutMap == null)
                 viewModel?.customLayoutMap = HashMap()
             viewModel?.customLayoutMap?.put(
                 getTag(),
                 recyclerView.layoutManager?.onSaveInstanceState()
             )
+        }
+
+        override fun onDestroy(owner: LifecycleOwner) {
+            owner.lifecycle.removeObserver(this)
+            super.onDestroy(owner)
         }
     }
 }

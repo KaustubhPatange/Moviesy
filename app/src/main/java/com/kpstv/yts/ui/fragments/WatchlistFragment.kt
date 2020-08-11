@@ -113,7 +113,7 @@ class WatchlistFragment : Fragment(R.layout.fragment_watchlist) {
 
         /** Restoring AppBarLayout State */
         if (viewModel.watchFragmentState.isAppBarExpanded == false)
-            binding.appBarLayout.setExpanded(false)
+            binding.appBarLayout.collapse()
     }
 
     /**

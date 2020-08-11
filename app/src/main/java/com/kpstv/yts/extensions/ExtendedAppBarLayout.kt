@@ -59,6 +59,9 @@ class ExtendedAppBarLayout : AppBarLayout, OnOffsetChangedListener {
         this.onStateChangeListener = listener
     }
 
+    fun collapse() =
+        setExpanded(false)
+
     enum class State {
         COLLAPSED, EXPANDED, IDLE
     }

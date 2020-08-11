@@ -95,7 +95,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
-        updateUtils.check(
+        // TODO: Uncomment this, only for testing purpose
+        /*updateUtils.check(
             onUpdateAvailable = {
                 AlertNoIconDialog.Companion.Builder(this)
                     .setTitle(getString(R.string.update_title))
@@ -109,7 +110,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             onError = {
                 Toasty.error(this, "Failed: ${it.message}").show()
             }
-        )
+        )*/
     }
 
     private val bottomNavListener = BottomNavigationView.OnNavigationItemSelectedListener {
