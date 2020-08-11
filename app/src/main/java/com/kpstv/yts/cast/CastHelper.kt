@@ -102,7 +102,7 @@ class CastHelper {
         mCastContext.addCastStateListener(castListener)
     }
 
-    /** Destroy the session callbacks */
+    /** Destroy the session callbacks to avoid memory leaks */
     fun unInit() {
         mCastContext.removeCastStateListener(castListener)
         mCastContext.sessionManager.removeSessionManagerListener(
@@ -122,9 +122,10 @@ class CastHelper {
         }
     }
 
+    /** Separate UI logic to avoid memory, use context from view */
     fun setMediaRouteMenu(context: Context, menu: Menu): MenuItem? =
         CastButtonFactory.setUpMediaRouteButton(
-            mApplicationContext,
+            context,
             menu,
             R.id.media_route_menu_item
         )

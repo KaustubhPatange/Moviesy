@@ -9,12 +9,13 @@ import kotlin.math.abs
 
 
 class ExtendedAppBarLayout : AppBarLayout, OnOffsetChangedListener {
+
     private var state: State? = null
     private var onStateChangeListener: ((State) -> Unit)? = null
     var isAppBarExpanded = true
 
-    constructor(context: Context) : super(context) {}
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {}
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
@@ -53,12 +54,10 @@ class ExtendedAppBarLayout : AppBarLayout, OnOffsetChangedListener {
         }
     }
 
-
     /** Set this to listen for appBar state change */
     fun setOnStateChangeListener(listener: (State) -> Unit) {
         this.onStateChangeListener = listener
     }
-
 
     enum class State {
         COLLAPSED, EXPANDED, IDLE

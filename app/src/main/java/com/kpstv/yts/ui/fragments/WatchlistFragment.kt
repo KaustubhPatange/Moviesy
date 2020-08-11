@@ -125,6 +125,5 @@ class WatchlistFragment : Fragment(R.layout.fragment_watchlist) {
             binding.recyclerView.layoutManager?.onSaveInstanceState()
         viewModel.watchFragmentState.isAppBarExpanded =
             binding.appBarLayout.isAppBarExpanded
-        Log.e(TAG, "Expanded: ${binding.appBarLayout.isAppBarExpanded}")
     }
 }

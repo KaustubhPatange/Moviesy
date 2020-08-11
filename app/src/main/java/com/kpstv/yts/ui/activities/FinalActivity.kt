@@ -8,7 +8,6 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
-import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -34,7 +33,7 @@ import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.CafebarToast
-import com.kpstv.yts.extensions.utils.CustomMovieLayout
+import com.kpstv.yts.extensions.common.CustomMovieLayout
 import com.kpstv.yts.extensions.utils.GlideApp
 import com.kpstv.yts.interfaces.listener.FavouriteListener
 import com.kpstv.yts.interfaces.listener.MovieListener
@@ -243,7 +242,10 @@ class FinalActivity : AppCompatActivity(), MovieListener {
                 isMoreAvailable: Boolean
             ) {
                 val recommendLayout =
-                    CustomMovieLayout(this@FinalActivity, getString(R.string.recommend))
+                    CustomMovieLayout(
+                        this@FinalActivity,
+                        getString(R.string.recommend)
+                    )
                 recommendLayout.injectViewAt(binding.afAddLayout)
                 recommendLayout.setupCallbacks(movies, "$tag/recommendations", isMoreAvailable)
             }
@@ -269,7 +271,10 @@ class FinalActivity : AppCompatActivity(), MovieListener {
                 isMoreAvailable: Boolean
             ) {
                 val similarLayout =
-                    CustomMovieLayout(this@FinalActivity, getString(R.string.suggested))
+                    CustomMovieLayout(
+                        this@FinalActivity,
+                        getString(R.string.suggested)
+                    )
                 similarLayout.injectViewAt(binding.afAddLayout)
                 similarLayout.setupCallbacks(movies, "${movie.imdb_code}/similar", isMoreAvailable)
             }

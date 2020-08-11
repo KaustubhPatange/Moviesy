@@ -14,7 +14,7 @@ import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.databinding.BottomSheetQuickinfoBinding
 import com.kpstv.yts.extensions.ExtendedBottomSheetDialogFragment
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.getBulletSymbol
-import com.kpstv.yts.extensions.utils.CustomBottomItem
+import com.kpstv.yts.extensions.common.CustomBottomItem
 import com.kpstv.yts.extensions.utils.GlideApp
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.ui.viewmodels.MainViewModel
@@ -55,7 +55,8 @@ class BottomSheetQuickInfo : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
                 icon = R.drawable.ic_favorite_yes
             }
 
-            val watchlistLayout = CustomBottomItem(requireContext())
+            val watchlistLayout =
+                CustomBottomItem(requireContext())
             watchlistLayout.setUp(icon, title, binding.addLayout)
             watchlistLayout.onClickListener = {
                 if (b) {

@@ -14,11 +14,10 @@ import com.kpstv.yts.AppInterface.Companion.DEVELOPER_FRAG
 import com.kpstv.yts.AppInterface.Companion.GENERAL_FRAG
 import com.kpstv.yts.AppInterface.Companion.IS_DARK_THEME
 import com.kpstv.yts.AppInterface.Companion.LOOK_FEEL_FRAG
-import com.kpstv.yts.AppInterface.Companion.REPLACE_FRAG
 import com.kpstv.yts.AppInterface.Companion.STORAGE_FRAG
 import com.kpstv.yts.AppInterface.Companion.setAppThemeNoAction
 import com.kpstv.yts.R
-import com.kpstv.yts.extensions.utils.CustomBottomItem
+import com.kpstv.yts.extensions.common.CustomBottomItem
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_settings.*
 
@@ -106,41 +105,47 @@ class SettingsActivity : AppCompatActivity() {
             mainLayout.orientation = LinearLayout.VERTICAL
 
             // General Settings
-            val general = CustomBottomItem(requireContext())
+            val general =
+                CustomBottomItem(requireContext())
             general.setUp(R.drawable.ic_slider, getString(R.string.general), mainLayout, true)
             general.onClickListener = {
                 listener.invoke(GENERAL_FRAG, getString(R.string.general))
             }
 
             // Storage Settings
-            val storage = CustomBottomItem(requireContext())
+            val storage =
+                CustomBottomItem(requireContext())
             storage.setUp(R.drawable.ic_storage, getString(R.string.storage), mainLayout, true)
             storage.onClickListener = {
                 listener.invoke(STORAGE_FRAG, getString(R.string.storage))
             }
 
             // Look & Feel Settings
-            val lookFeel = CustomBottomItem(requireContext())
+            val lookFeel =
+                CustomBottomItem(requireContext())
             lookFeel.setUp(R.drawable.ic_look_feel, getString(R.string.look_feel), mainLayout, true)
             lookFeel.onClickListener = {
                 listener.invoke(LOOK_FEEL_FRAG, getString(R.string.look_feel))
             }
 
-            val account = CustomBottomItem(requireContext())
+            val account =
+                CustomBottomItem(requireContext())
             account.setUp(R.drawable.ic_account, getString(R.string.account), mainLayout, true)
             account.onClickListener = {
                 listener.invoke(ACCOUNT_FRAG, getString(R.string.account))
             }
 
             // Developer Settings
-            val developer = CustomBottomItem(requireContext())
+            val developer =
+                CustomBottomItem(requireContext())
             developer.setUp(R.drawable.ic_developer, getString(R.string.developer_untouched), mainLayout, true)
             developer.onClickListener = {
                 listener.invoke(DEVELOPER_FRAG, getString(R.string.developer_untouched))
             }
 
             // About
-            val about = CustomBottomItem(requireContext())
+            val about =
+                CustomBottomItem(requireContext())
             about.setUp(R.drawable.ic_about, getString(R.string.about), mainLayout, true)
             about.onClickListener = {
                 listener.invoke(ABOUT_FRAG, getString(R.string.about))

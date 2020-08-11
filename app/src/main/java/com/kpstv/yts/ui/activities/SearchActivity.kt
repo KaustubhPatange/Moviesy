@@ -32,9 +32,8 @@ import com.kpstv.yts.extensions.MovieBase
 import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.extensions.show
-import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.hideKeyboard
-import com.kpstv.yts.extensions.utils.CustomMovieLayout
+import com.kpstv.yts.extensions.common.CustomMovieLayout
 import com.kpstv.yts.extensions.utils.RetrofitUtils
 import com.kpstv.yts.interfaces.listener.SuggestionListener
 import com.kpstv.yts.ui.activities.MoreActivity.Companion.base
@@ -237,7 +236,11 @@ class SearchActivity : AppCompatActivity() {
                                     tag: String?,
                                     isMoreAvailable: Boolean
                                 ) {
-                                    val layout = CustomMovieLayout(this@SearchActivity, "Suggested")
+                                    val layout =
+                                        CustomMovieLayout(
+                                            this@SearchActivity,
+                                            "Suggested"
+                                        )
                                     layout.injectViewAt(binding.activitySearchSingle.addLayout)
                                     layout.setupCallbacks(
                                         movies,

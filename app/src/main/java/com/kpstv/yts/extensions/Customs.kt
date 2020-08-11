@@ -2,6 +2,7 @@ package com.kpstv.yts.extensions
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Parcelable
 import android.view.View
 import androidx.annotation.DrawableRes
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -14,6 +15,7 @@ typealias SessionCallback = (Model.response_download?, Int) -> Unit
 typealias SimpleCallback = () -> Unit
 typealias AccountCallback = (GoogleSignInAccount) -> Unit
 typealias ExceptionCallback = (Exception) -> Unit
+typealias ParcelableCallback = (Parcelable) -> Unit
 
 fun <T> lazyDeferred(block: suspend CoroutineScope.() -> T): Lazy<Deferred<T>> {
     return lazy {

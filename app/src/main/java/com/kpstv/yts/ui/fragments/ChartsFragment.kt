@@ -6,13 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
-import com.kpstv.common_moviesy.extensions.viewBinding
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
+import com.google.android.gms.common.api.internal.LifecycleCallback
 import com.kpstv.yts.R
+import com.kpstv.yts.data.converters.QueryConverter
 import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.databinding.FragmentChartsBinding
 import com.kpstv.yts.extensions.YTSQuery
-import com.kpstv.yts.extensions.utils.CustomMovieLayout
+import com.kpstv.yts.extensions.common.CustomMovieLayout
 import com.kpstv.yts.interfaces.listener.MoviesListener
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -40,7 +43,8 @@ class ChartsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        if (::binding.isInitialized) return binding.root
+        if (::binding.isInitialized)
+            return binding.root
         else {
             binding = FragmentChartsBinding.bind(
                 inflater.inflate(R.layout.fragment_charts, container, false)
@@ -107,6 +111,7 @@ class ChartsFragment : Fragment() {
 
         cmlTopRated = CustomMovieLayout(requireActivity(), getString(R.string.top_rated)).apply {
             injectViewAt(binding.addLayout)
+            setLifeCycleOwner(viewLifecycleOwner)
             setupCallbacks(viewModel, queryMap)
         }
 
@@ -152,6 +157,14 @@ class ChartsFragment : Fragment() {
         cmlLatest = CustomMovieLayout(requireActivity(), getString(R.string.latest)).apply {
             injectViewAt(binding.addLayout)
             setupCallbacks(viewModel, queryMap5)
+        }
+    }
+
+    private fun restoreRecyclerViewState(cml: CustomMovieLayout) {
+        cml.setOnNeedToRestoreRecyclerView {
+            viewModel.chartFragmentState.featuredMap?.get(cml.getTag())?.let { savedState ->
+                cml.setRecyclerViewState(savedState)
+            }
         }
     }
 }

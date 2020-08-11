@@ -1,4 +1,4 @@
-package com.kpstv.yts.extensions.utils
+package com.kpstv.yts.extensions.common
 
 import android.content.Context
 import android.view.LayoutInflater

@@ -1,41 +1,33 @@
-package com.kpstv.yts.extensions.utils
+package com.kpstv.yts.extensions.common
 
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
-import com.kpstv.yts.AppInterface.Companion.MOVIE_ID
 import com.kpstv.yts.AppInterface.Companion.TMDB_IMAGE_PREFIX
-import com.kpstv.yts.AppInterface.Companion.YTS_BASE_URL
 import com.kpstv.yts.AppInterface.Companion.handleRetrofitError
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.data.models.TmDbMovie
 import com.kpstv.yts.extensions.MovieBase
-import com.kpstv.yts.extensions.hide
-import com.kpstv.yts.extensions.load
-import com.kpstv.yts.extensions.utils.AppUtils.Companion.refactorYTSUrl
+import com.kpstv.yts.extensions.SimpleCallback
 import com.kpstv.yts.interfaces.listener.MoviesListener
-import com.kpstv.yts.ui.activities.FinalActivity
 import com.kpstv.yts.ui.activities.MoreActivity
 import com.kpstv.yts.ui.fragments.sheets.BottomSheetQuickInfo
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import kotlinx.android.synthetic.main.custom_movie_layout.view.*
-import kotlinx.android.synthetic.main.item_common_banner.view.*
-import kotlinx.android.synthetic.main.item_suggestion.view.*
 
 /** Usage
  *
@@ -55,6 +47,10 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
     private lateinit var moreButton: ImageView
     private lateinit var clickableLayout: RelativeLayout
     private lateinit var removeBlock: () -> Unit
+    private var onNeedToRestoreRecyclerViewState: SimpleCallback? = null
+    private val viewModel: CustomViewModel? = if (context is AppCompatActivity)
+        ViewModelProvider(context).get(CustomViewModel::class.java)
+    else null
 
     companion object {
         /** Creating this companion object so that we can call it from
@@ -82,7 +78,7 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
         }
     }
 
-    fun getView() = view
+    fun getTag() = titleText
 
     fun removeView(parent: ViewGroup) {
         parent.removeView(view)
@@ -129,7 +125,7 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
         base = MovieBase.YTS
 
         val listener = object : MoviesListener {
-            override fun onStarted() { }
+            override fun onStarted() {}
 
             override fun onFailure(e: Exception) {
                 handleRetrofitError(context, e)
@@ -153,12 +149,24 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
         removeBlock = { viewModel.removeYtsQuery(queryMap) }
     }
 
+    fun setLifeCycleOwner(owner: LifecycleOwner) {
+        owner.lifecycle.addObserver(stateObserver)
+    }
+
     /**
      * This will remove the data from the repository when force refreshed!
      */
     fun removeData() {
         if (::removeBlock.isInitialized)
             removeBlock.invoke()
+    }
+
+    /**
+     * This will be invoked when recyclerview is created & attached
+     * to an adapter containing children.
+     */
+    fun setOnNeedToRestoreRecyclerView(callback: SimpleCallback) {
+        onNeedToRestoreRecyclerViewState = callback
     }
 
     private fun setupMoreButton(queryMap: Map<String, String>) {
@@ -171,7 +179,11 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
          */
 
         val listener = View.OnClickListener {
-            invokeMoreFunction(context, view.cm_text.text.toString(), queryMap)
+            invokeMoreFunction(
+                context,
+                view.cm_text.text.toString(),
+                queryMap
+            )
         }
 
         moreButton.setOnClickListener(listener)
@@ -219,7 +231,12 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
     private fun setupRecyclerView(list: ArrayList<MovieShort>, viewModel: MainViewModel? = null) {
         view.shimmerEffect.hideShimmer()
         view.shimmerEffect.visibility = View.GONE
-        val adapter = CustomAdapter(context, list, base)
+        val adapter =
+            CustomAdapter(
+                context,
+                list,
+                base
+            )
 
         if (viewModel != null && context is Activity)
             adapter.setOnLongListener = { movieShort, _ ->
@@ -236,80 +253,28 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
 
         if (models.isEmpty()) {
             view.visibility = View.GONE
+        } else {
+            restoreRecyclerViewState()
+            onNeedToRestoreRecyclerViewState?.invoke()
         }
     }
 
-    class CustomAdapter(
-        private val context: Context,
-        private val list: ArrayList<MovieShort>,
-        private val base: MovieBase
-    ) :
-        RecyclerView.Adapter<CustomAdapter.CustomHolder>() {
+    /** Some methods for saving state */
 
-        lateinit var setOnLongListener: (MovieShort, View) -> Unit
+    private fun restoreRecyclerViewState() {
+        if (viewModel?.customLayoutMap?.containsKey(getTag()) == true)
+            recyclerView.layoutManager?.onRestoreInstanceState(viewModel.customLayoutMap?.get(getTag()))
+    }
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomHolder {
-            return CustomHolder(
-                LayoutInflater.from(
-                    parent.context
-                ).inflate(R.layout.item_suggestion, parent, false)
+    private val stateObserver = object : LifecycleObserver {
+        @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+        fun onStop() {
+            if (viewModel?.customLayoutMap == null)
+                viewModel?.customLayoutMap = HashMap()
+            viewModel?.customLayoutMap?.put(
+                getTag(),
+                recyclerView.layoutManager?.onSaveInstanceState()
             )
-        }
-
-        override fun getItemViewType(position: Int): Int {
-            return position
-        }
-
-        override fun onBindViewHolder(holder: CustomHolder, i: Int) {
-            val movie = list[i]
-
-            var imageUri = movie.bannerUrl
-            if (!imageUri.contains(YTS_BASE_URL)) {
-                imageUri = refactorYTSUrl(imageUri)
-            }
-
-            holder.mainImage.load(
-                uri = imageUri,
-                onSuccess = { bitmap ->
-                    holder.mainImage.setImageBitmap(bitmap)
-                    holder.itemView.shimmerFrame.hide()
-                }
-            )
-
-            holder.mainText.text = movie.title
-
-            holder.mainCard.setOnClickListener {
-                val intent = Intent(context, FinalActivity::class.java)
-                when (base) {
-                    MovieBase.YTS -> {
-                        intent.putExtra(MOVIE_ID, movie.movieId)
-                        context.startActivity(intent)
-                    }
-                    MovieBase.TMDB -> {
-
-                        /** We are passing movie_id as string for TMDB Movie so that in
-                         * Final View Model we can use the second route to get Movie Details*/
-
-                        intent.putExtra(MOVIE_ID, "${movie.movieId}")
-                        context.startActivity(intent)
-                    }
-                }
-            }
-
-            if (::setOnLongListener.isInitialized) {
-                holder.mainCard.setOnLongClickListener {
-                    setOnLongListener.invoke(movie, it)
-                    return@setOnLongClickListener true
-                }
-            }
-        }
-
-        override fun getItemCount() = list.size
-
-        class CustomHolder(view: View) : RecyclerView.ViewHolder(view) {
-            val mainCard = view.mainCard
-            val mainText = view.mainText
-            val mainImage = view.mainImage
         }
     }
 }

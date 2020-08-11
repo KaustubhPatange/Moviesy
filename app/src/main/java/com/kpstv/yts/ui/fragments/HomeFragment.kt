@@ -25,8 +25,6 @@ class HomeFragment : Fragment(), TabLayout.OnTabSelectedListener {
     private lateinit var binding: FragmentHomeBinding
 
     private lateinit var mainActivity: MainActivity
-   /* var chartsFragment = ChartsFragment()
-    var categoryFragment = GenreFragment()*/
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

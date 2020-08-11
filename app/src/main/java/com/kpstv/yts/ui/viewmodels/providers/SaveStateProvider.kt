@@ -13,3 +13,7 @@ class WatchState: SaveStateProvider() {
 class LibraryState: SaveStateProvider() {
 
 }
+
+class ChartsState: SaveStateProvider() {
+    var featuredMap: Map<String, Parcelable?>? = null
+}
