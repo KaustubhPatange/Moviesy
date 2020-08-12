@@ -208,7 +208,7 @@ class MainViewModel @ViewModelInject constructor(
             val movieModel = repository.getMoviesByQuery(queryString)
             movieModel?.also {
                 val currentCalender = Calendar.getInstance()
-                currentCalender.add(Calendar.HOUR, -QUERY_SPAN_DIFFERENCE)
+                currentCalender.add(Calendar.HOUR, - QUERY_SPAN_DIFFERENCE)
                 val currentSpan = MainDateFormatter.format(
                     currentCalender.time
                 ).toLong()

@@ -7,7 +7,6 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import kotlin.math.abs
 
-
 class ExtendedAppBarLayout : AppBarLayout, OnOffsetChangedListener {
 
     private var state: State? = null

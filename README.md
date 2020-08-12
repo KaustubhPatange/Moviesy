@@ -28,7 +28,10 @@ Since this project involves a private payment system 📃 some of the source fil
   - [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel) - Stores UI-related data that isn't destroyed on UI changes.
   - [ViewBinding](https://developer.android.com/topic/libraries/view-binding) - Generates a binding class for each XML layout file present in that module and allows you to more easily write code that interacts with views.
   - [Room](https://developer.android.com/topic/libraries/architecture/room) - SQLite object mapping library.
+  - [Paging](https://developer.android.com/topic/libraries/architecture/paging) - Library helps you load and display small chunks of data at a time. Loading partial data on demand reduces usage of network bandwidth and system resources.
+  - [Saving Sates](https://developer.android.com/topic/libraries/architecture/saving-states) - Uses recommended solutions for saving & restoring UI state through viewModel.
   - [Workmanager](https://developer.android.com/topic/libraries/architecture/workmanager) - An API that makes it easy to schedule deferrable, asynchronous tasks that are expected to run even if the app exits or the device restarts.
+- [Navigation Component](https://developer.android.com/guide/navigation) - Jetpack's recommended way to implement navigation ensuring a consistent and predictable user experience by adhering to an established set of principles.
 - [Dependency Injection](https://developer.android.com/training/dependency-injection) -
   - [Hilt-Dagger](https://dagger.dev/hilt/) - Standard library to incorporate Dagger dependency injection into an Android application.
   - [Hilt-ViewModel](https://developer.android.com/training/dependency-injection/hilt-jetpack) - DI for injecting `ViewModel`.

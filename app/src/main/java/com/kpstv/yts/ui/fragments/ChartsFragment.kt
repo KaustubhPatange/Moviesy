@@ -1,6 +1,7 @@
 package com.kpstv.yts.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -31,6 +32,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
     private lateinit var cmlPopular: CustomMovieLayout
     private lateinit var cmlMostLiked: CustomMovieLayout
     private lateinit var cmlLatest: CustomMovieLayout
+    private val TAG = javaClass.simpleName
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -72,8 +74,12 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
         cmlFeatured = CustomMovieLayout(requireActivity(), getString(R.string.featured)).apply {
             injectViewAt(binding.addLayout)
             setLifeCycleOwner(requireHomeFragment()?.viewLifecycleOwner)
+            setupFeaturedCallbacks(viewModel) {
+                cmlFeatured.removeView(binding.addLayout)
+                Toasty.warning(requireActivity(), getString(R.string.featured_movies)).show()
+            }
         }
-
+/*
         viewModel.getFeaturedMovies(object : MoviesListener {
             override fun onStarted() {}
 
@@ -90,7 +96,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
             ) {
                 cmlFeatured.setupCallbacksNoMore(movies, queryMap, viewModel)
             }
-        })
+        })*/
 
         /** Top Rated Layout */
         val queryMap = YTSQuery.ListMoviesBuilder().apply {

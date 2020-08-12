@@ -2,10 +2,13 @@ package com.kpstv.yts.extensions.common
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.ListPreloader
+import com.bumptech.glide.RequestBuilder
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.MovieShort
@@ -13,6 +16,7 @@ import com.kpstv.yts.extensions.MovieBase
 import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.extensions.load
 import com.kpstv.yts.extensions.utils.AppUtils
+import com.kpstv.yts.extensions.utils.GlideApp
 import com.kpstv.yts.ui.activities.FinalActivity
 import kotlinx.android.synthetic.main.item_common_banner.view.*
 import kotlinx.android.synthetic.main.item_suggestion.view.*
@@ -33,6 +37,8 @@ class CustomAdapter(
             ).inflate(R.layout.item_suggestion, parent, false)
         )
     }
+
+    fun getModels() = list
 
     override fun getItemViewType(position: Int): Int {
         return position

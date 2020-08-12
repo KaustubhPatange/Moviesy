@@ -22,19 +22,27 @@ import com.kpstv.yts.AppInterface.Companion.handleRetrofitError
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.data.models.TmDbMovie
+import com.kpstv.yts.extensions.ExceptionCallback
 import com.kpstv.yts.extensions.MovieBase
-import com.kpstv.yts.extensions.SimpleCallback
 import com.kpstv.yts.interfaces.listener.MoviesListener
 import com.kpstv.yts.ui.activities.MoreActivity
 import com.kpstv.yts.ui.fragments.sheets.BottomSheetQuickInfo
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import kotlinx.android.synthetic.main.custom_movie_layout.view.*
 
-/** Usage
- *
+/** Usage:
+ *  ------
  *  Create a new instance of this class
  *  Use injectViewAt function to add this on a layout
  *  Setup on of the follow backs as per the need
+ *
+ *  Features:
+ *  ---------
+ *  - Handles fetching of data and displaying to recyclerView
+ *  with callbacks.
+ *  - Automatically save & restore state.
+ *    @see last section of this class
+ *
  *
  *  @param context must be an activity to trigger item longClickListener
  */
@@ -48,9 +56,11 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
     private lateinit var moreButton: ImageView
     private lateinit var clickableLayout: RelativeLayout
     private lateinit var removeBlock: () -> Unit
+    private var mainViewModel: MainViewModel? = null
     private val viewModel: CustomViewModel? = if (context is AppCompatActivity)
         ViewModelProvider(context).get(CustomViewModel::class.java)
     else null
+    private val firstSecond = System.currentTimeMillis()
 
     companion object {
         /** Creating this companion object so that we can call it from
@@ -105,12 +115,45 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
         clickableLayout.isFocusable = false
     }
 
+    /** This is a special callback which will fetch featured movies
+     *  from YTS website.
+     */
+    fun setupFeaturedCallbacks(
+        viewModel: MainViewModel? = null,
+        onFailure: ExceptionCallback? = null
+    ): Unit = with(context) {
+        base = MovieBase.YTS
+        mainViewModel = viewModel
+
+        val listener = object : MoviesListener {
+            override fun onStarted() {}
+
+            override fun onFailure(e: Exception) {
+                e.printStackTrace()
+                onFailure?.invoke(e)
+            }
+
+            override fun onComplete(
+                movies: ArrayList<MovieShort>,
+                queryMap: Map<String, String>,
+                isMoreAvailable: Boolean
+            ) {
+                setupCallbacksNoMore(movies, queryMap, viewModel)
+            }
+        }
+
+        if (!isRestoringRecyclerViewItems())
+            viewModel?.getFeaturedMovies(listener)
+    }
+
     fun setupCallbacksNoMore(
         list: ArrayList<MovieShort>,
         queryMap: Map<String, String>,
         viewModel: MainViewModel? = null
     ) {
         base = MovieBase.YTS
+        mainViewModel = viewModel
+
         hideMoreCallbacks()
 
         models = list
@@ -123,6 +166,7 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
     @JvmName("setupCallbacks")
     fun setupCallbacks(viewModel: MainViewModel, queryMap: Map<String, String>) {
         base = MovieBase.YTS
+        mainViewModel = viewModel
 
         val listener = object : MoviesListener {
             override fun onStarted() {}
@@ -137,15 +181,28 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
                 queryMap: Map<String, String>,
                 isMoreAvailable: Boolean
             ) {
+                Log.e(
+                    TAG,
+                    "${getTag()} -> Fetch Time: ${(System.currentTimeMillis() - firstSecond)}"
+                )
                 models = movies
                 setupRecyclerView(models, viewModel)
                 if (isMoreAvailable)
                     setupMoreButton(queryMap)
                 else hideMoreCallbacks()
+                Log.e(
+                    TAG,
+                    "${getTag()} -> OnComplete: ${(System.currentTimeMillis() - firstSecond)}"
+                )
             }
 
         }
-        viewModel.getYTSQuery(listener, queryMap)
+
+        /** Restoring previous items from recyclerView */
+        if (!isRestoringRecyclerViewItems()) {
+            viewModel.getYTSQuery(listener, queryMap)
+        }
+
         removeBlock = { viewModel.removeYtsQuery(queryMap) }
     }
 
@@ -162,8 +219,10 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
      * This will remove the data from the repository when force refreshed!
      */
     fun removeData() {
-        if (::removeBlock.isInitialized)
+        if (::removeBlock.isInitialized) {
+            viewModel?.customModelMap?.remove(getTag())
             removeBlock.invoke()
+        }
     }
 
     private fun setupMoreButton(queryMap: Map<String, String>) {
@@ -246,9 +305,9 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
 
         recyclerView.adapter = adapter
         recyclerView.setHasFixedSize(true)
-        Log.e(TAG, "ItemSize: ${adapter.itemCount}")
+        Log.e(TAG, "${getTag()} -> ItemSize: ${adapter.itemCount}")
 
-        if (models.isEmpty()) {
+        if (list.isEmpty()) {
             view.visibility = View.GONE
         } else {
             restoreRecyclerViewState()
@@ -263,19 +322,42 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
      * It then restore the state at appropriate places as well.
      */
 
+    private fun isRestoringRecyclerViewItems(): Boolean {
+        val models = viewModel?.customModelMap?.get(getTag())
+        return if (models != null && models.isNotEmpty()) {
+            setupRecyclerView(models, mainViewModel)
+            true
+        } else false
+    }
+
     private fun restoreRecyclerViewState() {
         if (viewModel?.customLayoutMap?.containsKey(getTag()) == true)
             recyclerView.layoutManager?.onRestoreInstanceState(viewModel.customLayoutMap?.get(getTag()))
     }
 
+    /** This observer will be bound to the lifecycle of the activity/fragment to
+     *  automatically handle save state.
+     *
+     *  It will unsubscribe when the activity/fragment is destoryed.
+     */
     private val stateObserver = object : DefaultLifecycleObserver {
         override fun onStop(owner: LifecycleOwner) {
             super.onStop(owner)
+
+            /** Saving state of recyclerView layout manager which includes scrollstate. */
             if (viewModel?.customLayoutMap == null)
                 viewModel?.customLayoutMap = HashMap()
             viewModel?.customLayoutMap?.put(
                 getTag(),
                 recyclerView.layoutManager?.onSaveInstanceState()
+            )
+
+            /** Saving recyclerView adapter items */
+            if (viewModel?.customModelMap == null)
+                viewModel?.customModelMap = HashMap()
+            viewModel?.customModelMap?.put(
+                getTag(),
+                (recyclerView.adapter as CustomAdapter).getModels()
             )
         }
 

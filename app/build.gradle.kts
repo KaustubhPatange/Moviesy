@@ -89,7 +89,9 @@ dependencies {
     implementation(LibraryDependency.RETROFIT_GSON_CONVERTER)
     implementation(LibraryDependency.RETROFIT_COROUTINES_ADAPTER)
     implementation(LibraryDependency.SWIPE_REFRESH_LAYOUT)
+
     implementation(LibraryDependency.GLIDE)
+
     implementation(LibraryDependency.RXANDROID)
     implementation(LibraryDependency.RXJAVA)
     implementation(LibraryDependency.RXBINDING)

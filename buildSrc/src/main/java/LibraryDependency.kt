@@ -72,6 +72,7 @@ object LibraryDependency {
     const val RXJAVA = "io.reactivex.rxjava2:rxjava:${LibraryVersion.RXJAVA}"
     const val RXBINDING = "com.jakewharton.rxbinding2:rxbinding:${LibraryVersion.RXBINDING}"
     const val GLIDE = "com.github.bumptech.glide:glide:${LibraryVersion.GLIDE}"
+    const val GLIDE_RECYCLERVIEW = "com.github.bumptech.glide:recyclerview-integration:${LibraryVersion.GLIDE}"
     const val GLIDE_COMPILER = "com.github.bumptech.glide:compiler:${LibraryVersion.GLIDE}"
     const val FB_SHIMMER = "com.facebook.shimmer:shimmer:${LibraryVersion.FB_SHIMMER}"
     const val ANDROID_BROWSER = "androidx.browser:browser:${LibraryVersion.BROWSER}"

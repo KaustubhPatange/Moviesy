@@ -7,13 +7,16 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.kpstv.yts.extensions.utils.GlideApp
+import com.kpstv.yts.extensions.utils.GlideRequests
 
 fun ImageView.load(
     uri: String?,
+    requestBuilder: GlideRequests? = null,
     onSuccess: ((Bitmap?) -> Unit)? = null,
     onError: ((GlideException?) -> Unit)? = null
 ) {
-    GlideApp.with(this).asBitmap().load(uri)
+    val glideRequests = requestBuilder ?: GlideApp.with(this)
+    glideRequests.asBitmap().load(uri)
         .listener(object :
             RequestListener<Bitmap> {
             override fun onLoadFailed(
@@ -38,4 +41,10 @@ fun ImageView.load(
             }
 
         }).into(this)
+}
+
+fun ImageView.load(uri: String?) {
+    GlideApp.with(this)
+        .load(uri)
+        .into(this)
 }
