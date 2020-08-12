@@ -2,10 +2,11 @@ package com.kpstv.yts.ui.viewmodels
 
 import android.app.Application
 import android.util.Log
-import android.view.View
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.yts.AppInterface.Companion.CUSTOM_LAYOUT_YTS_SPAN
+import com.kpstv.yts.AppInterface.Companion.FEATURED_QUERY
 import com.kpstv.yts.AppInterface.Companion.MainDateFormatter
 import com.kpstv.yts.AppInterface.Companion.QUERY_SPAN_DIFFERENCE
 import com.kpstv.yts.data.converters.QueryConverter
@@ -13,16 +14,14 @@ import com.kpstv.yts.data.db.repository.DownloadRepository
 import com.kpstv.yts.data.db.repository.FavouriteRepository
 import com.kpstv.yts.data.db.repository.MainRepository
 import com.kpstv.yts.data.db.repository.PauseRepository
-import com.kpstv.common_moviesy.extensions.Coroutines
-import com.kpstv.yts.AppInterface.Companion.FEATURED_QUERY
-import com.kpstv.yts.extensions.lazyDeferred
-import com.kpstv.yts.interfaces.api.YTSApi
-import com.kpstv.yts.interfaces.listener.MoviesListener
 import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.data.models.data.data_main
 import com.kpstv.yts.data.models.response.Model
+import com.kpstv.yts.extensions.lazyDeferred
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.YTSFeaturedUtils
+import com.kpstv.yts.interfaces.api.YTSApi
+import com.kpstv.yts.interfaces.listener.MoviesListener
 import com.kpstv.yts.ui.viewmodels.providers.*
 import retrofit2.await
 import java.util.*
@@ -85,25 +84,30 @@ class MainViewModel @ViewModelInject constructor(
     fun getYTSQuery(moviesListener: MoviesListener, queryMap: Map<String, String>) {
         moviesListener.onStarted()
 
-        Coroutines.main {
+        Coroutines.io {
             try {
                 val queryString = QueryConverter.fromMapToString(queryMap)
 
                 if (isFetchNeeded(queryString)) {
-                    Log.e(TAG, "=> Fetching New data")
+                    Log.e(TAG, "=> Fetching New data, $queryString")
                     fetchNewData(moviesListener, queryMap)
                 } else {
-                    Log.e(TAG, "=> Getting data from repository")
-
+                    Log.e(TAG, "=> Getting data from repository, $queryString")
                     repository.getMoviesByQuery(
                         queryString
                     )?.let {
-                        moviesListener.onComplete(it.movies, queryMap, it.isMore)
+                        Coroutines.main {
+                            moviesListener.onComplete(
+                                it.movies,
+                                queryMap,
+                                it.isMore
+                            )
+                        }
                     }
                 }
 
             } catch (e: Exception) {
-                moviesListener.onFailure(e)
+                Coroutines.main { moviesListener.onFailure(e) }
             }
         }
     }
@@ -115,22 +119,37 @@ class MainViewModel @ViewModelInject constructor(
             try {
                 val queryMap = QueryConverter.toMapfromString(FEATURED_QUERY)
                 if (isFetchNeeded(FEATURED_QUERY)) {
+                    Log.e(TAG, "=> Featured: Fetching new data")
+                    val list = ytsFeaturedUtils.fetch()
+                    if (list.isNotEmpty()) {
+                        val mainModel = data_main(
+                            time = MainDateFormatter.format(Calendar.getInstance().time).toLong(),
+                            movies = list,
+                            query = FEATURED_QUERY,
+                            isMore = false
+                        )
 
-                    Log.e(TAG, "=> Fetching new data")
+                        repository.saveMovies(mainModel)
 
-                    fetchFeaturedData(moviesListener,FEATURED_QUERY)
-
+                        moviesListener.onComplete(
+                            list,
+                            QueryConverter.toMapfromString(FEATURED_QUERY),
+                            false
+                        )
+                    } else moviesListener.onFailure(Exception("Empty movie list"))
                 } else {
-                    Log.e(TAG, "=> Getting data from repository")
-
+                    Log.e(TAG, "=> Featured: Getting data from repository")
                     repository.getMoviesByQuery(
                         FEATURED_QUERY
                     )?.let {
-                        moviesListener.onComplete(it.movies ,queryMap, it.isMore)
+                        moviesListener.onComplete(
+                            it.movies,
+                            queryMap,
+                            it.isMore
+                        )
                     }
                 }
-
-            }catch (e: Exception) {
+            } catch (e: Exception) {
                 moviesListener.onFailure(e)
             }
         }
@@ -138,21 +157,24 @@ class MainViewModel @ViewModelInject constructor(
 
     private suspend fun fetchFeaturedData(moviesListener: MoviesListener, queryString: String) {
         val list = ytsFeaturedUtils.fetch()
+        if (list.isNotEmpty()) {
+            val mainModel = data_main(
+                time = MainDateFormatter.format(Calendar.getInstance().time).toLong(),
+                movies = list,
+                query = queryString,
+                isMore = false
+            )
 
-        val mainModel = data_main(
-            time = MainDateFormatter.format(Calendar.getInstance().time).toLong(),
-            movies = list,
-            query = queryString,
-            isMore = false
-        )
+            repository.saveMovies(mainModel)
 
-        moviesListener.onComplete(
-            list,
-            QueryConverter.toMapfromString(queryString),
-            false
-        )
-
-        repository.saveMovies(mainModel)
+            Coroutines.main {
+                moviesListener.onComplete(
+                    list,
+                    QueryConverter.toMapfromString(queryString),
+                    false
+                )
+            }
+        } else Coroutines.main { moviesListener.onFailure(Exception("Empty movie list")) }
     }
 
     private suspend fun fetchNewData(
@@ -165,7 +187,7 @@ class MainViewModel @ViewModelInject constructor(
             val list = response.data.movies
 
             var toIndex = CUSTOM_LAYOUT_YTS_SPAN
-            if (list?.size!! < CUSTOM_LAYOUT_YTS_SPAN+1) toIndex = list.size
+            if (list?.size!! < CUSTOM_LAYOUT_YTS_SPAN + 1) toIndex = list.size
 
             val movieList = ArrayList<MovieShort>()
             ArrayList(response.data.movies.subList(0, toIndex)).forEach {
@@ -192,15 +214,17 @@ class MainViewModel @ViewModelInject constructor(
                 isMore = isMoreAvailable
             )
 
-            moviesListener.onComplete(
-                movieList,
-                queryMap,
-                isMoreAvailable
-            )
-
             repository.saveMovies(mainModel)
 
-        } else moviesListener.onFailure(Exception("Empty movie list"))
+            Coroutines.main {
+                moviesListener.onComplete(
+                    movieList,
+                    queryMap,
+                    isMoreAvailable
+                )
+            }
+
+        } else Coroutines.main { moviesListener.onFailure(Exception("Empty movie list")) }
     }
 
     private suspend fun isFetchNeeded(queryString: String): Boolean {
@@ -208,12 +232,12 @@ class MainViewModel @ViewModelInject constructor(
             val movieModel = repository.getMoviesByQuery(queryString)
             movieModel?.also {
                 val currentCalender = Calendar.getInstance()
-                currentCalender.add(Calendar.HOUR, - QUERY_SPAN_DIFFERENCE)
+                currentCalender.add(Calendar.HOUR, -QUERY_SPAN_DIFFERENCE)
                 val currentSpan = MainDateFormatter.format(
                     currentCalender.time
                 ).toLong()
                 return if (currentSpan > movieModel.time) {
-                    repository.deleteMovies(movieModel)
+                    repository.deleteMovie(movieModel)
                     true
                 } else false
             }

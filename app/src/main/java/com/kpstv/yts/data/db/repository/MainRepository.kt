@@ -1,5 +1,6 @@
 package com.kpstv.yts.data.db.repository
 
+import android.util.Log
 import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.yts.data.db.localized.MainDao
 import com.kpstv.yts.data.models.data.data_main
@@ -20,18 +21,19 @@ class MainRepository @Inject constructor(
     }
 
     fun removeMoviesByQuery(queryString: String) {
-        mainDao.getMovies(queryString)?.let {
-            deleteMovies(it)
+        Coroutines.io {
+            mainDao.deleteMovie(queryString)
         }
     }
 
     fun saveMovies(dataMain: data_main) {
         Coroutines.io {
+            mainDao.deleteMovie(dataMain.query)
             mainDao.upsert(dataMain)
         }
     }
 
-    fun deleteMovies(dataMain: data_main) {
+    fun deleteMovie(dataMain: data_main) {
         Coroutines.io {
             mainDao.delete(dataMain)
         }

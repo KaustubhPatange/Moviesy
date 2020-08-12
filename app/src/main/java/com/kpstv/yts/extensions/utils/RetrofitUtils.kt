@@ -1,6 +1,5 @@
 package com.kpstv.yts.extensions.utils
 
-import android.util.Log
 import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.kpstv.common_moviesy.extensions.await
@@ -10,10 +9,8 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
-import java.security.cert.CertificateException
 import javax.inject.Inject
 import javax.inject.Singleton
-import javax.net.ssl.*
 
 /**
  * A class made for my project "Moviesy" https://github.com/KaustubhPatange/Moviesy
@@ -26,11 +23,11 @@ class RetrofitUtils @Inject constructor(
     private val interceptor: com.kpstv.yts.extensions.interceptors.NetworkConnectionInterceptor
 ) {
     private var retrofitBuilder: Retrofit.Builder? = null
-    private var httpBuilder: OkHttpClient.Builder? = null
+    private var client: OkHttpClient? = null
     private val TAG = javaClass.simpleName
 
     fun getRetrofitBuilder(): Retrofit.Builder {
-        return retrofitBuilder ?: Retrofit.Builder().apply {
+        return Retrofit.Builder().apply {
             addCallAdapterFactory(CoroutineCallAdapterFactory())
             addConverterFactory(
                 GsonConverterFactory.create(
@@ -38,16 +35,14 @@ class RetrofitUtils @Inject constructor(
                 )
             )
             client(getHttpClient())
-        }.also { retrofitBuilder = it }
+        }
     }
 
     fun getHttpBuilder(): OkHttpClient.Builder {
-        return httpBuilder
-            ?: OkHttpClient.Builder()
-                .addInterceptor(interceptor)
-                .connectTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
-                .also { httpBuilder = it }
+        return OkHttpClient.Builder()
+            .addInterceptor(interceptor)
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
     }
 
     /**

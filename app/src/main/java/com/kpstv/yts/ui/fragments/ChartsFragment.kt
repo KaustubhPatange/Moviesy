@@ -79,24 +79,6 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
                 Toasty.warning(requireActivity(), getString(R.string.featured_movies)).show()
             }
         }
-/*
-        viewModel.getFeaturedMovies(object : MoviesListener {
-            override fun onStarted() {}
-
-            override fun onFailure(e: Exception) {
-                e.printStackTrace()
-                cmlFeatured.removeView(binding.addLayout)
-                Toasty.warning(requireActivity(), getString(R.string.featured_movies)).show()
-            }
-
-            override fun onComplete(
-                movies: ArrayList<MovieShort>,
-                queryMap: Map<String, String>,
-                isMoreAvailable: Boolean
-            ) {
-                cmlFeatured.setupCallbacksNoMore(movies, queryMap, viewModel)
-            }
-        })*/
 
         /** Top Rated Layout */
         val queryMap = YTSQuery.ListMoviesBuilder().apply {

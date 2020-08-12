@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.kpstv.yts.data.models.MovieShort
 
 class CustomViewModel: ViewModel() {
-    var customLayoutMap: HashMap<String, Parcelable?>? = null
-    var customModelMap: HashMap<String, ArrayList<MovieShort>>? = null
+    var customLayoutRecyclerView: HashMap<String, Parcelable?> = HashMap()
+    var customModelMap: HashMap<String, ArrayList<MovieShort>> = HashMap()
+    var customLayoutConfig: HashMap<String, CustomMovieLayout.CustomLayoutConfig> = HashMap()
 }

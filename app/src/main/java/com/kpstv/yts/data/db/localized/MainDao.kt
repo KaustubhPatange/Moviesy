@@ -11,6 +11,9 @@ interface MainDao {
     @Query("select * from table_main where `query` = :query")
     fun getMovies(query: String): data_main?
 
-    @Delete()
+    @Query("delete from table_main where `query` = :query")
+    fun deleteMovie(query: String)
+
+    @Delete
     fun delete(data: data_main)
 }

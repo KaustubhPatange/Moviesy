@@ -106,6 +106,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     .setNegativeButton(getString(R.string.no)) { }
                     .show()
             },
+            onUpdateNotFound = {
+                PremiumHelper.showPurchaseInfo(this)
+            },
             onError = {
                 Toasty.error(this, "Failed: ${it.message}").show()
             }
@@ -113,7 +116,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private val bottomNavListener = BottomNavigationView.OnNavigationItemSelectedListener {
-
         if (it.itemId != navController.currentDestination?.id)
             navController.navigate(it.itemId, null, animationOptions)
 

@@ -77,36 +77,7 @@
             android:layout_height="1dp"
             android:background="?colorSeparator" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="7dp"
-            android:drawablePadding="20dp"
-            android:fontFamily="@font/google_sans_regular"
-            android:padding="15dp"
-            android:text="@string/premium_download_limit"
-            android:textSize="15sp"
-            app:drawableStartCompat="@drawable/ic_trending" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawablePadding="20dp"
-            android:fontFamily="@font/google_sans_regular"
-            android:padding="15dp"
-            android:text="@string/premium_subtitle_limit"
-            android:textSize="15sp"
-            app:drawableStartCompat="@drawable/ic_cast_connected" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawablePadding="20dp"
-            android:fontFamily="@font/google_sans_regular"
-            android:padding="15dp"
-            android:text="@string/premium_ads"
-            android:textSize="15sp"
-            app:drawableStartCompat="@drawable/ic_no_ads" />
+        <include layout="@layout/custom_purchase_list"/>
 
         <TextView
             android:id="@+id/purchaseButton"
