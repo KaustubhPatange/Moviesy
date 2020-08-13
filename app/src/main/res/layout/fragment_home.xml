@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.fragments.HomeFragment">
 
-    <com.kpstv.yts.extensions.ExtendedAppBarLayout
+    <com.kpstv.yts.extensions.views.ExtendedAppBarLayout
         android:background="?colorForeground"
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
@@ -78,7 +78,7 @@
 
         </com.google.android.material.tabs.TabLayout>
 
-    </com.kpstv.yts.extensions.ExtendedAppBarLayout>
+    </com.kpstv.yts.extensions.views.ExtendedAppBarLayout>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/container"

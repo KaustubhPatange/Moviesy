@@ -12,7 +12,7 @@ import com.kpstv.yts.R
 import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.databinding.BottomSheetQuickinfoBinding
-import com.kpstv.yts.extensions.ExtendedBottomSheetDialogFragment
+import com.kpstv.yts.extensions.views.ExtendedBottomSheetDialogFragment
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.getBulletSymbol
 import com.kpstv.yts.extensions.common.CustomBottomItem
 import com.kpstv.yts.extensions.utils.GlideApp
@@ -46,7 +46,7 @@ class BottomSheetQuickInfo : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
         binding.itemSubText.text = "${movie.year} ${getBulletSymbol()} ${movie.runtime} mins"
 
         /** Injecting view options */
-        viewModel.isFavourite({ b ->
+        viewModel.isMovieFavourite({ b ->
             var title = "Add to watchlist"
             var icon = R.drawable.ic_favorite_no
 

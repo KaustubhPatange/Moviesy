@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     tools:context=".ui.fragments.ChartsFragment">
 
-    <com.kpstv.yts.extensions.ExtendedNestedScrollView
+    <com.kpstv.yts.extensions.views.ExtendedNestedScrollView
         android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -17,6 +17,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-    </com.kpstv.yts.extensions.ExtendedNestedScrollView>
+    </com.kpstv.yts.extensions.views.ExtendedNestedScrollView>
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

@@ -1,4 +1,4 @@
-package com.kpstv.yts.extensions
+package com.kpstv.yts.extensions.views
 
 import android.content.Context
 import android.util.AttributeSet

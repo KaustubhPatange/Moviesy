@@ -31,8 +31,8 @@ class UpdateUtils @Inject constructor(
             try {
                 val updatePair = fetchUpdateDetails()
                 if (updatePair.second) {
-                    onUpdateAvailable.invoke(updatePair.first.update)
-                } else onUpdateNotFound?.invoke()
+                    Coroutines.main { onUpdateAvailable.invoke(updatePair.first.update) }
+                } else Coroutines.main { onUpdateNotFound?.invoke() }
             } catch (e: Exception) {
                 Coroutines.main { onError(e) }
             }

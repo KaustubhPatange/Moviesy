@@ -13,7 +13,7 @@ import com.kpstv.yts.databinding.BottomSheetLibraryDownloadBinding
 import com.kpstv.yts.databinding.ButtonCastPlayBinding
 import com.kpstv.yts.databinding.ButtonLocalPlayBinding
 import com.kpstv.yts.databinding.CustomProgressBinding
-import com.kpstv.yts.extensions.ExtendedBottomSheetDialogFragment
+import com.kpstv.yts.extensions.views.ExtendedBottomSheetDialogFragment
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.ui.activities.TorrentPlayerActivity
 import com.kpstv.yts.ui.helpers.PremiumHelper

@@ -4,25 +4,16 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.os.Environment
-import androidx.core.text.isDigitsOnly
 import androidx.navigation.NavOptions
 import androidx.preference.PreferenceManager
 import com.danimahardhika.cafebar.CafeBar
 import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.extensions.add
-import com.kpstv.yts.interfaces.listener.ObservableListener
-import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.ui.fragments.GenreFragment
 import es.dmoral.toasty.Toasty
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
-import org.jsoup.Jsoup
 import java.io.File
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
-import java.util.concurrent.Callable
 
 class AppInterface {
     companion object {
@@ -35,8 +26,10 @@ class AppInterface {
         var TMDB_IMAGE_PREFIX = "https://image.tmdb.org/t/p/w500"
         var TMDB_API_KEY = "dbaba3594e59e4ff47c003b2ddb82c2a"
         var COUNTRY_FLAG_JSON_URL = "https://pastebin.com/raw/H0CYRdJ9"
-        var APP_DATABASE_URL = "https://pastebin.com/raw/Vg7bahGJ" // TODO: Change this url (no update - https://pastebin.com/raw/FdC9m81R)
-        var APP_IMAGE_URL = "https://raw.githubusercontent.com/KaustubhPatange/Moviesy/master/app/src/main/ic_launcher-playstore.png"
+        var APP_DATABASE_URL =
+            "https://pastebin.com/raw/FdC9m81R" // TODO: Change this url (push update - https://pastebin.com/raw/Vg7bahGJ)
+        var APP_IMAGE_URL =
+            "https://raw.githubusercontent.com/KaustubhPatange/Moviesy/master/app/src/main/ic_launcher-playstore.png"
         var SUGGESTION_URL =
             "https://suggestqueries.google.com/complete/search?ds=yt&client=firefox&q="
         var STORAGE_LOCATION =
@@ -86,7 +79,8 @@ class AppInterface {
 
         const val PURCHASE_REGEX_PATTERN = "moviesy_premium_[\\d]+.json"
 
-        const val USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.21 (KHTML, like Gecko) Chrome/19.0.1042.0 Safari/535.21"
+        const val USER_AGENT =
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.21 (KHTML, like Gecko) Chrome/19.0.1042.0 Safari/535.21"
 
         val GENRE_CATEGORY_LIST = ArrayList<GenreFragment.LocalGenreModel>().apply {
             add("Action", R.drawable.ic_action_genre, YTSQuery.Genre.action)
@@ -167,75 +161,6 @@ class AppInterface {
                 DecimalFormat("0.0").format(speed / 1000) + " MB/s"
             } else DecimalFormat("0.0").format(speed) + " KB/s"
         }
-
-        @SuppressLint("CheckResult")
-        fun getPopularUtils(listener: ObservableListener): Disposable {
-            return Observable.fromCallable(Callable<ArrayList<MovieShort>> {
-                val list = ArrayList<MovieShort>()
-                val doc = Jsoup.connect(YTS_BASE_URL).get()
-                val elements = doc.getElementsByClass("browse-movie-link")
-                for (i in 0..3) {
-                    val link = elements[i].attr("href").toString()
-                    val subDoc = Jsoup.connect(link).get()
-
-                    val movieId =
-                        subDoc.getElementById("movie-info").attr("data-movie-id").toString().toInt()
-                    var imdbCode = ""
-                    var rating = 0.0
-                    subDoc.getElementsByClass("rating-row").forEach {
-                        if (it.hasAttr("itemscope")) {
-                            imdbCode = it.getElementsByClass("icon")[0]
-                                .attr("href").toString().split("/")[4]
-                            it.allElements.forEach {
-                                if (it.hasAttr("itemprop") && it.attr("itemprop")
-                                        .toString() == "ratingValue"
-                                ) {
-                                    rating = it.ownText().toDouble()
-                                }
-                            }
-                        }
-                    }
-
-                    var title = ""
-                    var year = 0
-                    var bannerUrl = ""
-                    var runtime = 0
-
-                    subDoc.getElementById("mobile-movie-info").allElements.forEach {
-                        if (it.hasAttr("itemprop"))
-                            title = it.ownText()
-                        else
-                            if (it.ownText().isNotBlank() && it.ownText().isDigitsOnly())
-                                year = it.ownText().toInt()
-                    }
-
-                    subDoc.getElementById("movie-poster").allElements.forEach {
-                        if (it.hasAttr("itemprop"))
-                            bannerUrl = it.attr("src").toString()
-                    }
-
-                    subDoc.getElementsByClass("icon-clock")[0]?.let {
-                        val runtimeString = it.parent().ownText().trim()
-                        if (runtimeString.contains("hr")) {
-                            runtime = runtimeString.split("hr")[0].trim().toInt() * 60
-                            if (runtimeString.contains("min"))
-                                runtime += runtimeString.split(" ")[2].trim().toInt()
-                            return@let
-                        }
-                        if (runtimeString.contains("min"))
-                            runtime += runtimeString.split("min")[0].trim().toInt()
-                    }
-
-                    list.add(
-                        MovieShort(movieId, link, title, year, rating, runtime, imdbCode, bannerUrl)
-                    )
-                }
-                return@Callable list
-            }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ listener.onSuccess(it) }, { listener.onError(it) })
-        }
-
 
         val animationOptions = NavOptions.Builder().setEnterAnim(R.anim.anim_blank)
             .setExitAnim(R.anim.anim_blank)

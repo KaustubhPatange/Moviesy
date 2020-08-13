@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppInterface.Companion.MOVIE_SPAN_DIFFERENCE
@@ -17,17 +18,16 @@ import com.kpstv.yts.data.models.Movie
 import com.kpstv.yts.data.models.TmDbMovie
 import com.kpstv.yts.data.models.data.data_tmdb
 import com.kpstv.yts.extensions.MovieType
+import com.kpstv.yts.extensions.SimpleCallback
+import com.kpstv.yts.extensions.SuggestionCallback
 import com.kpstv.yts.extensions.YTSQuery
-import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.interfaces.api.TMdbApi
 import com.kpstv.yts.interfaces.api.YTSApi
-import com.kpstv.yts.interfaces.listener.FavouriteListener
 import com.kpstv.yts.interfaces.listener.MovieListener
-import com.kpstv.yts.interfaces.listener.SuggestionListener
+import kotlinx.coroutines.launch
 import retrofit2.await
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.concurrent.locks.ReentrantLock
 import kotlin.collections.ArrayList
 
 @SuppressLint("SimpleDateFormat")
@@ -39,20 +39,14 @@ class FinalViewModel @ViewModelInject constructor(
     private val tMdbApi: TMdbApi
 ) : ViewModel() {
 
-    @Volatile
-    private var isSuggestedShown = false
-    private val lock = ReentrantLock()
     private val TAG = "FinalViewModel"
 
-    fun isMovieFavourite(listener: FavouriteListener, movieId: Int) {
-        Coroutines.main {
-            listener.isMovieFavourite(AppUtils.isMovieFavourite(favouriteRepository, movieId))
-        }
-    }
+    fun isMovieFavourite(movieId: Int) = favouriteRepository.isMovieFavouriteLive(movieId)
 
-    fun toggleFavourite(listener: FavouriteListener, movie: Movie) {
-        Coroutines.main {
-            listener.onToggleFavourite(AppUtils.toggleFavourite(favouriteRepository, movie))
+    fun toggleFavourite(movie: Movie, onFavouriteMarked: SimpleCallback) {
+        viewModelScope.launch {
+            if (favouriteRepository.toggleFavourite(movie))
+                onFavouriteMarked.invoke()
         }
     }
 
@@ -137,9 +131,8 @@ class FinalViewModel @ViewModelInject constructor(
         }
     }
 
-    fun getRecommendations(suggestionListener: SuggestionListener, imdbId: String) {
-        suggestionListener.onStarted()
-
+    fun getRecommendations(imdbId: String, suggestionCallback: SuggestionCallback) {
+        suggestionCallback.onStarted?.invoke()
         Coroutines.main {
             try {
 
@@ -156,7 +149,7 @@ class FinalViewModel @ViewModelInject constructor(
                     val response1 = tMdbApi.getRecommendations(response.id)
 
                     commonProcessTMdbMovies(
-                        suggestionListener,
+                        suggestionCallback,
                         response1.results,
                         imdbId,
                         MovieType.Recommend,
@@ -166,17 +159,17 @@ class FinalViewModel @ViewModelInject constructor(
                     Log.e(TAG, "=> Getting data from repository")
 
                     tMdbRepository.getRecommendMoviesByIMDB(imdbId)?.also {
-                        suggestionListener.onComplete(it.movies, it.tag, it.isMore)
+                        suggestionCallback.onComplete(it.movies, it.tag, it.isMore)
                     }
                 }
             } catch (e: Exception) {
-                suggestionListener.onFailure(e)
+                suggestionCallback.onFailure?.invoke(e)
             }
         }
     }
 
-    fun getSuggestions(suggestionListener: SuggestionListener, imdbId: String) {
-        suggestionListener.onStarted()
+    fun getSuggestions(imdbId: String, suggestionCallback: SuggestionCallback) {
+        suggestionCallback.onStarted?.invoke()
 
         Coroutines.main {
             try {
@@ -186,7 +179,7 @@ class FinalViewModel @ViewModelInject constructor(
                     val response = tMdbApi.getSimilar(imdbId)
 
                     commonProcessTMdbMovies(
-                        suggestionListener,
+                        suggestionCallback,
                         response.results,
                         imdbId,
                         MovieType.Suggestion
@@ -195,12 +188,11 @@ class FinalViewModel @ViewModelInject constructor(
                     Log.e(TAG, "=> Getting data from repository")
 
                     tMdbRepository.getSuggestMoviesByIMDB(imdbId)?.also {
-                        suggestionListener.onComplete(it.movies, it.tag, it.isMore)
+                        suggestionCallback.onComplete(it.movies, it.tag, it.isMore)
                     }
                 }
-                isSuggestedShown = true
             } catch (e: Exception) {
-                suggestionListener.onFailure(e)
+                suggestionCallback.onFailure?.invoke(e)
             }
         }
     }
@@ -242,7 +234,7 @@ class FinalViewModel @ViewModelInject constructor(
      */
     @Synchronized
     private fun commonProcessTMdbMovies(
-        suggestionListener: SuggestionListener,
+        suggestionCallback: SuggestionCallback,
         movies: ArrayList<TmDbMovie>,
         imdbId: String,
         movieType: MovieType,
@@ -258,10 +250,10 @@ class FinalViewModel @ViewModelInject constructor(
 
         val movieList = ArrayList(list.subList(0, toIndex))
 
-        suggestionListener.onComplete(
-            movies = movieList,
-            isMoreAvailable = isMore,
-            tag = tag
+        suggestionCallback.onComplete.invoke(
+            movieList,
+            tag,
+            isMore
         )
 
         /** We will save the data into TMdb database as per movieType

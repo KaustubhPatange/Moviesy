@@ -14,6 +14,7 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -26,18 +27,16 @@ import com.kpstv.yts.adapters.GenreAdapter
 import com.kpstv.yts.data.converters.GenreEnumConverter
 import com.kpstv.yts.data.models.Cast
 import com.kpstv.yts.data.models.Movie
-import com.kpstv.yts.data.models.TmDbMovie
 import com.kpstv.yts.databinding.ActivityFinalBinding
 import com.kpstv.yts.extensions.Permissions
+import com.kpstv.yts.extensions.SuggestionCallback
 import com.kpstv.yts.extensions.YTSQuery
+import com.kpstv.yts.extensions.common.CustomMovieLayout
 import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.CafebarToast
-import com.kpstv.yts.extensions.common.CustomMovieLayout
 import com.kpstv.yts.extensions.utils.GlideApp
-import com.kpstv.yts.interfaces.listener.FavouriteListener
 import com.kpstv.yts.interfaces.listener.MovieListener
-import com.kpstv.yts.interfaces.listener.SuggestionListener
 import com.kpstv.yts.ui.fragments.sheets.BottomSheetDownload
 import com.kpstv.yts.ui.fragments.sheets.BottomSheetSubtitles
 import com.kpstv.yts.ui.viewmodels.FinalViewModel
@@ -144,7 +143,6 @@ class FinalActivity : AppCompatActivity(), MovieListener {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
         if (::movie.isInitialized) {
             when (item.itemId) {
                 R.id.action_subtitles -> {
@@ -153,19 +151,10 @@ class FinalActivity : AppCompatActivity(), MovieListener {
                     bottomSheetSubtitles.show(supportFragmentManager, movie.imdb_code)
                 }
                 R.id.action_favourite -> {
-                    viewModel.toggleFavourite(object : FavouriteListener {
-                        override fun onToggleFavourite(id: Int?) {
-                            if (id == R.drawable.ic_favorite_yes)
-                                Toasty.info(this@FinalActivity, getString(R.string.add_watchlist))
-                                    .show()
-                            menu?.getItem(0)?.icon =
-                                ContextCompat.getDrawable(this@FinalActivity, id!!)
-                        }
-
-                        override fun isMovieFavourite(value: Boolean) {
-
-                        }
-                    }, movie)
+                    viewModel.toggleFavourite(movie) {
+                        Toasty.info(this@FinalActivity, getString(R.string.add_watchlist))
+                            .show()
+                    }
                 }
             }
         } else
@@ -178,16 +167,14 @@ class FinalActivity : AppCompatActivity(), MovieListener {
      *  to the menu item based on if Favourite exist or not.
      */
     private fun setMovieMenu() {
-        viewModel.isMovieFavourite(object : FavouriteListener {
-            override fun onToggleFavourite(id: Int?) {} // Ignore AF...
-
-            override fun isMovieFavourite(value: Boolean) {
-                if (value) {
-                    menu?.getItem(0)?.icon =
-                        ContextCompat.getDrawable(this@FinalActivity, R.drawable.ic_favorite_yes)
-                }
-            }
-        }, movie.id)
+        viewModel.isMovieFavourite(movie.id).observe(this, Observer { value ->
+            if (value)
+                menu?.getItem(0)?.icon =
+                    ContextCompat.getDrawable(this@FinalActivity, R.drawable.ic_favorite_yes)
+            else
+                menu?.getItem(0)?.icon =
+                    ContextCompat.getDrawable(this@FinalActivity, R.drawable.ic_favorite_no)
+        })
     }
 
     private fun loadData() {
@@ -231,16 +218,8 @@ class FinalActivity : AppCompatActivity(), MovieListener {
     }
 
     private fun loadRecommendation() {
-
-        val suggestionListener = object : SuggestionListener {
-            override fun onStarted() {
-            }
-
-            override fun onComplete(
-                movies: ArrayList<TmDbMovie>,
-                tag: String?,
-                isMoreAvailable: Boolean
-            ) {
+        val suggestionListener = SuggestionCallback(
+            onComplete = { movies, tag, isMoreAvailable ->
                 val recommendLayout =
                     CustomMovieLayout(
                         this@FinalActivity,
@@ -248,28 +227,19 @@ class FinalActivity : AppCompatActivity(), MovieListener {
                     )
                 recommendLayout.injectViewAt(binding.afAddLayout)
                 recommendLayout.setupCallbacks(movies, "$tag/recommendations", isMoreAvailable)
-            }
-
-            override fun onFailure(e: Exception) {
+            },
+            onFailure = { e ->
                 handleRetrofitError(this@FinalActivity, e)
                 e.printStackTrace()
             }
-        }
+        )
 
-        viewModel.getRecommendations(suggestionListener, movie.imdb_code)
+        viewModel.getRecommendations(movie.imdb_code, suggestionListener)
     }
 
     private fun loadSimilar() {
-
-        val suggestionListener = object : SuggestionListener {
-            override fun onStarted() {
-            }
-
-            override fun onComplete(
-                movies: ArrayList<TmDbMovie>,
-                tag: String?,
-                isMoreAvailable: Boolean
-            ) {
+        val suggestionListener = SuggestionCallback(
+            onComplete = { movies, tag, isMoreAvailable ->
                 val similarLayout =
                     CustomMovieLayout(
                         this@FinalActivity,
@@ -277,24 +247,20 @@ class FinalActivity : AppCompatActivity(), MovieListener {
                     )
                 similarLayout.injectViewAt(binding.afAddLayout)
                 similarLayout.setupCallbacks(movies, "${movie.imdb_code}/similar", isMoreAvailable)
-            }
-
-            override fun onFailure(e: Exception) {
+            },
+            onFailure = { e ->
                 handleRetrofitError(this@FinalActivity, e)
                 e.printStackTrace()
             }
-        }
+        )
 
-        viewModel.getSuggestions(suggestionListener, movie.imdb_code)
+        viewModel.getSuggestions(movie.imdb_code, suggestionListener)
     }
 
     private fun setPreviews() {
         GlideApp.with(applicationContext).asBitmap().load(movie.background_image)
             .into(object : CustomTarget<Bitmap>() {
-                override fun onLoadCleared(placeholder: Drawable?) {
-
-                }
-
+                override fun onLoadCleared(placeholder: Drawable?) {}
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                     binding.activityFinalPreviews.afYtPreviewImage.setImageBitmap(resource)
                     Log.e(TAG, "Image Loaded")
@@ -317,9 +283,7 @@ class FinalActivity : AppCompatActivity(), MovieListener {
 
         GlideApp.with(applicationContext).asBitmap().load(movie.medium_cover_image)
             .into(object : CustomTarget<Bitmap>() {
-                override fun onLoadCleared(placeholder: Drawable?) {
-                }
-
+                override fun onLoadCleared(placeholder: Drawable?) {}
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                     binding.activityFinalPreviews.shimmerFrame.hide()
 

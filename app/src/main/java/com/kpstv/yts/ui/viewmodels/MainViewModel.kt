@@ -17,11 +17,10 @@ import com.kpstv.yts.data.db.repository.PauseRepository
 import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.data.models.data.data_main
 import com.kpstv.yts.data.models.response.Model
+import com.kpstv.yts.extensions.MoviesCallback
 import com.kpstv.yts.extensions.lazyDeferred
-import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.YTSFeaturedUtils
 import com.kpstv.yts.interfaces.api.YTSApi
-import com.kpstv.yts.interfaces.listener.MoviesListener
 import com.kpstv.yts.ui.viewmodels.providers.*
 import retrofit2.await
 import java.util.*
@@ -64,9 +63,9 @@ class MainViewModel @ViewModelInject constructor(
         downloadRepository.updateDownload(hash, recentlyPlayed, lastPosition)
     }
 
-    fun isFavourite(listener: (Boolean) -> Unit, movieId: Int) {
+    fun isMovieFavourite(listener: (Boolean) -> Unit, movieId: Int) {
         Coroutines.main {
-            listener.invoke(AppUtils.isMovieFavourite(favouriteRepository, movieId))
+            listener.invoke(favouriteRepository.isMovieFavourite(movieId))
         }
     }
 
@@ -81,8 +80,8 @@ class MainViewModel @ViewModelInject constructor(
         repository.removeMoviesByQuery(queryString)
     }
 
-    fun getYTSQuery(moviesListener: MoviesListener, queryMap: Map<String, String>) {
-        moviesListener.onStarted()
+    fun getYTSQuery(movieCallback: MoviesCallback, queryMap: Map<String, String>) {
+        movieCallback.onStarted?.invoke()
 
         Coroutines.io {
             try {
@@ -90,14 +89,14 @@ class MainViewModel @ViewModelInject constructor(
 
                 if (isFetchNeeded(queryString)) {
                     Log.e(TAG, "=> Fetching New data, $queryString")
-                    fetchNewData(moviesListener, queryMap)
+                    fetchNewData(movieCallback, queryMap)
                 } else {
                     Log.e(TAG, "=> Getting data from repository, $queryString")
                     repository.getMoviesByQuery(
                         queryString
                     )?.let {
                         Coroutines.main {
-                            moviesListener.onComplete(
+                            movieCallback.onComplete.invoke(
                                 it.movies,
                                 queryMap,
                                 it.isMore
@@ -107,13 +106,13 @@ class MainViewModel @ViewModelInject constructor(
                 }
 
             } catch (e: Exception) {
-                Coroutines.main { moviesListener.onFailure(e) }
+                Coroutines.main { movieCallback.onFailure?.invoke(e) }
             }
         }
     }
 
-    fun getFeaturedMovies(moviesListener: MoviesListener) {
-        moviesListener.onStarted()
+    fun getFeaturedMovies(moviesCallback: MoviesCallback) {
+        moviesCallback.onStarted?.invoke()
 
         Coroutines.main {
             try {
@@ -131,18 +130,18 @@ class MainViewModel @ViewModelInject constructor(
 
                         repository.saveMovies(mainModel)
 
-                        moviesListener.onComplete(
+                        moviesCallback.onComplete.invoke(
                             list,
                             QueryConverter.toMapfromString(FEATURED_QUERY),
                             false
                         )
-                    } else moviesListener.onFailure(Exception("Empty movie list"))
+                    } else moviesCallback.onFailure?.invoke(Exception("Empty movie list"))
                 } else {
                     Log.e(TAG, "=> Featured: Getting data from repository")
                     repository.getMoviesByQuery(
                         FEATURED_QUERY
                     )?.let {
-                        moviesListener.onComplete(
+                        moviesCallback.onComplete(
                             it.movies,
                             queryMap,
                             it.isMore
@@ -150,12 +149,13 @@ class MainViewModel @ViewModelInject constructor(
                     }
                 }
             } catch (e: Exception) {
-                moviesListener.onFailure(e)
+                moviesCallback.onFailure?.invoke(e)
             }
         }
     }
 
-    private suspend fun fetchFeaturedData(moviesListener: MoviesListener, queryString: String) {
+    // TODO: You need this
+    private suspend fun fetchFeaturedData(movieCallback: MoviesCallback, queryString: String) {
         val list = ytsFeaturedUtils.fetch()
         if (list.isNotEmpty()) {
             val mainModel = data_main(
@@ -168,17 +168,17 @@ class MainViewModel @ViewModelInject constructor(
             repository.saveMovies(mainModel)
 
             Coroutines.main {
-                moviesListener.onComplete(
+                movieCallback.onComplete.invoke(
                     list,
                     QueryConverter.toMapfromString(queryString),
                     false
                 )
             }
-        } else Coroutines.main { moviesListener.onFailure(Exception("Empty movie list")) }
+        } else Coroutines.main { movieCallback.onFailure?.invoke(Exception("Empty movie list")) }
     }
 
     private suspend fun fetchNewData(
-        moviesListener: MoviesListener,
+        movieCallback: MoviesCallback,
         queryMap: Map<String, String>
     ) {
         val response = ytsApi.listMovies(queryMap).await()
@@ -217,14 +217,14 @@ class MainViewModel @ViewModelInject constructor(
             repository.saveMovies(mainModel)
 
             Coroutines.main {
-                moviesListener.onComplete(
+                movieCallback.onComplete.invoke(
                     movieList,
                     queryMap,
                     isMoreAvailable
                 )
             }
 
-        } else Coroutines.main { moviesListener.onFailure(Exception("Empty movie list")) }
+        } else Coroutines.main { movieCallback.onFailure?.invoke(Exception("Empty movie list")) }
     }
 
     private suspend fun isFetchNeeded(queryString: String): Boolean {

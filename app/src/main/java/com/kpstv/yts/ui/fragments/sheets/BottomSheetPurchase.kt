@@ -13,7 +13,7 @@ import com.kpstv.purchase.PurchaseHelper
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
 import com.kpstv.yts.databinding.BottomSheetPurchaseBinding
-import com.kpstv.yts.extensions.ExtendedBottomSheetDialogFragment
+import com.kpstv.yts.extensions.views.ExtendedBottomSheetDialogFragment
 import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.extensions.invisible
 import com.kpstv.yts.extensions.show

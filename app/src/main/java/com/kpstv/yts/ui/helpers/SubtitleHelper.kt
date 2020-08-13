@@ -11,7 +11,6 @@ import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
 import com.kpstv.yts.adapters.SelectSubAdapter
 import com.kpstv.yts.data.models.SelectSubtitle
-import com.kpstv.yts.interfaces.listener.SingleClickListener
 import com.kpstv.yts.ui.fragments.sheets.BottomSheetSubtitles
 import java.io.File
 import java.util.*
@@ -59,21 +58,17 @@ class SubtitleHelper {
                 onlySuchFiles.mapTo(list) { SelectSubtitle(it) }
 
                 singleAdapter = SelectSubAdapter(list)
-                singleAdapter?.setOnClickListener(object :
-                    SingleClickListener {
-                    override fun onClick(obj: Any, i: Int) {
-                        onlySuchFiles.indices.forEach { c ->
-                            if (list[c].isChecked && i != c) {
-                                list[c].isChecked = false
-                                singleAdapter?.notifyItemChanged(c)
-                            }
+                singleAdapter?.setOnClickListener { selectSubtitle, i ->
+                    onlySuchFiles.indices.forEach { c ->
+                        if (list[c].isChecked && i != c) {
+                            list[c].isChecked = false
+                            singleAdapter?.notifyItemChanged(c)
                         }
-
-                        list[i].isChecked = !list[i].isChecked
-                        singleAdapter?.notifyItemChanged(i)
                     }
-                })
 
+                    list[i].isChecked = !list[i].isChecked
+                    singleAdapter?.notifyItemChanged(i)
+                }
                 recyclerView.layoutManager = LinearLayoutManager(activity.applicationContext)
                 recyclerView.adapter = singleAdapter
             } else commonNoSubtitle()

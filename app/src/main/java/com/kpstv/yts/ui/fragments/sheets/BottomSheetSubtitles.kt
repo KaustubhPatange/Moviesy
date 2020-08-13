@@ -24,9 +24,12 @@ import com.kpstv.yts.AppInterface.Companion.YIFY_BASE_URL
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.Subtitle
 import com.kpstv.yts.databinding.BottomSheetSubtitlesBinding
-import com.kpstv.yts.extensions.ExtendedBottomSheetDialogFragment
-import com.kpstv.yts.extensions.utils.*
-import com.kpstv.yts.interfaces.listener.SingleClickListener
+import com.kpstv.yts.extensions.AdapterOnSingleClick
+import com.kpstv.yts.extensions.utils.AppUtils
+import com.kpstv.yts.extensions.utils.FlagUtils
+import com.kpstv.yts.extensions.utils.GlideApp
+import com.kpstv.yts.extensions.utils.ZipUtility
+import com.kpstv.yts.extensions.views.ExtendedBottomSheetDialogFragment
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import com.kpstv.yts.ui.helpers.InterstitialAdHelper
 import dagger.hilt.android.AndroidEntryPoint
@@ -55,6 +58,7 @@ class BottomSheetSubtitles : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
 
     @Inject
     lateinit var flagUtils: FlagUtils
+
     @Inject
     lateinit var interstitialAdHelper: InterstitialAdHelper
 
@@ -113,15 +117,12 @@ class BottomSheetSubtitles : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
                             flagUtils = flagUtils,
                             models = subtitleModels
                         )
-                    adapter.setOnSingleClickListener(object :
-                        SingleClickListener {
-                        override fun onClick(obj: Any, i: Int) {
-                            /** @Admob Show ad first and then download subtitles */
-                            interstitialAdHelper.showAd {
-                                parseSubtitle(obj as Subtitle, i)
-                            }
+                    adapter.setOnSingleClickListener { subtitle, i ->
+                        /** @Admob Show ad first and then download subtitles */
+                        interstitialAdHelper.showAd {
+                            parseSubtitle(subtitle, i)
                         }
-                    })
+                    }
                     recyclerView_subtitles.setHasFixedSize(true)
                     recyclerView_subtitles.adapter = adapter
 
@@ -297,7 +298,7 @@ class BottomSheetSubtitles : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
         var models: List<Subtitle>
     ) : RecyclerView.Adapter<SubtitleAdapter.SubtitleHolder>() {
 
-        private lateinit var listener: SingleClickListener
+        private lateinit var listener: AdapterOnSingleClick<Subtitle>
 
         override fun onBindViewHolder(holder: SubtitleHolder, i: Int) {
             val model = models[i]
@@ -344,11 +345,11 @@ class BottomSheetSubtitles : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
             }
 
             holder.mainCard.setOnClickListener {
-                listener.onClick(model, i)
+                listener.invoke(model, i)
             }
         }
 
-        fun setOnSingleClickListener(listener: SingleClickListener) {
+        fun setOnSingleClickListener(listener: AdapterOnSingleClick<Subtitle>) {
             this.listener = listener
         }
 

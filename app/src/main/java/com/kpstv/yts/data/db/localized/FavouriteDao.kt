@@ -15,9 +15,18 @@ interface FavouriteDao {
     @Query("select * from table_favourites")
     fun getAllData(): LiveData<List<Model.response_favourite>>
 
+    @Query("delete from table_favourites where movieId = :movieId")
+    suspend fun delete(movieId: Int)
+
     @Delete
-    fun delete(data: Model.response_favourite)
+    suspend fun delete(data: Model.response_favourite)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun saveAllData(quotes : List<Model.response_favourite>)
+
+    @Query("select exists(select 1 from table_favourites where movieId = :movieId limit 1)")
+    fun isDataExistLive(movieId: Int): LiveData<Boolean>
+
+    @Query("select exists(select 1 from table_favourites where movieId = :movieId limit 1)")
+    fun isDataExist(movieId: Int): Boolean
 }

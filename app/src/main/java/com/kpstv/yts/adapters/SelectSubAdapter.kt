@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.SelectSubtitle
-import com.kpstv.yts.interfaces.listener.SingleClickListener
+import com.kpstv.yts.extensions.AdapterOnSingleClick
 import kotlinx.android.synthetic.main.item_single.view.*
 
 class SelectSubAdapter(
@@ -14,7 +14,7 @@ class SelectSubAdapter(
 ):
     RecyclerView.Adapter<SelectSubAdapter.SingleListHolder>() {
 
-    private lateinit var singleClickListener: SingleClickListener
+    private lateinit var adapterOnSingleClick: AdapterOnSingleClick<SelectSubtitle>
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SingleListHolder {
         return SingleListHolder(
@@ -29,11 +29,11 @@ class SelectSubAdapter(
         holder.checkBox.isChecked = model.isChecked
 
         holder.txtView.text = model.text
-        holder.layout.setOnClickListener { singleClickListener.onClick(model,i) }
+        holder.layout.setOnClickListener { adapterOnSingleClick.invoke(model,i) }
     }
 
-    fun setOnClickListener(singleClickListener: SingleClickListener) {
-        this.singleClickListener = singleClickListener
+    fun setOnClickListener(adapterOnSingleClick: AdapterOnSingleClick<SelectSubtitle>) {
+        this.adapterOnSingleClick = adapterOnSingleClick
     }
 
     override fun getItemCount(): Int {

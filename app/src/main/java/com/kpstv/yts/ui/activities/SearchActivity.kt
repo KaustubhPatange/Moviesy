@@ -26,16 +26,11 @@ import com.kpstv.yts.adapters.SearchAdapter
 import com.kpstv.yts.data.CustomDataSource.Companion.INITIAL_QUERY_FETCHED
 import com.kpstv.yts.data.converters.QueryConverter
 import com.kpstv.yts.data.models.MovieShort
-import com.kpstv.yts.data.models.TmDbMovie
 import com.kpstv.yts.databinding.ActivitySearchBinding
-import com.kpstv.yts.extensions.MovieBase
-import com.kpstv.yts.extensions.YTSQuery
-import com.kpstv.yts.extensions.hide
-import com.kpstv.yts.extensions.show
-import com.kpstv.yts.extensions.utils.AppUtils.Companion.hideKeyboard
+import com.kpstv.yts.extensions.*
 import com.kpstv.yts.extensions.common.CustomMovieLayout
+import com.kpstv.yts.extensions.utils.AppUtils.Companion.hideKeyboard
 import com.kpstv.yts.extensions.utils.RetrofitUtils
-import com.kpstv.yts.interfaces.listener.SuggestionListener
 import com.kpstv.yts.ui.activities.MoreActivity.Companion.base
 import com.kpstv.yts.ui.activities.MoreActivity.Companion.queryMap
 import com.kpstv.yts.ui.helpers.AdaptiveSearchHelper
@@ -229,13 +224,8 @@ class SearchActivity : AppCompatActivity() {
                         /** This will show suggestion layout
                          */
                         adapter.currentList?.get(0)?.imdbCode?.let { imdbCode ->
-                            finalViewModel.getSuggestions(object : SuggestionListener {
-                                override fun onStarted() {} // Ignore AF...
-                                override fun onComplete(
-                                    movies: ArrayList<TmDbMovie>,
-                                    tag: String?,
-                                    isMoreAvailable: Boolean
-                                ) {
+                            finalViewModel.getSuggestions(imdbCode, SuggestionCallback(
+                                onComplete = { movies, tag, isMoreAvailable ->
                                     val layout =
                                         CustomMovieLayout(
                                             this@SearchActivity,
@@ -248,9 +238,7 @@ class SearchActivity : AppCompatActivity() {
                                         isMoreAvailable
                                     )
                                 }
-
-                                override fun onFailure(e: Exception) {} // Ignore exception
-                            }, imdbCode)
+                            ))
                         }
                     }
                 }

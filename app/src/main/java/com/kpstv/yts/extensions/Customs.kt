@@ -11,12 +11,6 @@ import com.kpstv.yts.ui.fragments.GenreFragment
 import kotlinx.coroutines.*
 import java.io.File
 
-typealias SessionCallback = (Model.response_download?, Int) -> Unit
-typealias SimpleCallback = () -> Unit
-typealias AccountCallback = (GoogleSignInAccount) -> Unit
-typealias ExceptionCallback = (Exception) -> Unit
-typealias ParcelableCallback = (Parcelable) -> Unit
-
 fun <T> lazyDeferred(block: suspend CoroutineScope.() -> T): Lazy<Deferred<T>> {
     return lazy {
         GlobalScope.async(start = CoroutineStart.LAZY) {

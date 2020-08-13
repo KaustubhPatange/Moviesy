@@ -24,7 +24,7 @@ import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.data.models.TmDbMovie
 import com.kpstv.yts.extensions.ExceptionCallback
 import com.kpstv.yts.extensions.MovieBase
-import com.kpstv.yts.interfaces.listener.MoviesListener
+import com.kpstv.yts.extensions.MoviesCallback
 import com.kpstv.yts.ui.activities.MoreActivity
 import com.kpstv.yts.ui.fragments.sheets.BottomSheetQuickInfo
 import com.kpstv.yts.ui.viewmodels.MainViewModel
@@ -124,23 +124,16 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
         base = MovieBase.YTS
         mainViewModel = viewModel
 
-        val listener = object : MoviesListener {
-            override fun onStarted() {}
-
-            override fun onFailure(e: Exception) {
+        val listener = MoviesCallback(
+            onFailure = { e ->
                 e.printStackTrace()
                 onFailure?.invoke(e)
-            }
-
-            override fun onComplete(
-                movies: ArrayList<MovieShort>,
-                queryMap: Map<String, String>,
-                isMoreAvailable: Boolean
-            ) {
+            },
+            onComplete = { movies, queryMap, isMoreAvailable ->
                 this@CustomMovieLayout.isMoreAvailable = isMoreAvailable
                 setupCallbacksNoMore(movies, queryMap, viewModel)
             }
-        }
+        )
 
         if (!isRestoringConfiguration())
             viewModel.getFeaturedMovies(listener)
@@ -170,28 +163,20 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
         mainViewModel = viewModel
         this.queryMap = queryMap
 
-        val listener = object : MoviesListener {
-            override fun onStarted() {}
-
-            override fun onFailure(e: Exception) {
+        val listener = MoviesCallback(
+            onFailure = { e ->
                 handleRetrofitError(context, e)
                 e.printStackTrace()
-            }
-
-            override fun onComplete(
-                movies: ArrayList<MovieShort>,
-                queryMap: Map<String, String>,
-                isMoreAvailable: Boolean
-            ) {
+            },
+            onComplete = { movies, map, isMoreAvailable ->
                 this@CustomMovieLayout.isMoreAvailable = isMoreAvailable
                 models = movies
                 setupRecyclerView(models, viewModel)
                 if (isMoreAvailable)
-                    setupMoreButton(queryMap)
+                    setupMoreButton(map)
                 else hideMoreCallbacks()
             }
-
-        }
+        )
 
         /** Restoring previous items from recyclerView */
         if (!isRestoringConfiguration()) {
@@ -338,7 +323,11 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
 
     private fun restoreRecyclerViewState() {
         if (viewModel?.customLayoutRecyclerView?.containsKey(getTag()) == true)
-            recyclerView.layoutManager?.onRestoreInstanceState(viewModel.customLayoutRecyclerView?.get(getTag()))
+            recyclerView.layoutManager?.onRestoreInstanceState(
+                viewModel.customLayoutRecyclerView?.get(
+                    getTag()
+                )
+            )
     }
 
     /** This observer will be bound to the lifecycle of the activity/fragment to

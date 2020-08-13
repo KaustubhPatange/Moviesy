@@ -84,38 +84,6 @@ class AppUtils {
             return spannable
         }
 
-        suspend fun isMovieFavourite(
-            favouriteRepository: FavouriteRepository,
-            movieId: Int
-        ): Boolean {
-            var isExist = false;
-            if (favouriteRepository.getMovieIdByQuery(movieId) != null)
-                isExist = true
-            return isExist
-        }
-
-        suspend fun toggleFavourite(favouriteRepository: FavouriteRepository, movie: Movie): Int? {
-            return if (isMovieFavourite(favouriteRepository, movie.id)) {
-                Log.e(TAG, "=> AppUtils.toggleFavId: already yes")
-                favouriteRepository.deleteMovie(movie.id)
-                R.drawable.ic_favorite_no
-            } else {
-                Log.e(TAG, "=> AppUtils.toggleFavId: already no")
-                favouriteRepository.saveMovie(
-                    Model.response_favourite(
-                        movieId = movie.id,
-                        imdbCode = movie.imdb_code,
-                        title = movie.title,
-                        imageUrl = movie.medium_cover_image,
-                        runtime = movie.runtime,
-                        rating = movie.rating,
-                        year = movie.year
-                    )
-                )
-                R.drawable.ic_favorite_yes
-            }
-        }
-
         @SuppressLint("ResourceType")
         fun launchUrl(context: Context, url: String, dark: Boolean = true) {
             val builder = CustomTabsIntent.Builder()
