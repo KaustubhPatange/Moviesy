@@ -3,15 +3,15 @@ package com.kpstv.yts.data
 import android.content.Context
 import android.util.Log
 import androidx.paging.PageKeyedDataSource
-import com.kpstv.yts.AppInterface.Companion.TMDB_IMAGE_PREFIX
 import com.kpstv.common_moviesy.extensions.Coroutines
-import com.kpstv.yts.extensions.MovieBase
-import com.kpstv.yts.interfaces.api.TMdbApi
-import com.kpstv.yts.interfaces.api.YTSApi
+import com.kpstv.yts.AppInterface.Companion.TMDB_IMAGE_PREFIX
 import com.kpstv.yts.data.models.Movie
 import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.data.models.TmDbMovie
 import com.kpstv.yts.data.models.response.Model
+import com.kpstv.yts.extensions.MovieBase
+import com.kpstv.yts.interfaces.api.TMdbApi
+import com.kpstv.yts.interfaces.api.YTSApi
 import es.dmoral.toasty.Toasty
 import retrofit2.await
 
@@ -54,9 +54,9 @@ class CustomDataSource(
         val split = endPoint?.split("/")
         if (split != null) {
             if (endPoint?.contains("/similar") == true) {
-                return tMdbApi.getSimilars(split[0], page).await()
+                return tMdbApi.getSimilar(split[0], page)
             } else if (endPoint?.contains("/recommendations") == true) {
-                return tMdbApi.getRecommendations(split[0].toInt(), page).await()
+                return tMdbApi.getRecommendations(split[0].toInt(), page)
             }
         }
         return null
@@ -118,7 +118,7 @@ class CustomDataSource(
                     MovieBase.YTS -> {
                         val response = executeYTSQuery(FIRST_PAGE)
                         response?.data?.movies?.let {
-                            callback.onResult(createMovieShort(it),null,FIRST_PAGE + 1)
+                            callback.onResult(createMovieShort(it), null, FIRST_PAGE + 1)
                         }
                     }
                 }
@@ -145,7 +145,7 @@ class CustomDataSource(
                         val response = executeYTSQuery(params.key)
                         response?.data?.movies?.let {
                             val key = if (params.key > 1) params.key - 1 else null
-                            callback.onResult(createMovieShort(it),key)
+                            callback.onResult(createMovieShort(it), key)
                         }
                     }
                 }
@@ -172,9 +172,9 @@ class CustomDataSource(
                         val response = executeYTSQuery(params.key)
                         response?.data?.movies?.let {
                             val key =
-                                if ((response.data.movie_count/response.data.limit) != response.data.page_number)
-                                    params.key +1 else null
-                            callback.onResult(createMovieShort(it),key)
+                                if ((response.data.movie_count / response.data.limit) != response.data.page_number)
+                                    params.key + 1 else null
+                            callback.onResult(createMovieShort(it), key)
                         }
                     }
                 }

@@ -22,10 +22,6 @@ import javax.inject.Singleton
 class RetrofitUtils @Inject constructor(
     private val interceptor: com.kpstv.yts.extensions.interceptors.NetworkConnectionInterceptor
 ) {
-    private var retrofitBuilder: Retrofit.Builder? = null
-    private var client: OkHttpClient? = null
-    private val TAG = javaClass.simpleName
-
     fun getRetrofitBuilder(): Retrofit.Builder {
         return Retrofit.Builder().apply {
             addCallAdapterFactory(CoroutineCallAdapterFactory())

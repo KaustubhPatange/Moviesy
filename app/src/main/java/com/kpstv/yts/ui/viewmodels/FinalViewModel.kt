@@ -4,26 +4,26 @@ import android.annotation.SuppressLint
 import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
+import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppInterface.Companion.MOVIE_SPAN_DIFFERENCE
 import com.kpstv.yts.AppInterface.Companion.MainDateFormatter
 import com.kpstv.yts.AppInterface.Companion.TMDB_IMAGE_PREFIX
-import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.data.db.repository.FavouriteRepository
 import com.kpstv.yts.data.db.repository.MovieRepository
 import com.kpstv.yts.data.db.repository.TMdbRepository
-import com.kpstv.common_moviesy.extensions.Coroutines
+import com.kpstv.yts.data.models.Cast
+import com.kpstv.yts.data.models.Movie
+import com.kpstv.yts.data.models.TmDbMovie
+import com.kpstv.yts.data.models.data.data_tmdb
 import com.kpstv.yts.extensions.MovieType
+import com.kpstv.yts.extensions.YTSQuery
+import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.interfaces.api.TMdbApi
 import com.kpstv.yts.interfaces.api.YTSApi
 import com.kpstv.yts.interfaces.listener.FavouriteListener
 import com.kpstv.yts.interfaces.listener.MovieListener
 import com.kpstv.yts.interfaces.listener.SuggestionListener
-import com.kpstv.yts.data.models.Cast
-import com.kpstv.yts.data.models.Movie
-import com.kpstv.yts.data.models.TmDbMovie
-import com.kpstv.yts.data.models.data.data_tmdb
-import com.kpstv.yts.extensions.utils.AppUtils
 import retrofit2.await
 import java.text.SimpleDateFormat
 import java.util.*
@@ -50,7 +50,7 @@ class FinalViewModel @ViewModelInject constructor(
         }
     }
 
-    fun toggleFavourite(listener: FavouriteListener, movie: Movie){
+    fun toggleFavourite(listener: FavouriteListener, movie: Movie) {
         Coroutines.main {
             listener.onToggleFavourite(AppUtils.toggleFavourite(favouriteRepository, movie))
         }
@@ -89,7 +89,7 @@ class FinalViewModel @ViewModelInject constructor(
                  * so we first need to get details of the TMDB movie to
                  * extract IMDB Id.
                  */
-                val responseMovie = tMdbApi.getMovie(queryString).await()
+                val responseMovie = tMdbApi.getMovie(queryString)
 
                 val query = YTSQuery.ListMoviesBuilder().apply {
                     setQuery(responseMovie.imdb_id)
@@ -106,7 +106,7 @@ class FinalViewModel @ViewModelInject constructor(
 
                     /** A patch that will modify movie and inject cast
                      */
-                    val response1 = tMdbApi.getCast(movie.imdb_code).await()
+                    val response1 = tMdbApi.getCast(movie.imdb_code)
                     if (response1.cast?.isNotEmpty() == true) {
                         val list = ArrayList<Cast>()
                         response1.cast.forEach {
@@ -149,11 +149,11 @@ class FinalViewModel @ViewModelInject constructor(
                     /** Since Recommendation query needs only TMDB movie id,
                      *  we first get the movie from tMdbApi to fetch the movie id
                      */
-                    val response = tMdbApi.getMovie(imdbId).await()
+                    val response = tMdbApi.getMovie(imdbId)
 
                     /** Now we will fetch the recommendations using the movie id
                      */
-                    val response1 = tMdbApi.getRecommendations(response.id).await()
+                    val response1 = tMdbApi.getRecommendations(response.id)
 
                     commonProcessTMdbMovies(
                         suggestionListener,
@@ -183,7 +183,7 @@ class FinalViewModel @ViewModelInject constructor(
                 if (isFetchNeeded(imdbId, MovieType.Suggestion)) {
                     Log.e(TAG, "=> Fetching New data")
 
-                    val response = tMdbApi.getSimilars(imdbId).await()
+                    val response = tMdbApi.getSimilar(imdbId)
 
                     commonProcessTMdbMovies(
                         suggestionListener,
@@ -240,7 +240,8 @@ class FinalViewModel @ViewModelInject constructor(
     /** A common processing function for managing Suggestion and Recommend data list.
      *  The function is also responsible for saving data to database.
      */
-    @Synchronized private fun commonProcessTMdbMovies(
+    @Synchronized
+    private fun commonProcessTMdbMovies(
         suggestionListener: SuggestionListener,
         movies: ArrayList<TmDbMovie>,
         imdbId: String,

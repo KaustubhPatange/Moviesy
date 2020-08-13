@@ -100,7 +100,7 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
             if (b) binding.chipWebrip.isChecked = false
             filterChips()
         }
-        
+
         binding.chipWebrip.setOnCheckedChangeListener { _: CompoundButton, b: Boolean ->
             if (b) binding.chipBlueray.isChecked = false
             filterChips()
@@ -132,7 +132,10 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
                             i.putExtra(TorrentPlayerActivity.ARG_TORRENT_LINK, torrent.url)
 
                             if (::subtitleHelper.isInitialized) {
-                                i.putExtra(TorrentPlayerActivity.ARG_SUBTITLE_NAME, subtitleHelper.getSelectedSubtitle()?.name)
+                                i.putExtra(
+                                    TorrentPlayerActivity.ARG_SUBTITLE_NAME,
+                                    subtitleHelper.getSelectedSubtitle()?.name
+                                )
                             }
 
                             requireContext().startActivity(i)
@@ -160,7 +163,11 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
                             torrent.url.substring(torrent.url.lastIndexOf("/") + 1), title
                         )
                     )
-                    startActivity(intent)
+                    try {
+                        startActivity(intent)
+                    } catch (e: Exception) {
+                        Toasty.error(requireContext(), getString(R.string.no_action)).show()
+                    }
                 }
             }
         })

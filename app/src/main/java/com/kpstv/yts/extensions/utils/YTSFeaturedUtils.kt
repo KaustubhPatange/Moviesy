@@ -20,7 +20,7 @@ class YTSFeaturedUtils @Inject constructor(
     suspend fun fetch(): ArrayList<MovieShort> {
         val list = ArrayList<MovieShort>()
         try {
-            val client = OkHttpClient.Builder()
+            val client = retrofitUtils.getHttpBuilder()
                 .callTimeout(120, TimeUnit.SECONDS)
                 .connectTimeout(100, TimeUnit.SECONDS)
                 .readTimeout(100, TimeUnit.SECONDS)
