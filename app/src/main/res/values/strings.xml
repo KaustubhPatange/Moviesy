@@ -174,4 +174,6 @@ Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus d
     <string name="unlock_premium">Unlock premium</string>
     <string name="unlock_premium_text">Unlock complete features of the app by paying one-time payment for a reasonable price.</string>
     <string name="no_action">No supported action found</string>
+    <string name="torrent_connect_attempt">Attempting to connect torrent, this might take a while</string>
+    <string name="torrent_connect_success">Successfully connected, waiting for it to be ready</string>
 </resources>

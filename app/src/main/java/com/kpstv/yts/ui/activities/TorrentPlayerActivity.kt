@@ -14,14 +14,15 @@ import com.github.se_bastiaan.torrentstream.Torrent
 import com.github.se_bastiaan.torrentstream.TorrentOptions
 import com.github.se_bastiaan.torrentstream.TorrentStream
 import com.github.se_bastiaan.torrentstream.listeners.TorrentListener
+import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.AppInterface.Companion.ANONYMOUS_TORRENT_DOWNLOAD
 import com.kpstv.yts.AppInterface.Companion.STREAM_LOCATION
 import com.kpstv.yts.AppInterface.Companion.SUBTITLE_LOCATION
-import com.kpstv.yts.extensions.utils.SubtitleUtils
+import com.kpstv.yts.R
 import com.kpstv.yts.data.models.SubHolder
 import com.kpstv.yts.databinding.ActivityTorrentPlayerBinding
-import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.extensions.hide
+import com.kpstv.yts.extensions.utils.SubtitleUtils
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
@@ -183,6 +184,8 @@ class TorrentPlayerActivity : AppCompatActivity() {
         torrentStream.addListener(object : TorrentListener {
             override fun onStreamPrepared(torrent: Torrent) {
                 Log.e(TAG, "onStreamPrepared() called with: torrent = [$torrent]")
+                Toasty.info(this@TorrentPlayerActivity, getString(R.string.torrent_connect_success))
+                    .show()
             }
 
             override fun onStreamStarted(torrent: Torrent) {
@@ -220,6 +223,7 @@ class TorrentPlayerActivity : AppCompatActivity() {
             }
         })
         torrentStream.startStream(link)
+        Toasty.info(this, getString(R.string.torrent_connect_attempt)).show()
     }
 
     /** A common function to load player
@@ -306,7 +310,11 @@ class TorrentPlayerActivity : AppCompatActivity() {
                 }
                 subtitleHandler.postDelayed(this, 100)
             } catch (e: Exception) {
-                Toasty.error(this@TorrentPlayerActivity, "Subtitle crashed due to: ${e.message}")
+                Toasty.error(
+                    this@TorrentPlayerActivity,
+                    "Subtitle crashed due to: ${e.message}",
+                    Toasty.LENGTH_LONG
+                )
                     .show()
                 subtitleHandler.removeCallbacks(this)
             }

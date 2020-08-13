@@ -185,9 +185,10 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
             model.banner_url = imageUri
             model.imdbCode = imdbCode
             model.movieId = movieId as Int
-            val serviceIntent = Intent(context, DownloadService::class.java)
+            val serviceIntent = Intent(requireContext(), DownloadService::class.java)
             serviceIntent.putExtra(DownloadService.TORRENT_JOB, model)
-            ContextCompat.startForegroundService(requireContext(), serviceIntent)
+            requireContext().startService(serviceIntent)
+//            ContextCompat.startForegroundService(requireContext(), serviceIntent)
 
             return true
         } else {

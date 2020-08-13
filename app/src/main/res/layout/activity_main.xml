@@ -47,22 +47,40 @@
         android:id="@+id/navigationView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="start"
         android:background="?colorForeground"
         android:fitsSystemWindows="true"
+        android:layout_gravity="start"
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/nav_drawer">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
+            android:layout_marginBottom="10dp"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
             <include
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 android:id="@+id/custom_drawer_premium"
                 layout="@layout/custom_drawer_premium" />
-        </LinearLayout>
+
+            <ImageView
+                android:background="?selectableItemBackgroundBorderless"
+                android:id="@+id/iv_report"
+                android:clickable="true"
+                android:focusable="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:padding="10dp"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_report_bug"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.navigation.NavigationView>
 

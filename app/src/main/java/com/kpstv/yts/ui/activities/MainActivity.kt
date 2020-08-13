@@ -75,6 +75,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         setPremiumButtonClicked()
 
+        setBugReportClick()
+
         navController = findNavController(R.id.nav_host_fragment)
 
         /** I am not using setupWithNavController options to let it automatically
@@ -91,6 +93,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
          */
 
         binding.bottomNav.setOnNavigationItemSelectedListener(bottomNavListener)
+    }
+
+    private fun setBugReportClick() {
+        binding.ivReport.setOnClickListener {
+            AppUtils.launchUrl(this, "${getString(R.string.app_github)}/issues", IS_DARK_THEME)
+        }
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {

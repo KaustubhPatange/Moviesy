@@ -5,6 +5,7 @@ import android.util.Log
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
+import com.google.android.gms.ads.LoadAdError
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.BuildConfig
 import com.kpstv.yts.extensions.SimpleCallback
@@ -27,11 +28,14 @@ class InterstitialAdHelper @Inject constructor(
                 super.onAdClosed()
                 mInterstitialAd.loadAd(AdRequest.Builder().build())
 
-                try {
-                    onAdClosed?.invoke()
-                } catch (e: Exception) {
-                    Log.w(TAG, "Something unexpected happened", e)
-                }
+                invokeCallback()
+            }
+
+            override fun onAdFailedToLoad(p0: LoadAdError?) {
+                super.onAdFailedToLoad(p0)
+                mInterstitialAd.loadAd(AdRequest.Builder().build())
+
+                invokeCallback()
             }
         }
 
@@ -41,6 +45,14 @@ class InterstitialAdHelper @Inject constructor(
             mInterstitialAd.adUnitId = "ca-app-pub-1164424526503510/1732829085"
 
         mInterstitialAd.loadAd(AdRequest.Builder().build())
+    }
+
+    private fun invokeCallback() {
+        try {
+            onAdClosed?.invoke()
+        } catch (e: Exception) {
+            Log.w(TAG, "Something unexpected happened", e)
+        }
     }
 
     fun showAd(onAdClosed: SimpleCallback? = null) {
@@ -55,6 +67,7 @@ class InterstitialAdHelper @Inject constructor(
             mInterstitialAd.show()
         } else {
             Log.e(TAG, "The interstitial wasn't loaded yet.")
+            onAdClosed?.invoke()
         }
     }
 }

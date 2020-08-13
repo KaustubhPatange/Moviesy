@@ -1,42 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/mainCard"
-    android:focusable="true"
-    android:clickable="true"
-    android:background="?selectableItemBackground"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
     android:paddingTop="7dp"
     android:paddingBottom="7dp">
-
-
 
     <ImageView
         android:id="@+id/item_flag"
         android:layout_width="40dp"
         android:layout_height="26dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/test_flag"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
-        android:layout_marginEnd="20dp"
-        android:singleLine="true"
-        android:ellipsize="end"
         android:id="@+id/item_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:text="Interstellar.2014.720p.BluRay.x264.[YTS.AG]"
+        android:layout_marginEnd="20dp"
+        android:ellipsize="end"
+        android:singleLine="true"
         android:textColor="?attr/colorText"
         android:textSize="14sp"
         app:layout_constraintEnd_toStartOf="@id/item_likes"
         app:layout_constraintStart_toEndOf="@id/item_flag"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@tools:sample/lorem/random" />
 
     <TextView
         android:id="@+id/item_subText"
@@ -45,40 +43,41 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="2dp"
         android:fontFamily="@font/google_sans_regular"
-        android:text="English &#8226; sub"
         android:textColor="?attr/colorTextLight"
         android:textSize="13sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/item_likes"
         app:layout_constraintStart_toEndOf="@id/item_flag"
-        app:layout_constraintTop_toBottomOf="@id/item_text" />
+        app:layout_constraintTop_toBottomOf="@id/item_text"
+        tools:text="English &#8226; sub" />
 
     <TextView
-        android:textColor="?colorTextLight"
-        android:background="@color/green"
         android:id="@+id/item_likes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:paddingEnd="7dp"
-        android:paddingStart="7dp"
-        android:text="2"
         android:layout_marginEnd="7dp"
+        android:background="@color/green"
+        android:gravity="center"
+        android:paddingStart="7dp"
+        android:paddingEnd="7dp"
+        android:text="0"
+        android:textColor="?colorTextLight"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="HardcodedText" />
 
     <ProgressBar
         android:id="@+id/item_progressBar"
-        android:indeterminate="true"
-        android:indeterminateTintMode="src_atop"
-        android:indeterminateTint="?attr/colorPrimary"
-        android:layout_marginEnd="3dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_width="35dp"
-        android:layout_height="35dp"/>
+        android:layout_height="35dp"
+        android:layout_marginEnd="3dp"
+        android:indeterminate="true"
+        android:indeterminateTint="?attr/colorPrimary"
+        android:indeterminateTintMode="src_atop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

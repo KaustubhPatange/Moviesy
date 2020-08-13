@@ -56,7 +56,7 @@ import kotlin.collections.ArrayList
 class DownloadService : IntentService("blank") {
 
     companion object {
-        const val TORRENT_JOB = "com.kpstv.yts.add_job"
+        const val TORRENT_JOB = "torrent_job"
     }
 
     @Inject

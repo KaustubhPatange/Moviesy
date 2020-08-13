@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mainLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?selectableItemBackground"
     android:clickable="true"
     android:focusable="true"
-    android:background="?selectableItemBackground"
-    android:layout_height="wrap_content"
     android:padding="15dp">
 
     <com.google.android.material.card.MaterialCardView
@@ -21,24 +22,26 @@
         <FrameLayout
             android:layout_width="65dp"
             android:layout_height="98dp">
+
             <ImageView
                 android:id="@+id/item_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                android:src="@drawable/large_cover" />
+                android:scaleType="fitXY" />
         </FrameLayout>
+
         <com.facebook.shimmer.ShimmerFrameLayout
             android:id="@+id/shimmerFrame"
-            android:background="?colorTextInverse"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="?colorTextInverse">
+
             <ImageView
-                app:tint="?attr/colorBackground"
-                android:layout_gravity="center"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/ic_play_circle"/>
+                android:layout_gravity="center"
+                android:src="@drawable/ic_play_circle"
+                app:tint="?attr/colorBackground" />
         </com.facebook.shimmer.ShimmerFrameLayout>
 
     </com.google.android.material.card.MaterialCardView>
@@ -48,12 +51,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
-        android:text="@string/af_title"
         android:textColor="?colorTextLight"
         android:textSize="15sp"
         app:layout_constraintEnd_toStartOf="@+id/item_remove_favourites"
         app:layout_constraintStart_toEndOf="@id/item_imageCard"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/af_title" />
 
     <TextView
         android:id="@+id/item_subText"
@@ -62,23 +65,22 @@
         android:layout_marginStart="15dp"
         android:layout_marginTop="5dp"
         android:fontFamily="@font/google_sans_regular"
-        android:text="2013 &#8226; 182 mins"
         android:textSize="14sp"
         app:layout_constraintEnd_toStartOf="@+id/item_remove_favourites"
         app:layout_constraintStart_toEndOf="@id/item_imageCard"
-        app:layout_constraintTop_toBottomOf="@id/item_title" />
+        app:layout_constraintTop_toBottomOf="@id/item_title"
+        tools:text="2013 &#8226; 182 mins" />
 
     <ImageView
-
+        android:id="@+id/item_remove_favourites"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground"
         android:paddingStart="15dp"
         android:paddingEnd="15dp"
         android:paddingBottom="15dp"
-        android:background="?selectableItemBackground"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:src="@drawable/ic_favorite_yes"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:id="@+id/item_remove_favourites"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
