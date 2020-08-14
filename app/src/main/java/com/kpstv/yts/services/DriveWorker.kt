@@ -15,8 +15,9 @@ import com.google.api.services.drive.DriveScopes
 import com.kpstv.yts.R
 import com.kpstv.yts.data.db.repository.FavouriteRepository
 import com.kpstv.yts.ui.helpers.DriveHelper
-import kotlinx.coroutines.delay
+import okhttp3.internal.filterList
 import org.json.JSONObject
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.*
 
@@ -41,10 +42,45 @@ class DriveWorker @WorkerInject constructor(
                     return Result.success()
             }
             DriveHelper.Caller.RESTORE_DATA -> {
-
+                return restoreUserData()
             }
         }
         return Result.failure()
+    }
+
+    private suspend fun restoreUserData(): Result {
+        /** Get all file list */
+        val files = drive.files().list()
+            .setSpaces(APP_DATA_FOLDER)
+            .setFields("nextPageToken, files(id, name, modifiedTime)")
+            .setPageSize(10)
+            .execute().files.filterList { name == APP_DATA_FILE }
+
+        /** Check if files are not empty */
+        if (files.isEmpty()) {
+            return Result.failure(
+                workDataOf(
+                    Pair(
+                        EXCEPTION,
+                        applicationContext.getString(R.string.drive_restore_empty)
+                    )
+                )
+            )
+        }
+
+        /** Grab the latest file and download it. */
+        val latestFile = files[0]
+        val outputStream = ByteArrayOutputStream()
+        drive.files().get(latestFile.id)
+            .executeMediaAndDownloadTo(outputStream)
+        val outText = String(outputStream.toByteArray())
+
+        Log.e(TAG, "Latest Content: $outText")
+
+        /** Start restoring contents */
+        favouriteRepository.importAllDataFromJSON(outText)
+
+        return Result.success()
     }
 
     private suspend fun backupUserData(): File {
@@ -54,17 +90,16 @@ class DriveWorker @WorkerInject constructor(
         mainData.put(FavouriteRepository.FAVOURITES, favouriteRepositoryData)
 
         // Write to file
-        val cacheFile = File(applicationContext.externalCacheDir, "data.json")
+        val cacheFile = File(applicationContext.externalCacheDir, APP_DATA_FILE)
         cacheFile.writeText(mainData.toString())
-        Log.e(TAG, "CacheFile: $mainData")
         return cacheFile
     }
 
     private fun uploadFile(file: File): Boolean {
         return try {
             val fileMetadata = com.google.api.services.drive.model.File().apply {
-                name = "data.json"
-                parents = Collections.singletonList("appDataFolder")
+                name = APP_DATA_FILE
+                parents = Collections.singletonList(APP_DATA_FOLDER)
             }
             val mediaContent = FileContent("application/json", file)
             val uploadedFile = drive.files().create(fileMetadata, mediaContent)
@@ -72,7 +107,7 @@ class DriveWorker @WorkerInject constructor(
                 .execute()
             Log.e(TAG, "FileId: ${uploadedFile.id}")
             true
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             Log.e(TAG, "Upload failed: ${e.message}", e)
             false
         }
@@ -83,7 +118,8 @@ class DriveWorker @WorkerInject constructor(
             applicationContext, setOf(DriveScopes.DRIVE_FILE)
         )
 
-        credential.selectedAccount = GoogleSignIn.getLastSignedInAccount(applicationContext)?.account
+        credential.selectedAccount =
+            GoogleSignIn.getLastSignedInAccount(applicationContext)?.account
         drive = Drive.Builder(
             AndroidHttp.newCompatibleTransport(),
             GsonFactory(),
@@ -95,7 +131,10 @@ class DriveWorker @WorkerInject constructor(
 
     companion object {
         private const val WORKER_ID = "app_drive_worker"
+        private const val APP_DATA_FILE = "data.json"
+        private const val APP_DATA_FOLDER = "appDataFolder"
 
+        const val EXCEPTION = "exception"
         const val WORK_TYPE = "work_type"
 
         fun schedule(context: Context, workType: DriveHelper.Caller): UUID {
@@ -107,7 +146,7 @@ class DriveWorker @WorkerInject constructor(
                 .build()
             WorkManager.getInstance(context).enqueueUniqueWork(
                 WORKER_ID,
-                ExistingWorkPolicy.REPLACE, request
+                ExistingWorkPolicy.KEEP, request
             )
             return request.id
         }

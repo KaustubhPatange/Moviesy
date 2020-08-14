@@ -43,11 +43,18 @@ private object LibraryVersion {
     const val GOOGLE_ADS = "19.3.0"
     const val WORK_MANAGER = "2.4.0"
     const val RECYCLERVIEW = "1.2.0-alpha05"
+    const val GOOGLE_HTTPCLIENT = "1.26.0"
+    const val DRIVE = "v3-rev136-1.25.0"
+    const val GUAVA_CONFLICT = "9999.0-empty-to-avoid-conflict-with-guava"
 }
 
 object LibraryDependency {
     const val ACTIVITY_KTX = "androidx.activity:activity-ktx:${LibraryVersion.ACTIVITY_KTX}"
     const val RECYCLERVIEW = "androidx.recyclerview:recyclerview:${LibraryVersion.RECYCLERVIEW}"
+    const val GOOGLE_HTTPCLIENT_API = "com.google.api-client:google-api-client-android:${LibraryVersion.GOOGLE_HTTPCLIENT}"
+    const val GOOGLE_HTTPCLIENT_GSON = "com.google.http-client:google-http-client-gson:${LibraryVersion.GOOGLE_HTTPCLIENT}"
+    const val DRIVE_REST = "com.google.apis:google-api-services-drive:${LibraryVersion.DRIVE}"
+    const val GUAVA_CONFLICT = "com.google.guava:listenablefuture:${LibraryVersion.GUAVA_CONFLICT}"
     const val WORK_MANAGER = "androidx.work:work-runtime-ktx:${LibraryVersion.WORK_MANAGER}"
     const val GOOGLE_ADS = "com.google.android.gms:play-services-ads:${LibraryVersion.GOOGLE_ADS}"
     const val LOTTIE = "com.airbnb.android:lottie:${LibraryVersion.LOTTIE}"

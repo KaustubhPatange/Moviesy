@@ -179,4 +179,9 @@ Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus d
     <string name="backup_restore">Backups</string>
     <string name="drive_upload_text">Kindly wait for your content to be uploaded.</string>
     <string name="drive_upload_title">Uploading</string>
+    <string name="drive_restore_title">Downloading data</string>
+    <string name="drive_restore_text">Restoring your data, this should not take much time</string>
+    <string name="drive_restore_complete">Restore successful</string>
+    <string name="drive_restore_empty">No backups found</string>
+    <string name="drive_backup_complete">Upload complete</string>
 </resources>

@@ -2,15 +2,16 @@ package com.kpstv.yts.ui.settings
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.work.WorkInfo
 import com.kpstv.yts.R
+import com.kpstv.yts.services.DriveWorker
 import com.kpstv.yts.ui.dialogs.ProgressDialog
 import com.kpstv.yts.ui.helpers.DriveHelper
+import es.dmoral.toasty.Toasty
 
 class BackupSettingPreference : PreferenceFragmentCompat() {
 
@@ -43,7 +44,11 @@ class BackupSettingPreference : PreferenceFragmentCompat() {
             dialog.show()
             driveHelper.storeAppData { workInfo: LiveData<WorkInfo> ->
                 workInfo.observe(this, Observer {
-                    if (it.state.isFinished) {
+                    /** Nested subscribers, hence a null check. They will automatically
+                     *  unsubscribe when fragment get's destroyed.
+                     */
+                    if (it != null && it.state.isFinished) {
+                        Toasty.info(requireContext(), getString(R.string.drive_backup_complete)).show()
                         dialog.dismiss()
                     }
                 })
@@ -52,9 +57,34 @@ class BackupSettingPreference : PreferenceFragmentCompat() {
         }
 
         findPreference<Preference>(RESTORE_DRIVE_PREF)?.setOnPreferenceClickListener {
-
+            val dialog = ProgressDialog.Builder(requireContext()).apply {
+                setTitle(getString(R.string.drive_restore_title))
+                setMessage(getString(R.string.drive_restore_text))
+                setCancelable(false)
+                setOnCloseListener(null)
+            }.build().also { this.dialog = it }
+            dialog.show()
+            driveHelper.restoreAppData { workInfo: LiveData<WorkInfo> ->
+                workInfo.observe(this, Observer {
+                    /** Nested subscribers, hence a null check. They will automatically
+                     *  unsubscribe when fragment get's destroyed.
+                     */
+                    if (it != null && it.state.isFinished) {
+                        val message = it.outputData.getString(DriveWorker.EXCEPTION)
+                        if (message != null)
+                            Toasty.error(requireContext(), message).show()
+                        else Toasty.info(requireContext(), getString(R.string.drive_restore_complete)).show()
+                        dialog.dismiss()
+                    }
+                })
+            }
             true
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        driveHelper.removeAllCallbacks()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

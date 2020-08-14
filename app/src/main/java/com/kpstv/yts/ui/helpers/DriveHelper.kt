@@ -2,6 +2,7 @@ package com.kpstv.yts.ui.helpers
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.work.WorkManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -11,6 +12,7 @@ import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccoun
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
+import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.yts.R
 import com.kpstv.yts.extensions.AccountCallback
 import com.kpstv.yts.extensions.ExceptionCallback
@@ -29,6 +31,7 @@ class DriveHelper : SignInHelper() {
     private var drive: Drive? = null
     private var returnToCaller: Caller? = null
     private var uploadWorkCallback: WorkManagerCallback? = null
+    private var restoreWorkCallback: WorkManagerCallback? = null
 
     data class Builder(private val create: Int = 0) {
         private val driveHelper = DriveHelper()
@@ -77,7 +80,7 @@ class DriveHelper : SignInHelper() {
         returnToCaller = null
         when (callback) {
             Caller.STORE_DATA -> storeAppData(uploadWorkCallback)
-            Caller.RESTORE_DATA -> restoreAppData()
+            Caller.RESTORE_DATA -> restoreAppData(restoreWorkCallback)
         }
     }
 
@@ -134,7 +137,28 @@ class DriveHelper : SignInHelper() {
         this.uploadWorkCallback = null
     }
 
-    fun restoreAppData() {
+    /**
+     * This will restore latest data
+     */
+    fun restoreAppData(restoreWorkCallback: WorkManagerCallback? = null) {
+        this.restoreWorkCallback = restoreWorkCallback
+        returnToCaller = Caller.RESTORE_DATA
 
+        if (!isAllAccessGranted()) // Wait till all sign in flow get's completed.
+            return
+
+        this.restoreWorkCallback = null
+
+        val workId = DriveWorker.schedule(fragment.requireContext(), Caller.RESTORE_DATA)
+        val liveWorkData = WorkManager.getInstance(fragment.requireContext())
+            .getWorkInfoByIdLiveData(workId)
+        restoreWorkCallback?.invoke(liveWorkData)
+    }
+
+    fun removeAllCallbacks() {
+        drive = null
+        returnToCaller = null
+        uploadWorkCallback = null
+        restoreWorkCallback = null
     }
 }

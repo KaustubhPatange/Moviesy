@@ -6,4 +6,5 @@ object GradlePluginId {
     const val KAPT = "kapt"
     const val SAFE_ARGS = "androidx.navigation.safeargs.kotlin"
     const val DAGGER_HILT = "dagger.hilt.android.plugin"
+    const val APACHE_HTTP = "org.apache.httpcomponents"
 }

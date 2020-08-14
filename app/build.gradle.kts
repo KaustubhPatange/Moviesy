@@ -129,14 +129,15 @@ dependencies {
     implementation(LibraryDependency.HILT_ANDROID)
     implementation(LibraryDependency.HILT_VIEWODEL)
     implementation(LibraryDependency.HILT_WORK_MANAGER)
-    implementation("com.google.http-client:google-http-client-gson:1.26.0")
-    implementation("com.google.api-client:google-api-client-android:1.26.0") {
-        exclude(group = "org.apache.httpcomponents")
+
+    implementation(LibraryDependency.GOOGLE_HTTPCLIENT_API) {
+        exclude(group = GradlePluginId.APACHE_HTTP)
     }
-    implementation("com.google.apis:google-api-services-drive:v3-rev136-1.25.0") {
-        exclude(group = "org.apache.httpcomponents")
+    implementation(LibraryDependency.GOOGLE_HTTPCLIENT_GSON)
+    implementation(LibraryDependency.DRIVE_REST) {
+        exclude(group = GradlePluginId.APACHE_HTTP)
     }
-    implementation("com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava")
+    implementation(LibraryDependency.GUAVA_CONFLICT)
 
     kapt(LibraryDependency.ROOM_COMPILER_KAPT)
     kapt(LibraryDependency.GLIDE_COMPILER)

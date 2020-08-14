@@ -81,9 +81,9 @@ class FavouriteRepository @Inject constructor(
     suspend fun importAllDataFromJSON(jsonData: String) {
         val jsonObject = JSONObject(jsonData)
         val jsonArray = jsonObject.getJSONArray(FAVOURITES)
-        for (i in  0..jsonArray.length()) {
+        for (i in 0 until jsonArray.length()) {
             val favObject = jsonArray.getJSONObject(i)
-            saveDataToRepository(jsonObject)
+            saveDataToRepository(favObject)
         }
     }
 
