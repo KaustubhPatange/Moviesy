@@ -66,6 +66,7 @@ class AppInterface {
         const val STORAGE_FRAG = "com.kpstv.yts.STORAGE_FRAG"
         const val LOOK_FEEL_FRAG = "com.kpstv.yts.LOOK_FEEL_FRAG"
         const val ACCOUNT_FRAG = "com.kpstv.yts.ACCOUNT_FRAG"
+        const val BACKUP_FRAG = "com.kpstv.yts.BACKUP_FRAG"
         const val DEVELOPER_FRAG = "com.kpstv.yts.DEVELOPER_FRAG"
         const val ABOUT_FRAG = "com.kpstv.yts.ABOUT_FRAG"
 

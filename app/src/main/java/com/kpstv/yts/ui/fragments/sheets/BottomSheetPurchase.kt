@@ -115,7 +115,7 @@ class BottomSheetPurchase : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
     }
 
     private fun initializeSignIn() {
-        signInHelper = SignInHelper.Builder(requireContext())
+        signInHelper = SignInHelper.Builder()
             .setParent(this)
             .setOnSignInComplete {
                 checkout(it)

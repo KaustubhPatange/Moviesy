@@ -5,9 +5,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context.CLIPBOARD_SERVICE
 import android.content.Intent
-import android.content.Intent.ACTION_SENDTO
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
@@ -78,7 +76,7 @@ Email: ${jsonObject.getString("email")}""".trimIndent())
     }
 
     private fun initializeSignIn() {
-        signInHelper = SignInHelper.Builder(requireContext())
+        signInHelper = SignInHelper.Builder()
             .setParent(this)
             .setOnSignInComplete {
                 val message = "Account Key: ${it.id}\nEmail: ${it.email}"

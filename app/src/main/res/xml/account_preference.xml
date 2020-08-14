@@ -5,10 +5,10 @@
         app:summary="@string/account_info_summary"
         app:title="@string/account_info_title" />
 
-   <PreferenceCategory app:title="Support">
-       <Preference
-           app:key="purchase_account_error_pref"
-           app:summary="If your purchase is complete but premium not unlock, use this option"
-           app:title="Send purchase report" />
-   </PreferenceCategory>
+    <PreferenceCategory app:title="Support">
+        <Preference
+            app:key="purchase_account_error_pref"
+            app:summary="If your purchase is complete but premium not unlock, use this option"
+            app:title="Send purchase report" />
+    </PreferenceCategory>
 </PreferenceScreen>

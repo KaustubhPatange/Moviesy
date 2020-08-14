@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+    <Preference
+        app:key="backup_drive_pref"
+        app:summary="This will backup your data to Google drive."
+        app:title="Backup" />
+    <Preference
+        app:key="restore_drive_pref"
+        app:summary="Restore previous backup made on Google drive. WARNING: Existing data will be deleted."
+        app:title="Restore" />
+</PreferenceScreen>

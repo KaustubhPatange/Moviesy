@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import com.kpstv.yts.AppInterface.Companion.ABOUT_FRAG
 import com.kpstv.yts.AppInterface.Companion.ACCOUNT_FRAG
 import com.kpstv.yts.AppInterface.Companion.ACTION_REPLACE_FRAG
+import com.kpstv.yts.AppInterface.Companion.BACKUP_FRAG
 import com.kpstv.yts.AppInterface.Companion.DEVELOPER_FRAG
 import com.kpstv.yts.AppInterface.Companion.GENERAL_FRAG
 import com.kpstv.yts.AppInterface.Companion.IS_DARK_THEME
@@ -40,6 +41,7 @@ class SettingsActivity : AppCompatActivity() {
                 STORAGE_FRAG -> replaceFragment(StorageSettingFragment(), tag)
                 LOOK_FEEL_FRAG -> replaceFragment(LookSettingsFragment(::onThemeChanged), tag)
                 ACCOUNT_FRAG -> replaceFragment(AccountSettingFragment(), tag)
+                BACKUP_FRAG -> replaceFragment(BackupSettingPreference(), tag)
                 DEVELOPER_FRAG -> replaceFragment(DevSettingsFragment(), tag)
                 ABOUT_FRAG -> replaceFragment(AboutSettingFragment(), tag)
             }
@@ -128,11 +130,20 @@ class SettingsActivity : AppCompatActivity() {
                 listener.invoke(LOOK_FEEL_FRAG, getString(R.string.look_feel))
             }
 
+            // Account Settings
             val account =
                 CustomBottomItem(requireContext())
             account.setUp(R.drawable.ic_account, getString(R.string.account), mainLayout, true)
             account.onClickListener = {
                 listener.invoke(ACCOUNT_FRAG, getString(R.string.account))
+            }
+
+            // Backup Settings
+            val backup =
+                CustomBottomItem(requireContext())
+            backup.setUp(R.drawable.ic_backup, getString(R.string.backup_restore), mainLayout, true)
+            backup.onClickListener = {
+                listener.invoke(BACKUP_FRAG, getString(R.string.backup_restore))
             }
 
             // Developer Settings

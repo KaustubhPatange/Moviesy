@@ -176,4 +176,7 @@ Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus d
     <string name="no_action">No supported action found</string>
     <string name="torrent_connect_attempt">Attempting to connect torrent, this might take a while</string>
     <string name="torrent_connect_success">Successfully connected, waiting for it to be ready</string>
+    <string name="backup_restore">Backups</string>
+    <string name="drive_upload_text">Kindly wait for your content to be uploaded.</string>
+    <string name="drive_upload_title">Uploading</string>
 </resources>

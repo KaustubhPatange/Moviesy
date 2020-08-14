@@ -1,6 +1,5 @@
 package com.kpstv.yts.ui.helpers
 
-import android.content.Context
 import android.content.Intent
 import androidx.fragment.app.Fragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -8,7 +7,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.Scope
 import com.google.android.gms.tasks.Task
+import com.google.api.services.drive.DriveScopes
 import com.kpstv.yts.extensions.AccountCallback
 import com.kpstv.yts.extensions.ExceptionCallback
 
@@ -19,7 +20,7 @@ import com.kpstv.yts.extensions.ExceptionCallback
  * 3. Invoke [signIn] to start the flow
  * 4. Override onActivityResult and call [handleSignInRequest]
  */
-class SignInHelper {
+open class SignInHelper {
     companion object {
         private val SignInErrorCodes =
             mutableMapOf(
@@ -28,20 +29,16 @@ class SignInHelper {
                 12500 to "Sign in attempt didn't succeed with the current account"
             )
         const val GOOGLE_SIGNIN_REQUEST_CODE = 129
+        const val DRIVE_ACCESS_REQUEST_CODE = 179
     }
 
-    private lateinit var context: Context
-    private lateinit var fragment: Fragment
+    internal lateinit var fragment: Fragment
     private lateinit var mGoogleSignInClient: GoogleSignInClient
-    private var onSignInComplete: AccountCallback? = null
-    private var onSignInFailed: ExceptionCallback? = null
+    internal var onSignInComplete: AccountCallback? = null
+    internal var onSignInFailed: ExceptionCallback? = null
 
-    data class Builder(private val context: Context) {
+    data class Builder(private val create: Int = 0) {
         private val signInHelper = SignInHelper()
-
-        init {
-            signInHelper.context = context
-        }
 
         fun setParent(value: Fragment): Builder {
             signInHelper.fragment = value
@@ -53,7 +50,7 @@ class SignInHelper {
             return this
         }
 
-        fun setOnSignInFailed(value: ExceptionCallback): Builder {
+        fun setOnSignInFailed(value: ExceptionCallback?): Builder {
             signInHelper.onSignInFailed = value
             return this
         }
@@ -61,15 +58,19 @@ class SignInHelper {
         fun build() = signInHelper
     }
 
-    fun init(signOut: Boolean = true) {
+    fun init(signOut: Boolean = true, scope: List<Scope>? = null) {
         val gso =
             GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
-                .build()
+        scope?.forEach { gso.requestScopes(it) }
 
-        mGoogleSignInClient = GoogleSignIn.getClient(context, gso)
+        mGoogleSignInClient = GoogleSignIn.getClient(fragment.requireContext(), gso.build())
         if (signOut)
-            mGoogleSignInClient.signOut()
+            revokeUser()
+    }
+
+    private fun revokeUser() {
+        mGoogleSignInClient.signOut()
     }
 
     fun signIn() {
