@@ -15,10 +15,6 @@ class FavouriteRepository @Inject constructor(
     private val favDao: FavouriteDao
 ) {
 
-    fun getMovieIdByQuery(id: Int): Model.response_favourite? {
-        return favDao.getData(id)
-    }
-
     fun saveMovie(data: Model.response_favourite) {
         Coroutines.io {
             favDao.upsert(data)
@@ -61,6 +57,14 @@ class FavouriteRepository @Inject constructor(
         return favDao.getAllDataLive()
     }
 
+    /** @Note
+     *
+     * Following are the methods that are used to export this table.
+     *
+     * This repository falls under user data which can be backed up or
+     * restored.
+     */
+
     suspend fun exportAllDataToJSON(): JSONArray {
         val array = JSONArray()
         favDao.getAllData().forEach { model ->
@@ -93,8 +97,8 @@ class FavouriteRepository @Inject constructor(
             title = jsonObject.getString(Model.response_favourite::title.name),
             imdbCode = jsonObject.getString(Model.response_favourite::imdbCode.name),
             rating = jsonObject.getDouble(Model.response_favourite::rating.name),
-            runtime = jsonObject.getInt(Model.response_favourite::movieId.name),
-            year = jsonObject.getInt(Model.response_favourite::movieId.name),
+            runtime = jsonObject.getInt(Model.response_favourite::runtime.name),
+            year = jsonObject.getInt(Model.response_favourite::year.name),
             imageUrl = jsonObject.getString(Model.response_favourite::imageUrl.name)
         )
         if (!favDao.isDataExist(favModel.movieId))

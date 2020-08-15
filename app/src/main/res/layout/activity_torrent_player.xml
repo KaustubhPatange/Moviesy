@@ -2,37 +2,40 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/black"
     android:layout_height="match_parent"
+    android:background="@color/black"
+    android:clickable="false"
     tools:context=".ui.activities.TorrentPlayerActivity">
 
     <tcking.github.com.giraffeplayer2.VideoView
         android:id="@+id/giraffe_player"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:clickable="false" />
 
     <ProgressBar
         android:id="@+id/progressBar"
-        android:layout_centerInParent="true"
         android:layout_width="match_parent"
-        android:layout_height="70dp"/>
+        android:layout_height="70dp"
+        android:layout_centerInParent="true" />
 
     <TextView
         android:id="@+id/subtitle"
-        android:textColor="@color/white"
-        android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:text="This is subtitle"
+        android:layout_marginBottom="10dp"
+        android:gravity="center"
+        android:textColor="@color/white"
         android:textSize="15sp"
-        android:layout_marginBottom="10dp"/>
+        tools:text="This is subtitle" />
 
     <TextView
         android:id="@+id/progressText"
-        android:textSize="12sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="0%"/>
+        android:text="0%"
+        android:textSize="12sp"
+        tools:ignore="HardcodedText" />
 
 </RelativeLayout>

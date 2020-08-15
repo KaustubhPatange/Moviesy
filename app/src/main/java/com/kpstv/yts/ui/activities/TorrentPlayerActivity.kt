@@ -22,6 +22,8 @@ import com.kpstv.yts.R
 import com.kpstv.yts.data.models.SubHolder
 import com.kpstv.yts.databinding.ActivityTorrentPlayerBinding
 import com.kpstv.yts.extensions.hide
+import com.kpstv.yts.extensions.invisible
+import com.kpstv.yts.extensions.show
 import com.kpstv.yts.extensions.utils.SubtitleUtils
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -180,6 +182,15 @@ class TorrentPlayerActivity : AppCompatActivity() {
             .anonymousMode(ANONYMOUS_TORRENT_DOWNLOAD)
             .build()
 
+        /**
+         * There is an issue that whenever player is loading and user clicks on the
+         * player during load. It crashes, so this is an attempt to fix it by first
+         * disabling root view to accept any touch.
+         *
+         * This will be enabled when stream is Ready.
+         */
+        binding.giraffePlayer.invisible()
+
         torrentStream = TorrentStream.init(torrentOptions)
         torrentStream.addListener(object : TorrentListener {
             override fun onStreamPrepared(torrent: Torrent) {
@@ -205,6 +216,9 @@ class TorrentPlayerActivity : AppCompatActivity() {
                  */
                 filePath = torrent.videoFile.path
                 startPlayer(torrent.videoFile, torrent.videoFile.name)
+
+                /** Showing the torrent player only when movie is ready to stream */
+                binding.giraffePlayer.show()
             }
 
             override fun onStreamProgress(torrent: Torrent, status: StreamStatus) {

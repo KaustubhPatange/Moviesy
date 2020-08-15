@@ -4,7 +4,9 @@
 
 ![build](https://github.com/KaustubhPatange/Moviesy/workflows/build/badge.svg)
 
-A **_beautiful_** client for YTS website which also provides built-in _torrent_, _subtitles_ downloader ❤️
+A **_beautiful_** client for [YTS](https://www.google.com/search?q=yts) website which also provides built-in _torrent_, _subtitles_ downloader ❤️
+
+> Disclaimer: The app let's you download and stream HD movies on the go, if this is something you don't approve then you should stop using it. This app is made out of my hobby.
 
 ## Features
 

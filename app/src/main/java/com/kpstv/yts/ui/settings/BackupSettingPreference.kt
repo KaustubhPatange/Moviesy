@@ -48,7 +48,8 @@ class BackupSettingPreference : PreferenceFragmentCompat() {
                      *  unsubscribe when fragment get's destroyed.
                      */
                     if (it != null && it.state.isFinished) {
-                        Toasty.info(requireContext(), getString(R.string.drive_backup_complete)).show()
+                        Toasty.info(requireContext(), getString(R.string.drive_backup_complete))
+                            .show()
                         dialog.dismiss()
                     }
                 })
@@ -73,7 +74,10 @@ class BackupSettingPreference : PreferenceFragmentCompat() {
                         val message = it.outputData.getString(DriveWorker.EXCEPTION)
                         if (message != null)
                             Toasty.error(requireContext(), message).show()
-                        else Toasty.info(requireContext(), getString(R.string.drive_restore_complete)).show()
+                        else Toasty.info(
+                            requireContext(),
+                            getString(R.string.drive_restore_complete)
+                        ).show()
                         dialog.dismiss()
                     }
                 })

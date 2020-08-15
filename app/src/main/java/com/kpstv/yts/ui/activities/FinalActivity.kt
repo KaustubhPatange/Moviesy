@@ -13,7 +13,6 @@ import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.request.target.CustomTarget
@@ -28,11 +27,8 @@ import com.kpstv.yts.data.converters.GenreEnumConverter
 import com.kpstv.yts.data.models.Cast
 import com.kpstv.yts.data.models.Movie
 import com.kpstv.yts.databinding.ActivityFinalBinding
-import com.kpstv.yts.extensions.Permissions
-import com.kpstv.yts.extensions.SuggestionCallback
-import com.kpstv.yts.extensions.YTSQuery
+import com.kpstv.yts.extensions.*
 import com.kpstv.yts.extensions.common.CustomMovieLayout
-import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.CafebarToast
 import com.kpstv.yts.extensions.utils.GlideApp
@@ -170,10 +166,12 @@ class FinalActivity : AppCompatActivity(), MovieListener {
         viewModel.isMovieFavourite(movie.id).observe(this, Observer { value ->
             if (value)
                 menu?.getItem(0)?.icon =
-                    ContextCompat.getDrawable(this@FinalActivity, R.drawable.ic_favorite_yes)
+                    drawableFrom(R.drawable.ic_favorite_yes).apply {
+                        this?.setTint(colorFrom(R.color.colorAccent_Dark))
+                    }
             else
                 menu?.getItem(0)?.icon =
-                    ContextCompat.getDrawable(this@FinalActivity, R.drawable.ic_favorite_no)
+                    drawableFrom(R.drawable.ic_favorite_no)
         })
     }
 

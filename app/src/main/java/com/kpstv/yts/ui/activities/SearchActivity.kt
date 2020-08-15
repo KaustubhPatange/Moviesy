@@ -200,8 +200,6 @@ class SearchActivity : AppCompatActivity() {
                         binding.activitySearchSingle.layoutNoMovieFound.show()
                     } else
                         updateHandler.postDelayed(this, 1000)
-
-
                 } else {
 
                     /** Query is successful and we've some results.
