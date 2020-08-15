@@ -23,7 +23,6 @@ class BackupSettingPreference : PreferenceFragmentCompat() {
     private lateinit var driveHelper: DriveHelper
     private var dialog: ProgressDialog? = null
 
-    // TODO: Add write external storage permission check
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.backup_preference, rootKey)
 

@@ -114,7 +114,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/google_sans_regular"
-                    android:text="Paused"
+                    android:text="@string/paused"
                     android:textSize="12sp" />
 
                 <include layout="@layout/bullet_separater" />

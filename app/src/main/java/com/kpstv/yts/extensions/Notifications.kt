@@ -151,5 +151,5 @@ object Notifications {
         mgr.notify(getRandomNumberCode(), notification)
     }
 
-    private fun getRandomNumberCode() = Random().nextInt(400) + 150
+    fun getRandomNumberCode() = Random().nextInt(400) + 150
 }

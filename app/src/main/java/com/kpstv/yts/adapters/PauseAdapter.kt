@@ -34,7 +34,7 @@ class PauseAdapter(
         Glide.with(context).load(model.job.bannerUrl).into(holder.itemView.item_image)
 
         holder.itemView.item_title.text = model.job.title
-        holder.itemView.item_status.text = "Paused"
+        holder.itemView.item_status.text = context.getString(R.string.paused)
         holder.itemView.item_progress.text = "${model.job.progress}%"
         holder.itemView.item_seeds_peers.text = "0/0"
         holder.itemView.item_progressBar.progress = model.job.progress

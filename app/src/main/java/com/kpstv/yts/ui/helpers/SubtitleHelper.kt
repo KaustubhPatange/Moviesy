@@ -41,14 +41,10 @@ class SubtitleHelper {
 
             /** Filter subtitle to check whether subtitle for current movie exist */
 
-            val titleSpan = title.split(" ")[0]
-
             val onlySuchFiles =
-                AppInterface.SUBTITLE_LOCATION.listFiles()?.filter { f ->
-                    f?.name?.contains(titleSpan) == true && f.extension.toLowerCase(
-                        Locale.ROOT
-                    ) == "srt"
-                }?.map { it.name }
+                AppInterface.SUBTITLE_LOCATION.listFiles()
+                    ?.filter { f -> applySubtitleFilter(title, f) }
+                    ?.map { it.name }
             if (onlySuchFiles?.isNotEmpty() == true) {
                 val cssView = LayoutInflater.from(activity)
                     .inflate(R.layout.custom_select_subtitle, addLayout)
@@ -58,7 +54,7 @@ class SubtitleHelper {
                 onlySuchFiles.mapTo(list) { SelectSubtitle(it) }
 
                 singleAdapter = SelectSubAdapter(list)
-                singleAdapter?.setOnClickListener { selectSubtitle, i ->
+                singleAdapter?.setOnClickListener { _, i ->
                     onlySuchFiles.indices.forEach { c ->
                         if (list[c].isChecked && i != c) {
                             list[c].isChecked = false
@@ -73,6 +69,12 @@ class SubtitleHelper {
                 recyclerView.adapter = singleAdapter
             } else commonNoSubtitle()
         } else commonNoSubtitle()
+    }
+
+    private fun applySubtitleFilter(title: String, f: File?): Boolean {
+        if (f == null) return false
+        return (f.name.contains(title) || f.name.contains(title.replace("\\s".toRegex(), "."))) &&
+                f.extension.toLowerCase(Locale.ROOT) == "srt"
     }
 
     private fun commonNoSubtitle() = with(activity) {

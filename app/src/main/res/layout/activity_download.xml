@@ -82,7 +82,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="10dp"
-                    android:text="Paused"
+                    android:text="@string/paused"
                     android:textColor="?attr/colorText"
                     android:textSize="17sp" />
 

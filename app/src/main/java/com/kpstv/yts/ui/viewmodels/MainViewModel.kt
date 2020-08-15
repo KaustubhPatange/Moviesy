@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.AndroidViewModel
 import com.kpstv.common_moviesy.extensions.Coroutines
+import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppInterface.Companion.CUSTOM_LAYOUT_YTS_SPAN
 import com.kpstv.yts.AppInterface.Companion.FEATURED_QUERY
 import com.kpstv.yts.AppInterface.Companion.MainDateFormatter
@@ -119,7 +120,8 @@ class MainViewModel @ViewModelInject constructor(
                 val queryMap = QueryConverter.toMapfromString(FEATURED_QUERY)
                 if (isFetchNeeded(FEATURED_QUERY)) {
                     Log.e(TAG, "=> Featured: Fetching new data")
-                    val list = ytsFeaturedUtils.fetch()
+                    fetchFeaturedData(moviesCallback)
+                    /*val list = ytsFeaturedUtils.fetch()
                     if (list.isNotEmpty()) {
                         val mainModel = data_main(
                             time = MainDateFormatter.format(Calendar.getInstance().time).toLong(),
@@ -135,7 +137,7 @@ class MainViewModel @ViewModelInject constructor(
                             QueryConverter.toMapfromString(FEATURED_QUERY),
                             false
                         )
-                    } else moviesCallback.onFailure?.invoke(Exception("Empty movie list"))
+                    } else moviesCallback.onFailure?.invoke(Exception("Empty movie list"))*/
                 } else {
                     Log.e(TAG, "=> Featured: Getting data from repository")
                     repository.getMoviesByQuery(
@@ -154,14 +156,13 @@ class MainViewModel @ViewModelInject constructor(
         }
     }
 
-    // TODO: You need this
-    private suspend fun fetchFeaturedData(movieCallback: MoviesCallback, queryString: String) {
+    private suspend fun fetchFeaturedData(movieCallback: MoviesCallback) {
         val list = ytsFeaturedUtils.fetch()
         if (list.isNotEmpty()) {
             val mainModel = data_main(
                 time = MainDateFormatter.format(Calendar.getInstance().time).toLong(),
                 movies = list,
-                query = queryString,
+                query = FEATURED_QUERY,
                 isMore = false
             )
 
@@ -170,7 +171,7 @@ class MainViewModel @ViewModelInject constructor(
             Coroutines.main {
                 movieCallback.onComplete.invoke(
                     list,
-                    QueryConverter.toMapfromString(queryString),
+                    QueryConverter.toMapfromString(FEATURED_QUERY),
                     false
                 )
             }

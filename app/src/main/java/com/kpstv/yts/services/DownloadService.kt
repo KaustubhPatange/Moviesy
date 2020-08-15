@@ -72,7 +72,7 @@ class DownloadService : IntentService("blank") {
     private var currentTorrentModel: Torrent? = null
     private lateinit var context: Context
     private var wakeLock: WakeLock? = null
-    private lateinit var notificationManagerCompat: NotificationManagerCompat
+    private lateinit var notificationManager: NotificationManager
     private lateinit var contentIntent: PendingIntent
     private lateinit var cancelIntent: PendingIntent
     private lateinit var torrentStream: TorrentStream
@@ -93,7 +93,7 @@ class DownloadService : IntentService("blank") {
 
         context = applicationContext
 
-        notificationManagerCompat = NotificationManagerCompat.from(context)
+        notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel = NotificationChannel(
@@ -102,16 +102,13 @@ class DownloadService : IntentService("blank") {
                 NotificationManager.IMPORTANCE_LOW
             )
             notificationChannel.description = "Movie Download Service"
-            val notificationManager: NotificationManager? =
-                context.getSystemService(NotificationManager::class.java)
-            notificationManager?.createNotificationChannel(notificationChannel)
 
             val channel = NotificationChannel(
                 getString(R.string.CHANNEL_ID_2),
                 context.getString(R.string.download),
                 NotificationManager.IMPORTANCE_LOW
             )
-            notificationManager?.createNotificationChannel(channel)
+            notificationManager.createNotificationChannel(channel)
         }
 
         val newIntent = Intent(context, CommonBroadCast::class.java)
@@ -141,7 +138,7 @@ class DownloadService : IntentService("blank") {
             )
         notificationIntent.action = MODEL_UPDATE
         notificationIntent.putExtra("model", t)
-        contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0)
+        contentIntent = PendingIntent.getActivity(context, Notifications.getRandomNumberCode(), notificationIntent, 0)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -166,7 +163,7 @@ class DownloadService : IntentService("blank") {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForeground(FOREGROUND_ID, notification);
         } else {
-            notificationManagerCompat.notify(FOREGROUND_ID, notification);
+            notificationManager.notify(FOREGROUND_ID, notification);
         }
         return super.onStartCommand(intent, flags, startId)
     }
@@ -182,6 +179,8 @@ class DownloadService : IntentService("blank") {
         toDelete = false
 
         val model = intent?.getSerializableExtra(TORRENT_JOB) as Torrent
+
+        updateNotification(model, null, false)
 
         currentTorrentModel = model
 
@@ -345,11 +344,7 @@ class DownloadService : IntentService("blank") {
             )
         }
 
-
         /** Update the notification channel */
-
-        /*var current = status?.progress?.toInt()
-        current ?: kotlin.run { current = 0 }*/
 
         var speed = status?.downloadSpeed
         speed ?: kotlin.run { speed = 0f }
@@ -366,7 +361,7 @@ class DownloadService : IntentService("blank") {
                 .setContentTitle(getContentTitle(model.title, progress?.toInt()))
                 .addAction(R.mipmap.ic_launcher, "Cancel", cancelIntent)
                 .setContentText(getContentText(speedString))
-                .setSmallIcon(android.R.drawable.stat_sys_download) //TODO: Create your own yts app icon and set it here
+                .setSmallIcon(android.R.drawable.stat_sys_download)
                 .setContentIntent(contentIntent)
                 .setOngoing(true)
                 .setPriority(Notification.PRIORITY_LOW)
@@ -374,7 +369,7 @@ class DownloadService : IntentService("blank") {
         if (isIndeterminate)
             notificationBuilder.setProgress(100, 0, true)
 
-        notificationManagerCompat.notify(FOREGROUND_ID, notificationBuilder.build())
+        notificationManager.notify(FOREGROUND_ID, notificationBuilder.build())
 
         /** Update the current model */
 
@@ -414,42 +409,47 @@ class DownloadService : IntentService("blank") {
     private fun handleAfterJobComplete(model: Torrent, isError: Boolean = false) {
 
         /** Create notification based on error bool */
+        try {
+            if (!isError) {
 
-        if (!isError) {
+                /** Save details of file in database. */
+                val imagePath = File(currentModel?.saveLocation, "banner.png")
+                saveImageFromUrl(model.banner_url, imagePath)
 
-            /** Save details of file in database. */
-            val imagePath = File(currentModel?.saveLocation, "banner.png")
-            saveImageFromUrl(model.banner_url, imagePath)
+                val todayDate = SimpleDateFormat("yyyy-MM-dd")
+                    .format(Calendar.getInstance().time)
 
-            val todayDate = SimpleDateFormat("yyyy-MM-dd")
-                .format(Calendar.getInstance().time)
+                val movieSize = getVideoDuration(this, currentModel?.videoFile!!)
+                    .takeUnless { it == null } ?: 0L
 
-            val movieSize = getVideoDuration(this, currentModel?.videoFile!!)
-                .takeUnless { it == null } ?: 0L
+                val downloadResponse = Model.response_download(
+                    title = model.title,
+                    imagePath = imagePath.path,
+                    downloadPath = currentModel?.saveLocation?.path,
+                    size = model.size,
+                    date_downloaded = todayDate,
+                    hash = model.hash,
+                    total_video_length = movieSize,
+                    videoPath = currentModel?.videoFile?.path,
+                    movieId = currentTorrentModel?.movieId,
+                    imdbCode = currentTorrentModel?.imdbCode
+                )
 
-            val downloadResponse = Model.response_download(
-                title = model.title,
-                imagePath = imagePath.path,
-                downloadPath = currentModel?.saveLocation?.path,
-                size = model.size,
-                date_downloaded = todayDate,
-                hash = model.hash,
-                total_video_length = movieSize,
-                videoPath = currentModel?.videoFile?.path,
-                movieId = currentTorrentModel?.movieId,
-                imdbCode = currentTorrentModel?.imdbCode
-            )
+                downloadRepository.saveDownload(downloadResponse)
 
-            downloadRepository.saveDownload(downloadResponse)
+                /** Save a detail.json file. */
+                val detailPath = File(currentModel?.saveLocation, "details.json")
+                detailPath.writeText(Gson().toJson(downloadResponse))
 
-            /** Save a detail.json file. */
-            val detailPath = File(currentModel?.saveLocation, "details.json")
-            detailPath.writeText(Gson().toJson(downloadResponse))
-
-            /** Send download complete notification */
-            Notifications.sendDownloadNotification(context, model.title)
-        } else {
-            /** Send download failed notification */
+                /** Send download complete notification */
+                Notifications.sendDownloadNotification(context, model.title)
+            } else {
+                /** Send download failed notification */
+                Notifications.sendDownloadFailedNotification(this, model.title)
+            }
+        } catch (e: Exception) {
+            /** Something unexpected occurred. */
+            Log.e(TAG, "Download failed for ${model.title} due to ${e.message}", e)
             Notifications.sendDownloadFailedNotification(this, model.title)
         }
     }
@@ -459,7 +459,7 @@ class DownloadService : IntentService("blank") {
             when (intent?.action) {
                 PAUSE_JOB -> {
                     val torrentJob = intent.getSerializableExtra("model") as TorrentJob
-                    torrentJob.status = "Paused"
+                    torrentJob.status = getString(R.string.paused)
                     val modelPause = Model.response_pause(
                         job = torrentJob,
                         hash = torrentJob.magnetHash,
@@ -510,7 +510,7 @@ class DownloadService : IntentService("blank") {
         pendingJobs.clear()
         if (torrentStream.isStreaming) torrentStream.stopStream()
         wakeLock?.release()
-        notificationManagerCompat.cancel(FOREGROUND_ID);
+        notificationManager.cancel(FOREGROUND_ID);
 
         super.onDestroy()
     }
