@@ -33,6 +33,7 @@ import com.kpstv.yts.extensions.common.CustomMovieLayout
 import com.kpstv.yts.extensions.utils.RetrofitUtils
 import com.kpstv.yts.ui.activities.MoreActivity.Companion.base
 import com.kpstv.yts.ui.activities.MoreActivity.Companion.queryMap
+import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import com.kpstv.yts.ui.helpers.AdaptiveSearchHelper
 import com.kpstv.yts.ui.viewmodels.FinalViewModel
 import com.kpstv.yts.ui.viewmodels.MoreViewModel
@@ -350,15 +351,15 @@ class SearchActivity : AppCompatActivity() {
     /** Method will show an alert dialog to delete the history item.
      */
     private fun showAlertAndDelete(model: HistoryModel, pos: Int) {
-        AlertDialog.Builder(this)
+        AlertNoIconDialog.Companion.Builder(this)
             .setTitle(model.query)
             .setMessage(getString(R.string.remove_history))
-            .setPositiveButton(getString(R.string.remove)) { _, _ ->
+            .setPositiveButton(getString(R.string.remove)) {
                 searchViewModel.deleteFromHistory(model.query)
                 suggestionModels.removeAt(pos)
                 suggestionAdapter.notifyDataSetChanged()
             }
-            .setNegativeButton(getString(R.string.cancel), null)
+            .setNegativeButton(getString(R.string.cancel)) { }
             .show()
     }
 

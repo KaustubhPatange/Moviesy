@@ -11,6 +11,7 @@ import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
 import com.kpstv.yts.adapters.SelectSubAdapter
 import com.kpstv.yts.data.models.SelectSubtitle
+import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import com.kpstv.yts.ui.fragments.sheets.BottomSheetSubtitles
 import java.io.File
 import java.util.*
@@ -53,18 +54,23 @@ class SubtitleHelper {
                 val list = ArrayList<SelectSubtitle>()
                 onlySuchFiles.mapTo(list) { SelectSubtitle(it) }
 
-                singleAdapter = SelectSubAdapter(list)
-                singleAdapter?.setOnClickListener { _, i ->
-                    onlySuchFiles.indices.forEach { c ->
-                        if (list[c].isChecked && i != c) {
-                            list[c].isChecked = false
-                            singleAdapter?.notifyItemChanged(c)
+                singleAdapter = SelectSubAdapter(
+                    models = list,
+                    adapterOnSingleClick = { _, i ->
+                        onlySuchFiles.indices.forEach { c ->
+                            if (list[c].isChecked && i != c) {
+                                list[c].isChecked = false
+                                singleAdapter?.notifyItemChanged(c)
+                            }
                         }
-                    }
 
-                    list[i].isChecked = !list[i].isChecked
-                    singleAdapter?.notifyItemChanged(i)
-                }
+                        list[i].isChecked = !list[i].isChecked
+                        singleAdapter?.notifyItemChanged(i)
+                    },
+                    adapterOnLongClick = { selectSubtitle, i ->
+                        showAlertAndDeleteSubtitles(selectSubtitle.text, i)
+                    }
+                )
                 recyclerView.layoutManager = LinearLayoutManager(activity.applicationContext)
                 recyclerView.adapter = singleAdapter
             } else commonNoSubtitle()
@@ -75,6 +81,20 @@ class SubtitleHelper {
         if (f == null) return false
         return (f.name.contains(title) || f.name.contains(title.replace("\\s".toRegex(), "."))) &&
                 f.extension.toLowerCase(Locale.ROOT) == "srt"
+    }
+
+    private fun showAlertAndDeleteSubtitles(fileName: String, pos: Int) = with(activity) {
+        AlertNoIconDialog.Companion.Builder(this)
+            .setTitle(fileName)
+            .setMessage(getString(R.string.remove_subtitle))
+            .setPositiveButton(getString(R.string.alright)) {
+                AppInterface.SUBTITLE_LOCATION.listFiles()?.find { it.name == fileName }
+                    ?.delete()
+                singleAdapter?.models?.removeAt(pos)
+                singleAdapter?.notifyItemRemoved(pos)
+            }
+            .setNegativeButton(getString(R.string.no)) { }
+            .show()
     }
 
     private fun commonNoSubtitle() = with(activity) {

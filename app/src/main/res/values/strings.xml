@@ -189,4 +189,5 @@ Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus d
     <string name="download_complete">Download Complete</string>
     <string name="download_failed">Download Failed</string>
     <string name="paused">Paused</string>
+    <string name="remove_subtitle">Remove this subtitle?</string>
 </resources>
