@@ -4,6 +4,7 @@ import android.os.Parcelable
 import androidx.lifecycle.LiveData
 import androidx.work.WorkInfo
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.kpstv.yts.adapters.HistoryModel
 import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.data.models.TmDbMovie
 import com.kpstv.yts.data.models.response.Model
@@ -14,6 +15,7 @@ typealias AccountCallback = (GoogleSignInAccount) -> Unit
 typealias ExceptionCallback = (Exception) -> Unit
 typealias ParcelableCallback = (Parcelable) -> Unit
 typealias WorkManagerCallback = (LiveData<WorkInfo>) -> Unit
+typealias SearchResults = List<HistoryModel>
 
 typealias AdapterOnSingleClick<T> = (T, Int) -> Unit
 

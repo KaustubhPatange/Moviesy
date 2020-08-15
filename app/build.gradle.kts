@@ -48,6 +48,10 @@ android {
 
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
+        freeCompilerArgs = listOf(
+            "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+            "-Xopt-in=kotlinx.coroutines.FlowPreview"
+        )
     }
 
     lintOptions {
@@ -97,11 +101,10 @@ dependencies {
     implementation(LibraryDependency.ROOM_RUNTIME)
     implementation(LibraryDependency.ROOM_KTX)
     implementation(LibraryDependency.LOCALBROADCAST_MANAGER)
-    implementation(LibraryDependency.LIFECYCLE_EXTENSIONS)
     implementation(LibraryDependency.LIFECYCLE_VIEWMODEL)
-    implementation(LibraryDependency.LIFECYCLE_COMMON)
+    implementation(LibraryDependency.LIFECYCLE_LIVEDATA)
     implementation(LibraryDependency.LIFECYCLE_RUNTIME)
-    implementation(LibraryDependency.LIFECYCLE_SAVEDSTATE)
+    implementation(LibraryDependency.LIFECYCLE_COMMON)
     implementation(LibraryDependency.PAGING)
     implementation(LibraryDependency.RETROFIT) {
         exclude("okhttp")

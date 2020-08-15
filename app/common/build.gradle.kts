@@ -51,7 +51,6 @@ dependencies {
     implementation(LibraryDependency.OKHTTP)
     implementation(LibraryDependency.OKHTTP_LOGGING_INTERCEPTOR)
 
-    implementation(LibraryDependency.LIFECYCLE_EXTENSIONS)
     implementation(LibraryDependency.LIFECYCLE_VIEWMODEL)
     implementation(LibraryDependency.LIFECYCLE_COMMON)
     implementation(LibraryDependency.LIFECYCLE_LIVEDATA)

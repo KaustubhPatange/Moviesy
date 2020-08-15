@@ -1,25 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <EditTextPreference
-        android:dialogTitle="Value"
-        android:key="yts_base_url_pref"
-        android:title="@string/yts_base_title" />
+        app:dialogTitle="Value"
+        app:key="yts_base_url_pref"
+        app:title="@string/yts_base_title" />
 
     <EditTextPreference
-        android:dialogTitle="Value"
-        android:key="yify_base_url_perf"
-        android:title="Subtitle Proxy" />
+        app:dialogTitle="Value"
+        app:key="yify_base_url_perf"
+        app:title="Subtitle Proxy" />
 
     <EditTextPreference
-        android:dialogTitle="Value"
-        android:key="tmdb_base_url_pref"
-        android:title="TMdB Api" />
+        app:dialogTitle="Value"
+        app:key="tmdb_base_url_pref"
+        app:title="TMdB Api" />
 
     <SwitchPreferenceCompat
-        android:defaultValue="true"
-        android:key="anonymous_torrent_download_pref"
-        android:summary="@string/anonymous_summary"
-        android:title="@string/anonymous_title" />
+        app:defaultValue="true"
+        app:key="anonymous_torrent_download_pref"
+        app:summary="@string/anonymous_summary"
+        app:title="@string/anonymous_title" />
+
+    <PreferenceCategory app:title="App">
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="show_adaptive_tip_pref"
+            app:summary="@string/adaptive_search_summary"
+            app:title="@string/adaptive_search_title" />
+        <ListPreference
+            app:key="suggestion_type_pref"
+            app:summary="@string/suggestion_type_summary"
+            app:title="@string/suggestion_type_title" />
+    </PreferenceCategory>
 
 </PreferenceScreen>

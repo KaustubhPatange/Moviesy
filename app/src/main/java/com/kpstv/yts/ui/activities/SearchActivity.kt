@@ -15,7 +15,6 @@ import androidx.lifecycle.Observer
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.jakewharton.rxbinding2.widget.RxTextView
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppInterface.Companion.setAppThemeNoAction
@@ -26,6 +25,7 @@ import com.kpstv.yts.adapters.SearchAdapter
 import com.kpstv.yts.data.CustomDataSource.Companion.INITIAL_QUERY_FETCHED
 import com.kpstv.yts.data.converters.QueryConverter
 import com.kpstv.yts.data.models.MovieShort
+import com.kpstv.yts.data.models.Result
 import com.kpstv.yts.databinding.ActivitySearchBinding
 import com.kpstv.yts.extensions.*
 import com.kpstv.yts.extensions.common.CustomMovieLayout
@@ -40,13 +40,14 @@ import com.kpstv.yts.ui.viewmodels.MoreViewModel
 import com.kpstv.yts.ui.viewmodels.SearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
-import io.reactivex.schedulers.Schedulers
-import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class SearchActivity : AppCompatActivity() {
 
@@ -262,7 +263,9 @@ class SearchActivity : AppCompatActivity() {
         searchViewModel.addToHistory(text)
 
         /** Get the adaptive query */
-        val searchQuery = adaptiveSearchHelper.querySearch(text)
+        val searchQuery = if (AppInterface.IS_ADAPTIVE_SEARCH)
+            adaptiveSearchHelper.querySearch(text)
+        else text
 
         /** We need to recreate pagination list */
         moreViewModel.buildNewConfig()
@@ -287,18 +290,31 @@ class SearchActivity : AppCompatActivity() {
         setupRecyclerView()
     }
 
-    /** This is a beauty of RxJava which allow use to watch textChange
-     *  of editText on any thread we want.
-     *
-     *  This observable handles all text change of search EditText and
-     *  updates the recyclerView using async Consumers.
+    /** This will be used to observe suggestions and based on [Result]
+     *  suggestions are updated and shown.
      */
     private fun setSuggestionObservable() {
-        suggestionFetch = RxTextView.textChanges(binding.searchEditText)
-            .skip(700, TimeUnit.MILLISECONDS)
-            .observeOn(Schedulers.io())
-            .subscribeOn(AndroidSchedulers.mainThread())
-            .subscribe(onTaskStarted(), onTaskError())
+        searchViewModel.searchQuery.observe(this, Observer { result ->
+            suggestionModels.clear()
+
+            when (result) {
+                is Result.Empty -> {
+                    Log.e(TAG, "No previous search history")
+                    removeSuggestionRecyclerView()
+                }
+                is Result.Success -> {
+                    if (!isSearchClicked) {
+                        suggestionModels.addAll(result.data)
+                        if (suggestionModels.isNotEmpty())
+                            binding.suggestionLayout.show()
+
+                        suggestionAdapter.notifyDataSetChanged()
+                    }
+                }
+            }
+
+            isSearchClicked = false
+        })
     }
 
     /** Whenever user press search button on keyboard we will updateQuery
@@ -321,7 +337,9 @@ class SearchActivity : AppCompatActivity() {
 
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            searchViewModel.setQuery(s.toString(), AppInterface.SUGGESTION_SEARCH_TYPE)
+        }
     }
 
     /** Instead of removing recyclerView we are clearing it's item models
@@ -352,7 +370,9 @@ class SearchActivity : AppCompatActivity() {
     }
 
 
-    /** Since Consumers are basically an async threads. Here we are making
+    /** TODO: Remove this after testing, implemented better one with Flow<T>
+     *
+     *  Since Consumers are basically an async threads. Here we are making
      *  call to api using OkHttp for returning suggestion Json.
      *
      *  We will filter it and update the recyclerView adapter using
@@ -413,30 +433,30 @@ class SearchActivity : AppCompatActivity() {
 
         try {
             suggestionModels.clear()
-            when (AppInterface.SUGGESTION_SEARCH_TYPE) {
-                SearchType.Google -> {
-                    suggestionHelper.getGoogleSuggestions(charSequence)
-                        .map { result ->
-                            HistoryModel(
-                                query = result,
-                                type = HistoryModel.Type.SEARCH
-                            )
-                        }.let { models ->
-                            suggestionModels.addAll(models)
-                        }
-                }
-                SearchType.TMDB -> {
-                    suggestionHelper.getTMDBSuggestions(charSequence)
-                        .map { result ->
-                            HistoryModel(
-                                query = result,
-                                type = HistoryModel.Type.SEARCH
-                            )
-                        }.let { models ->
-                            suggestionModels.addAll(models)
-                        }
-                }
-            }
+            /* when (AppInterface.SUGGESTION_SEARCH_TYPE) {
+                 SearchType.Google -> {
+                     suggestionHelper.getGoogleSuggestions(charSequence)
+                         .map { result ->
+                             HistoryModel(
+                                 query = result,
+                                 type = HistoryModel.Type.SEARCH
+                             )
+                         }.let { models ->
+                             suggestionModels.addAll(models)
+                         }
+                 }
+                 SearchType.TMDB -> {
+                     suggestionHelper.getTMDBSuggestions(charSequence)
+                         .map { result ->
+                             HistoryModel(
+                                 query = result,
+                                 type = HistoryModel.Type.SEARCH
+                             )
+                         }.let { models ->
+                             suggestionModels.addAll(models)
+                         }
+                 }
+             }*/
             /* val json = response.body?.string()
              if (json?.isNotEmpty() == true) {
                  val jsonArray = JSONArray(json).getJSONArray(1)

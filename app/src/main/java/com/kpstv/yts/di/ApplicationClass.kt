@@ -11,6 +11,7 @@ import com.kpstv.yts.services.AppWorker
 import com.kpstv.yts.services.DownloadService
 import dagger.hilt.android.HiltAndroidApp
 import es.dmoral.toasty.Toasty
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
 @Suppress("unused")

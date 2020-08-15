@@ -184,4 +184,8 @@ Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus d
     <string name="drive_restore_complete">Restore successful</string>
     <string name="drive_restore_empty">No backups found</string>
     <string name="drive_backup_complete">Upload complete</string>
+    <string name="suggestion_type_title">Search Suggestion Type</string>
+    <string name="suggestion_type_summary">This option will affect the suggestions shown when user is searching for movies.</string>
+    <string name="adaptive_search_title">Adaptive Search</string>
+    <string name="adaptive_search_summary">Optimize search query to remove some common typos.</string>
 </resources>

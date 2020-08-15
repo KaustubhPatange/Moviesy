@@ -85,6 +85,7 @@
             android:background="?colorSeparator" />
 
         <androidx.recyclerview.widget.RecyclerView
+            android:scrollbars="vertical"
             android:id="@+id/suggestionRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

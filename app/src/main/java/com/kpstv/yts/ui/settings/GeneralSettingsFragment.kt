@@ -2,17 +2,24 @@ package com.kpstv.yts.ui.settings
 
 import android.os.Bundle
 import androidx.preference.EditTextPreference
+import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import com.kpstv.yts.AppInterface
-import com.kpstv.yts.R
 import com.kpstv.yts.AppSettings.ANONYMOUS_TORRENT_DOWNLOAD_PREF
 import com.kpstv.yts.AppSettings.TMDB_BASE_URL_PREF
 import com.kpstv.yts.AppSettings.YIFY_BASE_URL_PREF
 import com.kpstv.yts.AppSettings.YTS_BASE_URL_PREF
+import com.kpstv.yts.R
+import com.kpstv.yts.extensions.SearchType
 
-class GeneralSettingsFragment: PreferenceFragmentCompat() {
+class GeneralSettingsFragment : PreferenceFragmentCompat() {
     private val TAG = "GeneralSettingsFragment"
+
+    companion object {
+        const val SUGGESTION_TYPE_PREF = "suggestion_type_pref"
+    }
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.general_preference, rootKey)
 
@@ -48,6 +55,17 @@ class GeneralSettingsFragment: PreferenceFragmentCompat() {
             AppInterface.YTS_BASE_URL = newValue.toString().trim()
             ytsPref.summary = AppInterface.YTS_BASE_URL
             return@setOnPreferenceChangeListener true
+        }
+
+        val searchTypes = SearchType.values().map { it.name }.toTypedArray()
+
+        val suggestionType = findPreference<ListPreference>(SUGGESTION_TYPE_PREF)
+        suggestionType?.entries = searchTypes
+        suggestionType?.entryValues = searchTypes
+        suggestionType?.setDefaultValue(AppInterface.SUGGESTION_SEARCH_TYPE.name)
+        suggestionType?.setOnPreferenceChangeListener { _, value ->
+            AppInterface.SUGGESTION_SEARCH_TYPE = SearchType.valueOf(value.toString())
+            true
         }
     }
 }
