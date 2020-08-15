@@ -8,7 +8,6 @@ import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import com.github.se_bastiaan.torrentstream.StreamStatus
 import com.github.se_bastiaan.torrentstream.Torrent
 import com.github.se_bastiaan.torrentstream.TorrentOptions
@@ -21,6 +20,7 @@ import com.kpstv.yts.AppInterface.Companion.SUBTITLE_LOCATION
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.SubHolder
 import com.kpstv.yts.databinding.ActivityTorrentPlayerBinding
+import com.kpstv.yts.extensions.colorFrom
 import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.extensions.invisible
 import com.kpstv.yts.extensions.show
@@ -250,12 +250,7 @@ class TorrentPlayerActivity : AppCompatActivity() {
             .setTitle(title)
             .setShowTopBar(true)
             .setAspectRatio(VideoInfo.AR_ASPECT_FILL_PARENT)
-            .setBgColor(
-                ContextCompat.getColor(
-                    this@TorrentPlayerActivity,
-                    android.R.color.black
-                )
-            )
+            .setBgColor(colorFrom(android.R.color.black))
 
         binding.giraffePlayer.playerListener = listener
 

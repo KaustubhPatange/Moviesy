@@ -18,6 +18,7 @@ import com.kpstv.yts.databinding.FragmentGenreBinding
 import com.kpstv.yts.databinding.ItemLocalGenreBinding
 import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.extensions.common.CustomMovieLayout
+import com.kpstv.yts.extensions.drawableFrom
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -84,9 +85,7 @@ class GenreFragment : Fragment(R.layout.fragment_genre) {
 
         override fun onBindViewHolder(holder: LocalGenreHolder, i: Int) {
             holder.binding.itemTitle.text = list[i].title
-            holder.binding.itemImage.setImageDrawable(
-                ContextCompat.getDrawable(context, list[i].drawable)
-            )
+            holder.binding.itemImage.setImageDrawable(context.drawableFrom(list[i].drawable))
             holder.binding.root.setOnClickListener {
 
                 listener(list[i], i)

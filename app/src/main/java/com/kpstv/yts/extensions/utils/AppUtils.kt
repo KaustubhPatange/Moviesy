@@ -28,6 +28,7 @@ import com.kpstv.yts.R
 import com.kpstv.yts.data.db.repository.FavouriteRepository
 import com.kpstv.yts.data.models.Movie
 import com.kpstv.yts.data.models.response.Model
+import com.kpstv.yts.extensions.colorFrom
 import java.io.*
 import java.net.HttpURLConnection
 import java.net.URL
@@ -85,20 +86,20 @@ class AppUtils {
         }
 
         @SuppressLint("ResourceType")
-        fun launchUrl(context: Context, url: String, dark: Boolean = true) {
+        fun launchUrl(context: Context, url: String, dark: Boolean = true) = with(context) {
             val builder = CustomTabsIntent.Builder()
             var color: Int = R.color.colorPrimary_New
             if (!dark) color = R.color.colorPrimary
-            builder.setToolbarColor(ContextCompat.getColor(context, color))
+            builder.setToolbarColor(colorFrom(color))
             val customTabsIntent = builder.build()
             try {
                 val packageInfo: PackageInfo =
-                    context.packageManager.getPackageInfo("com.android.chrome", 0)
+                    packageManager.getPackageInfo("com.android.chrome", 0)
                 customTabsIntent.intent.setPackage("com.android.chrome")
-                customTabsIntent.launchUrl(context, Uri.parse(url))
+                customTabsIntent.launchUrl(this, Uri.parse(url))
             } catch (e: Exception) {
                 Log.e("Chrome", "Chrome not installed: " + e.message)
-                launchUrlIntent(url, context)
+                launchUrlIntent(url, this)
             }
         }
 

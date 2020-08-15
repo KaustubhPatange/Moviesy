@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding2.widget.RxTextView
 import com.kpstv.common_moviesy.extensions.viewBinding
-import com.kpstv.yts.AppInterface.Companion.SUGGESTION_URL
+import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppInterface.Companion.setAppThemeNoAction
 import com.kpstv.yts.R
 import com.kpstv.yts.adapters.CustomPagedAdapter
@@ -34,6 +34,7 @@ import com.kpstv.yts.extensions.utils.RetrofitUtils
 import com.kpstv.yts.ui.activities.MoreActivity.Companion.base
 import com.kpstv.yts.ui.activities.MoreActivity.Companion.queryMap
 import com.kpstv.yts.ui.helpers.AdaptiveSearchHelper
+import com.kpstv.yts.ui.helpers.SuggestionHelper
 import com.kpstv.yts.ui.viewmodels.FinalViewModel
 import com.kpstv.yts.ui.viewmodels.MoreViewModel
 import com.kpstv.yts.ui.viewmodels.SearchViewModel
@@ -43,8 +44,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
-import okhttp3.Request
-import org.json.JSONArray
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -58,6 +58,9 @@ class SearchActivity : AppCompatActivity() {
 
     @Inject
     lateinit var retrofitUtils: RetrofitUtils
+
+    @Inject
+    lateinit var suggestionHelper: SuggestionHelper
 
     private val TAG = "SearchActivity"
 
@@ -292,6 +295,7 @@ class SearchActivity : AppCompatActivity() {
      */
     private fun setSuggestionObservable() {
         suggestionFetch = RxTextView.textChanges(binding.searchEditText)
+            .skip(700, TimeUnit.MILLISECONDS)
             .observeOn(Schedulers.io())
             .subscribeOn(AndroidSchedulers.mainThread())
             .subscribe(onTaskStarted(), onTaskError())
@@ -400,34 +404,61 @@ class SearchActivity : AppCompatActivity() {
             return@Consumer
         }
 
-        val response = retrofitUtils.getHttpClient().newCall(
-            Request.Builder()
-                .url("${SUGGESTION_URL}$charSequence")
-                .build()
-        ).execute()
+        /** Fetch suggestions here */
+        /* val response = retrofitUtils.getHttpClient().newCall(
+             Request.Builder()
+                 .url("${SUGGESTION_URL}$charSequence")
+                 .build()
+         ).execute()*/
 
         try {
             suggestionModels.clear()
-            val json = response.body?.string()
-            if (json?.isNotEmpty() == true) {
-                val jsonArray = JSONArray(json).getJSONArray(1)
-                for (i in 0 until jsonArray.length()) {
-                    suggestionModels.add(
-                        HistoryModel(
-                            query = jsonArray.getString(i),
-                            type = HistoryModel.Type.SEARCH
-                        )
-                    )
+            when (AppInterface.SUGGESTION_SEARCH_TYPE) {
+                SearchType.Google -> {
+                    suggestionHelper.getGoogleSuggestions(charSequence)
+                        .map { result ->
+                            HistoryModel(
+                                query = result,
+                                type = HistoryModel.Type.SEARCH
+                            )
+                        }.let { models ->
+                            suggestionModels.addAll(models)
+                        }
+                }
+                SearchType.TMDB -> {
+                    suggestionHelper.getTMDBSuggestions(charSequence)
+                        .map { result ->
+                            HistoryModel(
+                                query = result,
+                                type = HistoryModel.Type.SEARCH
+                            )
+                        }.let { models ->
+                            suggestionModels.addAll(models)
+                        }
                 }
             }
+            /* val json = response.body?.string()
+             if (json?.isNotEmpty() == true) {
+                 val jsonArray = JSONArray(json).getJSONArray(1)
+                 for (i in 0 until jsonArray.length()) {
+                     suggestionModels.add(
+                         HistoryModel(
+                             query = jsonArray.getString(i),
+                             type = HistoryModel.Type.SEARCH
+                         )
+                     )
+                 }
+             }*/
         } catch (e: Exception) {
             e.printStackTrace()
         }
 
         runOnUiThread {
-            /** Showing the hidden suggestion Layout
+            /** Showing the hidden suggestion Layout only if
+             *  there are items to show.
              */
-            binding.suggestionLayout.show()
+            if (suggestionModels.isNotEmpty())
+                binding.suggestionLayout.show()
 
             suggestionAdapter.notifyDataSetChanged()
         }

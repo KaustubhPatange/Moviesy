@@ -65,3 +65,8 @@ enum class MovieType {
     Suggestion,
     Recommend
 }
+
+enum class SearchType {
+    Google,
+    TMDB
+}

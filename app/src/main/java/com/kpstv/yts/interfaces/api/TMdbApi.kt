@@ -1,7 +1,6 @@
 package com.kpstv.yts.interfaces.api
 
 import com.kpstv.yts.data.models.response.Model
-import kotlinx.coroutines.Deferred
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -16,7 +15,7 @@ interface TMdbApi {
     /** Get recommended movie by passing TMDB ID */
 
     @GET("movie/{id}/recommendations")
-    suspend fun getRecommendations(@Path("id") id: Int,@Query("page") page: Int=1): Model.response_tmdb_movies
+    suspend fun getRecommendations(@Path("id") id: Int, @Query("page") page: Int=1): Model.response_tmdb_movies
 
     /** Get movie details from TMDB Movie ID or IMDB ID */
 
@@ -27,4 +26,7 @@ interface TMdbApi {
 
     @GET("movie/{id}/credits")
     suspend fun getCast(@Path("id") id: String): Model.response_tmdb_cast
+
+    @GET("search/movie")
+    suspend fun getSearch(@Query("query") query: String, @Query("page") page: Int=1): Model.response_tmdb_movies
 }

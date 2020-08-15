@@ -15,7 +15,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.common_moviesy.extensions.viewBinding
@@ -25,6 +24,7 @@ import com.kpstv.yts.R
 import com.kpstv.yts.data.models.Subtitle
 import com.kpstv.yts.databinding.BottomSheetSubtitlesBinding
 import com.kpstv.yts.extensions.AdapterOnSingleClick
+import com.kpstv.yts.extensions.colorFrom
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.FlagUtils
 import com.kpstv.yts.extensions.utils.GlideApp
@@ -313,22 +313,12 @@ class BottomSheetSubtitles : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
             when {
                 model.likes > 0 -> {
                     holder.itemLikes.text = model.likes.toString()
-                    holder.itemLikes.setBackgroundColor(
-                        ContextCompat.getColor(
-                            context,
-                            R.color.green
-                        )
-                    )
+                    holder.itemLikes.setBackgroundColor(context.colorFrom(R.color.green))
                     holder.itemLikes.visibility = View.VISIBLE
                 }
                 model.likes < 0 -> {
                     holder.itemLikes.text = "${model.likes}"
-                    holder.itemLikes.setBackgroundColor(
-                        ContextCompat.getColor(
-                            context,
-                            R.color.red
-                        )
-                    )
+                    holder.itemLikes.setBackgroundColor(context.colorFrom(R.color.red))
                     holder.itemLikes.visibility = View.VISIBLE
                 }
                 else -> {

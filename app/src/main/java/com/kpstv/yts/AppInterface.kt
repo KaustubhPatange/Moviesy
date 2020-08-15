@@ -7,6 +7,7 @@ import android.os.Environment
 import androidx.navigation.NavOptions
 import androidx.preference.PreferenceManager
 import com.danimahardhika.cafebar.CafeBar
+import com.kpstv.yts.extensions.SearchType
 import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.extensions.add
 import com.kpstv.yts.ui.fragments.GenreFragment
@@ -46,6 +47,7 @@ class AppInterface {
         var IS_DARK_THEME = true
         var IS_PREMIUM_UNLOCKED = false
         var IS_ADAPTIVE_SEARCH = true
+        var SUGGESTION_SEARCH_TYPE = SearchType.TMDB
 
         const val FEATURED_QUERY = "movies=featured&client=yts"
 

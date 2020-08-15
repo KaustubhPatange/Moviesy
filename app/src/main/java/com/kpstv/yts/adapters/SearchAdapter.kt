@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.yts.R
+import com.kpstv.yts.extensions.drawableFrom
 import kotlinx.android.synthetic.main.item_search_suggestion.view.*
 
 data class HistoryModel(
@@ -43,20 +44,9 @@ class SearchAdapter(
 
         when (item.type) {
             HistoryModel.Type.HISTORY ->
-                holder.image.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        context,
-                        R.drawable.ic_restore
-                    )
-                )
+                holder.image.setImageDrawable(context.drawableFrom(R.drawable.ic_restore))
             HistoryModel.Type.SEARCH ->
-                holder.image.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        context,
-                        R.drawable.ic_search
-                    )
-                )
-
+                holder.image.setImageDrawable(context.drawableFrom(R.drawable.ic_search))
         }
 
         holder.mainLayout.setOnClickListener { onClick.invoke(item, i) }
