@@ -6,6 +6,7 @@ import android.os.Parcelable
 import android.view.View
 import androidx.annotation.DrawableRes
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.ui.fragments.GenreFragment
 import kotlinx.coroutines.*

@@ -34,7 +34,6 @@ import com.kpstv.yts.extensions.utils.RetrofitUtils
 import com.kpstv.yts.ui.activities.MoreActivity.Companion.base
 import com.kpstv.yts.ui.activities.MoreActivity.Companion.queryMap
 import com.kpstv.yts.ui.helpers.AdaptiveSearchHelper
-import com.kpstv.yts.ui.helpers.SuggestionHelper
 import com.kpstv.yts.ui.viewmodels.FinalViewModel
 import com.kpstv.yts.ui.viewmodels.MoreViewModel
 import com.kpstv.yts.ui.viewmodels.SearchViewModel
@@ -59,9 +58,6 @@ class SearchActivity : AppCompatActivity() {
 
     @Inject
     lateinit var retrofitUtils: RetrofitUtils
-
-    @Inject
-    lateinit var suggestionHelper: SuggestionHelper
 
     private val TAG = "SearchActivity"
 

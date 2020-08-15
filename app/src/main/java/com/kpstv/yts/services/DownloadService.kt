@@ -38,6 +38,7 @@ import com.kpstv.yts.data.db.repository.PauseRepository
 import com.kpstv.yts.data.models.Torrent
 import com.kpstv.yts.data.models.TorrentJob
 import com.kpstv.yts.data.models.response.Model
+import com.kpstv.yts.extensions.Notifications
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.getVideoDuration
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.saveImageFromUrl
@@ -414,8 +415,6 @@ class DownloadService : IntentService("blank") {
 
         /** Create notification based on error bool */
 
-        val not: Notification
-        val contentText = model.title
         if (!isError) {
 
             /** Save details of file in database. */
@@ -447,30 +446,12 @@ class DownloadService : IntentService("blank") {
             val detailPath = File(currentModel?.saveLocation, "details.json")
             detailPath.writeText(Gson().toJson(downloadResponse))
 
-            // TODO: Set content intent to do something when notification is clicked
-
-            not = NotificationCompat.Builder(context, getString(R.string.CHANNEL_ID_2)).apply {
-                setContentTitle("Download Complete")
-                setContentText(contentText)
-                setSmallIcon(R.drawable.ic_check)
-                setAutoCancel(true)
-                priority = Notification.PRIORITY_LOW
-            }.build()
+            /** Send download complete notification */
+            Notifications.sendDownloadNotification(context, model.title)
         } else {
-            not = NotificationCompat.Builder(context, getString(R.string.CHANNEL_ID_2)).apply {
-                setDefaults(Notification.DEFAULT_ALL)
-                setContentTitle("Download Failed")
-                setContentText(contentText)
-                setSmallIcon(R.drawable.ic_error_outline)
-                setAutoCancel(true)
-                priority = Notification.PRIORITY_LOW
-            }.build()
+            /** Send download failed notification */
+            Notifications.sendDownloadFailedNotification(this, model.title)
         }
-
-        /** Throw notification with random id */
-
-        val nos: Int = Random().nextInt(400) + 150
-        notificationManagerCompat.notify(nos, not)
     }
 
     private val localBroadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {

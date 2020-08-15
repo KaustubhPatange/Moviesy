@@ -33,7 +33,7 @@ object MainHelper {
      * @see <a href="https://www.reddit.com/r/androiddev/comments/i4wkxq/best_way_for_dispatching_periodic_background_tasks/">Ideal way of dispatching periodic background task?</a>
      */
     fun askNoBatteryOptimization(context: Context) = with(context) {
-        return@with // TODO: Testing purpose let's disable it.
+        return@with // TODO: See if really asking no battery optimization will fix this behaviour.
         @Suppress("UNREACHABLE_CODE")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!(getSystemService(POWER_SERVICE) as PowerManager).isIgnoringBatteryOptimizations(packageName)) {

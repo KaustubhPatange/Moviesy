@@ -188,4 +188,6 @@ Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus d
     <string name="suggestion_type_summary">This option will affect the suggestions shown when user is searching for movies.</string>
     <string name="adaptive_search_title">Adaptive Search</string>
     <string name="adaptive_search_summary">Optimize search query to remove some common typos.</string>
+    <string name="download_complete">Download Complete</string>
+    <string name="download_failed">Download Failed</string>
 </resources>

@@ -30,6 +30,10 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class SplashActivity : AppCompatActivity(), Animation.AnimationListener {
 
+    companion object {
+        const val ARG_ROUTE_TO_LIBRARY = "arg_route_to_library" // Type Boolean
+    }
+
     @Inject
     lateinit var proxyUtils: ProxyUtils
 
@@ -93,10 +97,18 @@ class SplashActivity : AppCompatActivity(), Animation.AnimationListener {
         CoroutineScope(Dispatchers.IO).launch {
             delay(300)
             if (appPreference.getBoolean(AgreementActivity.SHOW_AGREEMENT_PREF, false))
-                startActivityAndFinish(Intent(this@SplashActivity, MainActivity::class.java))
+                callMainActivity()
             else startActivityAndFinish(Intent(this@SplashActivity, AgreementActivity::class.java))
         }
     }
 
     override fun onAnimationStart(animation: Animation?) {}
+
+    private fun callMainActivity() {
+        val routeToLibrary = intent?.getBooleanExtra(ARG_ROUTE_TO_LIBRARY, false)
+        val navigateIntent = Intent(this@SplashActivity, MainActivity::class.java).apply {
+            putExtra(ARG_ROUTE_TO_LIBRARY, routeToLibrary)
+        }
+        startActivityAndFinish(navigateIntent)
+    }
 }

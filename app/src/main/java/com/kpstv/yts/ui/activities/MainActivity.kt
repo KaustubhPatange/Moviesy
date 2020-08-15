@@ -103,6 +103,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
+
+        /** Check for intent arguments */
+        checkIntentArguments()
+
+        /** Check for updates */
         updateUtils.check(
             onUpdateAvailable = {
                 AlertNoIconDialog.Companion.Builder(this)
@@ -139,6 +144,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         else
             binding.customDrawerPremium.root.hide()
+    }
+
+    private fun checkIntentArguments() {
+        if (intent?.getBooleanExtra(SplashActivity.ARG_ROUTE_TO_LIBRARY, false) == true) {
+            binding.bottomNav.selectedItemId = R.id.libraryFragment
+            navController.navigate(R.id.libraryFragment)
+        }
     }
 
     override fun onNavigationItemSelected(p0: MenuItem): Boolean {
