@@ -307,8 +307,6 @@ class FinalViewModel @ViewModelInject constructor(
                     listToModify.add(movie)
                 }
             }
-
         }
     }
-
 }

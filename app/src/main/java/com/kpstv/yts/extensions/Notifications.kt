@@ -9,10 +9,10 @@ import android.content.Intent
 import android.os.Build.VERSION.SDK_INT
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import com.kpstv.common_moviesy.extensions.utils.CommonUtils
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.AppDatabase
-import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.ui.activities.FinalActivity
 import com.kpstv.yts.ui.activities.SplashActivity
 import java.util.*
@@ -47,10 +47,10 @@ object Notifications {
             )
                 .setContentTitle(fileName)
                 .setContentText(
-                    "${AppUtils.getSizePretty(
+                    "${CommonUtils.getSizePretty(
                         progress.currentBytes,
                         false
-                    )} / ${AppUtils.getSizePretty(progress.totalBytes)}"
+                    )} / ${CommonUtils.getSizePretty(progress.totalBytes)}"
                 )
                 .setSmallIcon(android.R.drawable.stat_sys_download)
                 .setOngoing(true)

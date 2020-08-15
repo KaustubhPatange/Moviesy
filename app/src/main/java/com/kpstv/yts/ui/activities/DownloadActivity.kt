@@ -17,6 +17,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.danimahardhika.cafebar.CafeBar
+import com.kpstv.common_moviesy.extensions.Coroutines
+import com.kpstv.common_moviesy.extensions.utils.CommonUtils
+import com.kpstv.common_moviesy.extensions.utils.FileUtils
+import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.AppInterface.Companion.EMPTY_QUEUE
 import com.kpstv.yts.AppInterface.Companion.MODEL_UPDATE
 import com.kpstv.yts.AppInterface.Companion.PAUSE_JOB
@@ -29,16 +33,13 @@ import com.kpstv.yts.R
 import com.kpstv.yts.adapters.JobQueueAdapter
 import com.kpstv.yts.adapters.PauseAdapter
 import com.kpstv.yts.data.db.repository.PauseRepository
-import com.kpstv.common_moviesy.extensions.Coroutines
-import com.kpstv.yts.extensions.utils.AppUtils
-import com.kpstv.yts.extensions.utils.AppUtils.Companion.getMagnetUrl
 import com.kpstv.yts.data.models.Torrent
 import com.kpstv.yts.data.models.TorrentJob
 import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.databinding.ActivityDownloadBinding
-import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.extensions.show
+import com.kpstv.yts.extensions.utils.AppUtils.Companion.getMagnetUrl
 import com.kpstv.yts.extensions.utils.GlideApp
 import com.kpstv.yts.receivers.CommonBroadCast
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
@@ -55,7 +56,7 @@ class DownloadActivity : AppCompatActivity() {
         fun calculateCurrentSize(torrentJob: TorrentJob): String? {
             val currentSize =
                 (torrentJob.progress.toLong() * (torrentJob.totalSize as Long)) / (100).toLong()
-            return AppUtils.getSizePretty(currentSize)
+            return CommonUtils.getSizePretty(currentSize)
         }
 
     }
@@ -168,8 +169,11 @@ class DownloadActivity : AppCompatActivity() {
                     /** For some reasons it is throwing
                      * 'java.lang.RuntimeException: Parcelable encountered IOException reading a Serializable object (name = com.kpstv.yts.data.models.TorrentJob'
                      *
-                     *  Well i've to figure it out // TODO: Fix this
+                     *  Well i've to figure it out
                      *  Edit: Seems like its fixed, but still needs some testing
+                     *
+                     *  Edit: This issue for due to [Notification] contentIntent set on notification.
+                     *        Apparently one should not use same requestCode int for pending intent.
                      *  */
                     DA_LOG(e.message ?: "null")
                     e.printStackTrace()
@@ -212,9 +216,11 @@ class DownloadActivity : AppCompatActivity() {
                 torrentJob
             )
 
-        binding.itemTorrentDownload.itemDownloadSpeed.text = formatDownloadSpeed(torrentJob.downloadSpeed)
+        binding.itemTorrentDownload.itemDownloadSpeed.text =
+            formatDownloadSpeed(torrentJob.downloadSpeed)
         binding.itemTorrentDownload.itemProgressBar.progress = torrentJob.progress
-        binding.itemTorrentDownload.itemTotalSize.text = AppUtils.getSizePretty(torrentJob.totalSize)
+        binding.itemTorrentDownload.itemTotalSize.text =
+            CommonUtils.getSizePretty(torrentJob.totalSize)
 
         pendingJobUpdate(intent)
 
@@ -338,7 +344,7 @@ class DownloadActivity : AppCompatActivity() {
                     setMessage(getString(R.string.ask_delete))
                     setPositiveButton(getString(R.string.yes)) {
                         model.saveLocation?.let {
-                            AppUtils.deleteRecursive(File(it))
+                            FileUtils.deleteRecursive(File(it))
                         }
                         pauseRepository.deletePause(model.hash)
                         decideToShowNoJobLayout()

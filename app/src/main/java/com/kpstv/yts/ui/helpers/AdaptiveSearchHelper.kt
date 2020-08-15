@@ -3,17 +3,15 @@ package com.kpstv.yts.ui.helpers
 import android.annotation.SuppressLint
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.edit
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.preference.PreferenceManager
+import com.kpstv.common_moviesy.extensions.utils.CommonUtils
 import com.kpstv.yts.R
 import com.kpstv.yts.databinding.CustomAdaptiveSearchBinding
 import com.kpstv.yts.defaultPreference
 import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.extensions.show
-import com.kpstv.yts.extensions.utils.AppUtils
 
 class AdaptiveSearchHelper(
     private val context: Context,
@@ -64,7 +62,7 @@ class AdaptiveSearchHelper(
 
     @SuppressLint("SetTextI18n")
     private fun showFilterLayout(query: String) = with(context) {
-        binding.tvResultsFor.text = AppUtils.getHtmlText(
+        binding.tvResultsFor.text = CommonUtils.getHtmlText(
             "<i>${getString(R.string.results_for)} <b>${query}</b></i>"
         )
         binding.root.show()

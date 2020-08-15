@@ -53,13 +53,11 @@ class AppInterface {
 
         const val TORRENT_NOT_SUPPORTED = "com.kpstv.yts.TORRENT_NOT_SUPPORTED"
         const val MODEL_UPDATE = "com.kpstv.yts.MODEL_UPDATE"
-        const val FIRST_LOOK = "com.kpstv.yts.MODEL_UPDATE"
         const val STOP_SERVICE = "com.kpstv.yts.STOP_SERVICE"
         const val PENDING_JOB_UPDATE = "com.kpstv.yts.PENDING_JOB_UPDATE"
         const val EMPTY_QUEUE = "com.kpstv.yts.EMPTY_QUEUE"
         const val PAUSE_JOB = "com.kpstv.yts.PAUSE_JOB"
         const val UNPAUSE_JOB = "com.kpstv.yts.ADD_ONLY_JOB"
-        const val REMOVE_JOB = "com.kpstv.yts.REMOVE_JOB"
         const val REMOVE_CURRENT_JOB = "com.kpstv.yts.REMOVE_CURRENT_JOB"
 
         const val MOVIE_ID = "com.kpstv.yts.MOVIE_ID"

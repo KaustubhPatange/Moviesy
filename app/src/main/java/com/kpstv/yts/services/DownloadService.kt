@@ -12,13 +12,13 @@ import android.os.PowerManager.WakeLock
 import android.text.Html
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.github.se_bastiaan.torrentstream.StreamStatus
 import com.github.se_bastiaan.torrentstream.TorrentOptions
 import com.github.se_bastiaan.torrentstream.TorrentStream
 import com.github.se_bastiaan.torrentstream.listeners.TorrentListener
 import com.google.gson.Gson
+import com.kpstv.common_moviesy.extensions.utils.FileUtils
 import com.kpstv.yts.AppInterface.Companion.ANONYMOUS_TORRENT_DOWNLOAD
 import com.kpstv.yts.AppInterface.Companion.DOWNLOAD_CONNECTION_TIMEOUT
 import com.kpstv.yts.AppInterface.Companion.DOWNLOAD_TIMEOUT_SECOND
@@ -27,7 +27,6 @@ import com.kpstv.yts.AppInterface.Companion.MODEL_UPDATE
 import com.kpstv.yts.AppInterface.Companion.PAUSE_JOB
 import com.kpstv.yts.AppInterface.Companion.PENDING_JOB_UPDATE
 import com.kpstv.yts.AppInterface.Companion.REMOVE_CURRENT_JOB
-import com.kpstv.yts.AppInterface.Companion.REMOVE_JOB
 import com.kpstv.yts.AppInterface.Companion.STOP_SERVICE
 import com.kpstv.yts.AppInterface.Companion.STORAGE_LOCATION
 import com.kpstv.yts.AppInterface.Companion.TORRENT_NOT_SUPPORTED
@@ -39,7 +38,6 @@ import com.kpstv.yts.data.models.Torrent
 import com.kpstv.yts.data.models.TorrentJob
 import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.extensions.Notifications
-import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.getVideoDuration
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.saveImageFromUrl
 import com.kpstv.yts.receivers.CommonBroadCast
@@ -121,7 +119,7 @@ class DownloadService : IntentService("blank") {
 
         /** Registering local broadcast receiver */
 
-        val filter = IntentFilter(REMOVE_JOB)
+        val filter = IntentFilter()
         filter.addAction(REMOVE_CURRENT_JOB)
         filter.addAction(PAUSE_JOB)
         LocalBroadcastManager.getInstance(context).registerReceiver(localBroadcastReceiver, filter)
@@ -138,7 +136,12 @@ class DownloadService : IntentService("blank") {
             )
         notificationIntent.action = MODEL_UPDATE
         notificationIntent.putExtra("model", t)
-        contentIntent = PendingIntent.getActivity(context, Notifications.getRandomNumberCode(), notificationIntent, 0)
+        contentIntent = PendingIntent.getActivity(
+            context,
+            Notifications.getRandomNumberCode(),
+            notificationIntent,
+            0
+        )
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -231,7 +234,7 @@ class DownloadService : IntentService("blank") {
             override fun onStreamStopped() {
                 DS_LOG("=> Stream Stopped")
                 if (currentModel != null && toDelete) {
-                    AppUtils.deleteRecursive(currentModel?.saveLocation)
+                    FileUtils.deleteRecursive(currentModel?.saveLocation)
                 }
                 isStopped = true
                 isJobCompleted = true
@@ -474,16 +477,6 @@ class DownloadService : IntentService("blank") {
 
                     /** Removing current job */
                     torrentStream.stopStream()
-                }
-                REMOVE_JOB -> { // TODO: Looks like an unused method...
-                    val model: Torrent = intent.extras?.getSerializable("model") as Torrent
-                    for (c in pendingJobs) {
-                        if (model.title == c.title) {
-                            pendingJobs.remove(c)
-                            DS_LOG("OK it is removed")
-                            break
-                        }
-                    }
                 }
                 REMOVE_CURRENT_JOB -> {
                     toDelete = intent.getBooleanExtra("deleteFile", false)

@@ -121,23 +121,6 @@ class MainViewModel @ViewModelInject constructor(
                 if (isFetchNeeded(FEATURED_QUERY)) {
                     Log.e(TAG, "=> Featured: Fetching new data")
                     fetchFeaturedData(moviesCallback)
-                    /*val list = ytsFeaturedUtils.fetch()
-                    if (list.isNotEmpty()) {
-                        val mainModel = data_main(
-                            time = MainDateFormatter.format(Calendar.getInstance().time).toLong(),
-                            movies = list,
-                            query = FEATURED_QUERY,
-                            isMore = false
-                        )
-
-                        repository.saveMovies(mainModel)
-
-                        moviesCallback.onComplete.invoke(
-                            list,
-                            QueryConverter.toMapfromString(FEATURED_QUERY),
-                            false
-                        )
-                    } else moviesCallback.onFailure?.invoke(Exception("Empty movie list"))*/
                 } else {
                     Log.e(TAG, "=> Featured: Getting data from repository")
                     repository.getMoviesByQuery(

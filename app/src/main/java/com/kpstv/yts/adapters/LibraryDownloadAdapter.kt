@@ -8,13 +8,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.kpstv.common_moviesy.extensions.utils.CommonUtils
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.databinding.ItemLibraryDownloadBinding
 import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.extensions.show
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.getBulletSymbol
-import com.kpstv.yts.extensions.utils.AppUtils.Companion.getSizePretty
 import java.io.File
 
 class LibraryDownloadAdapter(
@@ -41,7 +41,7 @@ class LibraryDownloadAdapter(
             holder.binding.shimmerImageView.setImage(bitmap)
         }
         holder.binding.itemSubText.text =
-            "${getSizePretty(model.size)} ${getBulletSymbol()} ${model.total_video_length / (1000 * 60)} mins"
+            "${CommonUtils.getSizePretty(model.size)} ${getBulletSymbol()} ${model.total_video_length / (1000 * 60)} mins"
 
         if (model.recentlyPlayed)
             holder.binding.smallLabel.show()

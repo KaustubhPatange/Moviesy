@@ -40,11 +40,6 @@ class SearchViewModel @ViewModelInject constructor(
         historyRepository.insert(data_history.from(query))
     }
 
-    fun getLastSavedSearchHistory(max: Int, onComplete: (List<data_history>) -> Unit) = Coroutines.io {
-        val items = historyRepository.getRecentHistory(max)
-        Coroutines.main { onComplete.invoke(items) }
-    }
-
     fun deleteFromHistory(query: String) {
         historyRepository.remove(query)
     }

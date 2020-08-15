@@ -17,6 +17,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.kpstv.common_moviesy.extensions.utils.CommonUtils
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.AppInterface.Companion.MOVIE_ID
 import com.kpstv.yts.AppInterface.Companion.handleRetrofitError
@@ -304,7 +305,7 @@ class FinalActivity : AppCompatActivity(), MovieListener {
     }
 
     private fun setSummary() {
-        val color = AppUtils.getColorFromAttr(this@FinalActivity, R.attr.colorText)
+        val color = CommonUtils.getColorFromAttr(this@FinalActivity, R.attr.colorText)
 
         binding.activityFinalContent.afSummary.text = "${movie.description_full}\n\n"
 
@@ -319,16 +320,16 @@ class FinalActivity : AppCompatActivity(), MovieListener {
 
             /** If cast not empty add details it to summary */
             binding.activityFinalContent.afSummary.append(
-                AppUtils.getColoredString(
+                CommonUtils.getColoredString(
                     "<b>Starring</b>",
                     color
                 )
             )
-            binding.activityFinalContent.afSummary.append(" ${AppUtils.getHtmlText(builder.toString())}\n\n")
+            binding.activityFinalContent.afSummary.append(" ${CommonUtils.getHtmlText(builder.toString())}\n\n")
         }
 
         binding.activityFinalContent.afSummary.append(
-            AppUtils.getColoredString(
+            CommonUtils.getColoredString(
                 "<b>Runtime</b>",
                 color
             )

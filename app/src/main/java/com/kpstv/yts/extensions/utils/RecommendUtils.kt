@@ -8,6 +8,9 @@ import java.io.File
 import kotlin.collections.ArrayList
 
 // TODO: See if you need to add some recommendations based on movie
+/**
+ * No plans sooner to add this feature
+ */
 class RecommendUtils {
     companion object {
         fun writeGenreUtils(context: Context, genre: String, movieTitle: String) {

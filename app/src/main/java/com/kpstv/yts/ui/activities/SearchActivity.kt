@@ -15,6 +15,7 @@ import androidx.lifecycle.Observer
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.kpstv.common_moviesy.extensions.utils.KeyboardUtils
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppInterface.Companion.setAppThemeNoAction
@@ -29,7 +30,6 @@ import com.kpstv.yts.data.models.Result
 import com.kpstv.yts.databinding.ActivitySearchBinding
 import com.kpstv.yts.extensions.*
 import com.kpstv.yts.extensions.common.CustomMovieLayout
-import com.kpstv.yts.extensions.utils.AppUtils.Companion.hideKeyboard
 import com.kpstv.yts.extensions.utils.RetrofitUtils
 import com.kpstv.yts.ui.activities.MoreActivity.Companion.base
 import com.kpstv.yts.ui.activities.MoreActivity.Companion.queryMap
@@ -39,8 +39,6 @@ import com.kpstv.yts.ui.viewmodels.MoreViewModel
 import com.kpstv.yts.ui.viewmodels.SearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
-import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Consumer
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
@@ -61,7 +59,6 @@ class SearchActivity : AppCompatActivity() {
 
     private val TAG = "SearchActivity"
 
-    private lateinit var suggestionFetch: Disposable
     private lateinit var suggestionAdapter: SearchAdapter
 
     private val suggestionModels = ArrayList<HistoryModel>()
@@ -279,7 +276,7 @@ class SearchActivity : AppCompatActivity() {
         binding.searchEditText.setText(searchQuery)
 
         /** Hide the keyboard after search was clicked */
-        hideKeyboard(this)
+        KeyboardUtils.hideKeyboard(this)
 
         removeSuggestionRecyclerView()
 
@@ -365,127 +362,6 @@ class SearchActivity : AppCompatActivity() {
             .show()
     }
 
-
-    /** TODO: Remove this after testing, implemented better one with Flow<T>
-     *
-     *  Since Consumers are basically an async threads. Here we are making
-     *  call to api using OkHttp for returning suggestion Json.
-     *
-     *  We will filter it and update the recyclerView adapter using
-     *  runOnUiThread coroutine call.
-     */
-    private fun onTaskStarted() = Consumer<CharSequence> { charSequence ->
-
-        /** Here, apart from checking if editText is empty we also have a boolean
-         *  which serves an important purpose.
-         *
-         *  So suppose user typed some query in searchEdit text and suggestions are displayed
-         *  in suggestion RecyclerView which follows this next path from => val response
-         *
-         *  Now whenever user click on suggestion it auto-completes the searchEdit text by
-         *  changing the selected item text with current one. But RxJava is still watching
-         *  this change and process it as a new query and runs the sequence => val response
-         *  which eventually displays suggestion RecyclerView event after hiding it.
-         *
-         *  Hence in order to prevent it we are using a boolean which will detect if autocomplete
-         *  was performed. If yes it won't run next code.
-         */
-        if (charSequence.isEmpty() && !isSearchClicked) {
-            /** Load last saved search history if exist else remove
-             *  suggestion layout */
-            searchViewModel.getLastSavedSearchHistory(5) { list ->
-                if (list.isNotEmpty()) {
-                    Log.e(TAG, "Loading previous history")
-                    suggestionModels.clear()
-                    suggestionModels.addAll(list.map {
-                        HistoryModel(
-                            query = it.query,
-                            type = HistoryModel.Type.HISTORY
-                        )
-                    })
-                    suggestionAdapter.notifyDataSetChanged()
-
-                    binding.suggestionLayout.show()
-                } else {
-                    Log.e(TAG, "No previous search history")
-                    removeSuggestionRecyclerView()
-                }
-            }
-            return@Consumer
-        } else if (charSequence.isEmpty() || isSearchClicked) {
-            runOnUiThread {
-                isSearchClicked = false
-                removeSuggestionRecyclerView()
-            }
-            return@Consumer
-        }
-
-        /** Fetch suggestions here */
-        /* val response = retrofitUtils.getHttpClient().newCall(
-             Request.Builder()
-                 .url("${SUGGESTION_URL}$charSequence")
-                 .build()
-         ).execute()*/
-
-        try {
-            suggestionModels.clear()
-            /* when (AppInterface.SUGGESTION_SEARCH_TYPE) {
-                 SearchType.Google -> {
-                     suggestionHelper.getGoogleSuggestions(charSequence)
-                         .map { result ->
-                             HistoryModel(
-                                 query = result,
-                                 type = HistoryModel.Type.SEARCH
-                             )
-                         }.let { models ->
-                             suggestionModels.addAll(models)
-                         }
-                 }
-                 SearchType.TMDB -> {
-                     suggestionHelper.getTMDBSuggestions(charSequence)
-                         .map { result ->
-                             HistoryModel(
-                                 query = result,
-                                 type = HistoryModel.Type.SEARCH
-                             )
-                         }.let { models ->
-                             suggestionModels.addAll(models)
-                         }
-                 }
-             }*/
-            /* val json = response.body?.string()
-             if (json?.isNotEmpty() == true) {
-                 val jsonArray = JSONArray(json).getJSONArray(1)
-                 for (i in 0 until jsonArray.length()) {
-                     suggestionModels.add(
-                         HistoryModel(
-                             query = jsonArray.getString(i),
-                             type = HistoryModel.Type.SEARCH
-                         )
-                     )
-                 }
-             }*/
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        runOnUiThread {
-            /** Showing the hidden suggestion Layout only if
-             *  there are items to show.
-             */
-            if (suggestionModels.isNotEmpty())
-                binding.suggestionLayout.show()
-
-            suggestionAdapter.notifyDataSetChanged()
-        }
-    }
-
-    /** This will catch an error (if any) thrown from RxBinding textView.
-     */
-    private fun onTaskError() = Consumer<Throwable> {
-        it.printStackTrace()
-    }
-
     /** For some reasons close Button was hiding once it lost its focus from
      *  search Edit Text, so in onResume we are showing it.
      */
@@ -504,20 +380,13 @@ class SearchActivity : AppCompatActivity() {
     override fun onBackPressed() {
         if (binding.suggestionLayout.isVisible) {
             binding.suggestionLayout.hide()
-            hideKeyboard(this)
+            KeyboardUtils.hideKeyboard(this)
         } else
             super.onBackPressed()
     }
 
     override fun onDestroy() {
-        /** Dispose the RxText watcher and remove handler callbacks
-         *  for safer side.
-         */
-        if (::suggestionFetch.isInitialized)
-            suggestionFetch.dispose()
-
         updateHandler.removeCallbacks(updateTask)
-
         super.onDestroy()
     }
 }

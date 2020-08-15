@@ -17,6 +17,7 @@ import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.kpstv.common_moviesy.extensions.utils.FileUtils
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.AppInterface.Companion.SUBTITLE_LOCATION
 import com.kpstv.yts.AppInterface.Companion.YIFY_BASE_URL
@@ -25,10 +26,10 @@ import com.kpstv.yts.data.models.Subtitle
 import com.kpstv.yts.databinding.BottomSheetSubtitlesBinding
 import com.kpstv.yts.extensions.AdapterOnSingleClick
 import com.kpstv.yts.extensions.colorFrom
+import com.kpstv.yts.extensions.unzip
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.FlagUtils
 import com.kpstv.yts.extensions.utils.GlideApp
-import com.kpstv.yts.extensions.utils.ZipUtility
 import com.kpstv.yts.extensions.views.ExtendedBottomSheetDialogFragment
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import com.kpstv.yts.ui.helpers.InterstitialAdHelper
@@ -232,14 +233,14 @@ class BottomSheetSubtitles : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
         val tempLocation = File(context?.externalCacheDir, imdb_code)
         if (!tempLocation.exists()) tempLocation.mkdirs()
 
-        val temporarySaveLocation = File(tempLocation, "${model.text}.zip")
-        if (temporarySaveLocation.exists()) temporarySaveLocation.delete()
+        val temporarySaveZipLocation = File(tempLocation, "${model.text}.zip")
+        if (temporarySaveZipLocation.exists()) temporarySaveZipLocation.delete()
 
         /** Registering broadcast receiver for listening afterDownload complete event */
 
         val onComplete: BroadcastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
-                if (temporarySaveLocation.exists()) {
+                if (temporarySaveZipLocation.exists()) {
 
                     val nameofDownload =
                         "${model.text}${downloadLink.substring(downloadLink.indexOf("-"))
@@ -247,9 +248,9 @@ class BottomSheetSubtitles : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
 
                     SUBTITLE_LOCATION.mkdirs()
 
-                    ZipUtility.extract(temporarySaveLocation, tempLocation)
+                    temporarySaveZipLocation.unzip(tempLocation)
 
-                    if (temporarySaveLocation.exists()) temporarySaveLocation.delete()
+                    if (temporarySaveZipLocation.exists()) temporarySaveZipLocation.delete()
 
                     if (tempLocation.listFiles()?.isNotEmpty() == true) {
                         tempLocation.listFiles()[0].renameTo(
@@ -266,7 +267,7 @@ class BottomSheetSubtitles : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
                     model.isDownload = false
                     adapter.notifyItemChanged(i)
 
-                    AppUtils.deleteRecursive(tempLocation)
+                    FileUtils.deleteRecursive(tempLocation)
 
                     context?.unregisterReceiver(this)
                 } else {
@@ -285,7 +286,7 @@ class BottomSheetSubtitles : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
         val request = DownloadManager.Request(Uri.parse(downloadLink))
         request.setTitle("Downloading Subtitle")
         request.setDescription(model.text)
-        request.setDestinationUri(Uri.fromFile(temporarySaveLocation))
+        request.setDestinationUri(Uri.fromFile(temporarySaveZipLocation))
 
         val manager = context?.getSystemService(DOWNLOAD_SERVICE) as DownloadManager
         manager.enqueue(request)
