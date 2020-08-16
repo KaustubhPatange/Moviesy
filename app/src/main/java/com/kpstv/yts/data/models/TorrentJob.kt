@@ -14,4 +14,21 @@ data class TorrentJob (
     var status: String,
     val peers: Int,
     val magnetHash: String
-    ) : Serializable
+    ) : Serializable {
+    companion object {
+        fun from(model: Torrent, status: String = "Paused") =
+            TorrentJob(
+                title = model.title,
+                bannerUrl = model.banner_url,
+                progress = 0,
+                seeds = model.seeds,
+                downloadSpeed = 0f,
+                currentSize = 0,
+                totalSize = model.size,
+                isPlay = false,
+                status = status,
+                peers = model.peers,
+                magnetHash = model.hash
+            )
+    }
+}

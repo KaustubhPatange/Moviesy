@@ -127,6 +127,7 @@ class DownloadActivity : AppCompatActivity() {
             pauseAdapter.updateModels(it)
             if (pauseAdapter.itemCount > 0) {
                 binding.layoutPauseQueue.show()
+                binding.layoutJobEmptyQueue.hide()
             } else
                 binding.layoutPauseQueue.hide()
             DA_LOG("Updating models")
@@ -384,7 +385,6 @@ class DownloadActivity : AppCompatActivity() {
     }
 
     private fun showJobEmptyQueue() {
-
         if (PAUSE_BUTTON_CLICKED) {
             PAUSE_BUTTON_CLICKED = false
             return

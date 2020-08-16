@@ -12,6 +12,7 @@ import android.os.PowerManager.WakeLock
 import android.text.Html
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.github.se_bastiaan.torrentstream.StreamStatus
 import com.github.se_bastiaan.torrentstream.TorrentOptions
@@ -32,6 +33,7 @@ import com.kpstv.yts.AppInterface.Companion.STORAGE_LOCATION
 import com.kpstv.yts.AppInterface.Companion.TORRENT_NOT_SUPPORTED
 import com.kpstv.yts.AppInterface.Companion.formatDownloadSpeed
 import com.kpstv.yts.R
+import com.kpstv.yts.adapters.HistoryModel
 import com.kpstv.yts.data.db.repository.DownloadRepository
 import com.kpstv.yts.data.db.repository.PauseRepository
 import com.kpstv.yts.data.models.Torrent
@@ -42,6 +44,7 @@ import com.kpstv.yts.extensions.utils.AppUtils.Companion.getVideoDuration
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.saveImageFromUrl
 import com.kpstv.yts.receivers.CommonBroadCast
 import com.kpstv.yts.ui.activities.DownloadActivity
+import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 import java.text.SimpleDateFormat
@@ -490,9 +493,37 @@ class DownloadService : IntentService("blank") {
         return System.currentTimeMillis() / 1000
     }
 
+    private fun saveInterruptDownloads() {
+        val model = currentTorrentModel
+        val currentTorrent = currentModel
+        if (model != null && currentTorrent != null) {
+            pauseRepository.savePauseModel(
+                Model.response_pause(
+                    job = TorrentJob.from(model),
+                    hash = model.hash,
+                    saveLocation = currentTorrent.saveLocation.path,
+                    torrent = model
+                )
+            )
+        }
+        for (job in pendingJobs) {
+            pauseRepository.savePauseModel(
+                Model.response_pause(
+                    job = TorrentJob.from(job),
+                    hash = job.hash,
+                    saveLocation = null,
+                    torrent = job
+                )
+            )
+        }
+    }
+
     override fun onDestroy() {
 
         DS_LOG("=> onDestroy() called")
+
+        /** Save all interrupted downloads */
+        saveInterruptDownloads()
 
         /** Update receiver to know that all jobs completed */
         updateEmptyQueue()
