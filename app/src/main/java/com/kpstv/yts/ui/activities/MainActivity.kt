@@ -38,6 +38,9 @@ import es.dmoral.toasty.Toasty
 import io.github.dkbai.tinyhttpd.nanohttpd.webserver.SimpleWebServer
 import javax.inject.Inject
 
+// TODO: Remove menu/nav_menu
+// TODO: Remove
+
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
