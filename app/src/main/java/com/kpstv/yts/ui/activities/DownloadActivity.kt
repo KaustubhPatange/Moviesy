@@ -333,6 +333,8 @@ class DownloadActivity : AppCompatActivity() {
     private fun handlePauseMenu(it: MenuItem, model: Model.response_pause, i: Int) {
         when (it.itemId) {
             R.id.action_unpause -> {
+                pauseRepository.deletePause(model.hash)
+
                 val intent = Intent(this, CommonBroadCast::class.java)
                 intent.action = UNPAUSE_JOB
                 intent.putExtra("model", model.torrent!!)
