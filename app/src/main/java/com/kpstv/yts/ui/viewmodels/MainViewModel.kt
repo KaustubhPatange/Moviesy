@@ -4,8 +4,8 @@ import android.app.Application
 import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import com.kpstv.common_moviesy.extensions.Coroutines
-import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppInterface.Companion.CUSTOM_LAYOUT_YTS_SPAN
 import com.kpstv.yts.AppInterface.Companion.FEATURED_QUERY
 import com.kpstv.yts.AppInterface.Companion.MainDateFormatter

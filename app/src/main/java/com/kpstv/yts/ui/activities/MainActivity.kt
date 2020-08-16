@@ -3,20 +3,16 @@ package com.kpstv.yts.ui.activities
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.os.Environment
-import android.util.Log
-import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
+import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppInterface.Companion.IS_DARK_THEME
@@ -26,27 +22,29 @@ import com.kpstv.yts.BuildConfig
 import com.kpstv.yts.R
 import com.kpstv.yts.cast.CastHelper
 import com.kpstv.yts.databinding.ActivityMainBinding
+import com.kpstv.yts.extensions.NavigationModel
+import com.kpstv.yts.extensions.NavigationModels
+import com.kpstv.yts.extensions.Navigations
 import com.kpstv.yts.extensions.hide
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.UpdateUtils
-import com.kpstv.yts.services.AppWorker
 import com.kpstv.yts.services.DownloadService
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
-import com.kpstv.yts.ui.helpers.MainHelper
 import com.kpstv.yts.ui.helpers.PremiumHelper
 import com.kpstv.yts.ui.settings.SettingsActivity
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import io.github.dkbai.tinyhttpd.nanohttpd.webserver.SimpleWebServer
-import java.io.File
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity() {
 
-    @Inject lateinit var updateUtils: UpdateUtils
+    @Inject
+    lateinit var updateUtils: UpdateUtils
 
+    private val viewModel by viewModels<MainViewModel>()
     private val binding by viewBinding(ActivityMainBinding::inflate)
 
     val TAG = "MainActivity"
@@ -57,6 +55,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private lateinit var navController: NavController
     private var isDarkTheme = true
+    private val navigations by lazy {
+        Navigations(this)
+    }
 
     @SuppressLint("CheckResult")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,8 +71,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         castHelper.initCastSession(this)
 
+        setNavigationDrawer()
+
         drawerLayout = binding.drawerLayout
-        binding.navigationView.setNavigationItemSelectedListener(this)
 
         setPremiumButtonClicked()
 
@@ -93,6 +95,31 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
          */
 
         binding.bottomNav.setOnNavigationItemSelectedListener(bottomNavListener)
+    }
+
+    private fun setNavigationDrawer() = Coroutines.main {
+        val models = NavigationModels().apply {
+            add(
+                NavigationModel(
+                    tag = NAV_DOWNLOAD_QUEUE,
+                    title = getString(R.string.nav_download),
+                    drawableRes = R.drawable.ic_queue
+                )
+            )
+            add(
+                NavigationModel(
+                    tag = NAV_SETTINGS,
+                    title = getString(R.string.settings),
+                    drawableRes = R.drawable.ic_settings
+                )
+            )
+        }
+        navigations.setUp(binding.navRecyclerView, models) { navigationModel, _ ->
+            navigateTo(navigationModel.tag)
+        }
+        viewModel.pauseMovieJob.await().observe(this, Observer {
+            navigations.updateNotification(NAV_DOWNLOAD_QUEUE, it.size)
+        })
     }
 
     private fun setBugReportClick() {
@@ -153,17 +180,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    override fun onNavigationItemSelected(p0: MenuItem): Boolean {
-        if (p0.itemId == R.id.settings) {
-            drawerLayout.closeDrawer(GravityCompat.START)
-            val settingIntent = Intent(this, SettingsActivity::class.java)
-            startActivity(settingIntent)
-        } else if (p0.itemId == R.id.downloadQueue) {
-            drawerLayout.closeDrawer(GravityCompat.START)
-            val downloadIntent = Intent(this, DownloadActivity::class.java)
-            startActivity(downloadIntent)
+    private fun navigateTo(tag: String) {
+        drawerLayout.closeDrawer(GravityCompat.START)
+        when (tag) {
+            NAV_DOWNLOAD_QUEUE -> {
+                val downloadIntent = Intent(this, DownloadActivity::class.java)
+                startActivity(downloadIntent)
+            }
+            NAV_SETTINGS -> {
+                val settingIntent = Intent(this, SettingsActivity::class.java)
+                startActivity(settingIntent)
+            }
         }
-        return true
     }
 
     override fun onResume() {
@@ -191,5 +219,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         SimpleWebServer.stopServer()
         super.onDestroy()
     }
-}
 
+    companion object {
+        const val NAV_DOWNLOAD_QUEUE = "nav_download_queue"
+        const val NAV_SETTINGS = "nav_settings"
+    }
+}
