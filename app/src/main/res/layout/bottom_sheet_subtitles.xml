@@ -84,6 +84,7 @@
       <androidx.recyclerview.widget.RecyclerView
           android:layout_marginTop="7dp"
           android:scrollbars="vertical"
+          android:overScrollMode="never"
           android:padding="10dp"
           android:clipToPadding="false"
           android:id="@+id/recyclerView_subtitles"

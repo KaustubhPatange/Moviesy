@@ -139,6 +139,7 @@ class DownloadService : IntentService("blank") {
             )
         notificationIntent.action = MODEL_UPDATE
         notificationIntent.putExtra("model", t)
+        notificationIntent.putExtra("pendingModels", pendingJobs)
         contentIntent = PendingIntent.getActivity(
             context,
             Notifications.getRandomNumberCode(),

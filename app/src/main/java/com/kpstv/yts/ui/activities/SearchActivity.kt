@@ -8,7 +8,6 @@ import android.util.Log
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
@@ -290,7 +289,7 @@ class SearchActivity : AppCompatActivity() {
     private fun setSuggestionObservable() {
         searchViewModel.searchQuery.observe(this, Observer { result ->
             suggestionModels.clear()
-
+            Log.e(TAG, "Emitting result $result")
             when (result) {
                 is Result.Empty -> {
                     Log.e(TAG, "No previous search history")
@@ -306,7 +305,6 @@ class SearchActivity : AppCompatActivity() {
                     }
                 }
             }
-
             isSearchClicked = false
         })
     }
@@ -332,6 +330,7 @@ class SearchActivity : AppCompatActivity() {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            Log.e(TAG, "Text Changed: $s")
             searchViewModel.setQuery(s.toString(), AppInterface.SUGGESTION_SEARCH_TYPE)
         }
     }

@@ -14,6 +14,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 
 @FlowPreview
@@ -30,6 +31,7 @@ class SearchViewModel @ViewModelInject constructor(
 
     val searchQuery: LiveData<Result<SearchResults>> = query
         .debounce(700)
+        .distinctUntilChanged()
         .flatMapLatest {
             historyRepository.getSearchResults(it, suggestionType)
         }

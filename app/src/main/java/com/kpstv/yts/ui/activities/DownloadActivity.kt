@@ -4,12 +4,14 @@ import android.annotation.SuppressLint
 import android.content.*
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -58,7 +60,6 @@ class DownloadActivity : AppCompatActivity() {
                 (torrentJob.progress.toLong() * (torrentJob.totalSize as Long)) / (100).toLong()
             return CommonUtils.getSizePretty(currentSize)
         }
-
     }
 
     val viewModel by viewModels<MainViewModel>()
@@ -163,6 +164,12 @@ class DownloadActivity : AppCompatActivity() {
                             updateCurrentModel(intent, model, true)
                         } else updateCurrentModel(intent, model)
                         binding.layoutJobCurrentQueue.visibility = View.VISIBLE
+                    }
+
+                    /** Update pending models */
+                    val torrents = intent?.getSerializableExtra("pendingModels")
+                    if (torrents is ArrayList<*>) {
+                        pendingJobUpdate(torrents as ArrayList<Torrent>)
                     }
 
                 } catch (e: Exception) {
@@ -305,11 +312,12 @@ class DownloadActivity : AppCompatActivity() {
     }
 
     private fun pendingJobUpdate(intent: Intent?) {
-
         val jobs = intent?.getSerializableExtra("models") ?: return
-
         val models: ArrayList<Torrent> = jobs as ArrayList<Torrent>
+        pendingJobUpdate(models)
+    }
 
+    private fun pendingJobUpdate(models: ArrayList<Torrent>) {
         DA_LOG("### JOB QUEUE: ${models.size}")
 
         if (models.size > 0) {

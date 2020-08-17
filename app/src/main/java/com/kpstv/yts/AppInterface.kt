@@ -25,7 +25,7 @@ class AppInterface {
         var YTS_BASE_API_URL = "$YTS_BASE_URL/api/v2/"
         var TMDB_BASE_URL = "https://api.themoviedb.org/3/"
         var TMDB_IMAGE_PREFIX = "https://image.tmdb.org/t/p/w500"
-        var TMDB_API_KEY = "dbaba3594e59e4ff47c003b2ddb82c2a"
+        var TMDB_API_KEY = "" // Will insert TMDB key here
         var COUNTRY_FLAG_JSON_URL = "https://pastebin.com/raw/H0CYRdJ9"
         var APP_DATABASE_URL =
             "https://pastebin.com/raw/FdC9m81R" // TODO: Change this url (push update - https://pastebin.com/raw/Vg7bahGJ)
@@ -74,15 +74,10 @@ class AppInterface {
         const val ACTION_REPLACE_FRAG = "com.kpstv.yts.action_replace_frag"
         const val ACTION_UPDATE = "com.kpstv.yts.action_update"
 
-        const val REPLACE_FRAG = "com.kpstv.yts.REPLACE_FRAG"
-
         const val IS_FIRST_LAUNCH_PREF = "is_first_launch_pref"
         const val PROXY_CHECK_PREF = "proxy_check_pref"
 
         const val PURCHASE_REGEX_PATTERN = "moviesy_premium_[\\d]+.json"
-
-        const val USER_AGENT =
-            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.21 (KHTML, like Gecko) Chrome/19.0.1042.0 Safari/535.21"
 
         val GENRE_CATEGORY_LIST = ArrayList<GenreFragment.LocalGenreModel>().apply {
             add("Action", R.drawable.ic_action_genre, YTSQuery.Genre.action)

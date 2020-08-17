@@ -56,6 +56,7 @@
             android:id="@+id/recyclerView_download"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:overScrollMode="never"
             android:layout_marginTop="7dp"
             android:layout_marginBottom="15dp"
             android:clipToPadding="false"

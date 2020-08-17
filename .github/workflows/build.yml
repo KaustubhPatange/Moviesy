@@ -1,5 +1,5 @@
 name: build
-on: [push]
+on: [push, pull_request]
 jobs:
   buildJob:
     runs-on: windows-latest
@@ -10,7 +10,11 @@ jobs:
         with:
           java-version: 1.8
       - run: chmod +x gradlew
-      - run: dir
       - run: tar -xvzf art/module.tar.gz
       - name: Build Gradle
-        run: ./gradlew app:assembleDebug
+        run: ./gradlew app:assembleDebug --stacktrace
+      - name: Upload APK
+        uses: actions/upload-artifact@v2-preview
+        with:
+          name: app
+          path: app/build/outputs/apk/debug/app-debug.apk

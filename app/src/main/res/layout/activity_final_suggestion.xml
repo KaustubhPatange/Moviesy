@@ -24,6 +24,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:paddingStart="10dp"
+        android:overScrollMode="never"
         android:clipToPadding="false"
         android:id="@+id/recyclerView_similar"
         android:layout_width="match_parent"

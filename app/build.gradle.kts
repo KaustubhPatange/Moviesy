@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     id(GradlePluginId.ANDROID_APPLICATION)
     kotlin(GradlePluginId.ANDROID_KTX)
@@ -29,6 +31,8 @@ android {
                 arg("room.schemaLocation", "$projectDir/schemas")
             }
         }
+
+        buildConfigField("String", "TMDB_API_KEY", "\"${gradleLocalProperties(rootDir).getProperty("tmdb_api_key")}\"")
     }
 
     buildTypes {

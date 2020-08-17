@@ -87,6 +87,7 @@
                     android:textSize="17sp" />
 
                 <androidx.recyclerview.widget.RecyclerView
+                    android:overScrollMode="never"
                     android:id="@+id/recyclerView_pause"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -108,6 +109,7 @@
                     android:textSize="17sp" />
 
                 <androidx.recyclerview.widget.RecyclerView
+                    android:overScrollMode="never"
                     android:id="@+id/recyclerView_download"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

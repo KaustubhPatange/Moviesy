@@ -5,6 +5,8 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import com.google.android.gms.ads.MobileAds
+import com.kpstv.yts.AppInterface
+import com.kpstv.yts.BuildConfig
 import com.kpstv.yts.R
 import com.kpstv.yts.extensions.Notifications
 import com.kpstv.yts.services.AppWorker
@@ -39,6 +41,9 @@ class ApplicationClass : Application(), Configuration.Provider {
 
         /** Scheduling work manager */
         AppWorker.schedule(applicationContext)
+
+        /** Set some BuildConfigs */
+        AppInterface.TMDB_API_KEY = BuildConfig.TMDB_API_KEY
     }
 
     override fun getWorkManagerConfiguration() =

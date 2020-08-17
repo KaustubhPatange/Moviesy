@@ -39,6 +39,7 @@
                 android:text="@string/ad_year"/>
 
             <androidx.recyclerview.widget.RecyclerView
+                android:overScrollMode="never"
                 android:layout_marginTop="15dp"
                 android:id="@+id/recyclerView_genre"
                 android:orientation="horizontal"
