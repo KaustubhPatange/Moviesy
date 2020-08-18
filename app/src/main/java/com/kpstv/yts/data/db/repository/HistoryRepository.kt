@@ -1,5 +1,6 @@
 package com.kpstv.yts.data.db.repository
 
+import android.util.Log
 import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.adapters.HistoryModel
@@ -22,6 +23,8 @@ class HistoryRepository @Inject constructor(
     private val retrofitUtils: RetrofitUtils,
     private val tMdbApi: TMdbApi
 ) {
+    private var previousSearchResult: String? = null
+
     fun insert(data: data_history) = Coroutines.io {
         historyDao.getData(data.query)?.let { historyDao.delete(it) }
         historyDao.insert(data)
@@ -31,9 +34,12 @@ class HistoryRepository @Inject constructor(
         historyDao.getData(query)?.let { historyDao.delete(it) }
     }
 
-    suspend fun getRecentHistory(max: Int) = historyDao.getAllData(max)
+    private suspend fun getRecentHistory(max: Int) = historyDao.getAllData(max)
 
     fun getSearchResults(text: String, type: SearchType): Flow<Result<SearchResults>> = flow {
+        if (text == previousSearchResult) return@flow
+        previousSearchResult = text
+        Log.e(javaClass.simpleName, "Processing text: $text")
         /** If search text is empty show history or else return empty */
         if (text.isEmpty()) {
             val history = getRecentHistory(5)

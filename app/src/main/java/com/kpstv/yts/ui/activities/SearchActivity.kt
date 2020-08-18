@@ -246,6 +246,7 @@ class SearchActivity : AppCompatActivity() {
     /** This will update the recyclerView following certain events as well.
      */
     private fun updateQuery(text: String) {
+        Log.e(TAG, "Updating: $text")
 
         if (text.isEmpty()) {
             Toasty.error(this, getString(R.string.empty_query)).show()
@@ -287,7 +288,7 @@ class SearchActivity : AppCompatActivity() {
      *  suggestions are updated and shown.
      */
     private fun setSuggestionObservable() {
-        searchViewModel.searchQuery.observe(this, Observer { result ->
+        searchViewModel.searchResults.observe(this, Observer { result ->
             suggestionModels.clear()
             Log.e(TAG, "Emitting result $result")
             when (result) {
