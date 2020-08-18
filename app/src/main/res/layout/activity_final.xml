@@ -33,7 +33,6 @@
             android:layout_height="wrap_content">
 
             <LinearLayout
-                android:id="@+id/af_addLayout"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -43,7 +42,16 @@
                 <include
                     android:id="@+id/activity_final_previews"
                     layout="@layout/activity_final_previews" />
-             <!--   <include layout="@layout/activity_final_suggestion" />-->
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:id="@+id/af_suggestionAddLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:id="@+id/af_moreAddLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 

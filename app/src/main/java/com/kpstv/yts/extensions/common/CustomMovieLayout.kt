@@ -22,6 +22,7 @@ import com.kpstv.yts.AppInterface.Companion.handleRetrofitError
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.data.models.TmDbMovie
+import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.extensions.ExceptionCallback
 import com.kpstv.yts.extensions.MovieBase
 import com.kpstv.yts.extensions.MoviesCallback
@@ -233,22 +234,25 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
         models = ArrayList()
         list.forEach {
             if (it.release_date?.contains("-") == true) {
-                models.add(
-                    MovieShort(
-                        movieId = it.id.toInt(),
-                        title = it.title,
-                        rating = it.rating,
-                        year = it.release_date.split("-")[0].toInt(),
-                        bannerUrl = "${TMDB_IMAGE_PREFIX}${it.bannerPath}",
-                        runtime = it.runtime
-                    )
-                )
+                models.add(MovieShort.from(it))
             }
         }
         setupRecyclerView(models)
         if (isMore) {
             setupMoreButton(endPointUrl)
         } else hideMoreCallbacks()
+    }
+
+    fun setupCallbacks(title: String, list: List<Model.response_cast_movie.Cast>) {
+        base = MovieBase.TMDB
+        models = ArrayList()
+        list.forEach { cast ->
+            models.add(MovieShort.from(cast))
+        }
+        models.removeAll { it.title == title }
+        setupRecyclerView(models)
+
+        hideMoreCallbacks()
     }
 
     /** Usually for TMDB movies */
@@ -324,9 +328,7 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
     private fun restoreRecyclerViewState() {
         if (viewModel?.customLayoutRecyclerView?.containsKey(getTag()) == true)
             recyclerView.layoutManager?.onRestoreInstanceState(
-                viewModel.customLayoutRecyclerView?.get(
-                    getTag()
-                )
+                viewModel.customLayoutRecyclerView[getTag()]
             )
     }
 

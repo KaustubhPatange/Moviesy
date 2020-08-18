@@ -10,6 +10,7 @@ import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppInterface.Companion.MOVIE_SPAN_DIFFERENCE
 import com.kpstv.yts.AppInterface.Companion.MainDateFormatter
 import com.kpstv.yts.AppInterface.Companion.TMDB_IMAGE_PREFIX
+import com.kpstv.yts.data.db.repository.CastMovieRepository
 import com.kpstv.yts.data.db.repository.FavouriteRepository
 import com.kpstv.yts.data.db.repository.MovieRepository
 import com.kpstv.yts.data.db.repository.TMdbRepository
@@ -17,10 +18,7 @@ import com.kpstv.yts.data.models.Cast
 import com.kpstv.yts.data.models.Movie
 import com.kpstv.yts.data.models.TmDbMovie
 import com.kpstv.yts.data.models.data.data_tmdb
-import com.kpstv.yts.extensions.MovieType
-import com.kpstv.yts.extensions.SimpleCallback
-import com.kpstv.yts.extensions.SuggestionCallback
-import com.kpstv.yts.extensions.YTSQuery
+import com.kpstv.yts.extensions.*
 import com.kpstv.yts.interfaces.api.TMdbApi
 import com.kpstv.yts.interfaces.api.YTSApi
 import com.kpstv.yts.interfaces.listener.MovieListener
@@ -35,6 +33,7 @@ class FinalViewModel @ViewModelInject constructor(
     private val movieRepository: MovieRepository,
     private val tMdbRepository: TMdbRepository,
     private val favouriteRepository: FavouriteRepository,
+    private val castMovieRepository: CastMovieRepository,
     private val ytsApi: YTSApi,
     private val tMdbApi: TMdbApi
 ) : ViewModel() {
@@ -65,7 +64,7 @@ class FinalViewModel @ViewModelInject constructor(
                 movieRepository.saveMovie(movie!!)
                 movieListener.onComplete(movie)
             } catch (e: Exception) {
-                movieRepository.getMovieById(movieId)?.let {
+                movieRepository.getMovieById(movieId).let {
                     movieListener.onComplete(it)
                 }
                 movieListener.onFailure(e)
@@ -109,7 +108,7 @@ class FinalViewModel @ViewModelInject constructor(
                                     Cast(
                                         it.name, it.character,
                                         "${TMDB_IMAGE_PREFIX}${it.profilePath}",
-                                        it.id.toString()
+                                        it.personId.toString()
                                     )
                                 )
                             } else return@forEach
@@ -193,6 +192,21 @@ class FinalViewModel @ViewModelInject constructor(
                 }
             } catch (e: Exception) {
                 suggestionCallback.onFailure?.invoke(e)
+            }
+        }
+    }
+
+    /** This will return two of the top cast starring movies with opposite gender.
+     *  Behavior: It will take 5 top cast crew and find two opposite gender person
+     *  and return there movies.
+     */
+    fun getTopCrewMovies(imdbCode: String, listener: CastMoviesCallback) {
+        viewModelScope.launch {
+            try {
+                val results = castMovieRepository.fetchResults(imdbCode)
+                listener.onComplete.invoke(results)
+            }catch (e: Exception) {
+                listener.onFailure?.invoke(e)
             }
         }
     }

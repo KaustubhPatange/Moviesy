@@ -129,6 +129,8 @@ class FinalActivity : AppCompatActivity(), MovieListener {
 
         loadRecommendation()
 
+        loadCastMovies()
+
         setContentButtons()
         binding.swipeRefreshLayout.isRefreshing = false;
     }
@@ -224,7 +226,7 @@ class FinalActivity : AppCompatActivity(), MovieListener {
                         this@FinalActivity,
                         getString(R.string.recommend)
                     )
-                recommendLayout.injectViewAt(binding.afAddLayout)
+                recommendLayout.injectViewAt(binding.afSuggestionAddLayout)
                 recommendLayout.setupCallbacks(movies, "$tag/recommendations", isMoreAvailable)
             },
             onFailure = { e ->
@@ -244,7 +246,7 @@ class FinalActivity : AppCompatActivity(), MovieListener {
                         this@FinalActivity,
                         getString(R.string.suggested)
                     )
-                similarLayout.injectViewAt(binding.afAddLayout)
+                similarLayout.injectViewAt(binding.afSuggestionAddLayout)
                 similarLayout.setupCallbacks(movies, "${movie.imdb_code}/similar", isMoreAvailable)
             },
             onFailure = { e ->
@@ -254,6 +256,26 @@ class FinalActivity : AppCompatActivity(), MovieListener {
         )
 
         viewModel.getSuggestions(movie.imdb_code, suggestionListener)
+    }
+
+    private fun loadCastMovies() {
+        val castCallback = CastMoviesCallback(
+            onComplete = { results ->
+                results.forEach {
+                    val movieLayout = CustomMovieLayout(
+                        this@FinalActivity,
+                        "${getString(R.string.more_with)} ${it.name}"
+                    )
+                    movieLayout.injectViewAt(binding.afMoreAddLayout)
+                    movieLayout.setupCallbacks(movie.title, it.movies)
+                }
+            },
+            onFailure = { e ->
+                Log.e(TAG, "Failed: ${e.message}", e)
+            }
+        )
+
+        viewModel.getTopCrewMovies(movie.imdb_code, castCallback)
     }
 
     private fun setPreviews() {

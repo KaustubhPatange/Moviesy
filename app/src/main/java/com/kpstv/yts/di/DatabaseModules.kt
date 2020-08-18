@@ -2,9 +2,10 @@ package com.kpstv.yts.di
 
 import android.content.Context
 import androidx.room.Room
-import com.kpstv.yts.data.db.localized.MainDatabase
-import com.kpstv.yts.data.db.localized.RecommendDatabase
-import com.kpstv.yts.data.db.localized.SuggestionDatabase
+import com.kpstv.yts.data.db.database.CastDatabase
+import com.kpstv.yts.data.db.database.MainDatabase
+import com.kpstv.yts.data.db.database.RecommendDatabase
+import com.kpstv.yts.data.db.database.SuggestionDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -101,4 +102,32 @@ object SuggestionModule {
     @Singleton
     @Provides
     fun provideSuggestionDao(suggestionDatabase: SuggestionDatabase) = suggestionDatabase.getTMdbDao()
+}
+
+@Module
+@InstallIn(ApplicationComponent::class)
+object CastModule {
+
+    @Singleton
+    @Provides
+    fun provideDatabase(
+        @ApplicationContext context: Context
+    ): CastDatabase {
+        return Room.databaseBuilder(
+            context,
+            CastDatabase::class.java,
+            "tmdb_cast.db"
+        )
+            .fallbackToDestructiveMigration()
+            .fallbackToDestructiveMigrationOnDowngrade()
+            .build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideCasteDao(database: CastDatabase) = database.getCastDao()
+
+    @Singleton
+    @Provides
+    fun provideCastMovieDao(database: CastDatabase) = database.getCastMovieDao()
 }

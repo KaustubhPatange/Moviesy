@@ -29,4 +29,7 @@ interface TMdbApi {
 
     @GET("search/movie")
     suspend fun getSearch(@Query("query") query: String, @Query("page") page: Int=1): Model.response_tmdb_movies
+
+    @GET("person/{person_id}/movie_credits")
+    suspend fun getPersonCredits(@Path("person_id") id: Int): Model.response_cast_movie
 }

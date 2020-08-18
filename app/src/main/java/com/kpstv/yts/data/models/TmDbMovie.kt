@@ -2,7 +2,7 @@ package com.kpstv.yts.data.models
 
 import com.google.gson.annotations.SerializedName
 
-data class TmDbMovie (
+data class TmDbMovie(
     val uid: Int,
     val id: String,
     @SerializedName("vote_count")

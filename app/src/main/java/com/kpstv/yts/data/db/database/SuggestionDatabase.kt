@@ -1,9 +1,10 @@
-package com.kpstv.yts.data.db.localized
+package com.kpstv.yts.data.db.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.kpstv.yts.data.converters.TMdbConverter
+import com.kpstv.yts.data.db.localized.SuggestionDao
 import com.kpstv.yts.data.models.data.data_tmdb
 
 @Database(

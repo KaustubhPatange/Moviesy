@@ -1,7 +1,6 @@
 package com.kpstv.yts.data.db.repository
 
 import androidx.lifecycle.LiveData
-import com.kpstv.yts.data.db.localized.MainDatabase
 import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.yts.data.db.localized.PauseDao
 import com.kpstv.yts.data.models.response.Model

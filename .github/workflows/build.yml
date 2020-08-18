@@ -11,6 +11,7 @@ jobs:
           java-version: 1.8
       - run: chmod +x gradlew
       - run: tar -xvzf art/module.tar.gz
+      - run: echo tmdb_api_key=${{ secrets.TMDB_API_KEY }} >> local.properties
       - name: Build Gradle
         run: ./gradlew app:assembleDebug --stacktrace
       - name: Upload APK
