@@ -6,7 +6,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.CompoundButton
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.AppInterface
@@ -14,9 +13,9 @@ import com.kpstv.yts.R
 import com.kpstv.yts.adapters.DownloadAdapter
 import com.kpstv.yts.data.models.Torrent
 import com.kpstv.yts.databinding.BottomSheetDownloadBinding
-import com.kpstv.yts.extensions.views.ExtendedBottomSheetDialogFragment
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.getMagnetUrl
+import com.kpstv.yts.extensions.views.ExtendedBottomSheetDialogFragment
 import com.kpstv.yts.services.DownloadService
 import com.kpstv.yts.ui.activities.TorrentPlayerActivity
 import com.kpstv.yts.ui.helpers.InterstitialAdHelper
@@ -156,17 +155,20 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
         adapter.setDownloadLongClickListener(object : DownloadAdapter.DownloadLongClickListener {
             override fun onLongClick(torrent: Torrent, pos: Int) {
                 if (viewType == ViewType.DOWNLOAD) {
-                    val intent = Intent(ACTION_VIEW)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    intent.data = Uri.parse(
-                        getMagnetUrl(
-                            torrent.url.substring(torrent.url.lastIndexOf("/") + 1), title
+                    /** @Admob Show ads and then do something on complete */
+                    interstitialAdHelper.showAd {
+                        val intent = Intent(ACTION_VIEW)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        intent.data = Uri.parse(
+                            getMagnetUrl(
+                                torrent.url.substring(torrent.url.lastIndexOf("/") + 1), title
+                            )
                         )
-                    )
-                    try {
-                        startActivity(intent)
-                    } catch (e: Exception) {
-                        Toasty.error(requireContext(), getString(R.string.no_action)).show()
+                        try {
+                            startActivity(intent)
+                        } catch (e: Exception) {
+                            Toasty.error(requireContext(), getString(R.string.no_action)).show()
+                        }
                     }
                 }
             }
@@ -188,7 +190,6 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
             val serviceIntent = Intent(requireContext(), DownloadService::class.java)
             serviceIntent.putExtra(DownloadService.TORRENT_JOB, model)
             requireContext().startService(serviceIntent)
-//            ContextCompat.startForegroundService(requireContext(), serviceIntent)
 
             return true
         } else {

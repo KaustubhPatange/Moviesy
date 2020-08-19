@@ -10,14 +10,14 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.danimahardhika.cafebar.CafeBar
-import com.kpstv.common_moviesy.extensions.Coroutines
+import com.google.android.material.snackbar.Snackbar
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.AppInterface.Companion.MOVIE_ID
 import com.kpstv.yts.R
 import com.kpstv.yts.adapters.WatchlistAdapter
 import com.kpstv.yts.databinding.FragmentWatchlistBinding
-import com.kpstv.yts.extensions.hide
-import com.kpstv.yts.extensions.show
+import com.kpstv.common_moviesy.extensions.hide
+import com.kpstv.common_moviesy.extensions.show
 import com.kpstv.yts.ui.activities.FinalActivity
 import com.kpstv.yts.ui.activities.MainActivity
 import com.kpstv.yts.ui.activities.SearchActivity
@@ -49,8 +49,9 @@ class WatchlistFragment : Fragment(R.layout.fragment_watchlist) {
 
     /** This will bind the fragment with the viewModel returning LiveData.
      */
-    private fun bindUI() = Coroutines.main {
-        viewModel.favouriteMovieIds.await().observe(viewLifecycleOwner, Observer {
+    private fun bindUI() {
+        viewModel.favouriteMovieIds.observe(viewLifecycleOwner, Observer {
+            Log.e(TAG, "Posted()")
             adapter.submitList(it)
 
             if (it.isNotEmpty()) {
@@ -77,6 +78,11 @@ class WatchlistFragment : Fragment(R.layout.fragment_watchlist) {
             onItemRemoveListener = { model, _ ->
                 viewModel.removeFavourite(model.movieId)
 
+                Snackbar.make(binding.root, getString(R.string.remove_watchlist), Snackbar.LENGTH_SHORT)
+                    .setAction(getString(R.string.undo)) {
+                        viewModel.addToFavourite(model)
+                    }
+                    .show()
                 CafeBar.builder(mainActivity).apply {
                     floating(true)
                     content(getString(R.string.remove_watchlist))
@@ -91,7 +97,6 @@ class WatchlistFragment : Fragment(R.layout.fragment_watchlist) {
             }
         )
 
-        binding.recyclerView.setHasFixedSize(true)
         binding.recyclerView.adapter = adapter
     }
 

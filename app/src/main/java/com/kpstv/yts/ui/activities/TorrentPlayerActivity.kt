@@ -20,10 +20,10 @@ import com.kpstv.yts.AppInterface.Companion.SUBTITLE_LOCATION
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.SubHolder
 import com.kpstv.yts.databinding.ActivityTorrentPlayerBinding
-import com.kpstv.yts.extensions.colorFrom
-import com.kpstv.yts.extensions.hide
-import com.kpstv.yts.extensions.invisible
-import com.kpstv.yts.extensions.show
+import com.kpstv.common_moviesy.extensions.colorFrom
+import com.kpstv.common_moviesy.extensions.hide
+import com.kpstv.common_moviesy.extensions.invisible
+import com.kpstv.common_moviesy.extensions.show
 import com.kpstv.yts.extensions.utils.SubtitleUtils
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint

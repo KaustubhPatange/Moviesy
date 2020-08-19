@@ -9,7 +9,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.response.Model
-import com.kpstv.yts.extensions.hide
+import com.kpstv.yts.databinding.ItemWatchlistBinding
+import com.kpstv.common_moviesy.extensions.hide
 import com.kpstv.yts.extensions.load
 import com.kpstv.yts.extensions.utils.AppUtils
 import kotlinx.android.synthetic.main.item_watchlist.view.*
@@ -30,21 +31,21 @@ class WatchlistAdapter(
     override fun onBindViewHolder(holder: WatchlistHolder, i: Int) {
         val model = getItem(i)
 
-        holder.image.load(
+        holder.binding.itemImage.load(
             uri = model.imageUrl,
             onSuccess = { resource ->
-                holder.image.setImageBitmap(resource)
+                holder.binding.itemImage.setImageBitmap(resource)
                 holder.itemView.shimmerFrame.hideShimmer()
                 holder.itemView.shimmerFrame.hide()
             }
         )
 
-        holder.title.text = model.title
-        holder.subTitle.text = "${model.year} ${AppUtils.getBulletSymbol()} ${model.runtime} mins"
+        holder.binding.itemTitle.text = model.title
+        holder.binding.itemSubText.text = "${model.year} ${AppUtils.getBulletSymbol()} ${model.runtime} mins"
 
-        holder.mainLayout.setOnClickListener { onClickListener.invoke(model, i) }
+        holder.binding.root.setOnClickListener { onClickListener.invoke(model, i) }
 
-        holder.removeFavourite.setOnClickListener { onItemRemoveListener.invoke(model, i) }
+        holder.binding.itemRemoveFavourites.setOnClickListener { onItemRemoveListener.invoke(model, i) }
     }
 
     companion object {
@@ -65,10 +66,11 @@ class WatchlistAdapter(
     }
 
     class WatchlistHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val mainLayout = view.mainLayout
+        val binding = ItemWatchlistBinding.bind(view)
+       /* val mainLayout = view.mainLayout
         val title = view.item_title
         val subTitle = view.item_subText
         val image = view.item_image
-        val removeFavourite = view.item_remove_favourites
+        val removeFavourite = view.item_remove_favourites*/
     }
 }

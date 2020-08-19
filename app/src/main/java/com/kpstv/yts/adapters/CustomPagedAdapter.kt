@@ -20,7 +20,7 @@ import com.kpstv.yts.AppInterface.Companion.MOVIE_ID
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.extensions.MovieBase
-import com.kpstv.yts.extensions.hide
+import com.kpstv.common_moviesy.extensions.hide
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.getBulletSymbol
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.getImdbUrl
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.launchUrl

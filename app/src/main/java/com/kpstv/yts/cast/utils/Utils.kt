@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.kpstv.yts.cast.utils
 
 import android.content.Context

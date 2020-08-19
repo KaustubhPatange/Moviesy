@@ -47,10 +47,8 @@ class DownloadRepository @Inject constructor(
         }
     }
 
-    suspend fun getAllDownloads(): LiveData<List<Model.response_download>> {
-        return withContext(Dispatchers.IO) {
-            downloadDao.getAllLiveDownloads()
-        }
+    fun getAllDownloads(): LiveData<List<Model.response_download>> {
+        return downloadDao.getAllLiveDownloads()
     }
 
 }

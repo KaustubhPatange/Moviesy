@@ -152,7 +152,7 @@ dependencies {
     kapt(LibraryDependency.HILT_VIEWODEL_COMPILER)
 
     debugImplementation(TestLibraryDependency.ANDROID_DEBUG_DB)
-    // debugImplementation(TestLibraryDependency.LEAK_CANARY) TODO: Disabled to fix one big leak, enable it later
+//    debugImplementation(TestLibraryDependency.LEAK_CANARY) // TODO: Some memory leaks need to fixed but are in won't fix mode
 
     annotationProcessor(LibraryDependency.GLIDE_COMPILER)
     testImplementation(TestLibraryDependency.JUNIT)

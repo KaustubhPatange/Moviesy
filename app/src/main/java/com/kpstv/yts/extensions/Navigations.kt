@@ -7,6 +7,9 @@ import android.view.ViewGroup
 import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.kpstv.common_moviesy.extensions.drawableFrom
+import com.kpstv.common_moviesy.extensions.hide
+import com.kpstv.common_moviesy.extensions.show
 import com.kpstv.yts.R
 import com.kpstv.yts.databinding.ItemNavigationBinding
 

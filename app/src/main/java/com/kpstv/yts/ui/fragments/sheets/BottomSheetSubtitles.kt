@@ -25,7 +25,7 @@ import com.kpstv.yts.R
 import com.kpstv.yts.data.models.Subtitle
 import com.kpstv.yts.databinding.BottomSheetSubtitlesBinding
 import com.kpstv.yts.extensions.AdapterOnSingleClick
-import com.kpstv.yts.extensions.colorFrom
+import com.kpstv.common_moviesy.extensions.colorFrom
 import com.kpstv.yts.extensions.unzip
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.FlagUtils

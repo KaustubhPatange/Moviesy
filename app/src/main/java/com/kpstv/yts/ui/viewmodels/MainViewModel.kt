@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.yts.AppInterface.Companion.CUSTOM_LAYOUT_YTS_SPAN
@@ -44,13 +45,13 @@ class MainViewModel @ViewModelInject constructor(
     val chartFragmentState = ChartState()
     val genreFragmentState = GenreState()
 
-    val favouriteMovieIds by lazyDeferred {
-        favouriteRepository.getAllMovieId()
-    }
+    private val _favouriteMovieIds = MutableLiveData<List<Model.response_favourite>>()
+    val favouriteMovieIds: LiveData<List<Model.response_favourite>>
+        get() = _favouriteMovieIds
 
-    val downloadMovieIds by lazyDeferred {
-        downloadRepository.getAllDownloads()
-    }
+    private val _downloadMovieIds = MutableLiveData<List<Model.response_download>>()
+    val downloadMovieIds: LiveData<List<Model.response_download>>
+        get() = _downloadMovieIds
 
     val pauseMovieJob by lazyDeferred {
         pauseRepository.getAllPauseJob()
@@ -229,6 +230,15 @@ class MainViewModel @ViewModelInject constructor(
         } catch (e: Exception) {
             e.printStackTrace()
             return true
+        }
+    }
+
+    init {
+        favouriteRepository.getAllMovieId().observeForever {
+            _favouriteMovieIds.value = it
+        }
+        downloadRepository.getAllDownloads().observeForever {
+            _downloadMovieIds.value = it
         }
     }
 }

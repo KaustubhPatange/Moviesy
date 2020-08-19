@@ -14,6 +14,8 @@ import androidx.lifecycle.Observer
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.kpstv.common_moviesy.extensions.hide
+import com.kpstv.common_moviesy.extensions.show
 import com.kpstv.common_moviesy.extensions.utils.KeyboardUtils
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.AppInterface

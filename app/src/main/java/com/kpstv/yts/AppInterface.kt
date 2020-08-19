@@ -16,6 +16,7 @@ import java.io.File
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 
+@Suppress("DEPRECATION")
 class AppInterface {
     companion object {
         private var TAG = "AppInterface"
@@ -28,7 +29,7 @@ class AppInterface {
         var TMDB_API_KEY = "" // Will insert TMDB key here
         var COUNTRY_FLAG_JSON_URL = "https://pastebin.com/raw/H0CYRdJ9"
         var APP_DATABASE_URL =
-            "https://pastebin.com/raw/FdC9m81R" // TODO: Change this url (push update - https://pastebin.com/raw/Vg7bahGJ)
+            "https://pastebin.com/raw/sZMaeX89" // TODO: You can edit current one, Change this url (push update - https://pastebin.com/raw/Vg7bahGJ)
         var APP_IMAGE_URL =
             "https://raw.githubusercontent.com/KaustubhPatange/Moviesy/master/app/src/main/ic_launcher-playstore.png"
         var SUGGESTION_URL =

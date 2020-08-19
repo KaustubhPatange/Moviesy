@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.kpstv.yts.extensions.utils
 
 import android.content.Intent

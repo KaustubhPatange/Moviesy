@@ -5,9 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DrawableRes
-import androidx.core.content.ContextCompat
 import com.kpstv.yts.R
-import com.kpstv.yts.extensions.drawableFrom
+import com.kpstv.common_moviesy.extensions.drawableFrom
 import kotlinx.android.synthetic.main.custom_sheet_item.view.*
 
 class CustomBottomItem(private val context: Context) {

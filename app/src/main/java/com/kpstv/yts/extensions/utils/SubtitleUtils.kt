@@ -1,5 +1,6 @@
 package com.kpstv.yts.extensions.utils
 
+import android.util.Log
 import com.kpstv.yts.data.models.SubHolder
 import java.io.FileReader
 import java.lang.StringBuilder
@@ -11,7 +12,7 @@ class SubtitleUtils {
            val list = ArrayList<SubHolder>()
 
            val reader = FileReader(file)
-           val totalLines = reader.readLines()
+           val totalLines = ArrayList(reader.readLines()).apply { add("") }
 
            var i=0
            while (i<totalLines.size) {
@@ -20,12 +21,16 @@ class SubtitleUtils {
                    val firstFrame = it.split(" --> ")[0].trim()
                    val secondFrame = it.split(" --> ")[1].trim()
                    i++
-                   val builder = StringBuilder()
-                   while (totalLines[i].isNotBlank()) {
-                       builder.append(totalLines[i]).append("\n")
-                       i++
+                   try {
+                       val builder = StringBuilder()
+                       while (totalLines[i].isNotBlank()) {
+                           builder.append(totalLines[i]).append("\n")
+                           i++
+                       }
+                       list.add(SubHolder(builder.toString().trim(), parseTimeFrame(firstFrame), parseTimeFrame(secondFrame)))
+                   } catch (e: Exception) {
+                       Log.e(TAG, "Subtitle crashed ${e.message}", e)
                    }
-                   list.add(SubHolder(builder.toString().trim(), parseTimeFrame(firstFrame), parseTimeFrame(secondFrame)))
                }else i++
            }
            return list

@@ -8,6 +8,7 @@ object ModuleDependency {
     const val SHIMMER = ":app:shimmer"
     const val PURCHASE = ":app:purchase"
     const val COMMON = ":app:common"
+    const val AFTER = ":app:after"
 
     fun getAllModules() = ModuleDependency::class.memberProperties
         .filter { it.isConst }

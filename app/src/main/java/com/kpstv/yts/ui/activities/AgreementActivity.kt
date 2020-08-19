@@ -4,8 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.kpstv.common_moviesy.extensions.viewBinding
-import com.kpstv.yts.AppPreference
-import com.kpstv.yts.AppSettings
 import com.kpstv.yts.databinding.ActivityAgreementBinding
 import com.kpstv.yts.defaultPreference
 import com.kpstv.yts.extensions.startActivityAndFinish

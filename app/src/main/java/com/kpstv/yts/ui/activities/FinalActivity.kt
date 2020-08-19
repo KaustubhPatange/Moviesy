@@ -17,6 +17,9 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.kpstv.common_moviesy.extensions.colorFrom
+import com.kpstv.common_moviesy.extensions.drawableFrom
+import com.kpstv.common_moviesy.extensions.hide
 import com.kpstv.common_moviesy.extensions.utils.CommonUtils
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.AppInterface.Companion.MOVIE_ID

@@ -21,6 +21,7 @@ import com.kpstv.yts.ui.helpers.SignInHelper
 import es.dmoral.toasty.Toasty
 import org.json.JSONObject
 
+@Suppress("DEPRECATION")
 class AccountSettingFragment : PreferenceFragmentCompat() {
 
     private lateinit var signInHelper: SignInHelper

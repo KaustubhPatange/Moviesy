@@ -5,15 +5,14 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import com.google.android.gms.ads.MobileAds
+import com.kpstv.after.After
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.BuildConfig
 import com.kpstv.yts.R
 import com.kpstv.yts.extensions.Notifications
 import com.kpstv.yts.services.AppWorker
-import com.kpstv.yts.services.DownloadService
 import dagger.hilt.android.HiltAndroidApp
 import es.dmoral.toasty.Toasty
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
 @Suppress("unused")
@@ -44,6 +43,10 @@ class ApplicationClass : Application(), Configuration.Provider {
 
         /** Set some BuildConfigs */
         AppInterface.TMDB_API_KEY = BuildConfig.TMDB_API_KEY
+
+        /** Set after */
+        After.setTypeface(typeface)
+            .setTextSize(14)
     }
 
     override fun getWorkManagerConfiguration() =

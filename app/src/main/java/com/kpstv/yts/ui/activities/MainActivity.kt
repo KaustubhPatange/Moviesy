@@ -12,6 +12,7 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
+import com.kpstv.after.After
 import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.AppInterface
@@ -25,7 +26,7 @@ import com.kpstv.yts.databinding.ActivityMainBinding
 import com.kpstv.yts.extensions.NavigationModel
 import com.kpstv.yts.extensions.NavigationModels
 import com.kpstv.yts.extensions.Navigations
-import com.kpstv.yts.extensions.hide
+import com.kpstv.common_moviesy.extensions.hide
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.UpdateUtils
 import com.kpstv.yts.services.DownloadService
@@ -144,6 +145,7 @@ class MainActivity : AppCompatActivity() {
                     .setMessage(getString(R.string.update_text))
                     .setPositiveButton(getString(R.string.yes)) {
                         updateUtils.processUpdate(it)
+                        Toasty.info(this, getString(R.string.update_download_text)).show()
                     }
                     .setNegativeButton(getString(R.string.no)) { }
                     .show()

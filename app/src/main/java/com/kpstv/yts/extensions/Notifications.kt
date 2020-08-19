@@ -9,6 +9,7 @@ import android.content.Intent
 import android.os.Build.VERSION.SDK_INT
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import com.kpstv.common_moviesy.extensions.colorFrom
 import com.kpstv.common_moviesy.extensions.utils.CommonUtils
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R

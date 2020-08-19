@@ -4,10 +4,9 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.yts.R
-import com.kpstv.yts.extensions.drawableFrom
+import com.kpstv.common_moviesy.extensions.drawableFrom
 import kotlinx.android.synthetic.main.item_search_suggestion.view.*
 
 data class HistoryModel(

@@ -1,4 +1,4 @@
-package com.kpstv.yts.extensions
+package com.kpstv.common_moviesy.extensions
 
 import android.content.Context
 import androidx.annotation.ColorRes

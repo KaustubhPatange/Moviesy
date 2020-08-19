@@ -140,13 +140,13 @@
     </style>
 
     <style name="SplashTheme" parent="Theme.MaterialComponents.NoActionBar">
-        <item name="android:background">#9B68DA</item>
+        <item name="android:windowBackground">#9B68DA</item>
         <item name="snackbarStyle">@style/CustomSnackBarStyle</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
     <style name="AppTheme.Transparent" parent="Theme.MaterialComponents.NoActionBar">
-        <item name="android:background">@color/background_agree</item>
+        <item name="android:windowBackground">@color/background_agree</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 

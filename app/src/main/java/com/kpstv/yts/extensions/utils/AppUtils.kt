@@ -5,35 +5,20 @@ import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageInfo
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
-import android.text.Html
-import android.text.Spannable
-import android.text.SpannableString
 import android.text.Spanned
-import android.text.style.ForegroundColorSpan
 import android.util.Log
-import android.util.TypedValue
-import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
-import androidx.annotation.AttrRes
-import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.kpstv.common_moviesy.extensions.utils.CommonUtils
 import com.kpstv.yts.AppInterface.Companion.handleRetrofitError
 import com.kpstv.yts.R
-import com.kpstv.yts.data.db.repository.FavouriteRepository
-import com.kpstv.yts.data.models.Movie
-import com.kpstv.yts.data.models.response.Model
-import com.kpstv.yts.extensions.colorFrom
+import com.kpstv.common_moviesy.extensions.colorFrom
 import java.io.*
 import java.net.HttpURLConnection
 import java.net.URL
-import java.text.DecimalFormat
 import kotlin.reflect.KClass
 
 class AppUtils {

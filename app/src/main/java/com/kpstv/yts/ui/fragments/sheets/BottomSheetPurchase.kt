@@ -14,9 +14,9 @@ import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
 import com.kpstv.yts.databinding.BottomSheetPurchaseBinding
 import com.kpstv.yts.extensions.views.ExtendedBottomSheetDialogFragment
-import com.kpstv.yts.extensions.hide
-import com.kpstv.yts.extensions.invisible
-import com.kpstv.yts.extensions.show
+import com.kpstv.common_moviesy.extensions.hide
+import com.kpstv.common_moviesy.extensions.invisible
+import com.kpstv.common_moviesy.extensions.show
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.ui.helpers.PremiumHelper
 import com.kpstv.yts.ui.helpers.SignInHelper

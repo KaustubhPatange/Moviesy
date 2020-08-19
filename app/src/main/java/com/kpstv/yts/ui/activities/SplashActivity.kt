@@ -6,6 +6,9 @@ import android.util.Log
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
+import com.kpstv.after.After
+import com.kpstv.common_moviesy.extensions.hide
+import com.kpstv.common_moviesy.extensions.show
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.AppInterface.Companion.IS_FIRST_LAUNCH_PREF
 import com.kpstv.yts.AppInterface.Companion.PROXY_CHECK_PREF
@@ -13,9 +16,8 @@ import com.kpstv.yts.AppSettings.parseSettings
 import com.kpstv.yts.R
 import com.kpstv.yts.databinding.ActivitySplashBinding
 import com.kpstv.yts.defaultPreference
-import com.kpstv.yts.extensions.hide
-import com.kpstv.yts.extensions.show
 import com.kpstv.yts.extensions.startActivityAndFinish
+import com.kpstv.yts.extensions.utils.GlideApp
 import com.kpstv.yts.extensions.utils.ProxyUtils
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,6 +25,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /** Starting point of reading this app.
@@ -48,7 +51,7 @@ class SplashActivity : AppCompatActivity(), Animation.AnimationListener {
         binding.imageView.startAnimation(rotate)
 
         /** If this app is launched first time or suppose from previous use
-         *  this was an error in making okHttp request (could be anything).
+         *  there was an error in making okHttp request or any other crash.
          *
          *  In such case we will check the database when this app is launched
          *  to see if there is an updated proxy for YTS or any other api. */
@@ -84,10 +87,17 @@ class SplashActivity : AppCompatActivity(), Animation.AnimationListener {
                         .show()
                 }
             )
+
+            dispatchAfterEvents()
         } else {
             Log.e(TAG, "No need to check for proxy")
             block.invoke()
         }
+    }
+
+    private fun dispatchAfterEvents() {
+        After(10, TimeUnit.SECONDS).prompt(this, "No worries, we are just checking yts proxies")
+        After(20, TimeUnit.SECONDS).prompt(this, "It should not take this much time")
     }
 
     private val TAG = javaClass.simpleName

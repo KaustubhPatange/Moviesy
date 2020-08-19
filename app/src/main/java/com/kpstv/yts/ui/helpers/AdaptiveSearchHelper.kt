@@ -10,8 +10,8 @@ import com.kpstv.common_moviesy.extensions.utils.CommonUtils
 import com.kpstv.yts.R
 import com.kpstv.yts.databinding.CustomAdaptiveSearchBinding
 import com.kpstv.yts.defaultPreference
-import com.kpstv.yts.extensions.hide
-import com.kpstv.yts.extensions.show
+import com.kpstv.common_moviesy.extensions.hide
+import com.kpstv.common_moviesy.extensions.show
 
 class AdaptiveSearchHelper(
     private val context: Context,

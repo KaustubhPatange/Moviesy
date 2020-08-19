@@ -10,15 +10,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.AppInterface.Companion.MOVIE_ID
 import com.kpstv.yts.R
 import com.kpstv.yts.adapters.LibraryDownloadAdapter
 import com.kpstv.yts.databinding.FragmentLibraryBinding
 import com.kpstv.yts.extensions.deleteRecursive
-import com.kpstv.yts.extensions.hide
-import com.kpstv.yts.extensions.show
+import com.kpstv.common_moviesy.extensions.hide
+import com.kpstv.common_moviesy.extensions.show
 import com.kpstv.yts.ui.activities.FinalActivity
 import com.kpstv.yts.ui.activities.MainActivity
 import com.kpstv.yts.ui.activities.SearchActivity
@@ -63,7 +62,8 @@ class LibraryFragment : Fragment(R.layout.fragment_library) {
                 mainActivity.castHelper.showIntroductoryOverlay(mediaRouteMenuItem)
             }
         )
-        mediaRouteMenuItem = mainActivity.castHelper.setMediaRouteMenu(requireContext(), binding.toolbar.menu)
+        mediaRouteMenuItem =
+            mainActivity.castHelper.setMediaRouteMenu(requireContext(), binding.toolbar.menu)
     }
 
     override fun onDestroyView() {
@@ -135,8 +135,8 @@ class LibraryFragment : Fragment(R.layout.fragment_library) {
         binding.recyclerViewDownload.adapter = downloadAdapter
     }
 
-    private fun bindUI() = Coroutines.main {
-        viewModel.downloadMovieIds.await().observe(viewLifecycleOwner, Observer {
+    private fun bindUI() {
+        viewModel.downloadMovieIds.observe(viewLifecycleOwner, Observer {
             downloadAdapter.submitList(it)
             if (it.isNotEmpty()) {
                 binding.fragmentLibraryNoDownload.root.hide()
