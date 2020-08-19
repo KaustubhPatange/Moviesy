@@ -45,7 +45,8 @@ class ApplicationClass : Application(), Configuration.Provider {
         AppInterface.TMDB_API_KEY = BuildConfig.TMDB_API_KEY
 
         /** Set after */
-        After.setTypeface(typeface)
+        After.Config
+            .setTypeface(typeface)
             .setTextSize(14)
     }
 

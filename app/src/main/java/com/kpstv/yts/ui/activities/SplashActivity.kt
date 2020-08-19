@@ -17,7 +17,6 @@ import com.kpstv.yts.R
 import com.kpstv.yts.databinding.ActivitySplashBinding
 import com.kpstv.yts.defaultPreference
 import com.kpstv.yts.extensions.startActivityAndFinish
-import com.kpstv.yts.extensions.utils.GlideApp
 import com.kpstv.yts.extensions.utils.ProxyUtils
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import dagger.hilt.android.AndroidEntryPoint
@@ -96,8 +95,12 @@ class SplashActivity : AppCompatActivity(), Animation.AnimationListener {
     }
 
     private fun dispatchAfterEvents() {
-        After(10, TimeUnit.SECONDS).prompt(this, "No worries, we are just checking yts proxies")
-        After(20, TimeUnit.SECONDS).prompt(this, "It should not take this much time")
+        val defaultOptions = After.Options(displayLocation = After.Location.TOP)
+
+         After.time(10, TimeUnit.SECONDS)
+            .prompt(this, getString(R.string.proxy_no_worries), defaultOptions) {
+                After.time(5, TimeUnit.SECONDS).prompt(this, getString(R.string.this_much_time))
+            }
     }
 
     private val TAG = javaClass.simpleName
