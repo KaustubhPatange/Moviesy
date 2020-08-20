@@ -24,6 +24,10 @@ A **_beautiful_** client for [YTS](https://www.google.com/search?q=yts) website 
 
 Since this project involves a private payment system 📃 some of the source files has been ignored. Read this [guide](https://github.com/KaustubhPatange/Moviesy/wiki/Compilation-guide) in order to compile 🗃 the project.
 
+## Project Libraries
+
+- [After](app/after/README.md) - A library that helps you to dispatch events "after" some time one of which is displaying prompts.
+
 ## Built with 🛠
 
 - [Kotlin](https://kotlinlang.org/) - First class and official programming language for Android development.

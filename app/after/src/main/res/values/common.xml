@@ -3,6 +3,7 @@
 
     <style name="AppTheme" parent="Theme.AppCompat"/>
 
+    <color name="default_imageview">#FFFFFF</color>
     <color name="default_background">#FE4500</color>
     <color name="default_text">#FFFFFF</color>
     <color name="default_progress">#BD280F</color>

@@ -2,7 +2,9 @@ package com.kpstv.after
 
 import android.animation.Animator
 import android.animation.ObjectAnimator
+import android.app.Activity
 import android.content.Context
+import android.content.res.ColorStateList
 import android.os.Handler
 import android.util.Log
 import android.view.Gravity
@@ -41,11 +43,13 @@ class AfterRequests(
         message: String,
         options: After.Options = After.Options(),
         doOnClose: SimpleCallback? = null
-    ): AfterRequests {
+    ): AfterRequests = with(context) {
         handler.postDelayed({
-            displayCustomToast(context, message, options, doOnClose)
+            safeContextProcess(this) {
+                displayCustomToast(this, message, options, doOnClose)
+            }
         }, getTimeMilliseconds(time, unit))
-        return this
+        return this@AfterRequests
     }
 
     fun stop() {
@@ -59,26 +63,17 @@ class AfterRequests(
         doOnClose: SimpleCallback? = null
     ) {
         try {
-            if (context is AppCompatActivity) {
-                if (context.isFinishing)
-                    return
-            }
 
             val binding = CustomToastBinding.inflate(LayoutInflater.from(context))
             if (typeface != null) binding.tvMessage.typeface = typeface
 
             binding.tvMessage.text = message
 
-            if (!options.showIcon) binding.imageView.visibility = View.GONE
-
-
-            /** Set image */
+            /** Set image related queries */
             setEmoji(binding, options)
-
 
             /** Create & display toast with required options */
             createToast(binding, options).show()
-
 
             /** Start the progress animation */
             createAnimator(binding, doOnClose).start()
@@ -89,6 +84,11 @@ class AfterRequests(
     }
 
     private fun setEmoji(binding: CustomToastBinding, options: After.Options) {
+        if (!options.showIcon) {
+            binding.imageView.visibility = View.GONE
+            return
+        }
+
         when (options.emoji) {
             After.Emoji.SAD -> binding.imageView.setImageDrawable(
                 ContextCompat.getDrawable(binding.root.context, R.drawable.ic_sad)
@@ -97,9 +97,37 @@ class AfterRequests(
                 ContextCompat.getDrawable(binding.root.context, R.drawable.ic_happy)
             )
         }
+
+        if (options.drawableRes != null) ContextCompat.getDrawable(
+            binding.root.context,
+            options.drawableRes
+        )
     }
 
     private fun createToast(binding: CustomToastBinding, options: After.Options): Toast {
+        binding.root.setCardBackgroundColor(
+            ContextCompat.getColor(
+                binding.root.context, options.backgroundColor
+            )
+        )
+        binding.tvMessage.setTextColor(
+            ContextCompat.getColor(
+                binding.root.context, options.textColor
+            )
+        )
+        binding.imageView.setColorFilter(
+            ContextCompat.getColor(
+                binding.root.context, options.imageColor
+            )
+        )
+        binding.progressBar.progressTintList =
+            ColorStateList.valueOf(
+                ContextCompat.getColor(
+                    binding.root.context, options.progressColor
+                )
+            )
+
+
         val toast = Toast(binding.root.context).apply {
             duration = Toast.LENGTH_LONG
             view = binding.root
@@ -140,5 +168,11 @@ class AfterRequests(
 
     private fun getTimeMilliseconds(time: Long, unit: TimeUnit): Long {
         return TimeUnit.MILLISECONDS.convert(time, unit)
+    }
+
+    private fun safeContextProcess(context: Context, callback: SimpleCallback) {
+        if (context is Activity && context.isFinishing)
+            return
+        callback.invoke()
     }
 }

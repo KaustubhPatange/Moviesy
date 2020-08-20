@@ -194,4 +194,5 @@ Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus d
     <string name="update_download_text">Update is downloading, check notification</string>
     <string name="proxy_no_worries">No worries, we are just checking yts proxies</string>
     <string name="this_much_time">It should not take this much time</string>
+    <string name="no_updates">No new update available</string>
 </resources>

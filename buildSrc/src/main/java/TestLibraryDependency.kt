@@ -4,6 +4,7 @@ private object TestLibraryVersion {
     const val JUNIT_TEST = "1.1.1"
     const val ESPRESSO = "3.2.0"
     const val LEAK_CANARY = "2.4"
+    const val STETHO = "1.5.1"
 }
 
 object TestLibraryDependency {
@@ -12,4 +13,5 @@ object TestLibraryDependency {
     const val JUNIT = "junit:junit:${TestLibraryVersion.JUNIT}"
     const val ANDROID_DEBUG_DB = "com.amitshekhar.android:debug-db:${TestLibraryVersion.DEBUG_DB}"
     const val LEAK_CANARY = "com.squareup.leakcanary:leakcanary-android:${TestLibraryVersion.LEAK_CANARY}"
+    const val STETHO = "com.facebook.stetho:stetho:${TestLibraryVersion.STETHO}"
 }

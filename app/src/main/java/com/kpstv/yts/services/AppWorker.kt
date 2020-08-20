@@ -6,6 +6,7 @@ import androidx.hilt.Assisted
 import androidx.hilt.work.WorkerInject
 import androidx.work.*
 import com.kpstv.yts.AppInterface
+import com.kpstv.yts.R
 import com.kpstv.yts.data.db.repository.MainRepository
 import com.kpstv.yts.data.models.data.data_main
 import com.kpstv.yts.extensions.Notifications
@@ -15,7 +16,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 class AppWorker @WorkerInject constructor(
-    @Assisted appContext: Context,
+    @Assisted private val appContext: Context,
     @Assisted workerParams: WorkerParameters,
     private val ytsFeaturedUtils: YTSFeaturedUtils,
     private val repository: MainRepository,
@@ -37,7 +38,7 @@ class AppWorker @WorkerInject constructor(
             val updatePair = updateUtils.checkAsync()
             if (updatePair.second) {
                 Notifications.sendUpdateNotification(applicationContext, updatePair.first)
-            } else Log.e(TAG, "No new update available")
+            } else Log.e(TAG, appContext.getString(R.string.no_updates))
         } catch (e: Exception) {
             Log.w(TAG, "Failed: ${e.message}", e)
         }

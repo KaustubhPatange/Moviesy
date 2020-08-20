@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.core.content.res.ResourcesCompat
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
+import com.facebook.stetho.Stetho
 import com.google.android.gms.ads.MobileAds
 import com.kpstv.after.After
 import com.kpstv.yts.AppInterface
@@ -44,10 +45,14 @@ class ApplicationClass : Application(), Configuration.Provider {
         /** Set some BuildConfigs */
         AppInterface.TMDB_API_KEY = BuildConfig.TMDB_API_KEY
 
-        /** Set after */
+        /** Set configs for After */
         After.Config
             .setTypeface(typeface)
             .setTextSize(14)
+
+        /** Initializing Stetho */
+        if (BuildConfig.DEBUG)
+            Stetho.initializeWithDefaults(this)
     }
 
     override fun getWorkManagerConfiguration() =
