@@ -7,4 +7,5 @@ object GradlePluginId {
     const val SAFE_ARGS = "androidx.navigation.safeargs.kotlin"
     const val DAGGER_HILT = "dagger.hilt.android.plugin"
     const val APACHE_HTTP = "org.apache.httpcomponents"
+    const val MAVEN_PLUGIN = "com.github.dcendents.android-maven"
 }

@@ -7,15 +7,15 @@ import android.os.Handler
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.View
 import android.view.animation.DecelerateInterpolator
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.kpstv.after.After.showTime
 import com.kpstv.after.After.typeface
 import com.kpstv.after.databinding.CustomToastBinding
 import com.kpstv.after.utils.SimpleCallback
-import com.kpstv.common_moviesy.extensions.drawableFrom
-import com.kpstv.common_moviesy.extensions.hide
 import java.util.concurrent.TimeUnit
 
 class AfterRequests(
@@ -69,7 +69,7 @@ class AfterRequests(
 
             binding.tvMessage.text = message
 
-            if (!options.showIcon) binding.imageView.hide()
+            if (!options.showIcon) binding.imageView.visibility = View.GONE
 
 
             /** Set image */
@@ -91,14 +91,10 @@ class AfterRequests(
     private fun setEmoji(binding: CustomToastBinding, options: After.Options) {
         when (options.emoji) {
             After.Emoji.SAD -> binding.imageView.setImageDrawable(
-                binding.root.context.drawableFrom(
-                    R.drawable.ic_sad
-                )
+                ContextCompat.getDrawable(binding.root.context, R.drawable.ic_sad)
             )
             After.Emoji.HAPPY -> binding.imageView.setImageDrawable(
-                binding.root.context.drawableFrom(
-                    R.drawable.ic_happy
-                )
+                ContextCompat.getDrawable(binding.root.context, R.drawable.ic_happy)
             )
         }
     }
@@ -112,7 +108,8 @@ class AfterRequests(
         when (options.displayLocation) {
             After.Location.TOP -> toast.setGravity(Gravity.TOP, 0, 70)
             After.Location.CENTER -> toast.setGravity(Gravity.TOP, 0, 0)
-            After.Location.BOTTOM -> { /* Let's keep it default */ }
+            After.Location.BOTTOM -> { /* Let's keep it default */
+            }
         }
 
         return toast

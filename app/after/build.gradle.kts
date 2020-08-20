@@ -3,7 +3,7 @@ plugins {
     kotlin(GradlePluginId.ANDROID_KTX)
     kotlin(GradlePluginId.KAPT)
     kotlin(GradlePluginId.ANDROID_EXTENSIONS_KTX)
-    id("com.github.dcendents.android-maven")
+    id(GradlePluginId.MAVEN_PLUGIN)
 }
 
 android {
@@ -44,15 +44,10 @@ android {
 
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-    implementation(project(ModuleDependency.COMMON))
 
     implementation(LibraryDependency.KOTLIN_STDLIB)
     implementation(LibraryDependency.APP_COMPAT)
     implementation(LibraryDependency.CORE_KTX)
 
     implementation(LibraryDependency.CARDVIEW)
-    implementation(LibraryDependency.CONSTRAINT_LAYOUT)
-
-    implementation(LibraryDependency.COROUTINES_CORE)
-    implementation(LibraryDependency.COROUTINES_ANDROID)
 }

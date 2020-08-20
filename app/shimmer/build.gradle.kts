@@ -2,6 +2,7 @@ plugins {
     id(GradlePluginId.ANDROID_LIBRARY)
     kotlin(GradlePluginId.ANDROID_KTX)
     kotlin(GradlePluginId.ANDROID_EXTENSIONS_KTX)
+    id(GradlePluginId.MAVEN_PLUGIN)
 }
 
 android {
