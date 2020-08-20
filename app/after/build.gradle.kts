@@ -3,6 +3,7 @@ plugins {
     kotlin(GradlePluginId.ANDROID_KTX)
     kotlin(GradlePluginId.KAPT)
     kotlin(GradlePluginId.ANDROID_EXTENSIONS_KTX)
+    id("com.github.dcendents.android-maven")
 }
 
 android {

@@ -29,6 +29,7 @@ dependencies {
     implementation("com.android.tools.build:gradle:${GradlePluginVersion.ANDROID_GRADLE}")
     implementation("androidx.navigation:navigation-safe-args-gradle-plugin:${GradlePluginVersion.SAFE_ARGS}")
     implementation("com.google.dagger:hilt-android-gradle-plugin:${GradlePluginVersion.HILT}")
+    implementation("com.github.dcendents:android-maven-gradle-plugin:2.1")
 }
 
 repositories {

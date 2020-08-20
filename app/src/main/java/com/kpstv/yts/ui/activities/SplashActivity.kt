@@ -95,11 +95,15 @@ class SplashActivity : AppCompatActivity(), Animation.AnimationListener {
     }
 
     private fun dispatchAfterEvents() {
-        val defaultOptions = After.Options(displayLocation = After.Location.TOP)
+        val defaultOptions =
+            After.Options(displayLocation = After.Location.TOP, emoji = After.Emoji.HAPPY)
+        val nextOptions =
+            After.Options(displayLocation = After.Location.TOP, emoji = After.Emoji.SAD)
 
-         After.time(10, TimeUnit.SECONDS)
+        After.time(10, TimeUnit.SECONDS)
             .prompt(this, getString(R.string.proxy_no_worries), defaultOptions) {
-                After.time(5, TimeUnit.SECONDS).prompt(this, getString(R.string.this_much_time))
+                After.time(5, TimeUnit.SECONDS)
+                    .prompt(this, getString(R.string.this_much_time), nextOptions)
             }
     }
 

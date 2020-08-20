@@ -1,6 +1,7 @@
 package com.kpstv.after
 
 import android.graphics.Typeface
+import androidx.annotation.DrawableRes
 import java.util.concurrent.TimeUnit
 
 /** **After** is a library that helps you to dispatch events "after"
@@ -33,7 +34,11 @@ object After {
     data class Options(
         val displayLocation: Location = Location.BOTTOM,
         val showIcon: Boolean = true,
-        val emoji: Emoji = Emoji.SAD // Says how I feel everyday :(
+        val emoji: Emoji = Emoji.SAD, // Says how I feel everyday :(
+        /**
+         * You can also set custom drawable instead of emoji using this option.
+         */
+        @DrawableRes val drawableRes: Int? = null
     )
 
     enum class Emoji {
