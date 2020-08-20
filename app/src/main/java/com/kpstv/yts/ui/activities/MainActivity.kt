@@ -11,9 +11,8 @@ import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.navigation.NavigationView
-import com.kpstv.after.After
 import com.kpstv.common_moviesy.extensions.Coroutines
+import com.kpstv.common_moviesy.extensions.hide
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppInterface.Companion.IS_DARK_THEME
@@ -26,7 +25,6 @@ import com.kpstv.yts.databinding.ActivityMainBinding
 import com.kpstv.yts.extensions.NavigationModel
 import com.kpstv.yts.extensions.NavigationModels
 import com.kpstv.yts.extensions.Navigations
-import com.kpstv.common_moviesy.extensions.hide
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.UpdateUtils
 import com.kpstv.yts.services.DownloadService
@@ -80,7 +78,7 @@ class MainActivity : AppCompatActivity() {
 
         setPremiumButtonClicked()
 
-        setBugReportClick()
+        setNavigationDrawerItemClicks()
 
         navController = findNavController(R.id.nav_host_fragment)
 
@@ -117,7 +115,7 @@ class MainActivity : AppCompatActivity() {
                 )
             )
         }
-        navigations.setUp(binding.navRecyclerView, models) { navigationModel, _ ->
+        navigations.setUp(binding.navigationLayout.navRecyclerView, models) { navigationModel, _ ->
             navigateTo(navigationModel.tag)
         }
         viewModel.pauseMovieJob.await().observe(this, Observer {
@@ -125,9 +123,12 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    private fun setBugReportClick() {
-        binding.ivReport.setOnClickListener {
+    private fun setNavigationDrawerItemClicks() {
+        binding.navigationLayout.ivReport.setOnClickListener {
             AppUtils.launchUrl(this, "${getString(R.string.app_github)}/issues", IS_DARK_THEME)
+        }
+        binding.navigationLayout.ivShare.setOnClickListener {
+            AppUtils.shareApp(this)
         }
     }
 
@@ -168,13 +169,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun setPremiumButtonClicked() {
         if (!AppInterface.IS_PREMIUM_UNLOCKED)
-            binding.customDrawerPremium.root.setOnClickListener {
+            binding.navigationLayout.customDrawerPremium.root.setOnClickListener {
                 drawerLayout.closeDrawer(GravityCompat.START)
 
                 PremiumHelper.openPurchaseFragment(this)
             }
         else
-            binding.customDrawerPremium.root.hide()
+            binding.navigationLayout.customDrawerPremium.root.hide()
     }
 
     private fun checkIntentArguments() {
@@ -203,7 +204,7 @@ class MainActivity : AppCompatActivity() {
         if (IS_DARK_THEME != isDarkTheme) {
             val previousIntent = intent
             finish()
-            startActivity(previousIntent);
+            startActivity(previousIntent)
         }
     }
 

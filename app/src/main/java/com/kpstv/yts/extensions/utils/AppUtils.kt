@@ -11,11 +11,13 @@ import android.os.Build
 import android.text.Spanned
 import android.util.Log
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.app.ShareCompat
 import androidx.core.content.FileProvider
+import com.kpstv.common_moviesy.extensions.colorFrom
 import com.kpstv.common_moviesy.extensions.utils.CommonUtils
 import com.kpstv.yts.AppInterface.Companion.handleRetrofitError
 import com.kpstv.yts.R
-import com.kpstv.common_moviesy.extensions.colorFrom
+import es.dmoral.toasty.Toasty
 import java.io.*
 import java.net.HttpURLConnection
 import java.net.URL
@@ -58,6 +60,19 @@ class AppUtils {
             val i = Intent(Intent.ACTION_VIEW)
             i.data = Uri.parse(url)
             context.startActivity(i)
+        }
+
+        fun shareApp(activity: Activity) = with(activity) {
+            try {
+                ShareCompat.IntentBuilder.from(this)
+                    .setChooserTitle(getString(R.string.share_app))
+                    .setType("text/plain")
+                    .setText("${getString(R.string.share_text)}, ${getString(R.string.app_link)}")
+                    .startChooser()
+            } catch (e: Exception) {
+                Toasty.warning(this, "Failed: ${e.message}").show()
+                Log.w(TAG, "Failed: ${e.message}", e)
+            }
         }
 
         fun CafebarToast(context: Activity, message: String) {

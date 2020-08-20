@@ -26,7 +26,7 @@ Since this project involves a private payment system 📃 some of the source fil
 
 ## Project Libraries
 
-- [After](app/after/README.md) - A library that helps you to dispatch events "after" some time one of which is displaying prompts.
+- [After](app/after) - A library that helps you to dispatch events "after" some time one of which is displaying prompts.
 
 ## Built with 🛠
 

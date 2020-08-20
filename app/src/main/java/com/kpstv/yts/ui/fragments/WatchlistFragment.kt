@@ -83,17 +83,6 @@ class WatchlistFragment : Fragment(R.layout.fragment_watchlist) {
                         viewModel.addToFavourite(model)
                     }
                     .show()
-                CafeBar.builder(mainActivity).apply {
-                    floating(true)
-                    content(getString(R.string.remove_watchlist))
-                    neutralText(getString(R.string.undo))
-                    onNeutral {
-                        viewModel.addToFavourite(model)
-                        it.dismiss()
-                    }
-                    autoDismiss(true)
-                    duration(CafeBar.Duration.SHORT)
-                }.show()
             }
         )
 
