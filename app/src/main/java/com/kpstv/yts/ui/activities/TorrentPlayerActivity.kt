@@ -225,7 +225,7 @@ class TorrentPlayerActivity : AppCompatActivity() {
                 if (lastProgress != status.progress) {
                     Log.e(TAG, "onStreamProgress() => ${status.progress}")
                     lastProgress = status.progress
-                    binding.progressText.text = "${lastProgress.toInt()}%"
+                    binding.progressText.text = "${"%.2f".format(lastProgress)}%"
                 }
                 if (lastProgress.toInt() >= 98) {
                     binding.progressText.visibility = View.GONE

@@ -1,5 +1,6 @@
 package com.kpstv.yts.data.db.repository
 
+import android.util.Log
 import com.kpstv.yts.data.db.localized.TmDbCastDao
 import com.kpstv.yts.data.db.localized.TmDbCastMovieDao
 import com.kpstv.yts.data.models.TmDbCast
@@ -66,7 +67,7 @@ class CastMovieRepository @Inject constructor(
     private suspend fun fetchCastMovies(cast: TmDbCast): TmDbCastMovie {
         val movies =
             tMdbApi.getPersonCredits(cast.personId).cast.sortedByDescending { it.popularity }
-
+        Log.e(javaClass.simpleName, "Movie size: ${movies.size}")
         return if (movies.size > 10)
             TmDbCastMovie.from(cast, movies.take(10))
         else TmDbCastMovie.from(cast, movies)

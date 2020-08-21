@@ -2,15 +2,11 @@ package com.kpstv.yts.extensions
 
 import android.app.Activity
 import android.content.Intent
-import android.os.Parcelable
-import android.view.View
 import androidx.annotation.DrawableRes
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.ui.fragments.GenreFragment
 import kotlinx.coroutines.*
 import java.io.File
+import java.util.*
 
 fun <T> lazyDeferred(block: suspend CoroutineScope.() -> T): Lazy<Deferred<T>> {
     return lazy {
@@ -19,6 +15,8 @@ fun <T> lazyDeferred(block: suspend CoroutineScope.() -> T): Lazy<Deferred<T>> {
         }
     }
 }
+
+fun String.small() = toLowerCase(Locale.ROOT)
 
 fun ArrayList<GenreFragment.LocalGenreModel>.add(
     title: String,

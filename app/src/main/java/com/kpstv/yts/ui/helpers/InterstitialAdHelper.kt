@@ -22,7 +22,7 @@ class InterstitialAdHelper @Inject constructor(
     private var mInterstitialAd: InterstitialAd = InterstitialAd(context)
     private var onAdClosed: SimpleCallback? = null
 
-    init {
+    fun init() {
         mInterstitialAd.adListener = object : AdListener() {
             override fun onAdClosed() {
                 super.onAdClosed()
@@ -42,7 +42,7 @@ class InterstitialAdHelper @Inject constructor(
         if (BuildConfig.DEBUG)
             mInterstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712"
         else
-            mInterstitialAd.adUnitId = "ca-app-pub-1164424526503510/1732829085"
+            mInterstitialAd.adUnitId = BuildConfig.INTERSTITIAL_ID
 
         mInterstitialAd.loadAd(AdRequest.Builder().build())
     }

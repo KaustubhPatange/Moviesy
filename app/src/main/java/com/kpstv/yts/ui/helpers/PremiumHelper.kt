@@ -39,8 +39,8 @@ class PremiumHelper {
         /**
          * Displays a toast and then open the purchase bottom sheet
          */
-        fun showDownloadPremium(activity: FragmentActivity) {
-            Toasty.warning(activity, "Buy premium to remove download limit").show()
+        fun showPremiumInfo(activity: FragmentActivity, featureName: String = "this") {
+            Toasty.warning(activity, "Buy premium to remove $featureName limit").show()
             openPurchaseFragment(activity)
         }
 

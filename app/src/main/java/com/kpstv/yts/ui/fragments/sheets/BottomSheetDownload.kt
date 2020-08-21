@@ -13,6 +13,7 @@ import com.kpstv.yts.R
 import com.kpstv.yts.adapters.DownloadAdapter
 import com.kpstv.yts.data.models.Torrent
 import com.kpstv.yts.databinding.BottomSheetDownloadBinding
+import com.kpstv.yts.extensions.small
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.getMagnetUrl
 import com.kpstv.yts.extensions.views.ExtendedBottomSheetDialogFragment
@@ -113,9 +114,9 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
 
     private fun filterChips() {
         if (binding.chipBlueray.isChecked) {
-            adapter = DownloadAdapter(context, bluray)
+            adapter = DownloadAdapter(bluray, viewType)
         } else if (binding.chipWebrip.isCheckable) {
-            adapter = DownloadAdapter(context, webrip)
+            adapter = DownloadAdapter(webrip, viewType)
         }
 
         adapter.setDownloadClickListener(object : DownloadAdapter.DownloadClickListener {
@@ -174,6 +175,11 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
             }
         })
 
+        adapter.onPremiumItemClicked = {
+            PremiumHelper.showPremiumInfo(requireActivity(), ViewType.WATCH.name.small())
+            dismiss()
+        }
+
         binding.recyclerViewDownload.adapter = adapter
     }
 
@@ -193,7 +199,7 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
 
             return true
         } else {
-            PremiumHelper.showDownloadPremium(requireActivity())
+            PremiumHelper.showPremiumInfo(requireActivity(), ViewType.DOWNLOAD.name.small())
             return false
         }
     }

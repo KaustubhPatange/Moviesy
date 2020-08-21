@@ -33,6 +33,7 @@ android {
         }
 
         buildConfigField("String", "TMDB_API_KEY", "\"${gradleLocalProperties(rootDir).getProperty("tmdb_api_key")}\"")
+        buildConfigField("String", "INTERSTITIAL_ID", "\"${gradleLocalProperties(rootDir).getProperty("interstitial_ad_id")}\"")
     }
 
     buildTypes {

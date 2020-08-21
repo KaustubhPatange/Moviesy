@@ -1,24 +1,27 @@
 package com.kpstv.yts.adapters
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.kpstv.common_moviesy.extensions.hide
+import com.kpstv.common_moviesy.extensions.show
+import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.Torrent
 import com.kpstv.yts.databinding.ItemDownloadBinding
+import com.kpstv.yts.extensions.SimpleCallback
+import com.kpstv.yts.ui.fragments.sheets.BottomSheetDownload
 
 @SuppressLint("SetTextI18n")
 class DownloadAdapter(
-    private val context: Context?,
-    private val models: ArrayList<Torrent>
+    private val models: ArrayList<Torrent>,
+    private val viewType: BottomSheetDownload.ViewType
 ) :
     RecyclerView.Adapter<DownloadAdapter.DownloadHolder>() {
+
+    var onPremiumItemClicked: SimpleCallback? = null
 
     private lateinit var listener: DownloadClickListener
     private lateinit var longListener: DownloadLongClickListener
@@ -37,12 +40,22 @@ class DownloadAdapter(
         holder.binding.itemSize.text = model.size_pretty
 
         holder.binding.root.setOnClickListener {
-            listener.onClick(model, i)
+            performPremiumCheck(
+                model,
+                { onPremiumItemClicked?.invoke() },
+                { listener.onClick(model, i) })
         }
         holder.binding.root.setOnLongClickListener {
             longListener.onLongClick(model, i)
             return@setOnLongClickListener true
         }
+
+        /** Set up some premium methods */
+        performPremiumCheck(
+            model,
+            { holder.binding.ivPremium.show() },
+            { holder.binding.ivPremium.hide() }
+        )
     }
 
     override fun getItemCount(): Int {
@@ -63,6 +76,21 @@ class DownloadAdapter(
 
     fun setDownloadLongClickListener(longListener: DownloadLongClickListener) {
         this.longListener = longListener
+    }
+
+    private fun performPremiumCheck(
+        model: Torrent,
+        doOnPremium: SimpleCallback,
+        doNotOnPremium: SimpleCallback
+    ) {
+        if (AppInterface.IS_PREMIUM_UNLOCKED) {
+            doNotOnPremium.invoke()
+            return
+        }
+        if (viewType == BottomSheetDownload.ViewType.WATCH && (model.quality == "1080p" || model.quality == "2160p")) {
+            doOnPremium.invoke()
+        } else
+            doNotOnPremium.invoke()
     }
 
     class DownloadHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

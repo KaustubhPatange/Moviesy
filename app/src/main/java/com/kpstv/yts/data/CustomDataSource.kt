@@ -67,16 +67,7 @@ class CustomDataSource(
         val list = ArrayList<MovieShort>()
         it.forEach { movie ->
             if (movie.release_date?.contains("-") == true) {
-                list.add(
-                    MovieShort(
-                        movieId = movie.id.toInt(),
-                        title = movie.title,
-                        rating = movie.rating,
-                        year = movie.release_date.split("-")[0].toInt(),
-                        bannerUrl = "${TMDB_IMAGE_PREFIX}${movie.bannerPath}",
-                        runtime = movie.runtime
-                    )
-                )
+                list.add(MovieShort.from(movie))
             }
         }
         return list

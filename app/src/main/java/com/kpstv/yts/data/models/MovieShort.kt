@@ -33,7 +33,7 @@ data class MovieShort (
                 bannerUrl = "${AppInterface.TMDB_IMAGE_PREFIX}${data.posterPath}",
                 runtime = 0,
                 rating = data.voteAverage,
-                year = data.releaseDate.split("-")[0].toInt()
+                year = data.releaseDate?.split("-")?.get(0)?.toInt() ?: 0
             )
         }
     }

@@ -12,6 +12,7 @@ import com.kpstv.yts.BuildConfig
 import com.kpstv.yts.R
 import com.kpstv.yts.extensions.Notifications
 import com.kpstv.yts.services.AppWorker
+import com.kpstv.yts.ui.helpers.InterstitialAdHelper
 import dagger.hilt.android.HiltAndroidApp
 import es.dmoral.toasty.Toasty
 import javax.inject.Inject
@@ -22,6 +23,9 @@ class ApplicationClass : Application(), Configuration.Provider {
 
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
+
+    @Inject
+    lateinit var interstitialAdHelper: InterstitialAdHelper
 
     override fun onCreate() {
         super.onCreate()
@@ -34,7 +38,9 @@ class ApplicationClass : Application(), Configuration.Provider {
             .apply()
 
         /** Initialize mobile ads */
-        MobileAds.initialize(this) { }
+        MobileAds.initialize(this) {
+            interstitialAdHelper.init()
+        }
 
         /** Setting up notifications */
         Notifications.setup(applicationContext)
