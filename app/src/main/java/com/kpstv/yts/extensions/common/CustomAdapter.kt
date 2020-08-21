@@ -45,9 +45,6 @@ class CustomAdapter(
         val movie = list[i]
 
         var imageUri = movie.bannerUrl
-        if (!imageUri.contains(AppInterface.YTS_BASE_URL)) {
-            imageUri = AppUtils.refactorYTSUrl(imageUri)
-        }
 
         holder.binding.shimmerImageView.getImageView().load(
             uri = imageUri,

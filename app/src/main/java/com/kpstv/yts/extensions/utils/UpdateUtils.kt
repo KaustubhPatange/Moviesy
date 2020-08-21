@@ -24,15 +24,20 @@ class UpdateUtils @Inject constructor(
      */
     fun check(
         onUpdateAvailable: (AppDatabase.Update) -> Unit,
+        onVersionDeprecated: SimpleCallback,
         onUpdateNotFound: SimpleCallback? = null,
         onError: (Exception) -> Unit
     ) =
         Coroutines.io {
             try {
                 val updatePair = fetchUpdateDetails()
-                if (updatePair.second) {
-                    Coroutines.main { onUpdateAvailable.invoke(updatePair.first.update) }
-                } else Coroutines.main { onUpdateNotFound?.invoke() }
+                when {
+                    updatePair.second -> {
+                        Coroutines.main { onUpdateAvailable.invoke(updatePair.first.update) }
+                    }
+                    updatePair.first.update.deprecatedVersionCode == BuildConfig.VERSION_CODE -> Coroutines.main { onVersionDeprecated.invoke() }
+                    else -> Coroutines.main { onUpdateNotFound?.invoke() }
+                }
             } catch (e: Exception) {
                 Coroutines.main { onError(e) }
             }
@@ -52,7 +57,11 @@ class UpdateUtils @Inject constructor(
         if (response.isSuccessful) {
             val appDatabase = AppDatabaseConverter
                 .toAppDatabaseFromString(response.body?.string())
-            response.close()
+
+            /** Set global message */
+            AppInterface.appMessage = appDatabase?.message
+
+            response.close() // Always close the stream
             if (appDatabase == null) throw Exception("Failed to obtain details from the response")
             return Pair(appDatabase, appDatabase.update.versionCode > BuildConfig.VERSION_CODE)
         } else

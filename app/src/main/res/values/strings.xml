@@ -197,4 +197,7 @@ Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus d
     <string name="no_updates">No new update available</string>
     <string name="share_app">Share App</string>
     <string name="share_text">Watch &#38; download movies online</string>
+    <string name="deprecated_title">Deprecated</string>
+    <string name="deprecated_text">The current version of the app you are using will not receive any automatic updates for various reasons, update the app manually to continue using this app..</string>
+    <string name="deprecated_update">Force update</string>
 </resources>

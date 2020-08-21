@@ -5,8 +5,8 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import java.util.concurrent.TimeUnit
 
-    /** **After** is a library that helps you to dispatch events "after"
-     *  some time.
+/** **After** is a library that helps you to dispatch events "after"
+ *  some time.
  *
  *  @author [Kaustubh Patange](https://kaustubhpatange.github.io)
  */

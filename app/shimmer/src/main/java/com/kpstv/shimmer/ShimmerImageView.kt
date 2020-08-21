@@ -12,6 +12,11 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import com.facebook.shimmer.ShimmerFrameLayout
 
+/** **ShimmerImageView** is an extension over facebook's standard
+ *  shimmer effect.
+ *
+ *  @author [Kaustubh Patange](https://kaustubhpatange.github.io)
+ */
 class ShimmerImageView : CardView {
     @DrawableRes
     private var resId = 0

@@ -7,6 +7,7 @@ import android.os.Environment
 import androidx.navigation.NavOptions
 import androidx.preference.PreferenceManager
 import com.danimahardhika.cafebar.CafeBar
+import com.kpstv.yts.data.models.AppDatabase
 import com.kpstv.yts.extensions.SearchType
 import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.extensions.add
@@ -49,6 +50,9 @@ class AppInterface {
         var IS_PREMIUM_UNLOCKED = false
         var IS_ADAPTIVE_SEARCH = true
         var SUGGESTION_SEARCH_TYPE = SearchType.TMDB
+
+        // Do we really need it
+        var appMessage: AppDatabase.Message? = null
 
         const val FEATURED_QUERY = "movies=featured&client=yts"
 

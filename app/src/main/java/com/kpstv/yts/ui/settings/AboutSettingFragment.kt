@@ -19,7 +19,7 @@ class AboutSettingFragment : PreferenceFragmentCompat() {
         }
 
         findPreference<Preference>(AppSettings.AUTHOR_EMAIL_PREF)?.setOnPreferenceClickListener {
-            AppUtils.launchUrlIntent("mailto:${getString(R.string.author_mail)}", requireContext())
+            AppUtils.launchUrlIntent(requireContext(), "mailto:${getString(R.string.author_mail)}")
             true
         }
 

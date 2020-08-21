@@ -37,8 +37,6 @@ import es.dmoral.toasty.Toasty
 import io.github.dkbai.tinyhttpd.nanohttpd.webserver.SimpleWebServer
 import javax.inject.Inject
 
-// TODO: Remove menu/nav_drawer
-
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
@@ -98,6 +96,37 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNav.setOnNavigationItemSelectedListener(bottomNavListener)
     }
 
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+
+        /** Check for intent arguments */
+        checkIntentArguments()
+
+        /** Check for updates */
+        updateUtils.check(
+            onUpdateAvailable = {
+                AlertNoIconDialog.Companion.Builder(this)
+                    .setTitle(getString(R.string.update_title))
+                    .setMessage(getString(R.string.update_text))
+                    .setPositiveButton(getString(R.string.yes)) {
+                        updateUtils.processUpdate(it)
+                        Toasty.info(this, getString(R.string.update_download_text)).show()
+                    }
+                    .setNegativeButton(getString(R.string.no)) { }
+                    .show()
+            },
+            onUpdateNotFound = {
+                PremiumHelper.showPurchaseInfo(this)
+            },
+            onVersionDeprecated = {
+                AppUtils.doOnVersionDeprecated(this)
+            },
+            onError = {
+                Toasty.error(this, "Failed: ${it.message}").show()
+            }
+        )
+    }
+
     private fun setNavigationDrawer() = Coroutines.main {
         val models = NavigationModels().apply {
             add(
@@ -130,34 +159,6 @@ class MainActivity : AppCompatActivity() {
         binding.navigationLayout.ivShare.setOnClickListener {
             AppUtils.shareApp(this)
         }
-    }
-
-    override fun onPostCreate(savedInstanceState: Bundle?) {
-        super.onPostCreate(savedInstanceState)
-
-        /** Check for intent arguments */
-        checkIntentArguments()
-
-        /** Check for updates */
-        updateUtils.check(
-            onUpdateAvailable = {
-                AlertNoIconDialog.Companion.Builder(this)
-                    .setTitle(getString(R.string.update_title))
-                    .setMessage(getString(R.string.update_text))
-                    .setPositiveButton(getString(R.string.yes)) {
-                        updateUtils.processUpdate(it)
-                        Toasty.info(this, getString(R.string.update_download_text)).show()
-                    }
-                    .setNegativeButton(getString(R.string.no)) { }
-                    .show()
-            },
-            onUpdateNotFound = {
-                PremiumHelper.showPurchaseInfo(this)
-            },
-            onError = {
-                Toasty.error(this, "Failed: ${it.message}").show()
-            }
-        )
     }
 
     private val bottomNavListener = BottomNavigationView.OnNavigationItemSelectedListener {

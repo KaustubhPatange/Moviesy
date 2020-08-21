@@ -10,6 +10,8 @@ import android.net.Uri
 import android.os.Build
 import android.text.Spanned
 import android.util.Log
+import android.view.LayoutInflater
+import androidx.appcompat.app.AlertDialog
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.app.ShareCompat
 import androidx.core.content.FileProvider
@@ -17,11 +19,13 @@ import com.kpstv.common_moviesy.extensions.colorFrom
 import com.kpstv.common_moviesy.extensions.utils.CommonUtils
 import com.kpstv.yts.AppInterface.Companion.handleRetrofitError
 import com.kpstv.yts.R
+import com.kpstv.yts.databinding.CustomPurchaseDialogBinding
 import es.dmoral.toasty.Toasty
 import java.io.*
 import java.net.HttpURLConnection
 import java.net.URL
 import kotlin.reflect.KClass
+import kotlin.system.exitProcess
 
 class AppUtils {
 
@@ -43,20 +47,11 @@ class AppUtils {
                 customTabsIntent.launchUrl(this, Uri.parse(url))
             } catch (e: Exception) {
                 Log.e("Chrome", "Chrome not installed: " + e.message)
-                launchUrlIntent(url, this)
+                launchUrlIntent(this, url)
             }
         }
 
-        // TODO: Check what this does
-        fun refactorYTSUrl(url: String): String {
-            // https://yts.mx/torrent/download/F83269473864732884FBC77182408DC0EC9A5E08
-            // https://yts.mx/assets/images/movies/spider_man_far_from_home_2019/background.jpg
-            // https://yts.mx/movie/spider-man-far-from-home-2019
-            //  return "${YTS_BASE_URL}${url.substring(14)}"
-            return url
-        }
-
-        fun launchUrlIntent(url: String?, context: Context) {
+        fun launchUrlIntent(context: Context, url: String?) {
             val i = Intent(Intent.ACTION_VIEW)
             i.data = Uri.parse(url)
             context.startActivity(i)
@@ -214,6 +209,33 @@ class AppUtils {
                 install.data = Uri.fromFile(apk)
             }
             context.startActivity(install)
+        }
+
+        @SuppressLint("SetTextI18n")
+        fun doOnVersionDeprecated(context: Context): Unit = with(context) {
+            /** Use same customPurchaseDialog to display it. */
+
+            val binding = CustomPurchaseDialogBinding.inflate(LayoutInflater.from(this))
+
+            binding.title.text = getString(R.string.deprecated_title)
+            binding.message.text = getString(R.string.deprecated_text)
+            binding.btnDetails.text = getString(R.string.deprecated_update)
+
+            binding.lottieView.setAnimation(R.raw.deprecated)
+
+            binding.btnDetails.setOnClickListener {
+                launchUrlIntent(this, getString(R.string.app_link))
+            }
+            binding.btnClose.setOnClickListener {
+                if (context is Activity)
+                    context.finish()
+                else exitProcess(0)
+            }
+
+            AlertDialog.Builder(this)
+                .setView(binding.root)
+                .setCancelable(false)
+                .show()
         }
 
         private val TAG = "Utils"
