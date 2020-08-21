@@ -10,10 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.databinding.ItemWatchlistBinding
-import com.kpstv.common_moviesy.extensions.hide
 import com.kpstv.yts.extensions.load
 import com.kpstv.yts.extensions.utils.AppUtils
-import kotlinx.android.synthetic.main.item_watchlist.view.*
 
 class WatchlistAdapter(
     private val onClickListener: (Model.response_favourite, Int) -> Unit,
@@ -31,14 +29,22 @@ class WatchlistAdapter(
     override fun onBindViewHolder(holder: WatchlistHolder, i: Int) {
         val model = getItem(i)
 
-        holder.binding.itemImage.load(
+        holder.binding.itemImageCard.getImageView().load(
+            uri = model.imageUrl,
+            onSuccess = { resource ->
+                holder.binding.itemImageCard.setImage(resource)
+             /*   holder.itemView.shimmerFrame.hideShimmer()
+                holder.itemView.shimmerFrame.hide()*/
+            }
+        )
+     /*   holder.binding.itemImage.load(
             uri = model.imageUrl,
             onSuccess = { resource ->
                 holder.binding.itemImage.setImageBitmap(resource)
                 holder.itemView.shimmerFrame.hideShimmer()
                 holder.itemView.shimmerFrame.hide()
             }
-        )
+        )*/
 
         holder.binding.itemTitle.text = model.title
         holder.binding.itemSubText.text = "${model.year} ${AppUtils.getBulletSymbol()} ${model.runtime} mins"

@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    app:cardBackgroundColor="@color/default_background"
     app:cardCornerRadius="10dp">
 
     <RelativeLayout
@@ -20,7 +18,6 @@
             android:layout_height="match_parent"
             android:layout_alignBottom="@id/tv_layout"
             android:progress="100"
-            android:progressTint="@color/default_progress"
             android:scaleY="100" />
 
         <LinearLayout
@@ -34,8 +31,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center"
-                android:layout_marginStart="10dp"
-                android:src="@drawable/ic_sad" />
+                android:layout_marginStart="10dp" />
 
             <TextView
                 android:id="@+id/tv_message"
@@ -44,9 +40,7 @@
                 android:background="@android:color/transparent"
                 android:gravity="center"
                 android:padding="15dp"
-                android:textColor="@color/default_text"
-                android:textSize="15sp"
-                tools:text="This is a sample toast text" />
+                android:textSize="15sp" />
         </LinearLayout>
 
     </RelativeLayout>

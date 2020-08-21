@@ -9,7 +9,24 @@
     android:focusable="true"
     android:padding="15dp">
 
-    <com.google.android.material.card.MaterialCardView
+    <com.kpstv.shimmer.ShimmerImageView
+        android:id="@+id/item_imageCard"
+        android:layout_width="65dp"
+        app:cardCornerRadius="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_height="98dp">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_play_circle"
+            app:tint="?attr/colorBackground" />
+
+    </com.kpstv.shimmer.ShimmerImageView>
+  <!--  <com.google.android.material.card.MaterialCardView
         android:id="@+id/item_imageCard"
         android:layout_width="65dp"
         android:layout_height="98dp"
@@ -43,7 +60,7 @@
                 app:tint="?attr/colorBackground" />
         </com.facebook.shimmer.ShimmerFrameLayout>
 
-    </com.google.android.material.card.MaterialCardView>
+    </com.google.android.material.card.MaterialCardView>-->
 
     <TextView
         android:id="@+id/item_title"

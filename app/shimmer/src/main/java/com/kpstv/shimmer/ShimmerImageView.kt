@@ -2,11 +2,14 @@ package com.kpstv.shimmer
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
+import android.view.View
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.core.view.children
 import com.facebook.shimmer.ShimmerFrameLayout
 
 class ShimmerImageView : CardView {
@@ -44,18 +47,27 @@ class ShimmerImageView : CardView {
         init(context)
     }
 
-    fun setImage(bm: Bitmap) {
+    fun setImage(bm: Bitmap?) {
         imageView.setImageBitmap(bm)
+        hideAll()
+    }
+
+    fun setImage(dr: Drawable?) {
+        imageView.setImageDrawable(dr)
+        hideAll()
+    }
+
+    private fun hideAll() {
+        children.forEach { if (it !is ShimmerFrameLayout) it.visibility = View.GONE }
         shimmerFrameLayout.hideShimmer()
         invalidate()
     }
 
     fun getImageView() = imageView
 
-    fun getShimmerFrame() = shimmerFrameLayout
-
     private fun init(context: Context) {
         imageView = ImageView(context)
+        imageView.scaleType = ImageView.ScaleType.CENTER_CROP
         shimmerFrameLayout = ShimmerFrameLayout(context)
         shimmerFrameLayout.setBackgroundColor(resColor)
         if (resId != 0) {

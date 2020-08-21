@@ -88,7 +88,7 @@ val options = After.Options(
 )
 ```
 
-| Parameters        | Tasks                                                                      |
+| Parameter         | Task                                                                       |
 | ----------------- | -------------------------------------------------------------------------- |
 | `displayLocation` | Location where this prompt should be displayed, default `Location.BOTTOM`. |
 | `showIcon`        | Set if the icon should be visible or not, default `true`.                  |

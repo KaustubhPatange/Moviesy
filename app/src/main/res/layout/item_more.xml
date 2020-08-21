@@ -1,37 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
     <com.google.android.material.card.MaterialCardView
-        android:layout_marginStart="7dp"
-        android:layout_marginEnd="7dp"
-        android:layout_marginTop="7dp"
         android:id="@+id/mainCard"
-        android:foreground="?attr/selectableItemBackground"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="7dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="7dp"
         android:clickable="true"
         android:focusable="true"
-        android:layout_width="wrap_content"
-        app:cardCornerRadius="7dp"
-        android:layout_height="wrap_content">
+        android:foreground="?attr/selectableItemBackground"
+        app:cardCornerRadius="7dp">
 
-        <include layout="@layout/item_common_banner"/>
+        <include layout="@layout/item_common_banner" />
 
     </com.google.android.material.card.MaterialCardView>
+
     <TextView
-        android:layout_marginStart="7dp"
-        android:layout_marginEnd="7dp"
-        android:layout_marginBottom="10dp"
-        android:fontFamily="@font/google_sans_regular"
-        android:transitionName="contentTitle"
         android:id="@+id/mainText"
-        android:layout_marginTop="7dp"
-        android:singleLine="true"
-        android:ellipsize="end"
-        android:textSize="13sp"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:text="@string/af_title"/>
+        android:layout_marginStart="7dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="7dp"
+        android:layout_marginBottom="10dp"
+        android:ellipsize="end"
+        android:fontFamily="@font/google_sans_regular"
+        android:singleLine="true"
+        android:text="@string/af_title"
+        android:textSize="13sp"
+        android:transitionName="contentTitle" />
 </LinearLayout>
