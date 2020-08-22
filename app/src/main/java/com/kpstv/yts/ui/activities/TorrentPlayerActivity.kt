@@ -333,11 +333,11 @@ class TorrentPlayerActivity : AppCompatActivity() {
     override fun onDestroy() {
         try {
             binding.giraffePlayer.player.release()
+            if (::torrentStream.isInitialized) torrentStream.stopStream()
         } catch (e: Exception) {
             Log.e(TAG, "=> Error: ${e.message}")
         }
         subtitleHandler.removeCallbacks(updateTask)
-        if (::torrentStream.isInitialized) torrentStream.stopStream()
         super.onDestroy()
     }
 

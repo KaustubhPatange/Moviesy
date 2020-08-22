@@ -140,12 +140,16 @@
     </style>
 
     <style name="SplashTheme" parent="Theme.MaterialComponents.NoActionBar">
+        <!-- MIUI devices need to have this set to change splash background -->
+        <item name="android:background">@android:color/transparent</item>
         <item name="android:windowBackground">#9B68DA</item>
         <item name="snackbarStyle">@style/CustomSnackBarStyle</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
     <style name="AppTheme.Transparent" parent="Theme.MaterialComponents.NoActionBar">
+        <!-- MIUI devices need to have this set to change splash background -->
+        <item name="android:background">@android:color/transparent</item>
         <item name="android:windowBackground">@color/background_agree</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>

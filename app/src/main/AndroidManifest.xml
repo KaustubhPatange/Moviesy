@@ -8,11 +8,9 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
-    <!-- Required for Google cast -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" /> <!-- Required for Google cast -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <!-- Required for Google drive backup -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- Required for Google drive backup -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
 
@@ -33,7 +31,6 @@
         <meta-data
             android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
             android:value="com.kpstv.yts.cast.provider.CastOptionsProvider" />
-
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-1164424526503510~6985155768" />
@@ -102,6 +99,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.kpstv.yts.ui.activities.MainActivity" />
         </activity>
+        <activity android:name=".ui.activities.CrashOnActivity"/>
 
         <service android:name=".cast.service.WebService" />
         <service android:name=".services.DownloadService" />

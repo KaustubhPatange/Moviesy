@@ -116,7 +116,7 @@ class MainActivity : AppCompatActivity() {
                     .show()
             },
             onUpdateNotFound = {
-                PremiumHelper.showPurchaseInfo(this)
+                checkForAutoPurchase()
             },
             onVersionDeprecated = {
                 AppUtils.doOnVersionDeprecated(this)
@@ -198,6 +198,17 @@ class MainActivity : AppCompatActivity() {
                 startActivity(settingIntent)
             }
         }
+    }
+
+    private fun checkForAutoPurchase() {
+        PremiumHelper.scanForAutoPurchase(this,
+            onPremiumActivated = {
+                PremiumHelper.showPremiumActivatedDialog(this)
+            },
+            onNoPremiumFound = {
+                PremiumHelper.showPurchaseInfo(this)
+            }
+        )
     }
 
     override fun onResume() {

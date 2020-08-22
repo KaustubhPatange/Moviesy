@@ -121,6 +121,7 @@ dependencies {
     implementation(LibraryDependency.SWIPE_REFRESH_LAYOUT)
 
     implementation(LibraryDependency.GLIDE)
+    implementation("cat.ereza:customactivityoncrash:2.3.0")
 
     implementation(LibraryDependency.RXANDROID)
     implementation(LibraryDependency.RXJAVA)
@@ -146,6 +147,8 @@ dependencies {
         exclude(group = GradlePluginId.APACHE_HTTP)
     }
     implementation(LibraryDependency.GUAVA_CONFLICT)
+    implementation("androidx.appcompat:appcompat:1.2.0")
+    implementation("androidx.constraintlayout:constraintlayout:1.1.3")
 
     kapt(LibraryDependency.ROOM_COMPILER_KAPT)
     kapt(LibraryDependency.GLIDE_COMPILER)

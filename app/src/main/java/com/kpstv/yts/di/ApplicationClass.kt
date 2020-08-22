@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.core.content.res.ResourcesCompat
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
-import com.facebook.stetho.Stetho
+import cat.ereza.customactivityoncrash.config.CaocConfig
 import com.google.android.gms.ads.MobileAds
 import com.kpstv.after.After
 import com.kpstv.yts.AppInterface
@@ -12,6 +12,7 @@ import com.kpstv.yts.BuildConfig
 import com.kpstv.yts.R
 import com.kpstv.yts.extensions.Notifications
 import com.kpstv.yts.services.AppWorker
+import com.kpstv.yts.ui.activities.CrashOnActivity
 import com.kpstv.yts.ui.helpers.InterstitialAdHelper
 import dagger.hilt.android.HiltAndroidApp
 import es.dmoral.toasty.Toasty
@@ -56,13 +57,18 @@ class ApplicationClass : Application(), Configuration.Provider {
             .setTypeface(typeface)
             .setTextSize(14)
 
-        /** Initializing Stetho */
-        if (BuildConfig.DEBUG)
-            Stetho.initializeWithDefaults(this)
+        /** Set CAOC config */
+        setCaocConfig()
     }
 
     override fun getWorkManagerConfiguration() =
         Configuration.Builder()
             .setWorkerFactory(workerFactory)
             .build()
+
+    private fun setCaocConfig() {
+        CaocConfig.Builder.create()
+            .errorActivity(CrashOnActivity::class.java)
+            .apply()
+    }
 }

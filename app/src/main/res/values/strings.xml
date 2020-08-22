@@ -168,7 +168,7 @@ Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus d
     <string name="remove_history">Remove from search history?</string>
     <string name="remove">REMOVE</string>
     <string name="agree">Agree</string>
-    <string name="disclaimer_text"><![CDATA[Disclaimer,\n\n\nApp let\'s you download & stream HD movies on the go (illegally).\n\nIf this is something you don\'t want, you must stop using it.\n\nThis app is made out of my hobby!]]></string>
+    <string name="disclaimer_text"><![CDATA[Disclaimer,\n\n\nApp let\'s you download & stream HD movies on the go (illegally).\n\nIf this is something you don\'t want, you must stop using it.\n\nThis is indeed a hobby project!]]></string>
     <string name="unlock_premium">Unlock premium</string>
     <string name="unlock_premium_text">Unlock complete features of the app by paying one-time payment for a reasonable price.</string>
     <string name="no_action">No supported action found</string>
@@ -200,4 +200,10 @@ Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus d
     <string name="deprecated_title">Deprecated</string>
     <string name="deprecated_text">The current version of the app you are using will not receive any automatic updates for various reasons, update the app manually to continue using this app..</string>
     <string name="deprecated_update">Force update</string>
+    <string name="stack_trace">Show stacktrace</string>
+    <string name="create_issue">Create issue</string>
+    <string name="crash_text">Oops! Looks like we\'ve crashed</string>
+    <string name="no_purchase_exist">No saved purchase found</string>
+    <string name="premium_unlock_text">Premium Unlocked</string>
+    <string name="premium_unlock_message">Your premium content has been automatically unlocked.</string>
 </resources>

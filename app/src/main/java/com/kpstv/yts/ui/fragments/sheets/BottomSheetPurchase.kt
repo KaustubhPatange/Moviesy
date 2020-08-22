@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.kpstv.after.After
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.purchase.Options
 import com.kpstv.purchase.PurchaseHelper
@@ -21,6 +22,7 @@ import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.ui.helpers.PremiumHelper
 import com.kpstv.yts.ui.helpers.SignInHelper
 import es.dmoral.toasty.Toasty
+import java.util.concurrent.TimeUnit
 
 
 class BottomSheetPurchase : ExtendedBottomSheetDialogFragment(R.layout.bottom_sheet_purchase) {

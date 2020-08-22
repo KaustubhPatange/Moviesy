@@ -7,7 +7,7 @@
 
 A **_beautiful_** client for [YTS](https://www.google.com/search?q=yts) website which also provides built-in _torrent_, _subtitles_ downloader ❤️
 
-> Disclaimer: The app let's you download and stream HD movies on the go, if this is something you don't approve then you should stop using it. This app is just a hobby project :)
+> Disclaimer: The app let's you download and stream HD movies on the go, if this is something you don't approve then you should stop using it. This is indeed a hobby project :)
 
 [![Moviesy App](https://img.shields.io/badge/Download-APK-red.svg?style=for-the-badge&logo=android)]()
 

@@ -8,15 +8,14 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import androidx.core.app.ShareCompat
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import com.kpstv.yts.AppInterface.Companion.PURCHASE_REGEX_PATTERN
 import com.kpstv.yts.AppSettings.PURCHASE_ACCOUNT_ERROR_PREF
 import com.kpstv.yts.AppSettings.SHOW_ACCOUNT_ID_PREF
 import com.kpstv.yts.R
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
+import com.kpstv.yts.ui.helpers.PremiumHelper
 import com.kpstv.yts.ui.helpers.SignInHelper
 import es.dmoral.toasty.Toasty
 import org.json.JSONObject
@@ -54,12 +53,10 @@ class AccountSettingFragment : PreferenceFragmentCompat() {
             requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), PERMISSION_CODE)
             return
         }
-        val pattern = PURCHASE_REGEX_PATTERN.toRegex()
-        val fileList = Environment.getExternalStorageDirectory().listFiles()
-            ?.filter { pattern.containsMatchIn(it.name) }
-        if (fileList?.isNotEmpty() == true) {
-            val firstFileJson = fileList[0].readText()
-            val jsonObject = JSONObject(firstFileJson)
+
+        val puchaseJSON = PremiumHelper.getPurchaseHistoryJSON()
+        if (!puchaseJSON.isNullOrEmpty()) {
+            val jsonObject = JSONObject(puchaseJSON)
 
             ShareCompat.IntentBuilder.from(requireActivity())
                 .setType("message/rfc822")
@@ -72,8 +69,7 @@ Account Key: ${jsonObject.getString("uid")}
 Email: ${jsonObject.getString("email")}""".trimIndent())
                 .setChooserTitle("Send")
                 .intent.also { startActivity(it) }
-        } else
-            Toasty.error(requireContext(), "No saved purchase found").show()
+        } else Toasty.error(requireContext(), getString(R.string.no_purchase_exist)).show()
     }
 
     private fun initializeSignIn() {

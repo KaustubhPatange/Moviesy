@@ -5,7 +5,7 @@ import com.kpstv.yts.AppInterface
 import com.kpstv.yts.data.models.response.Model
 import java.io.Serializable
 
-data class MovieShort (
+data class MovieShort(
     val movieId: Int? = null,
     val url: String? = null,
     val title: String,
@@ -15,13 +15,13 @@ data class MovieShort (
     val imdbCode: String? = null,
     @SerializedName("medium_cover_image")
     val bannerUrl: String
-): Serializable {
+) : Serializable {
     companion object {
         fun from(data: TmDbMovie) = MovieShort(
             movieId = data.id.toInt(),
             title = data.title,
             rating = data.rating,
-            year = data.release_date?.split("-")?.get(0)?.toInt() ?: 0,
+            year = safeYear(data.release_date),
             bannerUrl = "${AppInterface.TMDB_IMAGE_PREFIX}${data.bannerPath}",
             runtime = data.runtime
         )
@@ -33,8 +33,15 @@ data class MovieShort (
                 bannerUrl = "${AppInterface.TMDB_IMAGE_PREFIX}${data.posterPath}",
                 runtime = 0,
                 rating = data.voteAverage,
-                year = data.releaseDate?.split("-")?.get(0)?.toInt() ?: 0
+                year = safeYear(data.releaseDate)
             )
+        }
+
+        private fun safeYear(releaseData: String?): Int {
+            val year = releaseData?.split("-")?.get(0)
+            return if (year.isNullOrEmpty())
+                0
+            else year.toInt()
         }
     }
 }
