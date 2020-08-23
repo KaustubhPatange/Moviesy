@@ -103,7 +103,7 @@ class BottomSheetPurchase : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
             override fun onAnimationRepeat(animation: Animator?) {}
 
             override fun onAnimationEnd(animation: Animator?) {
-                Toasty.info(requireContext(), getString(R.string.premium_unlocked)).show()
+                PremiumHelper.showPremiumActivatedDialog(requireContext())
                 dismiss()
             }
 

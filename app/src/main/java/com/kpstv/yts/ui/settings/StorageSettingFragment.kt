@@ -21,7 +21,6 @@ import es.dmoral.toasty.Toasty
 import java.io.File
 import javax.inject.Inject
 
-// TODO: Testing needed for storage location
 @AndroidEntryPoint
 class StorageSettingFragment : PreferenceFragmentCompat() {
     companion object {

@@ -29,6 +29,7 @@
             app:summary="@string/adaptive_search_summary"
             app:title="@string/adaptive_search_title" />
         <ListPreference
+            app:defaultValue="TMDB"
             app:key="suggestion_type_pref"
             app:summary="@string/suggestion_type_summary"
             app:title="@string/suggestion_type_title" />
