@@ -2,6 +2,7 @@ package com.kpstv.yts.ui.activities
 
 import android.annotation.SuppressLint
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -13,17 +14,14 @@ import com.github.se_bastiaan.torrentstream.Torrent
 import com.github.se_bastiaan.torrentstream.TorrentOptions
 import com.github.se_bastiaan.torrentstream.TorrentStream
 import com.github.se_bastiaan.torrentstream.listeners.TorrentListener
-import com.kpstv.common_moviesy.extensions.viewBinding
+import com.kpstv.common_moviesy.extensions.*
+import com.kpstv.common_moviesy.extensions.utils.WindowUtils
 import com.kpstv.yts.AppInterface.Companion.ANONYMOUS_TORRENT_DOWNLOAD
 import com.kpstv.yts.AppInterface.Companion.STREAM_LOCATION
 import com.kpstv.yts.AppInterface.Companion.SUBTITLE_LOCATION
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.SubHolder
 import com.kpstv.yts.databinding.ActivityTorrentPlayerBinding
-import com.kpstv.common_moviesy.extensions.colorFrom
-import com.kpstv.common_moviesy.extensions.hide
-import com.kpstv.common_moviesy.extensions.invisible
-import com.kpstv.common_moviesy.extensions.show
 import com.kpstv.yts.extensions.utils.SubtitleUtils
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -155,6 +153,7 @@ class TorrentPlayerActivity : AppCompatActivity() {
     }
 
     override fun onResume() {
+        WindowUtils.activateFullScreen(this) // For devices that has navigation button overlay
         Log.e(TAG, "onResume() called $lastPausePosition")
         try {
 
@@ -333,6 +332,10 @@ class TorrentPlayerActivity : AppCompatActivity() {
     override fun onDestroy() {
         try {
             binding.giraffePlayer.player.release()
+        } catch (e: Exception) {
+            Log.e(TAG, "=> Error: ${e.message}")
+        }
+        try {
             if (::torrentStream.isInitialized) torrentStream.stopStream()
         } catch (e: Exception) {
             Log.e(TAG, "=> Error: ${e.message}")

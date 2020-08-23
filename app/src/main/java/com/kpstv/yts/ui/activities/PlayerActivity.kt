@@ -3,6 +3,7 @@ package com.kpstv.yts.ui.activities
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.kpstv.common_moviesy.extensions.utils.WindowUtils
 import com.kpstv.yts.databinding.ActivityPlayerBinding
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
@@ -70,6 +71,11 @@ class PlayerActivity : AppCompatActivity() {
             ) {
             }
         })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        WindowUtils.activateFullScreen(this)
     }
 
     override fun onBackPressed() {
