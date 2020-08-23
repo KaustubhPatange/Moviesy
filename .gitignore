@@ -13,6 +13,7 @@
 /app/release
 /app/purchase
 .DS_Store
+/app/google-services.json
 /build
 /buildSrc/build
 /captures

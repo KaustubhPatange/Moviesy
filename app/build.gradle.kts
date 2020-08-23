@@ -34,6 +34,7 @@ android {
 
         buildConfigField("String", "TMDB_API_KEY", "\"${gradleLocalProperties(rootDir).getProperty("tmdb_api_key")}\"")
         buildConfigField("String", "INTERSTITIAL_ID", "\"${gradleLocalProperties(rootDir).getProperty("interstitial_ad_id")}\"")
+        buildConfigField("String", "GOOGLE_CLIENT_ID", "\"${gradleLocalProperties(rootDir).getProperty("google_client_id_web")}\"")
     }
 
     buildTypes {
@@ -86,6 +87,7 @@ dependencies {
     implementation(LibraryDependency.COROUTINES_CORE)
     implementation(LibraryDependency.COROUTINES_ANDROID)
     implementation(LibraryDependency.GOOGLE_OAUTH)
+    implementation(LibraryDependency.FIREBASE_AUTH)
     implementation(LibraryDependency.GOOGLE_ADS)
 
     implementation(LibraryDependency.MEDIA_ROUTER)

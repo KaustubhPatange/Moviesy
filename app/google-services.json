@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "435629223453",
+    "firebase_url": "https://moviesy.firebaseio.com",
+    "project_id": "moviesy",
+    "storage_bucket": "moviesy.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:435629223453:android:79ba11a122fdf23b91e0f4",
+        "android_client_info": {
+          "package_name": "com.kpstv.yts"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "435629223453-q30k7n4g2a33lu8sr1jqo0qa56rlu5rq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3D1L46PdSPsfx69er9Q8dKPLfO-RkdBw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "435629223453-q30k7n4g2a33lu8sr1jqo0qa56rlu5rq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

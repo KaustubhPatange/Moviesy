@@ -47,6 +47,7 @@ private object LibraryVersion {
     const val DRIVE = "v3-rev136-1.25.0"
     const val GUAVA_CONFLICT = "9999.0-empty-to-avoid-conflict-with-guava"
     const val CAOC = "2.3.0"
+    const val FIREBASE_AUTH = "19.3.2"
 }
 
 object LibraryDependency {
@@ -60,6 +61,7 @@ object LibraryDependency {
     const val WORK_MANAGER = "androidx.work:work-runtime-ktx:${LibraryVersion.WORK_MANAGER}"
     const val GOOGLE_ADS = "com.google.android.gms:play-services-ads:${LibraryVersion.GOOGLE_ADS}"
     const val LOTTIE = "com.airbnb.android:lottie:${LibraryVersion.LOTTIE}"
+    const val FIREBASE_AUTH = "com.google.firebase:firebase-auth-ktx:${LibraryVersion.FIREBASE_AUTH}"
     const val GOOGLE_OAUTH = "com.google.android.gms:play-services-auth:${LibraryVersion.GOOGLE_OAUTH}"
     const val ANDROID_LOCAL_CAST_SAMPLE = "com.github.KaustubhPatange:Android-Cast-Local-Sample:${LibraryVersion.CAST_SAMPLE}"
     const val MEDIA_ROUTER = "androidx.mediarouter:mediarouter:${LibraryVersion.MEDIA_ROUTER}"

@@ -9,9 +9,15 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.Scope
 import com.google.android.gms.tasks.Task
-import com.google.api.services.drive.DriveScopes
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import com.kpstv.yts.BuildConfig
 import com.kpstv.yts.extensions.AccountCallback
 import com.kpstv.yts.extensions.ExceptionCallback
+
 
 /**
  * Usage:
@@ -61,6 +67,7 @@ open class SignInHelper {
     fun init(signOut: Boolean = true, scope: List<Scope>? = null) {
         val gso =
             GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(BuildConfig.GOOGLE_CLIENT_ID)
                 .requestEmail()
         scope?.forEach { gso.requestScopes(it) }
 
