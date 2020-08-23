@@ -1,6 +1,6 @@
 # After
 
-[![Jitpack](https://jitpack.io/v/KaustubhPatange/Moviesy.svg)](https://jitpack.io/#KaustubhPatange/Moviesy)
+[![](https://jitpack.io/v/KaustubhPatange/Moviesy.svg)](https://jitpack.io/#KaustubhPatange/Moviesy)
 
 **After** is a library that helps you to perform some task "after" some time one of which is displaying prompt.
 

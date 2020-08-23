@@ -1,6 +1,6 @@
 # Shimmer ImageView
 
-[![Jitpack](https://jitpack.io/v/KaustubhPatange/Moviesy.svg)](https://jitpack.io/#KaustubhPatange/Moviesy)
+[![](https://jitpack.io/v/KaustubhPatange/Moviesy.svg)](https://jitpack.io/#KaustubhPatange/Moviesy)
 
 **Shimmer ImageView** is an extension over Facebook's standard [shimmer](https://facebook.github.io/shimmer-android) effect library.
 
