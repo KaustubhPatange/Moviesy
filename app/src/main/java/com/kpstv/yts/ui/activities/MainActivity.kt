@@ -11,6 +11,8 @@ import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.ktx.initialize
 import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.common_moviesy.extensions.hide
 import com.kpstv.common_moviesy.extensions.viewBinding
