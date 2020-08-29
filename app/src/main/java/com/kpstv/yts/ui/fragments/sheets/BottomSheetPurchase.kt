@@ -65,6 +65,12 @@ class BottomSheetPurchase : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
             )
             dismiss()
         }
+        binding.customMultiplePurchase.helpButton.setOnClickListener {
+            AppUtils.launchUrlIntent(
+                requireContext(),
+                getString(R.string.payment_help_url)
+            )
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

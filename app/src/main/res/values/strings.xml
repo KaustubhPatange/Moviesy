@@ -145,6 +145,7 @@ Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus d
     <string name="about">About</string>
     <string name="premium">Premium</string>
     <string name="gpay_payment_url">https://github.com/KaustubhPatange/Moviesy/wiki/GPay-Payment-Flow</string>
+    <string name="payment_help_url">https://github.com/KaustubhPatange/Moviesy/wiki/FAQs</string>
     <string name="payment_gateway">Payment Gateway</string>
     <string name="no_download_found">No Download Found</string>
     <string name="no_download_text">Download some movies to watch them even from here.</string>
@@ -206,4 +207,5 @@ Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus d
     <string name="no_purchase_exist">No saved purchase found</string>
     <string name="premium_unlock_text">Premium Unlocked</string>
     <string name="premium_unlock_message">Your premium content has been automatically unlocked.</string>
+    <string name="need_help">Need help?</string>
 </resources>

@@ -14,6 +14,7 @@ import com.kpstv.common_moviesy.extensions.utils.CommonUtils
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.AppDatabase
+import com.kpstv.yts.receivers.CommonBroadCast
 import com.kpstv.yts.ui.activities.FinalActivity
 import com.kpstv.yts.ui.activities.SplashActivity
 import java.util.*
@@ -40,8 +41,13 @@ object Notifications {
         }
     }
 
-    fun sendUpdateProgressNotification(context: Context, progress: Progress, fileName: String) =
+    fun sendUpdateProgressNotification(context: Context, progress: Progress, fileName: String, cancelRequestCode: Int) =
         with(context) {
+            val cancelIntent = Intent(this, CommonBroadCast::class.java).apply {
+                action = CommonBroadCast.STOP_UPDATE_WORKER
+            }
+            val pendingIntent =
+                PendingIntent.getBroadcast(this, cancelRequestCode, cancelIntent, 0)
             val notification = NotificationCompat.Builder(
                 this,
                 getString(R.string.CHANNEL_ID_2)
@@ -61,6 +67,7 @@ object Notifications {
                     false
                 )
                 .setShowWhen(false)
+                .addAction(R.drawable.ic_close, getString(R.string.close), pendingIntent)
                 .build()
 
             mgr.notify(UPDATE_PROGRESS_NOTIFICATION_ID, notification)

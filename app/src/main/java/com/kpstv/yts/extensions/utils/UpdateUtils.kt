@@ -1,11 +1,15 @@
 package com.kpstv.yts.extensions.utils
 
 import android.content.Context
+import android.view.LayoutInflater
+import androidx.appcompat.app.AlertDialog
 import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.BuildConfig
+import com.kpstv.yts.R
 import com.kpstv.yts.data.converters.AppDatabaseConverter
 import com.kpstv.yts.data.models.AppDatabase
+import com.kpstv.yts.databinding.CustomPurchaseDialogBinding
 import com.kpstv.yts.extensions.SimpleCallback
 import com.kpstv.yts.services.UpdateWorker
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -67,4 +71,27 @@ class UpdateUtils @Inject constructor(
         } else
             throw Exception("Failed to retrieve app database")
     }
+
+    fun showUpdateDialog(context: Context, doOnUpdateClick: SimpleCallback): Unit =
+        with(context) {
+            var alertDialog: AlertDialog? = null
+            val binding = CustomPurchaseDialogBinding.inflate(LayoutInflater.from(this))
+
+            binding.lottieView.setAnimation(R.raw.rocket)
+            binding.lottieView.repeatCount = 0
+            binding.title.text = getString(R.string.update_title)
+            binding.message.text = getString(R.string.update_text)
+            binding.btnDetails.text = getText(R.string.alright)
+
+            binding.btnClose.setOnClickListener { alertDialog?.dismiss() }
+            binding.btnDetails.setOnClickListener {
+                doOnUpdateClick.invoke()
+                alertDialog?.dismiss()
+            }
+
+            alertDialog = AlertDialog.Builder(this)
+                .setView(binding.root)
+                .create()
+            alertDialog.show()
+        }
 }

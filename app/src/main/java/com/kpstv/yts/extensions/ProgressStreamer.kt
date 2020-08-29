@@ -12,9 +12,9 @@ class ProgressStreamer (
     private val onProgressChange: (Progress) -> Unit,
     private val onComplete: () -> Unit
 ) {
+    var inputStream: InputStream? = null
+    var outputStream: OutputStream? = null
     fun write(body: ResponseBody, file: File) {
-        var inputStream: InputStream? = null
-        var outputStream: OutputStream? = null
         try {
             val fileReader = ByteArray(4096)
             val fileSize = body.contentLength()
@@ -22,22 +22,32 @@ class ProgressStreamer (
             inputStream = body.byteStream()
             outputStream = FileOutputStream(file)
             while (true) {
-                val read: Int = inputStream.read(fileReader)
+                val read: Int = inputStream?.read(fileReader) ?: 0
                 if (read == -1) {
                     break
                 }
-                outputStream.write(fileReader, 0, read)
+                outputStream?.write(fileReader, 0, read)
                 currentSize += read.toLong()
 
                 onProgressChange.invoke(Progress(currentSize, fileSize))
                 if (currentSize == fileSize)
                     onComplete.invoke()
             }
-            outputStream.flush()
+            outputStream?.flush()
         } catch (e: IOException) {
         } finally {
             inputStream?.close()
             outputStream?.close()
+        }
+    }
+
+    fun stop() {
+        try {
+            inputStream?.close()
+            outputStream?.flush()
+            outputStream?.close()
+        } catch(e: Exception) {
+            e.printStackTrace()
         }
     }
 }

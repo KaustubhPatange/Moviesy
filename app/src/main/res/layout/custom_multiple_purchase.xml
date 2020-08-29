@@ -43,4 +43,15 @@
         android:layout_height="60dp"
         android:src="@drawable/premium_gpay"/>
 
+    <TextView
+        android:clickable="true"
+        android:focusable="true"
+        android:id="@+id/helpButton"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/need_help"
+        android:textColor="@color/colorAccent"
+        android:textAlignment="center"/>
+
 </LinearLayout>

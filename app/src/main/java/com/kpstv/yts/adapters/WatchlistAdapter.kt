@@ -33,18 +33,8 @@ class WatchlistAdapter(
             uri = model.imageUrl,
             onSuccess = { resource ->
                 holder.binding.itemImageCard.setImage(resource)
-             /*   holder.itemView.shimmerFrame.hideShimmer()
-                holder.itemView.shimmerFrame.hide()*/
             }
         )
-     /*   holder.binding.itemImage.load(
-            uri = model.imageUrl,
-            onSuccess = { resource ->
-                holder.binding.itemImage.setImageBitmap(resource)
-                holder.itemView.shimmerFrame.hideShimmer()
-                holder.itemView.shimmerFrame.hide()
-            }
-        )*/
 
         holder.binding.itemTitle.text = model.title
         holder.binding.itemSubText.text = "${model.year} ${AppUtils.getBulletSymbol()} ${model.runtime} mins"
@@ -73,10 +63,5 @@ class WatchlistAdapter(
 
     class WatchlistHolder(view: View) : RecyclerView.ViewHolder(view) {
         val binding = ItemWatchlistBinding.bind(view)
-       /* val mainLayout = view.mainLayout
-        val title = view.item_title
-        val subTitle = view.item_subText
-        val image = view.item_image
-        val removeFavourite = view.item_remove_favourites*/
     }
 }

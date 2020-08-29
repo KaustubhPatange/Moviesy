@@ -14,12 +14,17 @@ import com.kpstv.yts.R
 import com.kpstv.yts.data.models.Torrent
 import com.kpstv.yts.extensions.utils.UpdateUtils
 import com.kpstv.yts.services.DownloadService
+import com.kpstv.yts.services.UpdateWorker
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class CommonBroadCast : BroadcastReceiver() {
+
+    companion object {
+        const val STOP_UPDATE_WORKER = "com.kpstv.actions.stop_update_worker"
+    }
 
     @Inject lateinit var updateUtils: UpdateUtils
 
@@ -45,6 +50,10 @@ class CommonBroadCast : BroadcastReceiver() {
                 val serviceDownload = Intent(context, DownloadService::class.java)
                 serviceDownload.putExtra(DownloadService.TORRENT_JOB, intent.getSerializableExtra("model") as Torrent)
                 ContextCompat.startForegroundService(context!!, serviceDownload)
+            }
+            STOP_UPDATE_WORKER -> {
+                Log.e(TAG, "Update Stopped")
+                UpdateWorker.stop(context ?: return)
             }
         }
     }

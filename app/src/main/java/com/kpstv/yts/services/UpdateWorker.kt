@@ -14,11 +14,14 @@ import com.kpstv.yts.interfaces.api.AppApi
 import java.io.File
 
 class UpdateWorker @WorkerInject constructor(
-    @Assisted context: Context,
+    @Assisted val context: Context,
     @Assisted workerParams: WorkerParameters,
     private val appApi: AppApi
 ) : CoroutineWorker(context, workerParams) {
     private val TAG = javaClass.simpleName
+    private var progressStreamer: ProgressStreamer? = null
+
+    private val cancelRequestCode = Notifications.getRandomNumberCode()
 
     override suspend fun doWork(): Result {
         Log.e(TAG, "Work Started")
@@ -32,27 +35,41 @@ class UpdateWorker @WorkerInject constructor(
                 applicationContext.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS),
                 fileName
             )
-            ProgressStreamer(
+
+            progressStreamer = ProgressStreamer(
                 onProgressChange = {
-                    Notifications.sendUpdateProgressNotification(applicationContext, it, fileName)
-                    Log.d(TAG, "Downloaded ${it.currentBytes} of ${it.totalBytes}")
+                    if (isStopped) {
+                        progressStreamer?.stop()
+                        Notifications.removeUpdateProgressNotification()
+                        return@ProgressStreamer
+                    }
+                    Notifications.sendUpdateProgressNotification(
+                        applicationContext,
+                        it,
+                        fileName,
+                        cancelRequestCode
+                    )
                 },
                 onComplete = {
                     Notifications.removeUpdateProgressNotification()
                     AppUtils.installApp(applicationContext, file)
                 }
-            ).write(
+            )
+            progressStreamer?.write(
                 appApi.fetchFileAsync(updateUrl),
                 file
             ) // Run synchronously on a background thread
+
             Log.e(TAG, "Work done")
             Result.success()
         } else
             Result.failure()
     }
 
+
     companion object {
         private const val APP_UPDATE_WORK = "moviesy_app_update_work"
+
         fun schedule(context: Context, updateUri: String) {
             val constraints = Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
@@ -69,6 +86,11 @@ class UpdateWorker @WorkerInject constructor(
 
             WorkManager.getInstance(context)
                 .enqueueUniqueWork(APP_UPDATE_WORK, ExistingWorkPolicy.KEEP, updateWork)
+        }
+
+        fun stop(context: Context) {
+            WorkManager.getInstance(context)
+                .cancelUniqueWork(APP_UPDATE_WORK)
         }
     }
 }
