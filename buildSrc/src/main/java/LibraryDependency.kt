@@ -48,6 +48,7 @@ private object LibraryVersion {
     const val GUAVA_CONFLICT = "9999.0-empty-to-avoid-conflict-with-guava"
     const val CAOC = "2.3.0"
     const val FIREBASE_AUTH = "19.3.2"
+    const val PAYPAL_IAP = "1.0"
 }
 
 object LibraryDependency {
@@ -115,4 +116,5 @@ object LibraryDependency {
     const val CORE_KTX = "androidx.core:core-ktx:${LibraryVersion.CORE_KTX}"
     const val APP_COMPAT = "androidx.appcompat:appcompat:${LibraryVersion.APP_COMPAT}"
     const val GIRAFFE_PLAYER2 = "com.github.tcking:giraffeplayer2:${LibraryVersion.GIRAFFE_PLAYER}"
+    const val PAYPAL_IAP = "io.github.kaustubhpatange:paypal-checkout:${LibraryVersion.PAYPAL_IAP}"
 }

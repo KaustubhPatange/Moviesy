@@ -124,6 +124,7 @@ dependencies {
 
     implementation(LibraryDependency.GLIDE)
     implementation(LibraryDependency.CAOC)
+    implementation(LibraryDependency.PAYPAL_IAP)
 
     implementation(LibraryDependency.RXANDROID)
     implementation(LibraryDependency.RXJAVA)
