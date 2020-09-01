@@ -2,10 +2,7 @@ package com.kpstv.yts.di
 
 import android.content.Context
 import androidx.room.Room
-import com.kpstv.yts.data.db.database.CastDatabase
-import com.kpstv.yts.data.db.database.MainDatabase
-import com.kpstv.yts.data.db.database.RecommendDatabase
-import com.kpstv.yts.data.db.database.SuggestionDatabase
+import com.kpstv.yts.data.db.database.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -28,6 +25,7 @@ object MainModule {
             "main.db"
         )
             .allowMainThreadQueries()
+            .addMigrations(*DatabaseMigration.MIGRATIONS)
             .build()
     }
 

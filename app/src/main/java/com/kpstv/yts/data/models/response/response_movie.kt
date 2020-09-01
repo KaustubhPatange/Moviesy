@@ -25,7 +25,8 @@ object Model {
 
     data class response_tmdb_cast(
         val id: Int,
-        val cast: ArrayList<TmDbCast>?
+        val cast: ArrayList<TmDbCast>?,
+        val crew: ArrayList<TmDbCrew>?
     )
 
     @Entity(tableName = "table_favourites")

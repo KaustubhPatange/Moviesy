@@ -208,4 +208,5 @@ Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus d
     <string name="premium_unlock_text">Premium Unlocked</string>
     <string name="premium_unlock_message">Your premium content has been automatically unlocked.</string>
     <string name="need_help">Need help?</string>
+    <string name="recently_added">Recently Added</string>
 </resources>

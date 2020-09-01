@@ -18,11 +18,12 @@ import com.kpstv.yts.data.models.response.Model
         Model.response_pause::class,
         Movie::class,
         data_history::class],
-    version = 1
+    version = DatabaseMigration.DB_VERSION
 )
 @TypeConverters(
     MovieShortConverter::class,
     CastConverter::class,
+    CrewConverter::class,
     GenreConverter::class,
     TMdbConverter::class,
     TorrentListConverter::class,

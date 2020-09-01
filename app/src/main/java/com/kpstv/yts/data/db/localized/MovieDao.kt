@@ -12,7 +12,7 @@ interface MovieDao {
     fun upsert(movie: Movie)
 
     @Query("select * from table_movie where id = :movieId")
-    fun getMovieById(movieId: Int): Movie
+    fun getMovieById(movieId: Int): Movie?
 
     /** Eg title_long = name (year) */
     @Query("select * from table_movie where title_long = :queryString")

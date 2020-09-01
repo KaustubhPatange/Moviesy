@@ -9,23 +9,23 @@ import java.lang.reflect.Type
 object CastConverter {
     @TypeConverter
     @JvmStatic
-    fun fromCastListToString(casts: ArrayList<Cast?>?): String? {
+    fun fromCastListToString(casts: List<Cast?>?): String? {
         if (casts == null) {
             return null
         }
         val gson = Gson()
-        val type: Type = object : TypeToken<ArrayList<Cast?>?>() {}.getType()
+        val type: Type = object : TypeToken<List<Cast?>?>() {}.getType()
         return gson.toJson(casts, type)
     }
 
     @TypeConverter
     @JvmStatic
-    fun toCastListString(castString: String?): ArrayList<Cast>? {
+    fun toCastListString(castString: String?): List<Cast>? {
         if (castString == null) {
             return null
         }
         val gson = Gson()
-        val type: Type = object : TypeToken<ArrayList<Cast?>?>() {}.getType()
-        return gson.fromJson<ArrayList<Cast>>(castString, type)
+        val type: Type = object : TypeToken<List<Cast?>?>() {}.getType()
+        return gson.fromJson<List<Cast>>(castString, type)
     }
 }

@@ -9,12 +9,12 @@ import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppInterface.Companion.MOVIE_SPAN_DIFFERENCE
 import com.kpstv.yts.AppInterface.Companion.MainDateFormatter
-import com.kpstv.yts.AppInterface.Companion.TMDB_IMAGE_PREFIX
 import com.kpstv.yts.data.db.repository.CastMovieRepository
 import com.kpstv.yts.data.db.repository.FavouriteRepository
 import com.kpstv.yts.data.db.repository.MovieRepository
 import com.kpstv.yts.data.db.repository.TMdbRepository
 import com.kpstv.yts.data.models.Cast
+import com.kpstv.yts.data.models.Crew
 import com.kpstv.yts.data.models.Movie
 import com.kpstv.yts.data.models.TmDbMovie
 import com.kpstv.yts.data.models.data.data_tmdb
@@ -61,11 +61,30 @@ class FinalViewModel @ViewModelInject constructor(
             try {
                 val response = ytsApi.getMovie(query).await()
                 val movie = response.data.movie
+
+                /** Fetching crew details */
+                val crews = movieRepository.getCrewById(movieId)
+                val casts = movieRepository.getCastById(movieId)
+                if (crews == null || casts == null) {
+                    val response1 = tMdbApi.getCast(movie?.imdb_code!!)
+                    if (!response1.crew.isNullOrEmpty()) {
+                        val crewList = response1.crew.filter { it.job == "Director" }.take(3)
+                            .map { Crew.from(it) }
+                        val castList = response1.cast?.take(4)?.map { Cast.from(it) }
+                        movie.crew = crewList
+                        movie.cast = castList
+                    }
+                } else {
+                    movie?.crew = crews
+                    movie?.cast = casts
+                }
                 movieRepository.saveMovie(movie!!)
                 movieListener.onComplete(movie)
+
             } catch (e: Exception) {
                 movieRepository.getMovieById(movieId).let {
-                    movieListener.onComplete(it)
+                    if (it != null)
+                        movieListener.onComplete(it)
                 }
                 movieListener.onFailure(e)
             }
@@ -97,24 +116,24 @@ class FinalViewModel @ViewModelInject constructor(
                     val movie = response.data.movies?.get(0)!!
                     movieListener.onComplete(movie)
 
-                    /** A patch that will modify movie and inject cast
+                    /** A patch that will modify movie and inject cast & director
                      */
                     val response1 = tMdbApi.getCast(movie.imdb_code)
-                    if (response1.cast?.isNotEmpty() == true) {
-                        val list = ArrayList<Cast>()
-                        response1.cast.forEach {
-                            if (list.size < 4) {
-                                list.add(
-                                    Cast(
-                                        it.name, it.character,
-                                        "${TMDB_IMAGE_PREFIX}${it.profilePath}",
-                                        it.personId.toString()
-                                    )
-                                )
-                            } else return@forEach
-                        }
-                        movie.cast = list
-                        movieListener.onCastFetched(list)
+                    if (response1.cast?.isNotEmpty() == true && response1.crew?.isNotEmpty() == true) {
+                        val casts = response1.cast.take(4).map { Cast.from(it) }
+                        /* val list = ArrayList<Cast>()
+                         response1.cast.forEach {
+                             if (list.size < 4) {
+                                 list.add(
+                                     Cast.from(it)
+                                 )
+                             } else return@forEach
+                         }*/
+                        val crewList = response1.crew.filter { it.job == "Director" }.take(3)
+                            .map { Crew.from(it) }
+                        movie.cast = casts
+                        movie.crew = crewList
+                        movieListener.onCastFetched(casts, crewList)
                     }
 
                     /** This will save the movie in our SQLite database
@@ -205,7 +224,7 @@ class FinalViewModel @ViewModelInject constructor(
             try {
                 val results = castMovieRepository.fetchResults(imdbCode)
                 listener.onComplete.invoke(results)
-            }catch (e: Exception) {
+            } catch (e: Exception) {
                 listener.onFailure?.invoke(e)
             }
         }

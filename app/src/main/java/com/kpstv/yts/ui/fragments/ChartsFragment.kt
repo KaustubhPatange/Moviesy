@@ -24,6 +24,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
     private val binding by viewBinding(FragmentChartsBinding::bind)
     private lateinit var cmlFeatured: CustomMovieLayout
 
+    private lateinit var cmlRecent: CustomMovieLayout
     private lateinit var cmlTopRated: CustomMovieLayout
     private lateinit var cmlTopToday: CustomMovieLayout
     private lateinit var cmlPopular: CustomMovieLayout
@@ -57,6 +58,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
 
     private fun resetAllViewData() {
         cmlFeatured.removeData()
+        cmlRecent.removeData()
         cmlTopRated.removeData()
         cmlTopToday.removeData()
         cmlPopular.removeData()
@@ -123,6 +125,17 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
             injectViewAt(binding.addLayout)
             setLifeCycleOwner(requireHomeFragment()?.viewLifecycleOwner)
             setupCallbacks(viewModel, queryMap4)
+        }
+
+        /** Recently Added Layout */
+        val queryMap6 = YTSQuery.ListMoviesBuilder().apply {
+            setSortBy(YTSQuery.SortBy.date_added)
+        }.build()
+
+        cmlRecent = CustomMovieLayout(requireActivity(), getString(R.string.recently_added)).apply {
+            injectViewAt(binding.addLayout)
+            setLifeCycleOwner(requireHomeFragment()?.viewLifecycleOwner)
+            setupCallbacks(viewModel, queryMap6)
         }
 
         /** Latest Layout */

@@ -112,7 +112,7 @@ object Notifications {
 
         val notification = NotificationCompat.Builder(this, getString(R.string.CHANNEL_ID_2))
             .setContentTitle(getString(R.string.app_name))
-            .setContentText("\"$movieName\" is available")
+            .setContentText("\"$movieName\" is on featured list")
             .setSmallIcon(R.drawable.ic_movie)
             .setColor(colorFrom(R.color.colorPrimary_New_DARK))
             .setColorized(true)

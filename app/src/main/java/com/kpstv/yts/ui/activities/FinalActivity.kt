@@ -29,6 +29,7 @@ import com.kpstv.yts.R
 import com.kpstv.yts.adapters.GenreAdapter
 import com.kpstv.yts.data.converters.GenreEnumConverter
 import com.kpstv.yts.data.models.Cast
+import com.kpstv.yts.data.models.Crew
 import com.kpstv.yts.data.models.Movie
 import com.kpstv.yts.databinding.ActivityFinalBinding
 import com.kpstv.yts.extensions.*
@@ -114,8 +115,9 @@ class FinalActivity : AppCompatActivity(), MovieListener {
         Log.e(TAG, "Failed--> " + e.message)
     }
 
-    override fun onCastFetched(casts: ArrayList<Cast>) {
+    override fun onCastFetched(casts: List<Cast>, crews: List<Crew>) {
         this.movie.cast = casts
+        this.movie.crew = crews
         setSummary()
     }
 
@@ -351,6 +353,20 @@ class FinalActivity : AppCompatActivity(), MovieListener {
                 )
             )
             binding.activityFinalContent.afSummary.append(" ${CommonUtils.getHtmlText(builder.toString())}\n\n")
+        }
+
+        /** Injecting director info */
+
+        val crews = movie.crew
+        if (crews?.isNotEmpty() == true) {
+            val directors = crews.joinToString(separator = "  &#8226;  ") { it.name }
+            binding.activityFinalContent.afSummary.append(
+                CommonUtils.getColoredString(
+                    "<b>Director</b>",
+                    color
+                )
+            )
+            binding.activityFinalContent.afSummary.append(" ${CommonUtils.getHtmlText(directors)}\n\n")
         }
 
         binding.activityFinalContent.afSummary.append(

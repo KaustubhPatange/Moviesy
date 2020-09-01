@@ -111,15 +111,6 @@ class MainActivity : AppCompatActivity() {
                     updateUtils.processUpdate(it)
                     Toasty.info(this, getString(R.string.update_download_text)).show()
                 }
-                /*AlertNoIconDialog.Companion.Builder(this)
-                    .setTitle(getString(R.string.update_title))
-                    .setMessage(getString(R.string.update_text))
-                    .setPositiveButton(getString(R.string.yes)) {
-                        updateUtils.processUpdate(it)
-                        Toasty.info(this, getString(R.string.update_download_text)).show()
-                    }
-                    .setNegativeButton(getString(R.string.no)) { }
-                    .show()*/
             },
             onUpdateNotFound = {
                 checkForAutoPurchase()
