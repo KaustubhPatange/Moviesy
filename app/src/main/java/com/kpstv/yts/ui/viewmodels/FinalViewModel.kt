@@ -62,7 +62,7 @@ class FinalViewModel @ViewModelInject constructor(
                 val response = ytsApi.getMovie(query).await()
                 val movie = response.data.movie
 
-                /** Fetching crew details */
+                /** Fetching crew details filtering only director */
                 val crews = movieRepository.getCrewById(movieId)
                 val casts = movieRepository.getCastById(movieId)
                 if (crews == null || casts == null) {
@@ -121,14 +121,6 @@ class FinalViewModel @ViewModelInject constructor(
                     val response1 = tMdbApi.getCast(movie.imdb_code)
                     if (response1.cast?.isNotEmpty() == true && response1.crew?.isNotEmpty() == true) {
                         val casts = response1.cast.take(4).map { Cast.from(it) }
-                        /* val list = ArrayList<Cast>()
-                         response1.cast.forEach {
-                             if (list.size < 4) {
-                                 list.add(
-                                     Cast.from(it)
-                                 )
-                             } else return@forEach
-                         }*/
                         val crewList = response1.crew.filter { it.job == "Director" }.take(3)
                             .map { Crew.from(it) }
                         movie.cast = casts
@@ -136,8 +128,6 @@ class FinalViewModel @ViewModelInject constructor(
                         movieListener.onCastFetched(casts, crewList)
                     }
 
-                    /** This will save the movie in our SQLite database
-                     */
                     movieRepository.saveMovie(movie)
                 } else movieListener.onFailure(Exception("Given movie does not exist in database"))
             } catch (e: Exception) {

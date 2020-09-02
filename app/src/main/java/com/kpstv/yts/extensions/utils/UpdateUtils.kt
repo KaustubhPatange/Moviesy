@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import com.kpstv.common_moviesy.extensions.Coroutines
+import com.kpstv.common_moviesy.extensions.show
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.BuildConfig
 import com.kpstv.yts.R
@@ -82,7 +83,12 @@ class UpdateUtils @Inject constructor(
             binding.title.text = getString(R.string.update_title)
             binding.message.text = getString(R.string.update_text)
             binding.btnDetails.text = getText(R.string.alright)
+            binding.btnNeutral.text = getString(R.string.changes)
+            binding.btnNeutral.show()
 
+            binding.btnNeutral.setOnClickListener {
+                AppUtils.launchUrlIntent(this, "${getString(R.string.app_github)}/releases")
+            }
             binding.btnClose.setOnClickListener { alertDialog?.dismiss() }
             binding.btnDetails.setOnClickListener {
                 doOnUpdateClick.invoke()

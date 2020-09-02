@@ -41,38 +41,56 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?colorSeparator"
         android:paddingStart="5dp"
-        android:gravity="end"
+        android:paddingTop="5dp"
         android:paddingEnd="5dp"
-        android:paddingBottom="10dp"
-        android:paddingTop="5dp">
+        android:paddingBottom="10dp">
 
         <com.google.android.material.button.MaterialButton
-            android:layout_marginEnd="10dp"
+            android:id="@+id/btn_neutral"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:visibility="invisible"
+            android:layout_marginStart="10dp"
+            android:textAllCaps="false"
+            android:textColor="@color/colorAccent" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_close"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
             android:text="@string/close"
             android:textAllCaps="false"
-            android:textColor="@color/colorAccent" />
+            android:textColor="@color/colorAccent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btn_details"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_details"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
             android:layout_marginEnd="10dp"
             android:text="@string/details"
             android:textAllCaps="false"
             android:textColor="@color/colorAccent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:ignore="RelativeOverlap" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

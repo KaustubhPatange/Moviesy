@@ -26,7 +26,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
 
     private lateinit var cmlRecent: CustomMovieLayout
     private lateinit var cmlTopRated: CustomMovieLayout
-    private lateinit var cmlTopToday: CustomMovieLayout
+  //  private lateinit var cmlTopToday: CustomMovieLayout
     private lateinit var cmlPopular: CustomMovieLayout
     private lateinit var cmlMostLiked: CustomMovieLayout
     private lateinit var cmlLatest: CustomMovieLayout
@@ -60,7 +60,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
         cmlFeatured.removeData()
         cmlRecent.removeData()
         cmlTopRated.removeData()
-        cmlTopToday.removeData()
+     //   cmlTopToday.removeData()
         cmlPopular.removeData()
         cmlMostLiked.removeData()
         cmlLatest.removeData()
@@ -91,17 +91,17 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
             setupCallbacks(viewModel, queryMap)
         }
 
-        /** Top Today Layout */
-        val queryMap2 = YTSQuery.ListMoviesBuilder().apply {
-            setSortBy(YTSQuery.SortBy.seeds)
-            setOrderBy(YTSQuery.OrderBy.descending)
-        }.build()
-
-        cmlTopToday = CustomMovieLayout(requireActivity(), getString(R.string.top_today)).apply {
-            injectViewAt(binding.addLayout)
-            setLifeCycleOwner(requireHomeFragment()?.viewLifecycleOwner)
-            setupCallbacks(viewModel, queryMap2)
-        }
+//        /** Top Today Layout */ TODO: Remove this if you don't need it.
+//        val queryMap2 = YTSQuery.ListMoviesBuilder().apply {
+//            setSortBy(YTSQuery.SortBy.seeds)
+//            setOrderBy(YTSQuery.OrderBy.descending)
+//        }.build()
+//
+//        cmlTopToday = CustomMovieLayout(requireActivity(), getString(R.string.top_today)).apply {
+//            injectViewAt(binding.addLayout)
+//            setLifeCycleOwner(requireHomeFragment()?.viewLifecycleOwner)
+//            setupCallbacks(viewModel, queryMap2)
+//        }
 
         /** Popular Layout */
         val queryMap3 = YTSQuery.ListMoviesBuilder().apply {

@@ -37,6 +37,7 @@ import com.kpstv.yts.extensions.common.CustomMovieLayout
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.CafebarToast
 import com.kpstv.yts.extensions.utils.GlideApp
+import com.kpstv.yts.extensions.utils.LangCodeUtils
 import com.kpstv.yts.interfaces.listener.MovieListener
 import com.kpstv.yts.ui.fragments.sheets.BottomSheetDownload
 import com.kpstv.yts.ui.fragments.sheets.BottomSheetSubtitles
@@ -188,7 +189,7 @@ class FinalActivity : AppCompatActivity(), MovieListener {
         /** Set top data */
         binding.activityFinalContent.afTitle.text = movie.title
         binding.activityFinalContent.afSubtitle.text =
-            "${movie.language} ${AppUtils.getBulletSymbol()} ${movie.year}"
+            "${LangCodeUtils.parse(movie.language)} ${AppUtils.getBulletSymbol()} ${movie.year}"
         binding.activityFinalContent.afImdbButton.text = "imdb ${movie.rating}"
         binding.activityFinalContent.afImdbButton.setOnClickListener {
             AppUtils.launchUrl(this@FinalActivity, AppUtils.getImdbUrl(movie.imdb_code))

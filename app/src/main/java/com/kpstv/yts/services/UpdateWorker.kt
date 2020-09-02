@@ -27,10 +27,11 @@ class UpdateWorker @WorkerInject constructor(
         Log.e(TAG, "Work Started")
         val updateUrl = inputData.getString(AppInterface.UPDATE_URL)
         return if (updateUrl != null) {
-            val fileName = updateUrl.substring(
+            var fileName = updateUrl.substring(
                 updateUrl.lastIndexOf("/") + 1,
                 updateUrl.length
             )
+            if (!fileName.endsWith(".apk")) fileName += ".apk"
             val file = File(
                 applicationContext.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS),
                 fileName
