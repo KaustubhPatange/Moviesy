@@ -44,7 +44,7 @@ class SubtitleHelper {
 
             val onlySuchFiles =
                 AppInterface.SUBTITLE_LOCATION.listFiles()
-                    ?.filter { f -> applySubtitleFilter(title, f) }
+                    ?.filter { f -> applySubtitleFilter(title.removeSpecialCharacters(), f) }
                     ?.map { it.name }
             if (onlySuchFiles?.isNotEmpty() == true) {
                 val cssView = LayoutInflater.from(activity)
@@ -79,9 +79,14 @@ class SubtitleHelper {
 
     private fun applySubtitleFilter(title: String, f: File?): Boolean {
         if (f == null) return false
-        return (f.name.contains(title) || f.name.contains(title.replace("\\s".toRegex(), "."))) &&
+        val fileName = f.name.removeSpecialCharacters()
+        return (fileName.contains(title) ||
+                fileName.contains(title.replace("\\s".toRegex(), "."))) &&
                 f.extension.toLowerCase(Locale.ROOT) == "srt"
     }
+
+    private fun String.removeSpecialCharacters() =
+        replace("[']".toRegex(), "")
 
     private fun showAlertAndDeleteSubtitles(fileName: String, pos: Int) = with(activity) {
         AlertNoIconDialog.Companion.Builder(this)
@@ -151,5 +156,4 @@ class SubtitleHelper {
         fun build() =
             helper
     }
-
 }
