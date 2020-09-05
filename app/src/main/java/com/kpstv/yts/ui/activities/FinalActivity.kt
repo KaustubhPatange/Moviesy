@@ -2,7 +2,9 @@ package com.kpstv.yts.ui.activities
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.ActivityManager
 import android.app.ActivityOptions
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
@@ -32,7 +34,10 @@ import com.kpstv.yts.data.models.Cast
 import com.kpstv.yts.data.models.Crew
 import com.kpstv.yts.data.models.Movie
 import com.kpstv.yts.databinding.ActivityFinalBinding
-import com.kpstv.yts.extensions.*
+import com.kpstv.yts.extensions.CastMoviesCallback
+import com.kpstv.yts.extensions.Permissions
+import com.kpstv.yts.extensions.SuggestionCallback
+import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.extensions.common.CustomMovieLayout
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.CafebarToast
@@ -47,6 +52,7 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerListener
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
+
 
 /**
  * Pass movieId as extras in Intent
@@ -525,8 +531,20 @@ class FinalActivity : AppCompatActivity(), MovieListener {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        finish()
+        onBackPressed()
         return true
+    }
+
+    override fun onBackPressed() {
+        val mngr =
+            getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+
+        val taskList = mngr.getRunningTasks(10)
+
+        if (taskList[0].numActivities == 1 && taskList[0].topActivity!!.className == this.javaClass.name) {
+            startActivity(Intent(this, MainActivity::class.java))
+        }
+        super.onBackPressed()
     }
 }
 

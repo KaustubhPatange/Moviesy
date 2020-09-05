@@ -31,6 +31,7 @@ class UpdateWorker @WorkerInject constructor(
                 updateUrl.lastIndexOf("/") + 1,
                 updateUrl.length
             )
+            if (fileName.endsWith("?dl=0")) fileName = fileName.replace("?dl=0", "")
             if (!fileName.endsWith(".apk")) fileName += ".apk"
             val file = File(
                 applicationContext.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS),

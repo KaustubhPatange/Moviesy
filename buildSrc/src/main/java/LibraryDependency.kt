@@ -5,7 +5,7 @@ private object LibraryVersion {
      * This is due to webView component issue in YouTubePlayerView library.
      */
     const val APP_COMPAT = "1.2.0-beta01"
-    const val CORE_KTX = "1.3.0"
+    const val CORE_KTX = "1.3.1"
     const val CONSTRAINT_LAYOUT = "1.1.3"
     const val MATERIAL = "1.2.0-beta01"
     const val PREFERENCES = "1.1.1"

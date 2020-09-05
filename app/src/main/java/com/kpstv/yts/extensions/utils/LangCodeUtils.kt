@@ -17,7 +17,8 @@ class LangCodeUtils {
             "it" to "Italian",
             "ar" to "Arabic",
             "zh" to "Chinese",
-            "he" to "Hebrew"
+            "he" to "Hebrew",
+            "cn" to "Chinese"
         )
 
         fun parse(code: String) =
