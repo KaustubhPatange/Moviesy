@@ -238,6 +238,16 @@ class AppUtils {
                 .show()
         }
 
+        @Suppress("DEPRECATION")
+        fun isLastActivity(activity: Activity): Boolean = with(activity) {
+            val mngr =
+                getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+
+            val taskList = mngr.getRunningTasks(10)
+
+            return taskList[0].numActivities == 1 && taskList[0].topActivity!!.className == activity.javaClass.name
+        }
+
         private val TAG = "Utils"
     }
 }

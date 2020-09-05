@@ -536,14 +536,8 @@ class FinalActivity : AppCompatActivity(), MovieListener {
     }
 
     override fun onBackPressed() {
-        val mngr =
-            getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-
-        val taskList = mngr.getRunningTasks(10)
-
-        if (taskList[0].numActivities == 1 && taskList[0].topActivity!!.className == this.javaClass.name) {
+        if (AppUtils.isLastActivity(this))
             startActivity(Intent(this, MainActivity::class.java))
-        }
         super.onBackPressed()
     }
 }
