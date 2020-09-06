@@ -2,6 +2,7 @@ package com.kpstv.yts.ui.activities
 
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
@@ -18,11 +19,14 @@ import com.kpstv.yts.extensions.utils.AppUtils
 
 class CrashOnActivity : AppCompatActivity() {
 
+    private val TAG = javaClass.simpleName
     private val binding by viewBinding(ActivityCrashOnBinding::inflate)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        Log.e(TAG, "Application crashed\n${CustomActivityOnCrash.getStackTraceFromIntent(intent)}")
 
         binding.btnStack.setOnClickListener {
             createCustomCrashDialog()

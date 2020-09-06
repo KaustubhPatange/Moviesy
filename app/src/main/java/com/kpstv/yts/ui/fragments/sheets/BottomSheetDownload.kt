@@ -6,7 +6,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.CompoundButton
-import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kpstv.common_moviesy.extensions.hide
 import com.kpstv.common_moviesy.extensions.viewBinding
@@ -23,6 +22,7 @@ import com.kpstv.yts.extensions.views.ExtendedBottomSheetDialogFragment
 import com.kpstv.yts.services.CastTorrentService
 import com.kpstv.yts.services.DownloadService
 import com.kpstv.yts.ui.activities.TorrentPlayerActivity
+import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import com.kpstv.yts.ui.helpers.InterstitialAdHelper
 import com.kpstv.yts.ui.helpers.PremiumHelper
 import com.kpstv.yts.ui.helpers.SubtitleHelper
@@ -178,16 +178,20 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
 
     private fun singleClickForWatch(torrent: Torrent) {
         if (castHelper.isCastActive()) {
-            AlertDialog.Builder(requireContext())
-                .setTitle("Cast to device?")
-                .setMessage("[Experimental] Cast this torrent to the connected device?")
-                .setPositiveButton(getString(R.string.alright)) { _, _ ->
-                    val subtitlePath = if (::subtitleHelper.isInitialized) {
-                        subtitleHelper.getSelectedSubtitle()?.path
-                    }else null
+            val subtitlePath = if (::subtitleHelper.isInitialized) {
+                subtitleHelper.getSelectedSubtitle()?.path
+            } else null
+            var message = getString(R.string.cast_to_device_text)
+            if (subtitlePath != null && !AppInterface.IS_PREMIUM_UNLOCKED)
+                message += "\n\nSubtitle are available in premium version."
+            AlertNoIconDialog.Companion.Builder(requireContext())
+                .setTitle(getString(R.string.cast_to_device_title))
+                .setMessage(message)
+                .setPositiveButton(getString(R.string.alright)) {
                     streamTorrentAndCast(torrent, subtitlePath)
+                    Toasty.info(requireContext(), getString(R.string.cast_stream_toast), Toasty.LENGTH_LONG).show()
                 }
-                .setNegativeButton(getString(R.string.no)) { _, _ ->
+                .setNegativeButton(getString(R.string.no)) {
                     startNormalPlayback(torrent)
                 }
                 .show()
@@ -233,7 +237,6 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
         }
     }
 
-
     private fun setUpForWatch() {
         if (viewType == ViewType.WATCH) {
             binding.itemTipText.visibility = View.GONE
@@ -243,18 +246,6 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
 
             setUpCast()
         } else binding.toolbar.hide()
-    }
-
-    private fun setUpCast() {
-        castHelper = CastHelper()
-        castHelper.init(
-            activity = requireActivity(),
-            onSessionDisconnected = { _, _ -> },
-            onNoDeviceAvailable = {
-                binding.toolbar.hide()
-            }
-        )
-        castHelper.setMediaRouteMenu(requireContext(), binding.toolbar.menu)
     }
 
     private fun showSubtitle() {
@@ -270,8 +261,23 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
             }
     }
 
+    private fun setUpCast() {
+        castHelper = CastHelper()
+        castHelper.init(
+            activity = requireActivity(),
+            onSessionDisconnected = { _, _ -> },
+            onNoDeviceAvailable = {
+                binding.toolbar.hide()
+            }
+        )
+        castHelper.setMediaRouteMenu(requireContext(), binding.toolbar.menu)
+    }
+
     private fun streamTorrentAndCast(model: Torrent, subtitlePath: String?) {
         if (!AppUtils.checkIfServiceIsRunning(requireContext(), CastTorrentService::class)) {
+
+            if (subtitlePath != null && !AppInterface.IS_PREMIUM_UNLOCKED)
+                Toasty.error(requireContext(), "Subtitles are supported in free version").show()
 
             /** Start the service */
             model.title = title
@@ -280,10 +286,21 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
             model.movieId = movieId as Int
             val serviceIntent = Intent(requireContext(), CastTorrentService::class.java).apply {
                 putExtra(CastTorrentService.EXTRA_TORRENT, model)
-                putExtra(CastTorrentService.EXTRA_SUBTITLE_PATH, subtitlePath)
+                if (AppInterface.IS_PREMIUM_UNLOCKED)
+                    putExtra(CastTorrentService.EXTRA_SUBTITLE_PATH, subtitlePath)
             }
             requireContext().startService(serviceIntent)
         } else
-            Toasty.warning(requireContext(), getString(R.string.stop_existing_cast), Toasty.LENGTH_LONG).show()
+            Toasty.warning(
+                requireContext(),
+                getString(R.string.stop_existing_cast),
+                Toasty.LENGTH_LONG
+            ).show()
+    }
+
+    override fun onDestroyView() {
+        if (::castHelper.isInitialized)
+            castHelper.unInit()
+        super.onDestroyView()
     }
 }

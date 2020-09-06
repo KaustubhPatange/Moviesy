@@ -214,4 +214,7 @@ Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus d
     <string name="stop_existing_cast">Stop the current stream from notification.</string>
     <string name="casting">Casting</string>
     <string name="casting_waiting">Waiting for stream to be ready. This may take several minutes!</string>
+    <string name="cast_to_device_title">Cast to device?</string>
+    <string name="cast_to_device_text">[Experimental] Cast this torrent to the connected device?</string>
+    <string name="cast_stream_toast">Starting streaming, check notification</string>
 </resources>

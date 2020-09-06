@@ -15,7 +15,6 @@ import com.github.se_bastiaan.torrentstream.TorrentOptions
 import com.github.se_bastiaan.torrentstream.TorrentStream
 import com.github.se_bastiaan.torrentstream.listeners.TorrentListener
 import com.kpstv.yts.AppInterface
-import com.kpstv.yts.R
 import com.kpstv.yts.data.models.Torrent
 import com.kpstv.yts.extensions.Notifications
 import com.kpstv.yts.extensions.utils.AppUtils
@@ -49,7 +48,7 @@ class CastTorrentService : IntentService("blank") {
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "app:Wakelock")
         wakeLock?.acquire()
 
-        notification = Notifications.createCastNotification(this, getString(R.string.app_name), "0%")
+        notification = Notifications.createCastNotification(this)
         notificationManagerCompat = NotificationManagerCompat.from(this)
 
         createClosePendingIntent()
@@ -110,7 +109,6 @@ class CastTorrentService : IntentService("blank") {
 
             override fun onStreamReady(torrent: com.github.se_bastiaan.torrentstream.Torrent?) {
                 Log.e(TAG, "onStreamReady()")
-
                 LocalBroadcastManager.getInstance(applicationContext)
                     .sendBroadcast(Intent(MainCastHelper.BROADCAST_STREAM_READY).apply {
                         putExtra(MainCastHelper.ARG_MEDIA_FILE_PATH, torrent?.videoFile?.path)
@@ -128,14 +126,14 @@ class CastTorrentService : IntentService("blank") {
                 if (lastProgress != status.progress) {
                     lastProgress = status.progress
 
-                    if (lastProgress > 99)
+                    if (lastProgress >= 100f)
                         isDownloadComplete = true
 
                     Log.e(TAG, "onStreamProgress() => ${status.progress}")
                     notification = Notifications.createCastNotification(
                         context = applicationContext,
                         movieName = torrent.title,
-                        progress = "${"%.2f".format(lastProgress)}%",
+                        progress = status.progress.toInt(),
                         closePendingIntent = closePendingIntent
                     )
                     notificationManagerCompat.notify(CAST_NOTIFICATION_ID, notification)

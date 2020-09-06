@@ -168,8 +168,8 @@ object Notifications {
 
     fun createCastNotification(
         context: Context,
-        movieName: String,
-        progress: String,
+        movieName: String = "Processing...",
+        progress: Int = 0,
         closePendingIntent: PendingIntent? = null
     ): Notification = with(context) {
         val builder = NotificationCompat.Builder(this, getString(R.string.CHANNEL_ID_2)).apply {
@@ -177,16 +177,20 @@ object Notifications {
             setContentTitle(movieName)
             setOngoing(true)
             setShowWhen(false)
-            setContentText("Streaming in background ($progress)")
             color = colorFrom(R.color.colorPrimary_New_DARK)
-            setSmallIcon(R.drawable.ic_favorite_yes)
-            priority = Notification.PRIORITY_LOW
+            setSmallIcon(R.drawable.ic_support)
+            priority = Notification.PRIORITY_HIGH
         }
+
+        if (progress == 0)
+            builder.setProgress(100, 0, true)
+        else
+            builder.setContentText("Streaming in background ($progress%)")
 
         if (closePendingIntent != null)
             builder.addAction(
                 NotificationCompat.Action.Builder(
-                    R.drawable.ic_close, "Stop", closePendingIntent
+                    R.drawable.ic_close, getString(R.string.close), closePendingIntent
                 ).build()
             )
 
