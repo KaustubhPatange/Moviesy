@@ -183,7 +183,7 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
             } else null
             var message = getString(R.string.cast_to_device_text)
             if (subtitlePath != null && !AppInterface.IS_PREMIUM_UNLOCKED)
-                message += "\n\nSubtitle are available in premium version."
+                message += "\n\n" + getString(R.string.premium_subtitle_stream)
             AlertNoIconDialog.Companion.Builder(requireContext())
                 .setTitle(getString(R.string.cast_to_device_title))
                 .setMessage(message)
