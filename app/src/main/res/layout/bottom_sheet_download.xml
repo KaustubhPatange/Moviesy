@@ -8,6 +8,13 @@
     android:orientation="vertical"
     tools:context=".ui.fragments.sheets.BottomSheetDownload">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        app:menu="@menu/expanded_controller"
+        android:background="?colorSeparator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <LinearLayout
         android:id="@+id/bs_download"
         android:layout_width="match_parent"

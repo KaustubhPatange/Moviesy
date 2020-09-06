@@ -13,6 +13,7 @@ import com.kpstv.yts.AppInterface.Companion.UNPAUSE_JOB
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.Torrent
 import com.kpstv.yts.extensions.utils.UpdateUtils
+import com.kpstv.yts.services.CastTorrentService
 import com.kpstv.yts.services.DownloadService
 import com.kpstv.yts.services.UpdateWorker
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
@@ -24,6 +25,7 @@ class CommonBroadCast : BroadcastReceiver() {
 
     companion object {
         const val STOP_UPDATE_WORKER = "com.kpstv.actions.stop_update_worker"
+        const val STOP_CAST_SERVICE = "com.kpstv.actions.stop_cast_service"
     }
 
     @Inject lateinit var updateUtils: UpdateUtils
@@ -54,6 +56,10 @@ class CommonBroadCast : BroadcastReceiver() {
             STOP_UPDATE_WORKER -> {
                 Log.e(TAG, "Update Stopped")
                 UpdateWorker.stop(context ?: return)
+            }
+            STOP_CAST_SERVICE -> {
+                val serviceIntent = Intent(context, CastTorrentService::class.java)
+                context?.stopService(serviceIntent)
             }
         }
     }

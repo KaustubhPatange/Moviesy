@@ -211,4 +211,7 @@ Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus d
     <string name="recently_added">Recently Added</string>
     <string name="neutral">Neutral</string>
     <string name="changes">Changes</string>
+    <string name="stop_existing_cast">Stop the current stream from notification.</string>
+    <string name="casting">Casting</string>
+    <string name="casting_waiting">Waiting for stream to be ready. This may take several minutes!</string>
 </resources>

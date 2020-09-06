@@ -41,7 +41,12 @@ object Notifications {
         }
     }
 
-    fun sendUpdateProgressNotification(context: Context, progress: Progress, fileName: String, cancelRequestCode: Int) =
+    fun sendUpdateProgressNotification(
+        context: Context,
+        progress: Progress,
+        fileName: String,
+        cancelRequestCode: Int
+    ) =
         with(context) {
             val cancelIntent = Intent(this, CommonBroadCast::class.java).apply {
                 action = CommonBroadCast.STOP_UPDATE_WORKER
@@ -54,10 +59,12 @@ object Notifications {
             )
                 .setContentTitle(fileName)
                 .setContentText(
-                    "${CommonUtils.getSizePretty(
-                        progress.currentBytes,
-                        false
-                    )} / ${CommonUtils.getSizePretty(progress.totalBytes)}"
+                    "${
+                        CommonUtils.getSizePretty(
+                            progress.currentBytes,
+                            false
+                        )
+                    } / ${CommonUtils.getSizePretty(progress.totalBytes)}"
                 )
                 .setSmallIcon(android.R.drawable.stat_sys_download)
                 .setOngoing(true)
@@ -157,6 +164,33 @@ object Notifications {
             }.build()
 
         mgr.notify(getRandomNumberCode(), notification)
+    }
+
+    fun createCastNotification(
+        context: Context,
+        movieName: String,
+        progress: String,
+        closePendingIntent: PendingIntent? = null
+    ): Notification = with(context) {
+        val builder = NotificationCompat.Builder(this, getString(R.string.CHANNEL_ID_2)).apply {
+            setDefaults(Notification.DEFAULT_ALL)
+            setContentTitle(movieName)
+            setOngoing(true)
+            setShowWhen(false)
+            setContentText("Streaming in background ($progress)")
+            color = colorFrom(R.color.colorPrimary_New_DARK)
+            setSmallIcon(R.drawable.ic_favorite_yes)
+            priority = Notification.PRIORITY_LOW
+        }
+
+        if (closePendingIntent != null)
+            builder.addAction(
+                NotificationCompat.Action.Builder(
+                    R.drawable.ic_close, "Stop", closePendingIntent
+                ).build()
+            )
+
+        builder.build()
     }
 
     fun getRandomNumberCode() = Random().nextInt(400) + 150

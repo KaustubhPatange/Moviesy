@@ -6,17 +6,21 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.CompoundButton
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.kpstv.common_moviesy.extensions.hide
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
 import com.kpstv.yts.adapters.DownloadAdapter
+import com.kpstv.yts.cast.CastHelper
 import com.kpstv.yts.data.models.Torrent
 import com.kpstv.yts.databinding.BottomSheetDownloadBinding
 import com.kpstv.yts.extensions.small
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.getMagnetUrl
 import com.kpstv.yts.extensions.views.ExtendedBottomSheetDialogFragment
+import com.kpstv.yts.services.CastTorrentService
 import com.kpstv.yts.services.DownloadService
 import com.kpstv.yts.ui.activities.TorrentPlayerActivity
 import com.kpstv.yts.ui.helpers.InterstitialAdHelper
@@ -51,6 +55,8 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
 
     @Inject
     lateinit var interstitialAdHelper: InterstitialAdHelper
+
+    lateinit var castHelper: CastHelper
 
     val TAG = "BottomSheetDownload"
     private var bluray = ArrayList<Torrent>()
@@ -125,20 +131,7 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
                 interstitialAdHelper.showAd {
                     when (viewType) {
                         ViewType.WATCH -> { // When watch button is clicked
-                            val i = Intent(
-                                requireContext(),
-                                TorrentPlayerActivity::class.java
-                            )
-                            i.putExtra(TorrentPlayerActivity.ARG_TORRENT_LINK, torrent.url)
-
-                            if (::subtitleHelper.isInitialized) {
-                                i.putExtra(
-                                    TorrentPlayerActivity.ARG_SUBTITLE_NAME,
-                                    subtitleHelper.getSelectedSubtitle()?.name
-                                )
-                            }
-
-                            requireContext().startActivity(i)
+                            singleClickForWatch(torrent)
                         }
                         ViewType.DOWNLOAD -> { // When download button is clicked
                             if (startService(torrent))
@@ -183,6 +176,42 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
         binding.recyclerViewDownload.adapter = adapter
     }
 
+    private fun singleClickForWatch(torrent: Torrent) {
+        if (castHelper.isCastActive()) {
+            AlertDialog.Builder(requireContext())
+                .setTitle("Cast to device?")
+                .setMessage("[Experimental] Cast this torrent to the connected device?")
+                .setPositiveButton(getString(R.string.alright)) { _, _ ->
+                    val subtitlePath = if (::subtitleHelper.isInitialized) {
+                        subtitleHelper.getSelectedSubtitle()?.path
+                    }else null
+                    streamTorrentAndCast(torrent, subtitlePath)
+                }
+                .setNegativeButton(getString(R.string.no)) { _, _ ->
+                    startNormalPlayback(torrent)
+                }
+                .show()
+        } else
+            startNormalPlayback(torrent)
+    }
+
+    private fun startNormalPlayback(torrent: Torrent) {
+        val i = Intent(
+            requireContext(),
+            TorrentPlayerActivity::class.java
+        )
+        i.putExtra(TorrentPlayerActivity.ARG_TORRENT_LINK, torrent.url)
+
+        if (::subtitleHelper.isInitialized) {
+            i.putExtra(
+                TorrentPlayerActivity.ARG_SUBTITLE_NAME,
+                subtitleHelper.getSelectedSubtitle()?.name
+            )
+        }
+
+        requireContext().startActivity(i)
+    }
+
     fun startService(model: Torrent): Boolean {
         if (!AppUtils.checkIfServiceIsRunning(
                 requireContext(),
@@ -204,13 +233,28 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
         }
     }
 
+
     private fun setUpForWatch() {
         if (viewType == ViewType.WATCH) {
             binding.itemTipText.visibility = View.GONE
 
             /** Show subtitles */
             showSubtitle()
-        }
+
+            setUpCast()
+        } else binding.toolbar.hide()
+    }
+
+    private fun setUpCast() {
+        castHelper = CastHelper()
+        castHelper.init(
+            activity = requireActivity(),
+            onSessionDisconnected = { _, _ -> },
+            onNoDeviceAvailable = {
+                binding.toolbar.hide()
+            }
+        )
+        castHelper.setMediaRouteMenu(requireContext(), binding.toolbar.menu)
     }
 
     private fun showSubtitle() {
@@ -224,5 +268,22 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
             .apply {
                 populateSubtitleView()
             }
+    }
+
+    private fun streamTorrentAndCast(model: Torrent, subtitlePath: String?) {
+        if (!AppUtils.checkIfServiceIsRunning(requireContext(), CastTorrentService::class)) {
+
+            /** Start the service */
+            model.title = title
+            model.banner_url = imageUri
+            model.imdbCode = imdbCode
+            model.movieId = movieId as Int
+            val serviceIntent = Intent(requireContext(), CastTorrentService::class.java).apply {
+                putExtra(CastTorrentService.EXTRA_TORRENT, model)
+                putExtra(CastTorrentService.EXTRA_SUBTITLE_PATH, subtitlePath)
+            }
+            requireContext().startService(serviceIntent)
+        } else
+            Toasty.warning(requireContext(), getString(R.string.stop_existing_cast), Toasty.LENGTH_LONG).show()
     }
 }

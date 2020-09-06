@@ -105,6 +105,7 @@
 
         <service android:name=".cast.service.WebService" />
         <service android:name=".services.DownloadService" />
+        <service android:name=".services.CastTorrentService" />
 
         <receiver
             android:name=".receivers.CommonBroadCast"

@@ -1,12 +1,12 @@
 package com.kpstv.yts.cast
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.cast.MediaInfo
 import com.google.android.gms.cast.MediaLoadRequestData
 import com.google.android.gms.cast.MediaMetadata
@@ -25,6 +25,7 @@ import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.extensions.SessionCallback
 import com.kpstv.yts.extensions.SimpleCallback
 import com.kpstv.yts.extensions.toFile
+import com.kpstv.yts.ui.fragments.LibraryFragment
 import es.dmoral.toasty.Toasty
 import io.github.dkbai.tinyhttpd.nanohttpd.webserver.SimpleWebServer
 import java.io.File
@@ -47,24 +48,31 @@ class CastHelper {
 
     private var mIntroductoryOverlay: IntroductoryOverlay? = null
 
-    private lateinit var mActivity: AppCompatActivity
+    private lateinit var mActivity: Activity
     private lateinit var mApplicationContext: Context
 
     private var model: Model.response_download? = null
 
     private var onSessionDisconnected: SessionCallback? = null
     private var onNeedToShowIntroductoryOverlay: SimpleCallback? = null
+    private var onNoDeviceAvailable: SimpleCallback? = null
 
     fun isCastActive() =
-        mCastSession?.castDevice != null
+        mCastContext.castState == CastState.CONNECTED
 
     /**
      * You need to call this method in the parent activity if you are setting up
      * fragment. Otherwise you can call [init] method.
      */
-    fun initCastSession(activity: AppCompatActivity) {
+    fun initCastSession(activity: Activity) {
         mActivity = activity
+        mApplicationContext = mActivity.applicationContext
         mCastContext = CastContext.getSharedInstance(mActivity)
+
+        setUpCastListener()
+        mCastContext.sessionManager.addSessionManagerListener(
+            mSessionManagerListener, CastSession::class.java
+        )
     }
 
     /**
@@ -72,16 +80,18 @@ class CastHelper {
      * of activity.
      */
     fun init(
-        activity: AppCompatActivity,
+        activity: Activity,
         /** Use this to save last play position, Integer value returns the last
          *  played position. */
         onSessionDisconnected: SessionCallback,
-        onNeedToShowIntroductoryOverlay: SimpleCallback? = null
+        onNeedToShowIntroductoryOverlay: SimpleCallback? = null,
+        onNoDeviceAvailable: SimpleCallback? = null
     ) {
         mActivity = activity
         mApplicationContext = mActivity.applicationContext
         this.onSessionDisconnected = onSessionDisconnected
         this.onNeedToShowIntroductoryOverlay = onNeedToShowIntroductoryOverlay
+        this.onNoDeviceAvailable = onNoDeviceAvailable
 
         deviceIpAddress = Utils.findIPAddress(mApplicationContext)
         if (deviceIpAddress == null) {
@@ -95,9 +105,6 @@ class CastHelper {
         setUpCastListener()
 
         initCastSession(activity)
-        mCastContext.sessionManager.addSessionManagerListener(
-            mSessionManagerListener, CastSession::class.java
-        )
 
         mCastContext.addCastStateListener(castListener)
     }
@@ -110,9 +117,12 @@ class CastHelper {
         )
         onSessionDisconnected = null
         onNeedToShowIntroductoryOverlay = null
+        onNoDeviceAvailable = null
     }
 
-    private val castListener : (Int) -> Unit = { state ->
+    private val castListener: (Int) -> Unit = { state ->
+        if (state == CastState.NO_DEVICES_AVAILABLE)
+            onNoDeviceAvailable?.invoke()
         if (state != CastState.NO_DEVICES_AVAILABLE)
             this.onNeedToShowIntroductoryOverlay?.invoke()
         if (state == CastState.NOT_CONNECTED) {
@@ -131,11 +141,14 @@ class CastHelper {
         )
 
 
+    /**
+     * Should be used only in [LibraryFragment]
+     */
     fun loadMedia(
         downloadModel: Model.response_download,
         playFromLastPosition: Boolean,
         srtFile: File?,
-        onLoadComplete: (Exception?) -> Unit
+        onLoadComplete: (Exception?) -> Unit?
     ) {
         /**
          * Suppose if a media is already casting and user decided to cast another media,
@@ -148,8 +161,8 @@ class CastHelper {
 
         this.model = downloadModel
 
-        val mediaFile = model?.videoPath.toFile()!!
-        val bannerImage = model?.imagePath.toFile()
+        val mediaFile = downloadModel.videoPath.toFile()!!
+        val bannerImage = downloadModel.imagePath.toFile()
 
         /** Get the remote names of the file */
         val remoteFileName = Utils.getRemoteFileName(deviceIpAddress, mediaFile)
@@ -203,6 +216,66 @@ class CastHelper {
                     .setCurrentTime(
                         if (playFromLastPosition) model?.lastSavedPosition?.toLong() ?: 0L else 0L
                     )
+                    .build()
+            )
+        }
+    }
+
+    /**
+     * This is loadMedia is made to work will all activities/fragments
+     */
+    fun loadMedia(
+        mediaFile: File,
+        bannerFile: File?,
+        srtFile: File?
+    ) {
+        val deviceIp = Utils.findIPAddress(mApplicationContext)
+
+        /** Get the remote names of the file */
+        val remoteFileName = Utils.getRemoteFileName(deviceIp, mediaFile)
+            ?.replace(" ", "%20")
+        val remoteImageFileName =
+            if (bannerFile != null)
+                Utils.getRemoteFileName(deviceIp, bannerFile)?.replace(" ", "%20")
+            else APP_IMAGE_URL
+
+        /** Generate movie meta data */
+        val movieMetadata = MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE)
+        movieMetadata.putString(MediaMetadata.KEY_TITLE, mediaFile.nameWithoutExtension)
+        movieMetadata.addImage(WebImage(Uri.parse(remoteImageFileName)))
+        movieMetadata.addImage(WebImage(Uri.parse(remoteImageFileName)))
+
+        buildSubtitle(srtFile) { mediaTracks ->
+            val mediaInfo = MediaInfo.Builder(remoteFileName)
+                .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
+                .setContentType("videos/mp4")
+                .setMetadata(movieMetadata)
+                .setMediaTracks(mediaTracks)
+                .build()
+
+            /** Start a local HTTP server */
+            mApplicationContext.startService(Intent(mApplicationContext, WebService::class.java))
+
+            /** Play the file on the device. */
+            if (mCastSession?.remoteMediaClient == null) {
+                return@buildSubtitle
+            }
+
+            val remoteMediaClient = mCastSession?.remoteMediaClient ?: return@buildSubtitle
+
+            remoteMediaClient.registerCallback(object : RemoteMediaClient.Callback() {
+                override fun onStatusUpdated() {
+                    /** When media loaded we will start the fullscreen player activity. */
+                    val intent =
+                        Intent(mApplicationContext, ExpandedControlsActivity::class.java)
+                    mActivity.startActivity(intent)
+                    remoteMediaClient.unregisterCallback(this)
+                }
+            })
+            remoteMediaClient.load(
+                MediaLoadRequestData.Builder()
+                    .setMediaInfo(mediaInfo)
+                    .setAutoplay(true)
                     .build()
             )
         }

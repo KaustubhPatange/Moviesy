@@ -1,18 +1,20 @@
 package com.kpstv.yts.ui.activities
 
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.ktx.initialize
 import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.common_moviesy.extensions.hide
 import com.kpstv.common_moviesy.extensions.viewBinding
@@ -23,14 +25,18 @@ import com.kpstv.yts.AppInterface.Companion.setAppThemeMain
 import com.kpstv.yts.BuildConfig
 import com.kpstv.yts.R
 import com.kpstv.yts.cast.CastHelper
+import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.databinding.ActivityMainBinding
 import com.kpstv.yts.extensions.NavigationModel
 import com.kpstv.yts.extensions.NavigationModels
 import com.kpstv.yts.extensions.Navigations
+import com.kpstv.yts.extensions.toFile
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.UpdateUtils
+import com.kpstv.yts.services.CastTorrentService
 import com.kpstv.yts.services.DownloadService
-import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
+import com.kpstv.yts.ui.fragments.sheets.BottomSheetDownload
+import com.kpstv.yts.ui.helpers.MainCastHelper
 import com.kpstv.yts.ui.helpers.PremiumHelper
 import com.kpstv.yts.ui.settings.SettingsActivity
 import com.kpstv.yts.ui.viewmodels.MainViewModel
@@ -51,6 +57,9 @@ class MainActivity : AppCompatActivity() {
     val TAG = "MainActivity"
 
     val castHelper = CastHelper()
+    val mainCastHelper by lazy {
+        MainCastHelper(this, castHelper)
+    }
 
     lateinit var drawerLayout: DrawerLayout
 
@@ -71,6 +80,8 @@ class MainActivity : AppCompatActivity() {
         isDarkTheme = IS_DARK_THEME
 
         castHelper.initCastSession(this)
+
+        mainCastHelper.setUpCastRelatedStuff()
 
         setNavigationDrawer()
 
@@ -228,11 +239,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         stopService(Intent(this, DownloadService::class.java))
-
+        stopService(Intent(this, CastTorrentService::class.java))
+        mainCastHelper.unregister()
         /** Stop the HTTP server if started */
         SimpleWebServer.stopServer()
         super.onDestroy()
     }
+
 
     companion object {
         const val NAV_DOWNLOAD_QUEUE = "nav_download_queue"
