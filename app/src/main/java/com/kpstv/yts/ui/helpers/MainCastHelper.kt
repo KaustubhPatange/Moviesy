@@ -12,8 +12,6 @@ import com.kpstv.yts.ui.dialogs.ProgressDialog
 
 class MainCastHelper(private val mainActivity: MainActivity, private val castHelper: CastHelper) {
 
-    private var progressDialog: ProgressDialog? = null
-
     fun setUpCastRelatedStuff() = with(mainActivity) {
         val filters = IntentFilter()
         filters.addAction(BROADCAST_STREAM_START)

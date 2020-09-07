@@ -29,6 +29,7 @@ import com.kpstv.yts.ui.fragments.LibraryFragment
 import es.dmoral.toasty.Toasty
 import io.github.dkbai.tinyhttpd.nanohttpd.webserver.SimpleWebServer
 import java.io.File
+import java.lang.ref.WeakReference
 
 /**
  * A helper created to manage cast in the app.
@@ -40,6 +41,9 @@ class CastHelper {
     companion object {
         const val PORT = "8081"
         var deviceIpAddress: String? = null
+
+        fun anyDeviceAvailable(context: Context) =
+            CastContext.getSharedInstance(context).castState != CastState.NO_DEVICES_AVAILABLE
     }
 
     private lateinit var mCastContext: CastContext
@@ -48,14 +52,13 @@ class CastHelper {
 
     private var mIntroductoryOverlay: IntroductoryOverlay? = null
 
-    private lateinit var mActivity: Activity
+    private lateinit var mActivity: WeakReference<Activity>
     private lateinit var mApplicationContext: Context
 
     private var model: Model.response_download? = null
 
     private var onSessionDisconnected: SessionCallback? = null
     private var onNeedToShowIntroductoryOverlay: SimpleCallback? = null
-    private var onNoDeviceAvailable: SimpleCallback? = null
 
     fun isCastActive() =
         mCastContext.castState == CastState.CONNECTED
@@ -65,9 +68,9 @@ class CastHelper {
      * fragment. Otherwise you can call [init] method.
      */
     fun initCastSession(activity: Activity) {
-        mActivity = activity
-        mApplicationContext = mActivity.applicationContext
-        mCastContext = CastContext.getSharedInstance(mActivity)
+        mActivity = WeakReference(activity)
+        mApplicationContext = mActivity.get()?.applicationContext ?: return
+        mCastContext = CastContext.getSharedInstance(mApplicationContext)
 
         setUpCastListener()
         mCastContext.sessionManager.addSessionManagerListener(
@@ -84,14 +87,12 @@ class CastHelper {
         /** Use this to save last play position, Integer value returns the last
          *  played position. */
         onSessionDisconnected: SessionCallback,
-        onNeedToShowIntroductoryOverlay: SimpleCallback? = null,
-        onNoDeviceAvailable: SimpleCallback? = null
+        onNeedToShowIntroductoryOverlay: SimpleCallback? = null
     ) {
-        mActivity = activity
-        mApplicationContext = mActivity.applicationContext
+        mActivity = WeakReference(activity)
+        mApplicationContext = mActivity.get()?.applicationContext ?: return
         this.onSessionDisconnected = onSessionDisconnected
         this.onNeedToShowIntroductoryOverlay = onNeedToShowIntroductoryOverlay
-        this.onNoDeviceAvailable = onNoDeviceAvailable
 
         deviceIpAddress = Utils.findIPAddress(mApplicationContext)
         if (deviceIpAddress == null) {
@@ -117,12 +118,9 @@ class CastHelper {
         )
         onSessionDisconnected = null
         onNeedToShowIntroductoryOverlay = null
-        onNoDeviceAvailable = null
     }
 
     private val castListener: (Int) -> Unit = { state ->
-        if (state == CastState.NO_DEVICES_AVAILABLE)
-            onNoDeviceAvailable?.invoke()
         if (state != CastState.NO_DEVICES_AVAILABLE)
             this.onNeedToShowIntroductoryOverlay?.invoke()
         if (state == CastState.NOT_CONNECTED) {
@@ -205,7 +203,7 @@ class CastHelper {
                     /** When media loaded we will start the fullscreen player activity. */
                     val intent =
                         Intent(mApplicationContext, ExpandedControlsActivity::class.java)
-                    mActivity.startActivity(intent)
+                    mActivity.get()?.startActivity(intent)
                     remoteMediaClient.unregisterCallback(this)
                 }
             })
@@ -268,7 +266,7 @@ class CastHelper {
                     /** When media loaded we will start the fullscreen player activity. */
                     val intent =
                         Intent(mApplicationContext, ExpandedControlsActivity::class.java)
-                    mActivity.startActivity(intent)
+                    mActivity.get()?.startActivity(intent)
                     remoteMediaClient.unregisterCallback(this)
                 }
             })
@@ -360,11 +358,11 @@ class CastHelper {
 
             private fun onApplicationConnected(castSession: CastSession?) {
                 mCastSession = castSession
-                mActivity.invalidateOptionsMenu()
+                mActivity.get()?.invalidateOptionsMenu()
             }
 
             private fun onApplicationDisconnected() {
-                mActivity.invalidateOptionsMenu()
+                mActivity.get()?.invalidateOptionsMenu()
             }
         }
     }
@@ -375,7 +373,7 @@ class CastHelper {
         if (mediaRouteMenuItem != null && mediaRouteMenuItem.isVisible)
             Handler().post {
                 mIntroductoryOverlay = IntroductoryOverlay.Builder(
-                    mActivity, mediaRouteMenuItem
+                    mActivity.get(), mediaRouteMenuItem
                 )
                     .setTitleText(mApplicationContext.getString(R.string.cast_media_to_device))
                     .setSingleTime()

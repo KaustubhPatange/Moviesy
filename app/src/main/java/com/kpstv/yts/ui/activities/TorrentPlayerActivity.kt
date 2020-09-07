@@ -191,52 +191,54 @@ class TorrentPlayerActivity : AppCompatActivity() {
         binding.giraffePlayer.invisible()
 
         torrentStream = TorrentStream.init(torrentOptions)
-        torrentStream.addListener(object : TorrentListener {
-            override fun onStreamPrepared(torrent: Torrent) {
-                Log.e(TAG, "onStreamPrepared() called with: torrent = [$torrent]")
-                Toasty.info(this@TorrentPlayerActivity, getString(R.string.torrent_connect_success))
-                    .show()
-            }
-
-            override fun onStreamStarted(torrent: Torrent) {
-                Log.e(TAG, "onStreamStarted() called with: torrent = [$torrent]")
-            }
-
-            override fun onStreamError(torrent: Torrent, e: Exception) {
-                Log.e(TAG, "onStreamError() called with: torrent = [$torrent], e = [$e]")
-                Toasty.error(this@TorrentPlayerActivity, "Torrent stream error: ${e.message}")
-                    .show()
-            }
-
-            override fun onStreamReady(torrent: Torrent) {
-                Log.e(TAG, "onStreamReady() called with: torrent = [$torrent]")
-
-                /** Stream ready so start the player from here.
-                 */
-                filePath = torrent.videoFile.path
-                startPlayer(torrent.videoFile, torrent.videoFile.name)
-
-                /** Showing the torrent player only when movie is ready to stream */
-                binding.giraffePlayer.show()
-            }
-
-            override fun onStreamProgress(torrent: Torrent, status: StreamStatus) {
-                if (lastProgress != status.progress) {
-                    Log.e(TAG, "onStreamProgress() => ${status.progress}")
-                    lastProgress = status.progress
-                    binding.progressText.text = "${"%.2f".format(lastProgress)}%"
-                }
-                if (lastProgress.toInt() >= 98) {
-                    binding.progressText.visibility = View.GONE
-                }
-            }
-
-            override fun onStreamStopped() {
-                Log.d(TAG, "onStreamStopped() called")
-            }
-        })
+        torrentStream.addListener(torrentStreamListener)
         torrentStream.startStream(link)
         Toasty.info(this, getString(R.string.torrent_connect_attempt)).show()
+    }
+
+    private val torrentStreamListener = object : TorrentListener {
+        override fun onStreamPrepared(torrent: Torrent) {
+            Log.e(TAG, "onStreamPrepared() called with: torrent = [$torrent]")
+            Toasty.info(this@TorrentPlayerActivity, getString(R.string.torrent_connect_success))
+                .show()
+        }
+
+        override fun onStreamStarted(torrent: Torrent) {
+            Log.e(TAG, "onStreamStarted() called with: torrent = [$torrent]")
+        }
+
+        override fun onStreamError(torrent: Torrent, e: Exception) {
+            Log.e(TAG, "onStreamError() called with: torrent = [$torrent], e = [$e]")
+            Toasty.error(this@TorrentPlayerActivity, "Torrent stream error: ${e.message}")
+                .show()
+        }
+
+        override fun onStreamReady(torrent: Torrent) {
+            Log.e(TAG, "onStreamReady() called with: torrent = [$torrent]")
+
+            /** Stream ready so start the player from here.
+             */
+            filePath = torrent.videoFile.path
+            startPlayer(torrent.videoFile, torrent.videoFile.name)
+
+            /** Showing the torrent player only when movie is ready to stream */
+            binding.giraffePlayer.show()
+        }
+
+        override fun onStreamProgress(torrent: Torrent, status: StreamStatus) {
+            if (lastProgress != status.progress) {
+                Log.e(TAG, "onStreamProgress() => ${status.progress}")
+                lastProgress = status.progress
+                binding.progressText.text = "${"%.2f".format(lastProgress)}%"
+            }
+            if (lastProgress.toInt() >= 98) {
+                binding.progressText.visibility = View.GONE
+            }
+        }
+
+        override fun onStreamStopped() {
+            Log.d(TAG, "onStreamStopped() called")
+        }
     }
 
     /** A common function to load player
@@ -336,7 +338,10 @@ class TorrentPlayerActivity : AppCompatActivity() {
             Log.e(TAG, "=> Error: ${e.message}")
         }
         try {
-            if (::torrentStream.isInitialized) torrentStream.stopStream()
+            if (::torrentStream.isInitialized) {
+                torrentStream.removeListener(torrentStreamListener)
+                torrentStream.stopStream()
+            }
         } catch (e: Exception) {
             Log.e(TAG, "=> Error: ${e.message}")
         }

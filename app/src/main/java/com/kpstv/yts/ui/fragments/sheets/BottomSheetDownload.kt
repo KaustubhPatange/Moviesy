@@ -56,7 +56,7 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
     @Inject
     lateinit var interstitialAdHelper: InterstitialAdHelper
 
-    lateinit var castHelper: CastHelper
+    private lateinit var castHelper: CastHelper
 
     val TAG = "BottomSheetDownload"
     private var bluray = ArrayList<Torrent>()
@@ -189,7 +189,11 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
                 .setMessage(message)
                 .setPositiveButton(getString(R.string.alright)) {
                     streamTorrentAndCast(torrent, subtitlePath)
-                    Toasty.info(requireContext(), getString(R.string.cast_stream_toast), Toasty.LENGTH_LONG).show()
+                    Toasty.info(
+                        requireContext(),
+                        getString(R.string.cast_stream_toast),
+                        Toasty.LENGTH_LONG
+                    ).show()
                 }
                 .setNegativeButton(getString(R.string.no)) {
                     startNormalPlayback(torrent)
@@ -200,10 +204,7 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
     }
 
     private fun startNormalPlayback(torrent: Torrent) {
-        val i = Intent(
-            requireContext(),
-            TorrentPlayerActivity::class.java
-        )
+        val i = Intent(requireContext(), TorrentPlayerActivity::class.java)
         i.putExtra(TorrentPlayerActivity.ARG_TORRENT_LINK, torrent.url)
 
         if (::subtitleHelper.isInitialized) {
@@ -262,15 +263,14 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
     }
 
     private fun setUpCast() {
-        castHelper = CastHelper()
-        castHelper.init(
-            activity = requireActivity(),
-            onSessionDisconnected = { _, _ -> },
-            onNoDeviceAvailable = {
-                binding.toolbar.hide()
-            }
-        )
-        castHelper.setMediaRouteMenu(requireContext(), binding.toolbar.menu)
+        if (CastHelper.anyDeviceAvailable(requireContext())) {
+            castHelper = CastHelper()
+            castHelper.init(
+                activity = requireActivity(),
+                onSessionDisconnected = { _, _ -> }
+            )
+            castHelper.setMediaRouteMenu(requireContext(), binding.toolbar.menu)
+        } else binding.toolbar.hide()
     }
 
     private fun streamTorrentAndCast(model: Torrent, subtitlePath: String?) {

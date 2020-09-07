@@ -18,6 +18,7 @@ import com.kpstv.yts.databinding.FragmentLibraryBinding
 import com.kpstv.yts.extensions.deleteRecursive
 import com.kpstv.common_moviesy.extensions.hide
 import com.kpstv.common_moviesy.extensions.show
+import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.ui.activities.FinalActivity
 import com.kpstv.yts.ui.activities.MainActivity
 import com.kpstv.yts.ui.activities.SearchActivity
@@ -28,6 +29,7 @@ import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import java.io.File
+import java.lang.ref.WeakReference
 
 @AndroidEntryPoint
 class LibraryFragment : Fragment(R.layout.fragment_library) {
@@ -36,8 +38,8 @@ class LibraryFragment : Fragment(R.layout.fragment_library) {
     private val viewModel by activityViewModels<MainViewModel>()
 
     private lateinit var mainActivity: MainActivity
-    private lateinit var downloadAdapter: LibraryDownloadAdapter
-    private var mediaRouteMenuItem: MenuItem? = null
+    private lateinit var downloadAdapter: WeakReference<LibraryDownloadAdapter>
+    private var mediaRouteMenuItem: WeakReference<MenuItem?>? = null
 
     private val binding by viewBinding(FragmentLibraryBinding::bind)
 
@@ -59,11 +61,10 @@ class LibraryFragment : Fragment(R.layout.fragment_library) {
                 viewModel.updateDownload(model.hash, true, lastSavedPosition)
             },
             onNeedToShowIntroductoryOverlay = {
-                mainActivity.castHelper.showIntroductoryOverlay(mediaRouteMenuItem)
+                mainActivity.castHelper.showIntroductoryOverlay(mediaRouteMenuItem?.get())
             }
         )
-        mediaRouteMenuItem =
-            mainActivity.castHelper.setMediaRouteMenu(requireContext(), binding.toolbar.menu)
+        mediaRouteMenuItem = WeakReference(mainActivity.castHelper.setMediaRouteMenu(requireContext(), binding.toolbar.menu))
     }
 
     override fun onDestroyView() {
@@ -73,71 +74,22 @@ class LibraryFragment : Fragment(R.layout.fragment_library) {
 
     private fun setRecyclerView() {
         binding.recyclerViewDownload.layoutManager = LinearLayoutManager(requireContext())
-        downloadAdapter = LibraryDownloadAdapter(
-
-            onClickListener = { model, _ ->
-                val sheet = if (mainActivity.castHelper.isCastActive()) {
-                    /** Show cast to device button */
-                    BottomSheetLibraryDownload(mainActivity.castHelper, PlaybackType.REMOTE)
-                } else {
-                    /** Show local play button */
-                    BottomSheetLibraryDownload(mainActivity.castHelper, PlaybackType.LOCAL)
+        downloadAdapter = WeakReference(
+            LibraryDownloadAdapter(
+                onClickListener = { model, _ ->
+                    adapterOnClickListener(model)
+                },
+                onMoreClickListener = { innerView, model, _ ->
+                    adapterOnMoreListener(innerView, model)
                 }
-                val bundle = Bundle()
-                bundle.putSerializable("model", model)
-                sheet.arguments = bundle
-                sheet.show(mainActivity.supportFragmentManager, "")
-            },
-
-            onMoreClickListener = { innerView, model, _ ->
-                val popupMenu = PopupMenu(requireContext(), innerView)
-                popupMenu.inflate(R.menu.library_menu)
-                popupMenu.setOnMenuItemClickListener {
-                    when (it.itemId) {
-                        R.id.action_details -> startActivity(
-                            Intent(requireContext(), FinalActivity::class.java).apply {
-                                putExtra(MOVIE_ID, model.movieId)
-                            }
-                        )
-                        R.id.action_show_location -> {
-                            AlertNoIconDialog.Companion.Builder(context).apply {
-                                setTitle(getString(R.string.location))
-                                setMessage("${model.downloadPath}")
-                                setPositiveButton("OK", null)
-                            }.show()
-                        }
-                        R.id.action_delete -> {
-                            AlertNoIconDialog.Companion.Builder(context).apply {
-                                setTitle("Delete?")
-                                setMessage(getString(R.string.delete_undone))
-                                setNegativeButton(getString(R.string.no)) { }
-                                setPositiveButton(getString(R.string.yes)) {
-                                    val f = File(model.downloadPath!!)
-                                    if (f.exists()) {
-                                        f.deleteRecursive()
-                                        viewModel.removeDownload(model.hash)
-                                    } else {
-                                        Toasty.error(
-                                            requireContext(),
-                                            getString(R.string.error_path_exist),
-                                            Toasty.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                }
-                            }.show()
-                        }
-                    }
-                    return@setOnMenuItemClickListener true
-                }
-                popupMenu.show()
-            }
+            )
         )
-        binding.recyclerViewDownload.adapter = downloadAdapter
+        binding.recyclerViewDownload.adapter = downloadAdapter.get()
     }
 
     private fun bindUI() {
         viewModel.downloadMovieIds.observe(viewLifecycleOwner, Observer {
-            downloadAdapter.submitList(it)
+            downloadAdapter.get()?.submitList(it)
             if (it.isNotEmpty()) {
                 binding.fragmentLibraryNoDownload.root.hide()
                 binding.flDownloadLayout.show()
@@ -169,6 +121,63 @@ class LibraryFragment : Fragment(R.layout.fragment_library) {
             }
             return@setOnMenuItemClickListener true
         }
+    }
+
+    private fun adapterOnClickListener(model: Model.response_download) {
+        val sheet = if (mainActivity.castHelper.isCastActive()) {
+            /** Show cast to device button */
+            BottomSheetLibraryDownload(mainActivity.castHelper, PlaybackType.REMOTE)
+        } else {
+            /** Show local play button */
+            BottomSheetLibraryDownload(mainActivity.castHelper, PlaybackType.LOCAL)
+        }
+        val bundle = Bundle()
+        bundle.putSerializable("model", model)
+        sheet.arguments = bundle
+        sheet.show(mainActivity.supportFragmentManager, "")
+    }
+
+    private fun adapterOnMoreListener(innerView: View, model: Model.response_download) {
+        val popupMenu = PopupMenu(requireContext(), innerView)
+        popupMenu.inflate(R.menu.library_menu)
+        popupMenu.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.action_details -> startActivity(
+                    Intent(requireContext(), FinalActivity::class.java).apply {
+                        putExtra(MOVIE_ID, model.movieId)
+                    }
+                )
+                R.id.action_show_location -> {
+                    AlertNoIconDialog.Companion.Builder(context).apply {
+                        setTitle(getString(R.string.location))
+                        setMessage("${model.downloadPath}")
+                        setPositiveButton("OK", null)
+                    }.show()
+                }
+                R.id.action_delete -> {
+                    AlertNoIconDialog.Companion.Builder(context).apply {
+                        setTitle("Delete?")
+                        setMessage(getString(R.string.delete_undone))
+                        setNegativeButton(getString(R.string.no)) { }
+                        setPositiveButton(getString(R.string.yes)) {
+                            val f = File(model.downloadPath!!)
+                            if (f.exists()) {
+                                f.deleteRecursive()
+                                viewModel.removeDownload(model.hash)
+                            } else {
+                                Toasty.error(
+                                    requireContext(),
+                                    getString(R.string.error_path_exist),
+                                    Toasty.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    }.show()
+                }
+            }
+            return@setOnMenuItemClickListener true
+        }
+        popupMenu.show()
     }
 
     /**

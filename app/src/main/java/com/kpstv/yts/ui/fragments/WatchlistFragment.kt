@@ -23,6 +23,7 @@ import com.kpstv.yts.ui.activities.MainActivity
 import com.kpstv.yts.ui.activities.SearchActivity
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.lang.ref.WeakReference
 
 @AndroidEntryPoint
 class WatchlistFragment : Fragment(R.layout.fragment_watchlist) {
@@ -33,7 +34,7 @@ class WatchlistFragment : Fragment(R.layout.fragment_watchlist) {
     private lateinit var mainActivity: MainActivity
 
     private val TAG = "WatchListFragment"
-    private lateinit var adapter: WatchlistAdapter
+    private lateinit var adapter: WeakReference<WatchlistAdapter>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -51,8 +52,7 @@ class WatchlistFragment : Fragment(R.layout.fragment_watchlist) {
      */
     private fun bindUI() {
         viewModel.favouriteMovieIds.observe(viewLifecycleOwner, Observer {
-            Log.e(TAG, "Posted()")
-            adapter.submitList(it)
+            adapter.get()?.submitList(it)
 
             if (it.isNotEmpty()) {
                 binding.layoutNoFavourite.root.hide()
@@ -69,24 +69,26 @@ class WatchlistFragment : Fragment(R.layout.fragment_watchlist) {
 
     private fun initRecyclerView() {
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        adapter = WatchlistAdapter(
-            onClickListener = { model, _ ->
-                val intent = Intent(requireContext(), FinalActivity::class.java)
-                intent.putExtra(MOVIE_ID, model.movieId)
-                startActivity(intent)
-            },
-            onItemRemoveListener = { model, _ ->
-                viewModel.removeFavourite(model.movieId)
+        adapter = WeakReference(
+            WatchlistAdapter(
+                onClickListener = { model, _ ->
+                    val intent = Intent(requireContext(), FinalActivity::class.java)
+                    intent.putExtra(MOVIE_ID, model.movieId)
+                    startActivity(intent)
+                },
+                onItemRemoveListener = { model, _ ->
+                    viewModel.removeFavourite(model.movieId)
 
-                Snackbar.make(binding.root, getString(R.string.remove_watchlist), Snackbar.LENGTH_SHORT)
-                    .setAction(getString(R.string.undo)) {
-                        viewModel.addToFavourite(model)
-                    }
-                    .show()
-            }
+                    Snackbar.make(binding.root, getString(R.string.remove_watchlist), Snackbar.LENGTH_SHORT)
+                        .setAction(getString(R.string.undo)) {
+                            viewModel.addToFavourite(model)
+                        }
+                        .show()
+                }
+            )
         )
 
-        binding.recyclerView.adapter = adapter
+        binding.recyclerView.adapter = adapter.get()
     }
 
     private fun setToolBar() {
