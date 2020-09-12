@@ -109,6 +109,7 @@ class DownloadService : IntentService("blank") {
                 context.getString(R.string.download),
                 NotificationManager.IMPORTANCE_LOW
             )
+            notificationManager.createNotificationChannel(notificationChannel)
             notificationManager.createNotificationChannel(channel)
         }
 

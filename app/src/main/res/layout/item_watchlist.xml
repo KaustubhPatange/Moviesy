@@ -26,41 +26,6 @@
             app:tint="?attr/colorBackground" />
 
     </com.kpstv.shimmer.ShimmerImageView>
-  <!--  <com.google.android.material.card.MaterialCardView
-        android:id="@+id/item_imageCard"
-        android:layout_width="65dp"
-        android:layout_height="98dp"
-        app:cardCornerRadius="5dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <FrameLayout
-            android:layout_width="65dp"
-            android:layout_height="98dp">
-
-            <ImageView
-                android:id="@+id/item_image"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY" />
-        </FrameLayout>
-
-        <com.facebook.shimmer.ShimmerFrameLayout
-            android:id="@+id/shimmerFrame"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="?colorTextInverse">
-
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_play_circle"
-                app:tint="?attr/colorBackground" />
-        </com.facebook.shimmer.ShimmerFrameLayout>
-
-    </com.google.android.material.card.MaterialCardView>-->
 
     <TextView
         android:id="@+id/item_title"

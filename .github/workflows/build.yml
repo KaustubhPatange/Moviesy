@@ -12,6 +12,7 @@ jobs:
       - run: chmod +x gradlew
       - run: tar -xvzf art/module.tar.gz
       - run: echo tmdb_api_key=${{ secrets.TMDB_API_KEY }} >> local.properties
+      - run: echo google_client_id_web=${{ secrets.GOOGLE_CLIENT_WEB_ID }} >> local.properties
       - name: Build Gradle
         run: ./gradlew app:assembleDebug --stacktrace
       - name: Upload APK

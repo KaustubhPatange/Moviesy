@@ -177,7 +177,7 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
     }
 
     private fun singleClickForWatch(torrent: Torrent) {
-        if (castHelper.isCastActive()) {
+        if (::castHelper.isInitialized && castHelper.isCastActive()) {
             val subtitlePath = if (::subtitleHelper.isInitialized) {
                 subtitleHelper.getSelectedSubtitle()?.path
             } else null
@@ -188,12 +188,12 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
                 .setTitle(getString(R.string.cast_to_device_title))
                 .setMessage(message)
                 .setPositiveButton(getString(R.string.alright)) {
-                    streamTorrentAndCast(torrent, subtitlePath)
-                    Toasty.info(
-                        requireContext(),
-                        getString(R.string.cast_stream_toast),
-                        Toasty.LENGTH_LONG
-                    ).show()
+                    if (streamTorrentAndCast(torrent, subtitlePath))
+                        Toasty.info(
+                            requireContext(),
+                            getString(R.string.cast_stream_toast),
+                            Toasty.LENGTH_LONG
+                        ).show()
                 }
                 .setNegativeButton(getString(R.string.no)) {
                     startNormalPlayback(torrent)
@@ -218,11 +218,14 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
     }
 
     fun startService(model: Torrent): Boolean {
-        if (!AppUtils.checkIfServiceIsRunning(
+        if (AppUtils.checkIfServiceIsRunning(
                 requireContext(),
                 DownloadService::class
             ) && !AppInterface.IS_PREMIUM_UNLOCKED
         ) {
+            PremiumHelper.showPremiumInfo(requireActivity(), ViewType.DOWNLOAD.name.small())
+            return false
+        } else {
             model.title = title
             model.banner_url = imageUri
             model.imdbCode = imdbCode
@@ -232,9 +235,6 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
             requireContext().startService(serviceIntent)
 
             return true
-        } else {
-            PremiumHelper.showPremiumInfo(requireActivity(), ViewType.DOWNLOAD.name.small())
-            return false
         }
     }
 
@@ -273,7 +273,7 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
         } else binding.toolbar.hide()
     }
 
-    private fun streamTorrentAndCast(model: Torrent, subtitlePath: String?) {
+    private fun streamTorrentAndCast(model: Torrent, subtitlePath: String?): Boolean {
         if (!AppUtils.checkIfServiceIsRunning(requireContext(), CastTorrentService::class)) {
 
             if (subtitlePath != null && !AppInterface.IS_PREMIUM_UNLOCKED)
@@ -290,17 +290,22 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
                     putExtra(CastTorrentService.EXTRA_SUBTITLE_PATH, subtitlePath)
             }
             requireContext().startService(serviceIntent)
+
+            return true
         } else
             Toasty.warning(
                 requireContext(),
                 getString(R.string.stop_existing_cast),
                 Toasty.LENGTH_LONG
             ).show()
+
+        return false
     }
 
     override fun onDestroyView() {
         if (::castHelper.isInitialized)
             castHelper.unInit()
+        interstitialAdHelper.dispose()
         super.onDestroyView()
     }
 }

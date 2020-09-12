@@ -70,4 +70,8 @@ class InterstitialAdHelper @Inject constructor(
             onAdClosed?.invoke()
         }
     }
+
+    fun dispose() {
+        onAdClosed = null
+    }
 }

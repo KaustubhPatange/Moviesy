@@ -149,11 +149,11 @@ class CastTorrentService : IntentService("blank") {
 
     override fun onDestroy() {
         Log.e(TAG, "Destroyed()")
-        notificationManagerCompat.cancel(CAST_NOTIFICATION_ID)
-
         wakeLock?.release()
         if (::torrentStream.isInitialized)
             torrentStream.stopStream()
+
+        notificationManagerCompat.cancel(CAST_NOTIFICATION_ID)
         super.onDestroy()
     }
 }

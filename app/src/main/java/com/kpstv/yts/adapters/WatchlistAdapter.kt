@@ -28,7 +28,7 @@ class WatchlistAdapter(
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: WatchlistHolder, i: Int) {
         val model = getItem(i)
-
+        
         holder.binding.itemImageCard.getImageView().load(
             uri = model.imageUrl,
             onSuccess = { resource ->
