@@ -26,16 +26,25 @@ data class MovieShort(
             runtime = data.runtime
         )
 
-        fun from(data: Model.response_cast_movie.Cast): MovieShort {
-            return MovieShort(
-                movieId = data.id,
-                title = data.originalTitle,
-                bannerUrl = "${AppInterface.TMDB_IMAGE_PREFIX}${data.posterPath}",
-                runtime = 0,
-                rating = data.voteAverage,
-                year = safeYear(data.releaseDate)
-            )
-        }
+        fun from(data: Model.response_cast_movie.Cast)= MovieShort(
+            movieId = data.id,
+            title = data.originalTitle,
+            bannerUrl = "${AppInterface.TMDB_IMAGE_PREFIX}${data.posterPath}",
+            runtime = 0,
+            rating = data.voteAverage,
+            year = safeYear(data.releaseDate)
+        )
+
+        fun from(data: Movie) = MovieShort(
+            movieId = data.id,
+            imdbCode = data.imdb_code,
+            title = data.title,
+            year = data.year,
+            rating = data.rating,
+            runtime = data.runtime,
+            bannerUrl = data.medium_cover_image,
+            url = data.url
+        )
 
         private fun safeYear(releaseData: String?): Int {
             val year = releaseData?.split("-")?.get(0)

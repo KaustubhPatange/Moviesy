@@ -218,4 +218,6 @@ Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus d
     <string name="cast_to_device_text">[Experimental] Cast this torrent to the connected device?</string>
     <string name="cast_stream_toast">Starting streaming, check notification</string>
     <string name="premium_subtitle_stream">Subtitle are available in premium version.</string>
+    <string name="notify_movie_summary">Will send you a notification whenever a new movie is added to YTS.</string>
+    <string name="notify_movie_title">Notify latest movie</string>
 </resources>

@@ -176,28 +176,13 @@ class MainViewModel @ViewModelInject constructor(
 
             val movieList = ArrayList<MovieShort>()
             ArrayList(response.data.movies.subList(0, toIndex)).forEach {
-                movieList.add(
-                    MovieShort(
-                        it.id,
-                        it.url,
-                        it.title,
-                        it.year,
-                        it.rating,
-                        it.runtime,
-                        it.imdb_code,
-                        it.medium_cover_image
-                    )
-                )
+                movieList.add(MovieShort.from(it))
             }
 
             val isMoreAvailable = response.data.movie_count > CUSTOM_LAYOUT_YTS_SPAN
 
-            val mainModel = data_main(
-                time = MainDateFormatter.format(Calendar.getInstance().time).toLong(),
-                movies = movieList,
-                query = QueryConverter.fromMapToString(queryMap),
-                isMore = isMoreAvailable
-            )
+            val mainModel =
+                data_main.from(movieList, QueryConverter.fromMapToString(queryMap), isMoreAvailable)
 
             repository.saveMovies(mainModel)
 

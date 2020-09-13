@@ -49,12 +49,7 @@ class AppWorker @WorkerInject constructor(
             val featuredMovies = repository.getMoviesByQuery(AppInterface.FEATURED_QUERY)
 
             val list = ytsFeaturedUtils.fetch()
-            val mainModel = data_main(
-                time = AppInterface.MainDateFormatter.format(Calendar.getInstance().time).toLong(),
-                movies = list,
-                query = AppInterface.FEATURED_QUERY,
-                isMore = false
-            )
+            val mainModel = data_main.from(list, AppInterface.FEATURED_QUERY)
 
             repository.saveMovies(mainModel)
 

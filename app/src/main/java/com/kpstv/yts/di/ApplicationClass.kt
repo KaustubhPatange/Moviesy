@@ -12,6 +12,7 @@ import com.kpstv.yts.BuildConfig
 import com.kpstv.yts.R
 import com.kpstv.yts.extensions.Notifications
 import com.kpstv.yts.services.AppWorker
+import com.kpstv.yts.services.LatestMovieWorker
 import com.kpstv.yts.ui.activities.CrashOnActivity
 import com.kpstv.yts.ui.helpers.InterstitialAdHelper
 import dagger.hilt.android.HiltAndroidApp
@@ -48,6 +49,7 @@ class ApplicationClass : Application(), Configuration.Provider {
 
         /** Scheduling work manager */
         AppWorker.schedule(applicationContext)
+        LatestMovieWorker.schedule(applicationContext)
 
         /** Set some BuildConfigs */
         AppInterface.TMDB_API_KEY = BuildConfig.TMDB_API_KEY
