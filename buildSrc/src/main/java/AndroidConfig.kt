@@ -4,8 +4,8 @@ object AndroidConfig {
     const val TARGET_SDK_VERSION = 29
     const val BUILD_TOOLS_VERSION = "29.0.3"
 
-    const val VERSION_CODE = 2
-    const val VERSION_NAME = "1.1"
+    const val VERSION_CODE = 3
+    const val VERSION_NAME = "1.2"
 
     const val ID = "com.kpstv.yts"
 //    const val TEST_INSTRUMENTATION_RUNNER = "android.support.test.runner.AndroidJUnitRunner"

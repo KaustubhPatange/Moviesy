@@ -12,7 +12,6 @@ import com.kpstv.yts.data.models.data.data_main
 import com.kpstv.yts.extensions.Notifications
 import com.kpstv.yts.extensions.utils.UpdateUtils
 import com.kpstv.yts.extensions.utils.YTSFeaturedUtils
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 class AppWorker @WorkerInject constructor(
@@ -54,7 +53,7 @@ class AppWorker @WorkerInject constructor(
             repository.saveMovies(mainModel)
 
             list.forEach { movie ->
-                if (featuredMovies?.movies?.contains(movie) == false)
+                if (featuredMovies?.movies?.any { it.url == movie.url } == false)
                     Notifications.sendMovieNotification(
                         context = applicationContext,
                         movieName = movie.title,
@@ -73,12 +72,14 @@ class AppWorker @WorkerInject constructor(
             val constraints = Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
-             val request = PeriodicWorkRequestBuilder<AppWorker>(20, TimeUnit.MINUTES, 5, TimeUnit.MINUTES)
-                 .setConstraints(constraints)
-                 .build()
-             WorkManager.getInstance(context).enqueueUniquePeriodicWork(
-                 APP_WORKER_ID,
-                 ExistingPeriodicWorkPolicy.REPLACE, request)
+            val request =
+                PeriodicWorkRequestBuilder<AppWorker>(20, TimeUnit.MINUTES, 5, TimeUnit.MINUTES)
+                    .setConstraints(constraints)
+                    .build()
+            WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+                APP_WORKER_ID,
+                ExistingPeriodicWorkPolicy.REPLACE, request
+            )
         }
     }
 }
