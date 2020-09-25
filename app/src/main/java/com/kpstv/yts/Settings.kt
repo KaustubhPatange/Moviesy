@@ -154,4 +154,5 @@ object AppSettings {
     const val APP_REPORT_PREF = "app_report_pref"
 
     const val PREMIUM_PURCHASE_PREF = "premium_purchase_pref"
+    const val SHOW_DOWNLOAD_TIP_PREF = "show_download_tip_pref"
 }

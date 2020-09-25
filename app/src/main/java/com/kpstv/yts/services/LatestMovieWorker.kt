@@ -61,7 +61,8 @@ class LatestMovieWorker @WorkerInject constructor(
                     Notifications.sendMovieNotification(
                         context = applicationContext,
                         movieName = movieShort.title,
-                        movieId = movieShort.movieId!!
+                        movieId = movieShort.movieId!!,
+                        featured = false
                     )
                 }
             }

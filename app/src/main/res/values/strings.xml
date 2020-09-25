@@ -1,18 +1,5 @@
 <resources>
     <string name="app_name">Moviesy</string>
-
-    <string name="long_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porta urna fermentum neque venenatis pellentesque. Nunc nec massa elit. Praesent pulvinar purus id semper pulvinar. Aliquam eget libero ac libero bibendum tempor. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Suspendisse potenti. Vivamus cursus sit amet turpis id imperdiet. Donec nec ligula eget diam laoreet vulputate sit amet in sapien. Aenean iaculis nibh et purus rutrum hendrerit quis imperdiet ipsum. Vivamus elementum lobortis auctor. Aliquam pretium nisl vel lectus consectetur viverra. Praesent iaculis magna diam, nec sodales dui bibendum quis. Donec a felis ligula. Suspendisse potenti. In nec magna magna. Etiam sit amet convallis ipsum.
-
-Nunc nec orci efficitur, sollicitudin magna ut, hendrerit ligula. Aenean fringilla enim in ex laoreet ornare. Maecenas tempor eget diam et sodales. Pellentesque ornare porttitor placerat. Vestibulum rutrum nulla lectus, non gravida metus euismod sed. Phasellus lacinia, magna rutrum elementum mollis, turpis lectus venenatis metus, vitae auctor urna nibh at tellus. Morbi laoreet fermentum nulla id tempor.
-
-Fusce eu iaculis ex. In vitae pulvinar lorem. Vivamus commodo et enim quis elementum. Aliquam erat volutpat. Proin cursus massa nec eros viverra, nec lacinia urna tempus. Suspendisse iaculis lorem eu ullamcorper consequat. Vivamus id aliquam massa. Sed et diam ultricies, elementum elit et, porttitor sem. Aenean a enim pharetra, tempus nunc at, porta leo. Mauris ornare velit orci, eu suscipit sapien elementum a. Nulla arcu nisl, consequat nec nulla in, pretium dictum ipsum. Nullam in tempor tellus, id efficitur leo.
-
-Donec ut justo turpis. Integer ultrices ex in feugiat feugiat. Vivamus quis laoreet odio. Nam lorem tellus, volutpat nec risus et, interdum malesuada dui. Pellentesque consequat augue arcu, ac pellentesque metus interdum feugiat. Proin enim risus, elementum nec molestie vel, ultricies eget ipsum. Pellentesque semper nisi id lacus eleifend accumsan. Quisque auctor, magna sit amet volutpat vulputate, est ante eleifend lorem, eu commodo urna mauris at quam. Nam eu tellus suscipit, vehicula enim sit amet, porta urna. Phasellus vitae erat libero. Phasellus in metus metus. Etiam vestibulum lacinia quam a pulvinar.
-
-Mauris nec est quis lectus luctus blandit. Mauris tincidunt, neque sit amet auctor sodales, dolor nulla condimentum turpis, a eleifend felis lorem at est. Vestibulum faucibus luctus libero nec iaculis. Donec iaculis dui leo, id laoreet augue efficitur sit amet. Vivamus eget ornare lectus. Aliquam erat volutpat. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Morbi sit amet nulla a leo pellentesque aliquam. Quisque eu nunc rutrum eros sollicitudin maximus vel a risus. Curabitur id venenatis odio. Vestibulum aliquet urna a mi volutpat, vel vestibulum sapien dictum. Mauris ullamcorper ligula non lacinia convallis. Fusce tempor ultrices ligula et pellentesque.
-
-Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus dapibus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Integer tristique felis sit amet enim ullamcorper tincidunt. Ut eu aliquam lectus. Sed fringilla lorem purus, sed rhoncus velit eleifend at. Mauris blandit blandit enim, at cursus risus volutpat a. Mauris faucibus, diam at congue egestas, massa nibh vulputate sapien, vitae dictum libero ex in turpis. Etiam condimentum interdum vulputate. Nulla vitae enim eleifend, efficitur arcu nec, feugiat odio.</string>
-
     <string name="short_text">Through a series of flashbacks, four young chinese women born in America and their respective mothers born in feudal China, explore their past. This search will help them understand their difficult mother/daughter relationship.</string>
     <string name="af_title">The Joy Luck Club</string>
     <string name="ad_year">English • 1993</string>
@@ -220,4 +207,5 @@ Fusce ultrices lacus ut maximus ultricies. Aliquam non tortor in nisl faucibus d
     <string name="premium_subtitle_stream">Subtitle are available in premium version.</string>
     <string name="notify_movie_summary">Will send you a notification whenever a new movie is added to YTS.</string>
     <string name="notify_movie_title">Notify latest movie</string>
+    <string name="error_solution">Help</string>
 </resources>

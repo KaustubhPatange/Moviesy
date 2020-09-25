@@ -18,7 +18,9 @@ import com.kpstv.yts.databinding.FragmentLibraryBinding
 import com.kpstv.yts.extensions.deleteRecursive
 import com.kpstv.common_moviesy.extensions.hide
 import com.kpstv.common_moviesy.extensions.show
+import com.kpstv.yts.AppSettings
 import com.kpstv.yts.data.models.response.Model
+import com.kpstv.yts.extensions.common.CustomTipLayout
 import com.kpstv.yts.ui.activities.FinalActivity
 import com.kpstv.yts.ui.activities.MainActivity
 import com.kpstv.yts.ui.activities.SearchActivity
@@ -53,6 +55,8 @@ class LibraryFragment : Fragment(R.layout.fragment_library) {
         setRecyclerView()
 
         bindUI()
+
+        addDownloadTip()
 
         mainActivity.castHelper.init(
             activity = mainActivity,
@@ -178,6 +182,13 @@ class LibraryFragment : Fragment(R.layout.fragment_library) {
             return@setOnMenuItemClickListener true
         }
         popupMenu.show()
+    }
+
+    private fun addDownloadTip() {
+        CustomTipLayout.Builder(binding.addLayout)
+            .setTitle("Existing downloads")
+            .setMessage("In any case, your existing download doesn't show up here you can go to Settings > Storage > Scan existing downloads.")
+            .show(AppSettings.SHOW_DOWNLOAD_TIP_PREF)
     }
 
     /**

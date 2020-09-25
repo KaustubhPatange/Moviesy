@@ -109,7 +109,7 @@ object Notifications {
         mgr.notify(UPDATE_NOTIFICATION_ID, notification)
     }
 
-    fun sendMovieNotification(context: Context, movieName: String, movieId: Int) = with(context) {
+    fun sendMovieNotification(context: Context, movieName: String, movieId: Int, featured: Boolean = true) = with(context) {
         Log.e(TAG, "Sending notification with movieId: $movieId")
         val movieIntent = Intent(this, FinalActivity::class.java).apply {
             putExtra(AppInterface.MOVIE_ID, movieId)
@@ -119,7 +119,7 @@ object Notifications {
 
         val notification = NotificationCompat.Builder(this, getString(R.string.CHANNEL_ID_2))
             .setContentTitle(getString(R.string.app_name))
-            .setContentText("\"$movieName\" is on featured list")
+            .setContentText("\"$movieName\" ${if (featured) "is on featured list" else "is added"}")
             .setSmallIcon(R.drawable.ic_movie)
             .setColor(colorFrom(R.color.colorPrimary_New_DARK))
             .setColorized(true)

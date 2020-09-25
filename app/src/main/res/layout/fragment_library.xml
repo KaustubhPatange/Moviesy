@@ -35,6 +35,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <LinearLayout
+                android:animateLayoutChanges="true"
+                android:id="@+id/addLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"/>
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

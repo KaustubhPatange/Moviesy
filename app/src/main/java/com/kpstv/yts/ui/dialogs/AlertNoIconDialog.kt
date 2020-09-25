@@ -75,6 +75,11 @@ class AlertNoIconDialog : Activity() {
         return super.onTouchEvent(event)
     }
 
+    override fun onDestroy() {
+        positiveListener = null
+        negativeListener = null
+        super.onDestroy()
+    }
 
     companion object {
 
