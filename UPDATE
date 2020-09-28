@@ -1,8 +1,8 @@
 {
     "update": {
         "deprecatedVersionCode": 0,
-        "versionCode": 3,
-        "url": "https://github.com/KaustubhPatange/Moviesy/releases/download/v1.2/app-release_v1.2.apk"
+        "versionCode": 4,
+        "url": "https://www.dropbox.com/s/fzay28d32djo0w4/Moviesy_v1.3.apk?dl=1"
     },
     "yts": {
         "base": "https://yts.mx",
