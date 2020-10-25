@@ -1,7 +1,10 @@
 package com.kpstv.yts.data.models
 
+import com.kpstv.bindings.AutoGenerateConverter
+import com.kpstv.bindings.ConverterType
 import java.io.Serializable
 
+@AutoGenerateConverter(using = ConverterType.GSON)
 data class TorrentJob (
     val title: String,
     val bannerUrl: String,

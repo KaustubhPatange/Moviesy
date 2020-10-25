@@ -1,8 +1,12 @@
 package com.kpstv.yts.data.models
 
 import com.google.gson.annotations.SerializedName
+import com.kpstv.bindings.AutoGenerateConverter
+import com.kpstv.bindings.AutoGenerateListConverter
+import com.kpstv.bindings.ConverterType
 import java.io.Serializable
 
+@AutoGenerateConverter(using = ConverterType.GSON)
 data class Torrent(
     var title: String, var banner_url: String,
     val url: String, val hash: String, val quality: String,

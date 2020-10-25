@@ -425,7 +425,7 @@ class FinalActivity : AppCompatActivity(), MovieListener {
     private fun loadBottomSheetDownload(type: BottomSheetDownload.ViewType) {
         Permissions.verifyStoragePermission(this) {
             val sheet = BottomSheetDownload()
-            val bundle = Bundle();
+            val bundle = Bundle()
             bundle.putSerializable(BottomSheetDownload.TORRENTS, movie.torrents)
             bundle.putString(BottomSheetDownload.TITLE, movie.title)
             bundle.putString(BottomSheetDownload.IMDB_CODE, movie.imdb_code)

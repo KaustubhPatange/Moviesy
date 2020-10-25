@@ -22,13 +22,13 @@ import com.kpstv.yts.data.models.response.Model
 )
 @TypeConverters(
     MovieShortConverter::class,
-    CastConverter::class,
-    CrewConverter::class,
     GenreConverter::class,
     TMdbConverter::class,
     TorrentListConverter::class,
-    TorrentJobConverter::class,
-    TorrentConverter::class
+    com.kpstv.yts.data.models.TorrentJobConverter::class,
+    com.kpstv.yts.data.models.CastListConverter::class,
+    com.kpstv.yts.data.models.CrewListConverter::class,
+    com.kpstv.yts.data.models.TorrentConverter::class
 )
 abstract class MainDatabase : RoomDatabase() {
     abstract fun getMainDao(): MainDao

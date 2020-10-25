@@ -140,6 +140,7 @@ dependencies {
     implementation(LibraryDependency.HILT_ANDROID)
     implementation(LibraryDependency.HILT_VIEWODEL)
     implementation(LibraryDependency.HILT_WORK_MANAGER)
+    implementation(LibraryDependency.AUTOBINDINGS)
 
     implementation(LibraryDependency.GOOGLE_HTTPCLIENT_API) {
         exclude(group = GradlePluginId.APACHE_HTTP)
@@ -154,6 +155,7 @@ dependencies {
     kapt(LibraryDependency.GLIDE_COMPILER)
     kapt(LibraryDependency.HILT_COMPILER)
     kapt(LibraryDependency.HILT_VIEWODEL_COMPILER)
+    kapt(LibraryDependency.AUTOBINDINGS_COMPILER)
 
     debugImplementation(TestLibraryDependency.ANDROID_DEBUG_DB)
     debugImplementation(TestLibraryDependency.STETHO)

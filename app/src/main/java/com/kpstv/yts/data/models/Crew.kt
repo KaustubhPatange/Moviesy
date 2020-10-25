@@ -1,7 +1,10 @@
 package com.kpstv.yts.data.models
 
+import com.kpstv.bindings.AutoGenerateListConverter
+import com.kpstv.bindings.ConverterType
 import com.kpstv.yts.AppInterface.Companion.TMDB_IMAGE_PREFIX
 
+@AutoGenerateListConverter(using = ConverterType.GSON)
 data class Crew(
     val name: String,
     val job: String,

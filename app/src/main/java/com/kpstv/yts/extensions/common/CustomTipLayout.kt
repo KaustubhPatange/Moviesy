@@ -29,7 +29,7 @@ class CustomTipLayout {
 
         fun show(prefId: String) {
             binding.btnClose.setOnClickListener {
-                preference.writeBoolean(prefId, true)
+                preference.writeBoolean(prefId, false)
                 view.removeView(binding.root)
             }
             view.addView(binding.root)
