@@ -3,6 +3,8 @@ package com.kpstv.yts.data.models
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import com.kpstv.bindings.AutoGenerateConverter
+import com.kpstv.bindings.ConverterType
 
 @Entity(tableName = "table_cast")
 data class TmDbCastDomain(
@@ -12,6 +14,7 @@ data class TmDbCastDomain(
     val cast: TmDbCast
 )
 
+@AutoGenerateConverter(using = ConverterType.GSON)
 data class TmDbCast(
     @SerializedName("cast_id")
     val castId: Int,

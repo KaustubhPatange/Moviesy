@@ -20,3 +20,17 @@ jobs:
         with:
           name: app
           path: app/build/outputs/apk/debug/app-debug.apk
+
+  notification:
+    needs: [buildJob]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set outputs
+        id: vars
+        run: echo "::set-output name=sha_short::$(echo ${{ github.sha }} | cut -c -7)"
+      - name: Sending complete notifications
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: "${{ github.event.repository.full_name }} with commit ${{ steps.vars.outputs.sha_short }} had a successful build!"
