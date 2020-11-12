@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.kpstv.common_moviesy.extensions.enableDelayedTransition
 import com.kpstv.common_moviesy.extensions.hide
 import com.kpstv.common_moviesy.extensions.show
 import com.kpstv.common_moviesy.extensions.utils.KeyboardUtils
@@ -254,6 +255,8 @@ class SearchActivity : AppCompatActivity() {
             Toasty.error(this, getString(R.string.empty_query)).show()
             return
         }
+
+        binding.activitySearchSingle.root.enableDelayedTransition()
 
         /** Saving raw query to history */
         searchViewModel.addToHistory(text)

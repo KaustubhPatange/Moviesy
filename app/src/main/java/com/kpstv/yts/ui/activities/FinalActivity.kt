@@ -13,17 +13,16 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.transition.TransitionManager
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.kpstv.common_moviesy.extensions.colorFrom
-import com.kpstv.common_moviesy.extensions.drawableFrom
-import com.kpstv.common_moviesy.extensions.hide
+import com.kpstv.common_moviesy.extensions.*
 import com.kpstv.common_moviesy.extensions.utils.CommonUtils
-import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.AppInterface.Companion.MOVIE_ID
 import com.kpstv.yts.AppInterface.Companion.handleRetrofitError
 import com.kpstv.yts.AppInterface.Companion.setAppThemeNoAction
@@ -130,6 +129,8 @@ class FinalActivity : AppCompatActivity(), MovieListener {
 
     override fun onComplete(movie: Movie) {
         this.movie = movie
+
+        binding.root.enableDelayedTransition()
 
         setMovieMenu()
 
@@ -295,22 +296,21 @@ class FinalActivity : AppCompatActivity(), MovieListener {
             .into(object : CustomTarget<Bitmap>() {
                 override fun onLoadCleared(placeholder: Drawable?) {}
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                    binding.root.enableDelayedTransition()
                     binding.activityFinalPreviews.afYtPreviewImage.setImageBitmap(resource)
                     Log.e(TAG, "Image Loaded")
                     binding.activityFinalPreviews.afYtPreviewImage.setOnClickListener {
                         Log.e(TAG, "OnClicked")
                         if (::player.isInitialized) {
                             player.loadVideo(movie.yt_trailer_id, 0f)
-                            binding.activityFinalPreviews.youtubePlayerView.visibility =
-                                View.VISIBLE
+                            binding.activityFinalPreviews.youtubePlayerView.show()
                         } else {
-                            binding.activityFinalPreviews.afYtPreviewPlay.visibility = View.GONE
-                            binding.activityFinalPreviews.afYtPreviewProgressBar.visibility =
-                                View.VISIBLE
+                            binding.activityFinalPreviews.afYtPreviewPlay.hide()
+                            binding.activityFinalPreviews.afYtPreviewProgressBar.show()
                         }
                     }
 
-                    binding.activityFinalPreviews.afYtPreview.visibility = View.VISIBLE
+                    binding.activityFinalPreviews.afYtPreview.show()
                 }
             })
 
@@ -391,6 +391,7 @@ class FinalActivity : AppCompatActivity(), MovieListener {
          *     when this button is clicked.
          */
         binding.activityFinalContent.afMoreTxt.setOnClickListener {
+            binding.root.enableDelayedTransition()
             binding.activityFinalContent.afSummary.setTextIsSelectable(false)
             if (binding.activityFinalContent.afMoreTxt.text.toString() == getString(R.string.more)) {
                 binding.activityFinalContent.afSummary.setTextIsSelectable(true)
