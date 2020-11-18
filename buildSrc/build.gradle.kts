@@ -30,6 +30,8 @@ dependencies {
     implementation("androidx.navigation:navigation-safe-args-gradle-plugin:${GradlePluginVersion.SAFE_ARGS}")
     implementation("com.google.dagger:hilt-android-gradle-plugin:${GradlePluginVersion.HILT}")
     implementation("com.github.dcendents:android-maven-gradle-plugin:2.1")
+    implementation("com.google.gms:google-services:4.3.4")
+    implementation("com.google.firebase:firebase-crashlytics-gradle:2.4.1")
 }
 
 repositories {

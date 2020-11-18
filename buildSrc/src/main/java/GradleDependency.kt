@@ -8,4 +8,6 @@ object GradlePluginId {
     const val DAGGER_HILT = "dagger.hilt.android.plugin"
     const val APACHE_HTTP = "org.apache.httpcomponents"
     const val MAVEN_PLUGIN = "com.github.dcendents.android-maven"
+    const val GOOGLE_SERVICE = "com.google.gms.google-services"
+    const val FIREBASE_CRASHLYTICS = "com.google.firebase.crashlytics"
 }

@@ -9,7 +9,7 @@ private object LibraryVersion {
     const val CONSTRAINT_LAYOUT = "1.1.3"
     const val MATERIAL = "1.2.0-beta01"
     const val PREFERENCES = "1.1.1"
-    const val ROOM = "2.2.5"
+    const val ROOM = "2.3.0-alpha02"
     const val LIFECYCLE = "2.2.0"
     const val PAGING = "2.1.2"
     const val RETROFIT = "2.9.0"
@@ -48,7 +48,9 @@ private object LibraryVersion {
     const val GUAVA_CONFLICT = "9999.0-empty-to-avoid-conflict-with-guava"
     const val CAOC = "2.3.0"
     const val FIREBASE_AUTH = "19.3.2"
+    const val FIREBASE_BOM = "26.1.0"
     const val AUTOBINDINGS = "1.1-alpha12"
+    const val APP_STARTUP = "1.0.0"
 }
 
 object LibraryDependency {
@@ -61,8 +63,12 @@ object LibraryDependency {
     const val GUAVA_CONFLICT = "com.google.guava:listenablefuture:${LibraryVersion.GUAVA_CONFLICT}"
     const val WORK_MANAGER = "androidx.work:work-runtime-ktx:${LibraryVersion.WORK_MANAGER}"
     const val GOOGLE_ADS = "com.google.android.gms:play-services-ads:${LibraryVersion.GOOGLE_ADS}"
+    const val APP_STARTUP = "androidx.startup:startup-runtime:${LibraryVersion.APP_STARTUP}"
     const val LOTTIE = "com.airbnb.android:lottie:${LibraryVersion.LOTTIE}"
-    const val FIREBASE_AUTH = "com.google.firebase:firebase-auth-ktx:${LibraryVersion.FIREBASE_AUTH}"
+    const val FIREBASE_AUTH = "com.google.firebase:firebase-auth-ktx"
+    const val FIREBASE_BOM = "com.google.firebase:firebase-bom:${LibraryVersion.FIREBASE_BOM}"
+    const val FIREBASE_CRASHLYTICS = "com.google.firebase:firebase-crashlytics-ktx"
+    const val FIREBASE_ANALYTICS = "com.google.firebase:firebase-analytics-ktx"
     const val GOOGLE_OAUTH = "com.google.android.gms:play-services-auth:${LibraryVersion.GOOGLE_OAUTH}"
     const val ANDROID_LOCAL_CAST_SAMPLE = "com.github.KaustubhPatange:Android-Cast-Local-Sample:${LibraryVersion.CAST_SAMPLE}"
     const val MEDIA_ROUTER = "androidx.mediarouter:mediarouter:${LibraryVersion.MEDIA_ROUTER}"

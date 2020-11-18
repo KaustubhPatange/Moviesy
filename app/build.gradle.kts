@@ -7,7 +7,8 @@ plugins {
     kotlin(GradlePluginId.KAPT)
     id(GradlePluginId.SAFE_ARGS)
     id(GradlePluginId.DAGGER_HILT)
-    id("kotlin-android")
+    id(GradlePluginId.GOOGLE_SERVICE)
+    id(GradlePluginId.FIREBASE_CRASHLYTICS)
 }
 
 android {
@@ -87,8 +88,13 @@ dependencies {
     implementation(LibraryDependency.COROUTINES_CORE)
     implementation(LibraryDependency.COROUTINES_ANDROID)
     implementation(LibraryDependency.GOOGLE_OAUTH)
-    implementation(LibraryDependency.FIREBASE_AUTH)
     implementation(LibraryDependency.GOOGLE_ADS)
+    implementation(LibraryDependency.APP_STARTUP)
+
+    implementation(platform(LibraryDependency.FIREBASE_BOM))
+    implementation(LibraryDependency.FIREBASE_AUTH)
+    implementation(LibraryDependency.FIREBASE_CRASHLYTICS)
+    implementation(LibraryDependency.FIREBASE_ANALYTICS)
 
     implementation(LibraryDependency.MEDIA_ROUTER)
     implementation(LibraryDependency.CAST_FRAMEWORK)

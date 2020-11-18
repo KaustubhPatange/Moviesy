@@ -131,6 +131,14 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
-    </application>
 
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data android:name="com.kpstv.yts.initializer.CommonInitializer"
+                android:value="androidx.startup" />
+        </provider>
+    </application>
 </manifest>
