@@ -77,6 +77,17 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
             }
         }
 
+        /** Recently Added Layout */
+        val queryMap6 = YTSQuery.ListMoviesBuilder().apply {
+            setSortBy(YTSQuery.SortBy.date_added)
+        }.build()
+
+        cmlRecent = CustomMovieLayout(requireActivity(), getString(R.string.recently_added)).apply {
+            injectViewAt(binding.addLayout)
+            setLifeCycleOwner(requireHomeFragment()?.viewLifecycleOwner)
+            setupCallbacks(viewModel, queryMap6)
+        }
+
         /** Top Rated Layout */
         val queryMap = YTSQuery.ListMoviesBuilder().apply {
             setSortBy(YTSQuery.SortBy.rating)
@@ -111,17 +122,6 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
             injectViewAt(binding.addLayout)
             setLifeCycleOwner(requireHomeFragment()?.viewLifecycleOwner)
             setupCallbacks(viewModel, queryMap4)
-        }
-
-        /** Recently Added Layout */
-        val queryMap6 = YTSQuery.ListMoviesBuilder().apply {
-            setSortBy(YTSQuery.SortBy.date_added)
-        }.build()
-
-        cmlRecent = CustomMovieLayout(requireActivity(), getString(R.string.recently_added)).apply {
-            injectViewAt(binding.addLayout)
-            setLifeCycleOwner(requireHomeFragment()?.viewLifecycleOwner)
-            setupCallbacks(viewModel, queryMap6)
         }
 
         /** Latest Layout */
