@@ -1,5 +1,15 @@
 name: build
-on: [push, pull_request]
+on:
+  push:
+    paths-ignore:
+      - "README.md"
+      - "UPDATE"
+      - "art/**"
+  pull_request:
+    paths-ignore:
+      - "README.md"
+      - "UPDATE"
+      - "art/**"
 jobs:
   buildJob:
     runs-on: windows-latest
