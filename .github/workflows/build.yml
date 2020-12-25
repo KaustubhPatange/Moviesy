@@ -20,21 +20,64 @@ jobs:
         with:
           java-version: 1.8
       - run: chmod +x gradlew
-      - run: tar -xvzf art/module.tar.gz
-      - run: echo tmdb_api_key=${{ secrets.TMDB_API_KEY }} >> local.properties
-      - run: echo google_client_id_web=${{ secrets.GOOGLE_CLIENT_WEB_ID }} >> local.properties
+        
+      # Extracting required modules
+      
+      - name: Providing required modules
+        uses: RollyPeres/base64-to-path@v1
+        with:
+          filePath: ${{ github.workspace }}/module.tar.gz
+          encodedString: ${{ secrets.PROTECT_MODULE }}
+      - run: |
+          tar -xzf module.tar.gz
+          tar -xzf art/tools.tar.gz
+      
+      # Fill the required local.properties
+     
+      - name: Filling required local.properties
+        run: |
+          echo tmdb_api_key=${{ secrets.TMDB_API_KEY }} >> local.properties
+          echo google_client_id_web=${{ secrets.GOOGLE_CLIENT_WEB_ID }} >> local.properties
       - name: Providing service.json
         uses: RollyPeres/base64-to-path@v1
         with:
           filePath: ${{ github.workspace }}/app/google-services.json
           encodedString: ${{ secrets.GOOGLE_JSON }}
-      - name: Build Gradle
-        run: ./gradlew app:assembleDebug --stacktrace
-      - name: Upload APK
-        uses: actions/upload-artifact@v2-preview
+      
+      # Extarcting signing key.
+      
+      - name: Providing signing key
+        uses: RollyPeres/base64-to-path@v1
         with:
-          name: app
-          path: app/build/outputs/apk/debug/app-debug.apk
+          filePath: ${{ github.workspace }}/key.jks
+          encodedString: ${{ secrets.KEY_JKS }}
+      
+      - name: Assemble & Sign
+        run: |
+          ./gradlew app:assembleRelease --stacktrace
+          zipalign.exe -v -p 4 app/build/outputs/apk/release/app-release-unsigned.apk app/build/outputs/apk/release/app-release-unsigned-aligned.apk
+          apksigner.bat sign --ks key.jks ${{ secrets.KEY_PARAMS }} --out app/release/app-release.apk app/build/outputs/apk/release/app-release-unsigned-aligned.apk
+
+      - name: Drafing a release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: vX.X
+          release_name: Year based title
+          draft: true
+
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./app/release/app-release.apk
+          asset_name: app-release_vX.X.exe
+          asset_content_type: application/octet-stream
 
   notification:
     needs: [buildJob]
