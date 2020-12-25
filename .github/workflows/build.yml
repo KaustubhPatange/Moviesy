@@ -55,8 +55,8 @@ jobs:
       - name: Assemble & Sign
         run: |
           ./gradlew app:assembleRelease --stacktrace
-          zipalign.exe -v -p 4 app/build/outputs/apk/release/app-release-unsigned.apk app/build/outputs/apk/release/app-release-unsigned-aligned.apk
-          apksigner.bat sign --ks key.jks ${{ secrets.KEY_PARAMS }} --out app/release/app-release.apk app/build/outputs/apk/release/app-release-unsigned-aligned.apk
+          ${{ github.workspace }}/zipalign.exe -v -p 4 app/build/outputs/apk/release/app-release-unsigned.apk app/build/outputs/apk/release/app-release-unsigned-aligned.apk
+          ${{ github.workspace }}/apksigner.bat sign --ks key.jks ${{ secrets.KEY_PARAMS }} --out app/release/app-release.apk app/build/outputs/apk/release/app-release-unsigned-aligned.apk
 
       - name: Drafing a release
         id: create_release
