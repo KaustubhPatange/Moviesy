@@ -55,8 +55,8 @@ jobs:
       - name: Assemble & Sign
         run: |
           ./gradlew app:assembleRelease --stacktrace
-          zipalign.exe -v -p 4 app/build/outputs/apk/release/app-release-unsigned.apk app/build/outputs/apk/release/app-release-unsigned-aligned.apk
-          apksigner.bat sign --ks key.jks ${{ secrets.KEY_PARAMS }} --out app/release/app-release.apk app/build/outputs/apk/release/app-release-unsigned-aligned.apk
+          ${{ github.workspace }}/zipalign.exe -v -p 4 app/build/outputs/apk/release/app-release-unsigned.apk app/build/outputs/apk/release/app-release-unsigned-aligned.apk
+          ${{ github.workspace }}/apksigner.bat sign --ks key.jks ${{ secrets.KEY_PARAMS }} --out app/release/app-release.apk app/build/outputs/apk/release/app-release-unsigned-aligned.apk
 
       - name: Drafing a release
         id: create_release
@@ -76,8 +76,23 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./app/release/app-release.apk
-          asset_name: app-release_vX.X.exe
+          asset_name: app-release_vX.X.apk
           asset_content_type: application/octet-stream
+          
+          
+  draft_remove:
+    runs-on: ubuntu-latest
+    steps:
+      # Remove old release drafts by using the curl request for the available releases with draft flag
+      - name: Remove Old Release Drafts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/$GITHUB_REPOSITORY/releases \
+            | tr '\r\n' ' ' \
+            | jq '.[] | select(.draft == true) | .id' \
+            | xargs -I '{}' \
+          curl -X DELETE -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/$GITHUB_REPOSITORY/releases/{}
 
   notification:
     needs: [buildJob]
