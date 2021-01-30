@@ -10,7 +10,7 @@ kotlinDslPluginOptions {
 }
 
 object GradlePluginVersion {
-    const val KOTLIN = "1.3.72"
+    const val KOTLIN = "1.4.0"
     const val ANDROID_GRADLE = "3.6.3"
     const val SAFE_ARGS = "2.3.0-rc01"
     const val HILT = "2.28-alpha"

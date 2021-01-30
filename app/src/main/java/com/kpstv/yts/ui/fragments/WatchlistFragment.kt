@@ -2,25 +2,21 @@ package com.kpstv.yts.ui.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import androidx.annotation.StringDef
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SortedList
-import com.danimahardhika.cafebar.CafeBar
 import com.google.android.material.snackbar.Snackbar
+import com.kpstv.common_moviesy.extensions.hide
+import com.kpstv.common_moviesy.extensions.show
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.AppInterface.Companion.MOVIE_ID
 import com.kpstv.yts.R
 import com.kpstv.yts.adapters.WatchlistAdapter
 import com.kpstv.yts.databinding.FragmentWatchlistBinding
-import com.kpstv.common_moviesy.extensions.hide
-import com.kpstv.common_moviesy.extensions.show
+import com.kpstv.yts.ui.activities.AbstractBottomNavActivity
 import com.kpstv.yts.ui.activities.FinalActivity
 import com.kpstv.yts.ui.activities.MainActivity
 import com.kpstv.yts.ui.activities.SearchActivity
@@ -29,7 +25,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.lang.ref.WeakReference
 
 @AndroidEntryPoint
-class WatchlistFragment : Fragment(R.layout.fragment_watchlist) {
+class WatchlistFragment : Fragment(R.layout.fragment_watchlist), AbstractBottomNavActivity.BottomNavFragmentSelection {
 
     private val viewModel by activityViewModels<MainViewModel>()
 
@@ -49,6 +45,10 @@ class WatchlistFragment : Fragment(R.layout.fragment_watchlist) {
         initRecyclerView()
 
         bindUI()
+    }
+
+    override fun onReselected() {
+        binding.recyclerView.smoothScrollToPosition(0)
     }
 
     /** This will bind the fragment with the viewModel returning LiveData.

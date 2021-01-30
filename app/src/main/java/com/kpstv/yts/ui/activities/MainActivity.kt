@@ -1,41 +1,33 @@
 package com.kpstv.yts.ui.activities
 
 import android.annotation.SuppressLint
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.navigation.NavController
-import androidx.navigation.findNavController
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.common_moviesy.extensions.hide
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppInterface.Companion.IS_DARK_THEME
-import com.kpstv.yts.AppInterface.Companion.animationOptions
 import com.kpstv.yts.AppInterface.Companion.setAppThemeMain
 import com.kpstv.yts.BuildConfig
 import com.kpstv.yts.R
 import com.kpstv.yts.cast.CastHelper
-import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.databinding.ActivityMainBinding
 import com.kpstv.yts.extensions.NavigationModel
 import com.kpstv.yts.extensions.NavigationModels
 import com.kpstv.yts.extensions.Navigations
-import com.kpstv.yts.extensions.toFile
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.UpdateUtils
 import com.kpstv.yts.services.CastTorrentService
 import com.kpstv.yts.services.DownloadService
-import com.kpstv.yts.ui.fragments.sheets.BottomSheetDownload
+import com.kpstv.yts.ui.fragments.HomeFragment
+import com.kpstv.yts.ui.fragments.LibraryFragment
+import com.kpstv.yts.ui.fragments.WatchlistFragment
 import com.kpstv.yts.ui.helpers.MainCastHelper
 import com.kpstv.yts.ui.helpers.PremiumHelper
 import com.kpstv.yts.ui.settings.SettingsActivity
@@ -44,9 +36,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import io.github.dkbai.tinyhttpd.nanohttpd.webserver.SimpleWebServer
 import javax.inject.Inject
+import kotlin.reflect.KClass
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : AbstractBottomNavActivity() {
 
     @Inject
     lateinit var updateUtils: UpdateUtils
@@ -63,11 +56,18 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var drawerLayout: DrawerLayout
 
-    private lateinit var navController: NavController
     private var isDarkTheme = true
     private val navigations by lazy {
         Navigations(this)
     }
+
+    override val bottomNavigationViewId: Int get() = R.id.bottom_nav
+    override val fragmentContainerId: Int get() = R.id.fragment_container
+    override val bottomNavFragments: MutableMap<Int, KClass<out Fragment>> = mutableMapOf(
+        R.id.homeFragment to HomeFragment::class,
+        R.id.watchFragment to WatchlistFragment::class,
+        R.id.libraryFragment to LibraryFragment::class
+    )
 
     @SuppressLint("CheckResult")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,23 +90,6 @@ class MainActivity : AppCompatActivity() {
         setPremiumButtonClicked()
 
         setNavigationDrawerItemClicks()
-
-        navController = findNavController(R.id.nav_host_fragment)
-
-        /** I am not using setupWithNavController options to let it automatically
-         *  navigate through the bottom nav listener instead I'll be using custom
-         *  navigation Listener.
-         *  The reason is though till this date there is no fix solution for saving
-         *  fragment state i.e supporting multiple backstack, however there are few
-         *  workarounds which can be done but it makes it more complex.
-         *  So I'll be waiting till google comes out with a perfect solution.
-         *
-         *  PS: Also there is no way to change the default transition when user clicks
-         *      on bottom nav. So we use navigateTo option to override default
-         *      transition methods.
-         */
-
-        binding.bottomNav.setOnNavigationItemSelectedListener(bottomNavListener)
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -169,13 +152,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val bottomNavListener = BottomNavigationView.OnNavigationItemSelectedListener {
-        if (it.itemId != navController.currentDestination?.id)
-            navController.navigate(it.itemId, null, animationOptions)
-
-        return@OnNavigationItemSelectedListener true
-    }
-
     private fun setPremiumButtonClicked() {
         if (!AppInterface.IS_PREMIUM_UNLOCKED)
             binding.navigationLayout.customDrawerPremium.root.setOnClickListener {
@@ -190,7 +166,7 @@ class MainActivity : AppCompatActivity() {
     private fun checkIntentArguments() {
         if (intent?.getBooleanExtra(SplashActivity.ARG_ROUTE_TO_LIBRARY, false) == true) {
             binding.bottomNav.selectedItemId = R.id.libraryFragment
-            navController.navigate(R.id.libraryFragment)
+            setBottomNavFragment(R.id.libraryFragment)
         }
     }
 
@@ -231,8 +207,7 @@ class MainActivity : AppCompatActivity() {
     override fun onBackPressed() {
         when {
             drawerLayout.isDrawerOpen(GravityCompat.START) -> drawerLayout.closeDrawer(GravityCompat.START)
-            navController.currentDestination?.id != R.id.homeFragment -> binding.bottomNav.selectedItemId =
-                R.id.homeFragment
+            getSelectedBottomNavFragmentId() != R.id.homeFragment -> binding.bottomNav.selectedItemId = R.id.homeFragment
             else -> super.onBackPressed()
         }
     }

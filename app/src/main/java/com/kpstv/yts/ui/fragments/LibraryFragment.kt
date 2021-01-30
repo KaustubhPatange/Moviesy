@@ -9,7 +9,6 @@ import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.AppInterface.Companion.MOVIE_ID
@@ -22,6 +21,7 @@ import com.kpstv.common_moviesy.extensions.show
 import com.kpstv.yts.AppSettings
 import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.extensions.common.CustomTipLayout
+import com.kpstv.yts.ui.activities.AbstractBottomNavActivity
 import com.kpstv.yts.ui.activities.FinalActivity
 import com.kpstv.yts.ui.activities.MainActivity
 import com.kpstv.yts.ui.activities.SearchActivity
@@ -35,7 +35,7 @@ import java.io.File
 import java.lang.ref.WeakReference
 
 @AndroidEntryPoint
-class LibraryFragment : Fragment(R.layout.fragment_library) {
+class LibraryFragment : Fragment(R.layout.fragment_library), AbstractBottomNavActivity.BottomNavFragmentSelection {
     private val TAG = "LibraryFragment"
 
     private val viewModel by activityViewModels<MainViewModel>()
@@ -70,6 +70,10 @@ class LibraryFragment : Fragment(R.layout.fragment_library) {
             }
         )
         mediaRouteMenuItem = WeakReference(mainActivity.castHelper.setMediaRouteMenu(requireContext(), binding.toolbar.menu))
+    }
+
+    override fun onReselected() {
+        binding.recyclerViewDownload.smoothScrollToPosition(0)
     }
 
     override fun onDestroyView() {

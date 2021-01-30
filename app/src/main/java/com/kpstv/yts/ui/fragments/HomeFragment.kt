@@ -10,13 +10,19 @@ import com.google.android.material.tabs.TabLayout
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.R
 import com.kpstv.yts.databinding.FragmentHomeBinding
+import com.kpstv.yts.ui.activities.AbstractBottomNavActivity
 import com.kpstv.yts.ui.activities.MainActivity
 import com.kpstv.yts.ui.activities.SearchActivity
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class HomeFragment : Fragment(R.layout.fragment_home), TabLayout.OnTabSelectedListener {
+class HomeFragment : Fragment(R.layout.fragment_home), TabLayout.OnTabSelectedListener,
+    AbstractBottomNavActivity.BottomNavFragmentSelection {
+
+    interface HomeFragmentCallbacks {
+        fun doOnReselection() { }
+    }
 
     private val viewModel by viewModels<MainViewModel>(
         ownerProducer = { requireActivity() }
@@ -56,6 +62,14 @@ class HomeFragment : Fragment(R.layout.fragment_home), TabLayout.OnTabSelectedLi
         setCurrentTab(tab?.position)
     }
 
+    override fun onReselected() {
+        binding.appBarLayout.setExpanded(true)
+        val fragment = childFragmentManager.findFragmentByTag(CURRENT_FRAGMENT) ?: return
+        if (fragment is HomeFragmentCallbacks) {
+            fragment.doOnReselection()
+        }
+    }
+
     private fun setCurrentTab(position: Int?) {
         if (position == 0 || position == null) {
             binding.tabLayout.getTabAt(0)?.select()
@@ -67,9 +81,9 @@ class HomeFragment : Fragment(R.layout.fragment_home), TabLayout.OnTabSelectedLi
     }
 
     private fun setFragment(fragment: Fragment) {
-        parentFragmentManager
+        childFragmentManager
             .beginTransaction()
-            .replace(R.id.container, fragment)
+            .replace(R.id.container, fragment, CURRENT_FRAGMENT)
             .commit()
     }
 
@@ -82,5 +96,9 @@ class HomeFragment : Fragment(R.layout.fragment_home), TabLayout.OnTabSelectedLi
             binding.appBarLayout.isAppBarExpanded
         viewModel.homeFragmentState.tabPosition =
             binding.tabLayout.selectedTabPosition
+    }
+
+    companion object {
+        private const val CURRENT_FRAGMENT = "currentFragment"
     }
 }

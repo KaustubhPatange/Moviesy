@@ -22,7 +22,7 @@ import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class GenreFragment : Fragment(R.layout.fragment_genre) {
+class GenreFragment : Fragment(R.layout.fragment_genre), HomeFragment.HomeFragmentCallbacks {
 
     private val viewModel by viewModels<MainViewModel>(
         ownerProducer = { requireActivity() }
@@ -51,6 +51,10 @@ class GenreFragment : Fragment(R.layout.fragment_genre) {
         binding.recyclerView.layoutManager?.onRestoreInstanceState(
             viewModel.genreFragmentState.recyclerViewState
         )
+    }
+
+    override fun doOnReselection() {
+        binding.recyclerView.smoothScrollToPosition(0)
     }
 
     /**

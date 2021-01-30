@@ -1,6 +1,7 @@
 package com.kpstv.yts.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -15,7 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 
 @AndroidEntryPoint
-class ChartsFragment : Fragment(R.layout.fragment_charts) {
+class ChartsFragment : Fragment(R.layout.fragment_charts), HomeFragment.HomeFragmentCallbacks {
 
     private val viewModel by viewModels<MainViewModel>(
         ownerProducer = { requireActivity() }
@@ -41,6 +42,10 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
         binding.nestedScrollView.onRestoreInstanceState(
             viewModel.chartFragmentState.nestedScrollState
         )
+    }
+
+    override fun doOnReselection() {
+        binding.nestedScrollView.smoothScrollTo(0,0)
     }
 
     private fun setSwipeRefreshCallback() {
@@ -70,7 +75,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
         /** Featured Layout */
         cmlFeatured = CustomMovieLayout(requireActivity(), getString(R.string.featured)).apply {
             injectViewAt(binding.addLayout)
-            setLifeCycleOwner(requireHomeFragment()?.viewLifecycleOwner)
+            setLifeCycleOwner(viewLifecycleOwner)
             setupFeaturedCallbacks(viewModel) {
                 cmlFeatured.removeView(binding.addLayout)
                 Toasty.warning(requireActivity(), getString(R.string.featured_movies)).show()
@@ -84,7 +89,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
 
         cmlRecent = CustomMovieLayout(requireActivity(), getString(R.string.recently_added)).apply {
             injectViewAt(binding.addLayout)
-            setLifeCycleOwner(requireHomeFragment()?.viewLifecycleOwner)
+            setLifeCycleOwner(viewLifecycleOwner)
             setupCallbacks(viewModel, queryMap6)
         }
 
@@ -96,7 +101,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
 
         cmlTopRated = CustomMovieLayout(requireActivity(), getString(R.string.top_rated)).apply {
             injectViewAt(binding.addLayout)
-            setLifeCycleOwner(requireHomeFragment()?.viewLifecycleOwner)
+            setLifeCycleOwner(viewLifecycleOwner)
             setupCallbacks(viewModel, queryMap)
         }
 
@@ -108,7 +113,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
 
         cmlPopular = CustomMovieLayout(requireActivity(), getString(R.string.popular)).apply {
             injectViewAt(binding.addLayout)
-            setLifeCycleOwner(requireHomeFragment()?.viewLifecycleOwner)
+            setLifeCycleOwner(viewLifecycleOwner)
             setupCallbacks(viewModel, queryMap3)
         }
 
@@ -120,7 +125,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
 
         cmlMostLiked = CustomMovieLayout(requireActivity(), getString(R.string.most_liked)).apply {
             injectViewAt(binding.addLayout)
-            setLifeCycleOwner(requireHomeFragment()?.viewLifecycleOwner)
+            setLifeCycleOwner(viewLifecycleOwner)
             setupCallbacks(viewModel, queryMap4)
         }
 
@@ -132,26 +137,10 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
 
         cmlLatest = CustomMovieLayout(requireActivity(), getString(R.string.latest)).apply {
             injectViewAt(binding.addLayout)
-            setLifeCycleOwner(requireHomeFragment()?.viewLifecycleOwner)
+            setLifeCycleOwner(viewLifecycleOwner)
             setupCallbacks(viewModel, queryMap5)
         }
     }
-
-    /**
-     * Seems like parent fragment of this FragmentContainerView is NavHostFragment.
-     * We need to find the HomeFragment from it's child fragment.
-     *
-     * This will be used to pass LifeCycleOwner to CustomMovieLayout (above) to
-     * automatically save the state of the fragment.
-     *
-     * I can't pass this fragment's lifeCycle since it's anonymous behaviour is not
-     * properly invoking onStop() and onDestroy() as I want.
-     */
-    private fun requireHomeFragment() =
-        (requireParentFragment() as NavHostFragment)
-            .childFragmentManager.fragments.firstOrNull {
-                it.javaClass.name == HomeFragment::class.java.name
-            }
 
     /**
      * Save your state here.
