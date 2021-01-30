@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.os.Environment
-import androidx.navigation.NavOptions
 import androidx.preference.PreferenceManager
 import com.danimahardhika.cafebar.CafeBar
 import com.kpstv.yts.data.models.AppDatabase
@@ -84,7 +83,7 @@ class AppInterface {
 
         const val PURCHASE_REGEX_PATTERN = "moviesy_premium_[\\d]+.json"
 
-        val GENRE_CATEGORY_LIST = ArrayList<GenreFragment.LocalGenreModel>().apply {
+        val GENRE_CATEGORY_LIST: List<GenreFragment.LocalGenreModel> = ArrayList<GenreFragment.LocalGenreModel>().apply {
             add("Action", R.drawable.ic_action_genre, YTSQuery.Genre.action)
             add("Adventure", R.drawable.ic_adventure_genre, YTSQuery.Genre.adventure)
             add("Animation", R.drawable.ic_animation_genre, YTSQuery.Genre.animation)
@@ -102,7 +101,7 @@ class AppInterface {
             add("Sports", R.drawable.ic_sport_genre, YTSQuery.Genre.sport)
             add("Thriller", R.drawable.ic_thriller_genre, YTSQuery.Genre.thriller)
             add("Western", R.drawable.ic_western_genre, YTSQuery.Genre.western)
-        }
+        }.toList()
 
         fun setAppThemeNoAction(activity: Activity) {
             if (!IS_DARK_THEME) {
@@ -163,10 +162,5 @@ class AppInterface {
                 DecimalFormat("0.0").format(speed / 1000) + " MB/s"
             } else DecimalFormat("0.0").format(speed) + " KB/s"
         }
-
-        val animationOptions = NavOptions.Builder().setEnterAnim(R.anim.anim_blank)
-            .setExitAnim(R.anim.anim_blank)
-            .setPopEnterAnim(R.anim.nav_default_pop_enter_anim)
-            .setPopExitAnim(R.anim.nav_default_pop_exit_anim).build()
     }
 }

@@ -39,6 +39,7 @@ private object LibraryVersion {
     const val GOOGLE_OAUTH = "18.1.0"
     const val CAST_SAMPLE = "0.01"
     const val ACTIVITY_KTX = "1.2.0-alpha05"
+    const val FRAGMENT_KTX = "1.3.0-rc02"
     const val LOTTIE = "3.4.1"
     const val GOOGLE_ADS = "19.3.0"
     const val WORK_MANAGER = "2.4.0"
@@ -55,6 +56,7 @@ private object LibraryVersion {
 
 object LibraryDependency {
     const val ACTIVITY_KTX = "androidx.activity:activity-ktx:${LibraryVersion.ACTIVITY_KTX}"
+    const val FRAGMENT_KTX = "androidx.fragment:fragment-ktx:${LibraryVersion.FRAGMENT_KTX}"
     const val RECYCLERVIEW = "androidx.recyclerview:recyclerview:${LibraryVersion.RECYCLERVIEW}"
     const val CAOC = "cat.ereza:customactivityoncrash:${LibraryVersion.CAOC}"
     const val GOOGLE_HTTPCLIENT_API = "com.google.api-client:google-api-client-android:${LibraryVersion.GOOGLE_HTTPCLIENT}"

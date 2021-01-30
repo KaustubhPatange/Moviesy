@@ -73,7 +73,7 @@ class GenreFragment : Fragment(R.layout.fragment_genre), HomeFragment.HomeFragme
 
     class LocalGenreAdapter(
         private val context: Context,
-        private val list: ArrayList<LocalGenreModel>,
+        private val list: List<LocalGenreModel>,
         private val listener: ((LocalGenreModel, Int) -> Unit)
     ) : RecyclerView.Adapter<LocalGenreAdapter.LocalGenreHolder>() {
 
