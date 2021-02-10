@@ -1,6 +1,8 @@
 package com.kpstv.yts.services
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.hilt.Assisted
 import androidx.hilt.work.WorkerInject
@@ -13,15 +15,20 @@ import com.kpstv.yts.data.models.data.data_main
 import com.kpstv.yts.defaultPreference
 import com.kpstv.yts.extensions.Notifications
 import com.kpstv.yts.extensions.YTSQuery
+import com.kpstv.yts.extensions.utils.AppUtils
+import com.kpstv.yts.interfaces.api.TMdbApi
 import com.kpstv.yts.interfaces.api.YTSApi
 import com.kpstv.yts.ui.settings.GeneralSettingsFragment
 import retrofit2.await
+import java.io.InputStream
+import java.net.URL
 import java.util.concurrent.TimeUnit
 
 class LatestMovieWorker @WorkerInject constructor(
     @Assisted private val appContext: Context,
     @Assisted workerParams: WorkerParameters,
     private val ytsApi: YTSApi,
+    private val tmdbApi: TMdbApi,
     private val repository: MainRepository
 ) : CoroutineWorker(appContext, workerParams) {
     private val TAG = javaClass.simpleName
@@ -58,10 +65,12 @@ class LatestMovieWorker @WorkerInject constructor(
             movieList.forEach { movieShort ->
                 val exist = previousList?.movies?.any { it.url == movieShort.url }
                 if (exist == null || exist == false) {
+                    val bannerUrl = tmdbApi.getMovie(movieShort.imdbCode!!).getBannerImage()
                     Notifications.sendMovieNotification(
                         context = applicationContext,
                         movieName = movieShort.title,
                         movieId = movieShort.movieId!!,
+                        bannerImage = AppUtils.getBitmapFromUrl(bannerUrl),
                         featured = false
                     )
                 }

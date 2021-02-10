@@ -1,6 +1,7 @@
 package com.kpstv.yts.services
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.util.Log
 import androidx.hilt.Assisted
 import androidx.hilt.work.WorkerInject
@@ -11,14 +12,17 @@ import com.kpstv.yts.data.db.repository.MainRepository
 import com.kpstv.yts.data.models.data.data_main
 import com.kpstv.yts.defaultPreference
 import com.kpstv.yts.extensions.Notifications
+import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.UpdateUtils
 import com.kpstv.yts.extensions.utils.YTSFeaturedUtils
+import com.kpstv.yts.interfaces.api.TMdbApi
 import com.kpstv.yts.ui.settings.GeneralSettingsFragment
 import java.util.concurrent.TimeUnit
 
 class AppWorker @WorkerInject constructor(
     @Assisted private val appContext: Context,
     @Assisted workerParams: WorkerParameters,
+    private val tmdbApi: TMdbApi,
     private val ytsFeaturedUtils: YTSFeaturedUtils,
     private val repository: MainRepository,
     private val updateUtils: UpdateUtils
@@ -58,12 +62,19 @@ class AppWorker @WorkerInject constructor(
             repository.saveMovies(mainModel)
 
             list.forEach { movie ->
-                if (featuredMovies?.movies?.any { it.url == movie.url } == false)
+                if (featuredMovies?.movies?.any { it.url == movie.url } == false) {
+                    val bitmap: Bitmap? = if (movie.imdbCode != null) {
+                        val bannerUrl = tmdbApi.getMovie(movie.imdbCode).getBannerImage()
+                        AppUtils.getBitmapFromUrl(bannerUrl)
+                    } else null
+
                     Notifications.sendMovieNotification(
                         context = applicationContext,
                         movieName = movie.title,
-                        movieId = movie.movieId!!
+                        movieId = movie.movieId!!,
+                        bannerImage = bitmap
                     )
+                }
             }
         } catch (e: Exception) {
             Log.w(TAG, "Failed: ${e.message}", e)

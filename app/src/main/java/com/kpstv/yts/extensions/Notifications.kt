@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Build.VERSION.SDK_INT
 import android.util.Log
 import androidx.core.app.NotificationCompat
@@ -109,7 +110,7 @@ object Notifications {
         mgr.notify(UPDATE_NOTIFICATION_ID, notification)
     }
 
-    fun sendMovieNotification(context: Context, movieName: String, movieId: Int, featured: Boolean = true) = with(context) {
+    fun sendMovieNotification(context: Context, movieName: String, movieId: Int, bannerImage: Bitmap? = null, featured: Boolean = true) = with(context) {
         Log.e(TAG, "Sending notification with movieId: $movieId")
         val movieIntent = Intent(this, FinalActivity::class.java).apply {
             putExtra(AppInterface.MOVIE_ID, movieId)
@@ -117,7 +118,7 @@ object Notifications {
         val pendingIntent =
             PendingIntent.getActivity(this, getRandomNumberCode(), movieIntent, 0)
 
-        val notification = NotificationCompat.Builder(this, getString(R.string.CHANNEL_ID_2))
+        val notificationBuilder = NotificationCompat.Builder(this, getString(R.string.CHANNEL_ID_2))
             .setContentTitle(getString(R.string.app_name))
             .setContentText("\"$movieName\" ${if (featured) "is on featured list" else "is added"}")
             .setSmallIcon(R.drawable.ic_movie)
@@ -125,9 +126,11 @@ object Notifications {
             .setColorized(true)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
-            .build()
 
-        mgr.notify(getRandomNumberCode(), notification)
+        if (bannerImage != null)
+            notificationBuilder.setLargeIcon(bannerImage).setStyle(NotificationCompat.BigPictureStyle())
+
+        mgr.notify(getRandomNumberCode(), notificationBuilder.build())
     }
 
     fun sendDownloadNotification(context: Context, contentText: String) = with(context) {

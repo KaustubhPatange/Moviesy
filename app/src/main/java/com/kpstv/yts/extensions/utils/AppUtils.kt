@@ -5,12 +5,15 @@ import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
 import android.text.Spanned
 import android.util.Log
 import android.view.LayoutInflater
+import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AlertDialog
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.app.ShareCompat
@@ -246,6 +249,23 @@ class AppUtils {
             val taskList = mngr.getRunningTasks(10)
 
             return taskList[0].numActivities == 1 && taskList[0].topActivity!!.className == activity.javaClass.name
+        }
+
+        // Suspend needed to make sure we call it from worker thread only.
+        @WorkerThread
+        @Suppress("RedundantSuspendModifier", "BlockingMethodInNonBlockingContext")
+        suspend fun getBitmapFromUrl(url: String): Bitmap? {
+            return try {
+                val stream: InputStream = URL(url).openConnection().apply {
+                    doInput = true
+                    connect()
+                }.getInputStream()!!
+                val bitmap = BitmapFactory.decodeStream(stream)!!
+
+                bitmap
+            } catch (e: Exception) {
+                null
+            }
         }
 
         private val TAG = "Utils"

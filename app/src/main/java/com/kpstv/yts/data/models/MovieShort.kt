@@ -22,10 +22,11 @@ data class MovieShort(
             rating = data.rating,
             year = safeYear(data.release_date),
             bannerUrl = data.getPosterImage(),
-            runtime = data.runtime
+            runtime = data.runtime,
+            imdbCode = data.imdbCode
         )
 
-        fun from(data: Model.response_cast_movie.Cast)= MovieShort(
+        fun from(data: Model.response_cast_movie.Cast) = MovieShort(
             movieId = data.id,
             title = data.originalTitle,
             bannerUrl = data.getPosterImage(),
