@@ -9,9 +9,11 @@ import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
 import com.kpstv.yts.data.db.repository.MainRepository
 import com.kpstv.yts.data.models.data.data_main
+import com.kpstv.yts.defaultPreference
 import com.kpstv.yts.extensions.Notifications
 import com.kpstv.yts.extensions.utils.UpdateUtils
 import com.kpstv.yts.extensions.utils.YTSFeaturedUtils
+import com.kpstv.yts.ui.settings.GeneralSettingsFragment
 import java.util.concurrent.TimeUnit
 
 class AppWorker @WorkerInject constructor(
@@ -23,11 +25,14 @@ class AppWorker @WorkerInject constructor(
 ) : CoroutineWorker(appContext, workerParams) {
 
     private val TAG = javaClass.simpleName
+    private val preference by appContext.defaultPreference()
 
     override suspend fun doWork(): Result {
 
         checkForUpdates()
-        fetchFeaturedMovies()
+
+        if (preference.getBoolean(GeneralSettingsFragment.FEATURED_MOVIE_NOTIFY_PREF, true))
+            fetchFeaturedMovies()
 
         return Result.success()
     }

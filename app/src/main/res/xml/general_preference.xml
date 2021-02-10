@@ -28,16 +28,27 @@
             app:key="show_adaptive_tip_pref"
             app:summary="@string/adaptive_search_summary"
             app:title="@string/adaptive_search_title" />
-        <SwitchPreferenceCompat
-            app:defaultValue="true"
-            app:key="latest_movie_notify_pref"
-            app:summary="@string/notify_movie_summary"
-            app:title="@string/notify_movie_title"/>
         <ListPreference
             app:defaultValue="TMDB"
             app:key="suggestion_type_pref"
             app:summary="@string/suggestion_type_summary"
             app:title="@string/suggestion_type_title" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Notification">
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="featured_movie_notify_pref"
+            app:summary="@string/notify_featured_summary"
+            app:title="@string/notify_featured_title" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="latest_movie_notify_pref"
+            app:summary="@string/notify_movie_summary"
+            app:title="@string/notify_movie_title" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

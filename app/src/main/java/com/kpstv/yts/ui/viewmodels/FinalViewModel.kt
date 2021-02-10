@@ -104,7 +104,7 @@ class FinalViewModel @ViewModelInject constructor(
                 val responseMovie = tMdbApi.getMovie(queryString)
 
                 val query = YTSQuery.ListMoviesBuilder().apply {
-                    setQuery(responseMovie.imdb_id)
+                    setQuery(responseMovie.imdbCode)
                     setLimit(1)
                 }.build()
 
@@ -154,14 +154,14 @@ class FinalViewModel @ViewModelInject constructor(
 
                     /** Now we will fetch the recommendations using the movie id
                      */
-                    val response1 = tMdbApi.getRecommendations(response.id)
+                    val response1 = tMdbApi.getRecommendations(response.movieId)
 
                     commonProcessTMdbMovies(
                         suggestionCallback,
                         response1.results,
                         imdbId,
                         MovieType.Recommend,
-                        response.id.toString()
+                        response.movieId.toString()
                     )
                 } else {
                     Log.e(TAG, "=> Getting data from repository")

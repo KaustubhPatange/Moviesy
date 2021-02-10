@@ -1,5 +1,6 @@
 package com.kpstv.yts.interfaces.api
 
+import com.kpstv.yts.data.models.TmDbMovie
 import com.kpstv.yts.data.models.response.Model
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -20,7 +21,7 @@ interface TMdbApi {
     /** Get movie details from TMDB Movie ID or IMDB ID */
 
     @GET("movie/{id}")
-    suspend fun getMovie(@Path("id") id: String): Model.response_tmdb_movie
+    suspend fun getMovie(@Path("id") id: String): TmDbMovie
 
     /** Get cast details from TMDB Movie ID or IMDB ID */
 

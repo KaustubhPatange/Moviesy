@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import com.kpstv.yts.AppInterface
 import com.kpstv.yts.data.models.*
 import com.kpstv.yts.data.models.data.data_movie
 import java.io.Serializable
@@ -113,6 +114,8 @@ object Model {
             val voteAverage: Double,
             @SerializedName("vote_count")
             val voteCount: Int
-        )
+        ) {
+            fun getPosterImage(): String = "${AppInterface.TMDB_IMAGE_PREFIX}${posterPath}"
+        }
     }
 }

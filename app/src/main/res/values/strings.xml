@@ -206,7 +206,9 @@
     <string name="cast_stream_toast">Starting streaming, check notification</string>
     <string name="premium_subtitle_stream">Subtitle are available in premium version.</string>
     <string name="notify_movie_summary">Will send you a notification whenever a new movie is added to YTS.</string>
-    <string name="notify_movie_title">Notify latest movie</string>
+    <string name="notify_movie_title">Latest movies</string>
     <string name="error_solution">Help</string>
     <string name="crash_report">This crash stacktrace has been automatically reported.</string>
+    <string name="notify_featured_title">Featured movies</string>
+    <string name="notify_featured_summary">Will send you a notification whenever a movie is featured in popular downloads.</string>
 </resources>

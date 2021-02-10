@@ -1,7 +1,6 @@
 package com.kpstv.yts.data.models
 
 import com.google.gson.annotations.SerializedName
-import com.kpstv.yts.AppInterface
 import com.kpstv.yts.data.models.response.Model
 import java.io.Serializable
 
@@ -18,18 +17,18 @@ data class MovieShort(
 ) : Serializable {
     companion object {
         fun from(data: TmDbMovie) = MovieShort(
-            movieId = data.id.toInt(),
+            movieId = data.movieId,
             title = data.title,
             rating = data.rating,
             year = safeYear(data.release_date),
-            bannerUrl = "${AppInterface.TMDB_IMAGE_PREFIX}${data.bannerPath}",
+            bannerUrl = data.getPosterImage(),
             runtime = data.runtime
         )
 
         fun from(data: Model.response_cast_movie.Cast)= MovieShort(
             movieId = data.id,
             title = data.originalTitle,
-            bannerUrl = "${AppInterface.TMDB_IMAGE_PREFIX}${data.posterPath}",
+            bannerUrl = data.getPosterImage(),
             runtime = 0,
             rating = data.voteAverage,
             year = safeYear(data.releaseDate)

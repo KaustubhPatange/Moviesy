@@ -19,6 +19,7 @@ class GeneralSettingsFragment : PreferenceFragmentCompat() {
     companion object {
         const val SUGGESTION_TYPE_PREF = "suggestion_type_pref"
         const val LATEST_MOVIE_NOTIFY_PREF = "latest_movie_notify_pref"
+        const val FEATURED_MOVIE_NOTIFY_PREF = "featured_movie_notify_pref"
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {

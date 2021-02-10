@@ -1,10 +1,13 @@
 package com.kpstv.yts.data.models
 
 import com.google.gson.annotations.SerializedName
+import com.kpstv.yts.AppInterface
 
 data class TmDbMovie(
-    val uid: Int,
-    val id: String,
+    @SerializedName("id")
+    val movieId: Int,
+    @SerializedName("imdb_id")
+    val imdbCode: String,
     @SerializedName("vote_count")
     val likes: Int,
     @SerializedName("vote_average")
@@ -16,7 +19,10 @@ data class TmDbMovie(
     val language: String,
     val original_title: String,
     @SerializedName("backdrop_path")
-    val backgroundPath: String,
+    val bannerSuffix: String,
     @SerializedName("poster_path")
-    val bannerPath: String
-)
+    val posterSuffix: String
+) {
+    fun getBannerImage(): String = AppInterface.TMDB_IMAGE_PREFIX + bannerSuffix
+    fun getPosterImage(): String = AppInterface.TMDB_IMAGE_PREFIX + posterSuffix
+}
