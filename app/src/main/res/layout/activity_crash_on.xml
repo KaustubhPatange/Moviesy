@@ -27,7 +27,7 @@
         android:id="@+id/lottieView"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        app:layout_constraintBottom_toTopOf="@+id/btn_report"
+        app:layout_constraintBottom_toTopOf="@+id/tv_report"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title"
@@ -36,17 +36,18 @@
         app:lottie_loop="true"
         app:lottie_rawRes="@raw/detective" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_report"
-        android:layout_width="wrap_content"
+    <TextView
+        android:textAlignment="center"
+        android:id="@+id/tv_report"
+        android:layout_margin="10dp"
+        android:layout_width="0dp"
+        android:textSize="12sp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="15dp"
-        android:text="@string/create_issue"
-        android:textAllCaps="false"
-        app:icon="@drawable/ic_github"
-        app:layout_constraintBottom_toTopOf="@+id/btn_stack"
         android:layout_marginBottom="10dp"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:text="@string/crash_report"
+        app:layout_constraintBottom_toTopOf="@+id/btn_stack"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_stack"

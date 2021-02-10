@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="AppTheme.Light" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <item name="android:windowActivityTransitions">true</item>
@@ -86,6 +86,7 @@
         <item name="colorPrimaryDark">@color/colorPrimary</item>
         <item name="colorNavSeparator">@color/separator_light</item>
         <item name="searchViewStyle">@style/SearchViewStyle</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">false</item>
     </style>
 
     <style name="DialogTheme.Dark" parent="@style/CommonDialogTheme">
@@ -141,6 +142,7 @@
 
     <style name="SplashTheme" parent="Theme.MaterialComponents.NoActionBar">
         <item name="android:windowBackground">#9B68DA</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 

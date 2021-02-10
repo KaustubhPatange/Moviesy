@@ -31,10 +31,6 @@ class CrashOnActivity : AppCompatActivity() {
         binding.btnStack.setOnClickListener {
             createCustomCrashDialog()
         }
-
-        binding.btnReport.setOnClickListener {
-            AppUtils.launchUrlIntent(this, "${getString(R.string.app_github)}/issue")
-        }
     }
 
     private fun createCustomCrashDialog() {
@@ -45,9 +41,9 @@ class CrashOnActivity : AppCompatActivity() {
         )
         textView.setPadding(20)
         textView.apply {
-            isVerticalScrollBarEnabled = true;
-            movementMethod = ScrollingMovementMethod.getInstance();
-            scrollBarStyle = View.SCROLLBARS_INSIDE_INSET;
+            isVerticalScrollBarEnabled = true
+            movementMethod = ScrollingMovementMethod.getInstance()
+            scrollBarStyle = View.SCROLLBARS_INSIDE_INSET
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
             text = CustomActivityOnCrash.getStackTraceFromIntent(intent)
         }

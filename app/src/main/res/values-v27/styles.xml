@@ -26,7 +26,7 @@
         <item name="android:fontFamily">@font/google_sans_medium</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">?attr/colorForeground</item>
         <item name="android:statusBarColor">@color/colorPrimary</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:windowLightNavigationBar">true</item>
@@ -62,9 +62,8 @@
         <item name="colorAccent">@color/colorAccent_Dark</item>
         <item name="android:statusBarColor">@color/background</item>
         <item name="android:fontFamily">@font/google_sans_medium</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">?attr/colorForeground</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:windowLightNavigationBar">true</item>
         <item name="colorBackground">#121212</item>
         <item name="colorForeground">#1E1E1E</item>
         <item name="colorText">@color/white</item>

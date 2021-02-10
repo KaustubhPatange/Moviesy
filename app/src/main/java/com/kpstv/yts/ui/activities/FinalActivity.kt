@@ -519,8 +519,10 @@ class FinalActivity : AppCompatActivity(), MovieListener {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == YOUTUBE_PLAYER_VIEW_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            player.seekTo(data?.getFloatExtra(PlayerActivity.LAST_PLAYED, 0f) ?: 0f)
-            player.play()
+            if (::player.isInitialized) {
+                player.seekTo(data?.getFloatExtra(PlayerActivity.LAST_PLAYED, 0f) ?: 0f)
+                player.play()
+            }
         }
         super.onActivityResult(requestCode, resultCode, data)
     }

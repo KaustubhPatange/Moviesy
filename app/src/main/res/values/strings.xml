@@ -208,4 +208,5 @@
     <string name="notify_movie_summary">Will send you a notification whenever a new movie is added to YTS.</string>
     <string name="notify_movie_title">Notify latest movie</string>
     <string name="error_solution">Help</string>
+    <string name="crash_report">This crash stacktrace has been automatically reported.</string>
 </resources>
