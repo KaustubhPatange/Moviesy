@@ -1,8 +1,10 @@
 package com.kpstv.yts.cast
 
 import android.app.Activity
+import android.app.UiModeManager
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Handler
 import android.view.Menu
@@ -44,6 +46,17 @@ class CastHelper {
 
         fun anyDeviceAvailable(context: Context) =
             CastContext.getSharedInstance(context).castState != CastState.NO_DEVICES_AVAILABLE
+
+        /**
+         * Denotes if the device supports casting.
+         */
+        fun isCastingSupported(context: Context): Boolean {
+            val uiModeManager = context.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
+            if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
+                return false
+            }
+            return true
+        }
     }
 
     private lateinit var mCastContext: CastContext

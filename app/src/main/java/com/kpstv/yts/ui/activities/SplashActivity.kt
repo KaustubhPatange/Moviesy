@@ -50,8 +50,6 @@ class SplashActivity : AppCompatActivity(), Animation.AnimationListener {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        throw Exception("Hello world")
-
         val rotate = AnimationUtils.loadAnimation(this, R.anim.anim_splah_play)
         binding.imageView.startAnimation(rotate)
 

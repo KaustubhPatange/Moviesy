@@ -19,6 +19,7 @@ import com.kpstv.yts.extensions.deleteRecursive
 import com.kpstv.common_moviesy.extensions.hide
 import com.kpstv.common_moviesy.extensions.show
 import com.kpstv.yts.AppSettings
+import com.kpstv.yts.cast.CastHelper
 import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.extensions.common.CustomTipLayout
 import com.kpstv.yts.ui.activities.AbstractBottomNavActivity
@@ -45,6 +46,7 @@ class LibraryFragment : Fragment(R.layout.fragment_library), AbstractBottomNavAc
     private var mediaRouteMenuItem: WeakReference<MenuItem?>? = null
 
     private val binding by viewBinding(FragmentLibraryBinding::bind)
+    private val isCastingSupported by lazy { CastHelper.isCastingSupported(requireContext()) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -59,17 +61,19 @@ class LibraryFragment : Fragment(R.layout.fragment_library), AbstractBottomNavAc
 
         addDownloadTip()
 
-        mainActivity.castHelper.init(
-            activity = mainActivity,
-            onSessionDisconnected = { model, lastSavedPosition ->
-                if (model == null) return@init
-                viewModel.updateDownload(model.hash, true, lastSavedPosition)
-            },
-            onNeedToShowIntroductoryOverlay = {
-                mainActivity.castHelper.showIntroductoryOverlay(mediaRouteMenuItem?.get())
-            }
-        )
-        mediaRouteMenuItem = WeakReference(mainActivity.castHelper.setMediaRouteMenu(requireContext(), binding.toolbar.menu))
+        if (isCastingSupported) {
+            mainActivity.castHelper.init(
+                activity = mainActivity,
+                onSessionDisconnected = { model, lastSavedPosition ->
+                    if (model == null) return@init
+                    viewModel.updateDownload(model.hash, true, lastSavedPosition)
+                },
+                onNeedToShowIntroductoryOverlay = {
+                    mainActivity.castHelper.showIntroductoryOverlay(mediaRouteMenuItem?.get())
+                }
+            )
+            mediaRouteMenuItem = WeakReference(mainActivity.castHelper.setMediaRouteMenu(requireContext(), binding.toolbar.menu))
+        }
     }
 
     override fun onReselected() {
@@ -77,7 +81,7 @@ class LibraryFragment : Fragment(R.layout.fragment_library), AbstractBottomNavAc
     }
 
     override fun onDestroyView() {
-        mainActivity.castHelper.unInit()
+        if (isCastingSupported) mainActivity.castHelper.unInit()
         super.onDestroyView()
     }
 
@@ -133,12 +137,12 @@ class LibraryFragment : Fragment(R.layout.fragment_library), AbstractBottomNavAc
     }
 
     private fun adapterOnClickListener(model: Model.response_download) {
-        val sheet = if (mainActivity.castHelper.isCastActive()) {
+        val sheet = if (isCastingSupported && mainActivity.castHelper.isCastActive()) {
             /** Show cast to device button */
             BottomSheetLibraryDownload(mainActivity.castHelper, PlaybackType.REMOTE)
         } else {
             /** Show local play button */
-            BottomSheetLibraryDownload(mainActivity.castHelper, PlaybackType.LOCAL)
+            BottomSheetLibraryDownload(playbackType = PlaybackType.LOCAL)
         }
         val bundle = Bundle()
         bundle.putSerializable("model", model)

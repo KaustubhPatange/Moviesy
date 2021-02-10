@@ -27,7 +27,7 @@ enum class PlaybackType {
 }
 
 class BottomSheetLibraryDownload(
-    private val castHelper: CastHelper,
+    private val castHelper: CastHelper? = null,
     private val playbackType: PlaybackType
 ) : ExtendedBottomSheetDialogFragment(R.layout.bottom_sheet_library_download) {
 
@@ -91,7 +91,7 @@ class BottomSheetLibraryDownload(
             binding.root.removeAllViews()
             CustomProgressBinding.inflate(layoutInflater, binding.root, true)
 
-            castHelper.loadMedia(
+            castHelper?.loadMedia(
                 downloadModel = model,
                 playFromLastPosition = playFromLastPosition,
                 srtFile = subtitleFile,

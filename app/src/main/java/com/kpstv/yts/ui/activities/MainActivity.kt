@@ -50,7 +50,7 @@ class MainActivity : AbstractBottomNavActivity() {
     val TAG = "MainActivity"
 
     val castHelper = CastHelper()
-    val mainCastHelper by lazy {
+    private val mainCastHelper by lazy {
         MainCastHelper(this, castHelper)
     }
 
@@ -79,9 +79,10 @@ class MainActivity : AbstractBottomNavActivity() {
 
         isDarkTheme = IS_DARK_THEME
 
-        castHelper.initCastSession(this)
-
-        mainCastHelper.setUpCastRelatedStuff()
+        if (CastHelper.isCastingSupported(this)) {
+            castHelper.initCastSession(this)
+            mainCastHelper.setUpCastRelatedStuff()
+        }
 
         setNavigationDrawer()
 
