@@ -15,6 +15,7 @@ import com.kpstv.common_moviesy.extensions.utils.CommonUtils
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.AppDatabase
+import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.receivers.CommonBroadCast
 import com.kpstv.yts.ui.activities.FinalActivity
 import com.kpstv.yts.ui.activities.SplashActivity
@@ -110,31 +111,32 @@ object Notifications {
         mgr.notify(UPDATE_NOTIFICATION_ID, notification)
     }
 
-    fun sendMovieNotification(context: Context, movieName: String, movieId: Int, bannerImage: Bitmap? = null, featured: Boolean = true) = with(context) {
-        Log.e(TAG, "Sending notification with movieId: $movieId")
+    fun sendMovieNotification(context: Context, movie: MovieShort, posterImage: Bitmap? = null, bannerImage: Bitmap? = null, featured: Boolean = true) = with(context) {
+        Log.e(TAG, "Sending notification with movieId: ${movie.movieId}")
         val movieIntent = Intent(this, FinalActivity::class.java).apply {
-            putExtra(AppInterface.MOVIE_ID, movieId)
+            putExtra(AppInterface.MOVIE_ID, movie.movieId)
         }
         val pendingIntent =
             PendingIntent.getActivity(this, getRandomNumberCode(), movieIntent, 0)
 
         val notificationBuilder = NotificationCompat.Builder(this, getString(R.string.CHANNEL_ID_2))
-            .setContentTitle(getString(R.string.app_name))
-            .setContentText("\"$movieName\" ${if (featured) "is on featured list" else "is added"}")
+            .setContentTitle(movie.title)
+            .setContentText("${if (featured) "Featured" else "Latest"} • ${movie.rating}/10 • ${movie.year} • ${movie.runtime} mins")
             .setSmallIcon(R.drawable.ic_movie)
             .setColor(colorFrom(R.color.colorPrimary_New_DARK))
             .setColorized(true)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
 
+        if (posterImage != null)
+            notificationBuilder.setLargeIcon(posterImage)
         if (bannerImage != null)
-            notificationBuilder.setLargeIcon(bannerImage).setStyle(NotificationCompat.BigPictureStyle())
+            notificationBuilder.setStyle(NotificationCompat.BigPictureStyle().bigPicture(bannerImage))
 
         mgr.notify(getRandomNumberCode(), notificationBuilder.build())
     }
 
     fun sendDownloadNotification(context: Context, contentText: String) = with(context) {
-
         val downloadIntent = Intent(this, SplashActivity::class.java).apply {
             putExtra(SplashActivity.ARG_ROUTE_TO_LIBRARY, true)
         }

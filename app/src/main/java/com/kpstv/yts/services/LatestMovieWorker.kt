@@ -68,8 +68,8 @@ class LatestMovieWorker @WorkerInject constructor(
                     val bannerUrl = tmdbApi.getMovie(movieShort.imdbCode!!).getBannerImage()
                     Notifications.sendMovieNotification(
                         context = applicationContext,
-                        movieName = movieShort.title,
-                        movieId = movieShort.movieId!!,
+                        movie = movieShort,
+                        posterImage = AppUtils.getBitmapFromUrl(movieShort.bannerUrl),
                         bannerImage = AppUtils.getBitmapFromUrl(bannerUrl),
                         featured = false
                     )

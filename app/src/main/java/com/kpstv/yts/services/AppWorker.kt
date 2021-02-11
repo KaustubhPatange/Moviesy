@@ -63,16 +63,16 @@ class AppWorker @WorkerInject constructor(
 
             list.forEach { movie ->
                 if (featuredMovies?.movies?.any { it.url == movie.url } == false) {
-                    val bitmap: Bitmap? = if (movie.imdbCode != null) {
+                    val bannerImage: Bitmap? = if (movie.imdbCode != null) {
                         val bannerUrl = tmdbApi.getMovie(movie.imdbCode).getBannerImage()
                         AppUtils.getBitmapFromUrl(bannerUrl)
                     } else null
 
                     Notifications.sendMovieNotification(
                         context = applicationContext,
-                        movieName = movie.title,
-                        movieId = movie.movieId!!,
-                        bannerImage = bitmap
+                        movie = movie,
+                        posterImage = AppUtils.getBitmapFromUrl(movie.bannerUrl),
+                        bannerImage = bannerImage
                     )
                 }
             }
