@@ -13,9 +13,13 @@
         android:layout_height="wrap_content">
 
         <com.google.android.material.card.MaterialCardView
-            android:layout_marginBottom="5dp"
-            android:id="@+id/searchCard"
             app:layout_scrollFlags="scroll|enterAlways|snap"
+            android:layout_marginBottom="5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tv_filter"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:id="@+id/searchCard"
             android:foreground="?selectableItemBackground"
             android:layout_marginStart="25dp"
             android:layout_marginEnd="25dp"
@@ -50,8 +54,26 @@
                     app:layout_constraintStart_toEndOf="@id/searchImage"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
+                   app:layout_constraintEnd_toStartOf="@id/tv_filter"
                     android:text="@string/searchmovies"/>
+
+                <TextView
+                    android:textColor="@color/premium"
+                    android:layout_marginEnd="7dp"
+                    android:id="@+id/tv_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:text="@string/_4k"
+                    android:textSize="17sp"
+                    android:padding="5dp"
+                    app:layout_constraintStart_toEndOf="@id/textView"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

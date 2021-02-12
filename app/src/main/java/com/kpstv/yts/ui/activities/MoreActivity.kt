@@ -15,6 +15,7 @@ import androidx.lifecycle.Observer
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import com.kpstv.yts.AppInterface.Companion.setAppThemeNoAction
 import com.kpstv.yts.R
 import com.kpstv.yts.adapters.CustomPagedAdapter
@@ -78,11 +79,10 @@ class MoreActivity : AppCompatActivity() {
 
         Log.e(TAG, "=> onPause()")
 
-        localEndpoint =
-            endPoint
+        localEndpoint = endPoint
         localBase = base
         localQuery = queryMap
-        localGenre = genre;
+        localGenre = genre
         super.onPause()
     }
 
@@ -188,7 +188,7 @@ class MoreActivity : AppCompatActivity() {
         queryMap = map
 
         for (c in 0 until keys.size) {
-            if (keys[c] == "sort_by" || keys[c] == "order_by")
+            if (keys[c] == "sort_by" || keys[c] == "order_by" || keys[c] == "quality")
                 createChip(values[c])
         }
         setupRecyclerView()
@@ -232,22 +232,18 @@ class MoreActivity : AppCompatActivity() {
                 binding.amChipGroup.children.forEach {
                     val chip = it.chip
                     when (chip.text) {
-                        getString(R.string.date) ->
-                            builder.setSortBy(YTSQuery.SortBy.date_added)
-                        getString(R.string.download) ->
-                            builder.setSortBy(YTSQuery.SortBy.download_count)
-                        getString(R.string.popular) ->
-                            builder.setSortBy(YTSQuery.SortBy.like_count)
-                        getString(R.string.rating) ->
-                            builder.setSortBy(YTSQuery.SortBy.rating)
-                        getString(R.string.seeders) ->
-                            builder.setSortBy(YTSQuery.SortBy.seeds)
-                        getString(R.string.year) ->
-                            builder.setSortBy(YTSQuery.SortBy.year)
-                        getString(R.string.asc) ->
-                            builder.setOrderBy(YTSQuery.OrderBy.ascending)
-                        getString(R.string.desc) ->
-                            builder.setOrderBy(YTSQuery.OrderBy.descending)
+                        getString(R.string.date) -> builder.setSortBy(YTSQuery.SortBy.date_added)
+                        getString(R.string.download) -> builder.setSortBy(YTSQuery.SortBy.download_count)
+                        getString(R.string.popular) -> builder.setSortBy(YTSQuery.SortBy.like_count)
+                        getString(R.string.rating) -> builder.setSortBy(YTSQuery.SortBy.rating)
+                        getString(R.string.seeders) -> builder.setSortBy(YTSQuery.SortBy.seeds)
+                        getString(R.string.year) -> builder.setSortBy(YTSQuery.SortBy.year)
+                        getString(R.string.asc) -> builder.setOrderBy(YTSQuery.OrderBy.ascending)
+                        getString(R.string.desc) -> builder.setOrderBy(YTSQuery.OrderBy.descending)
+                        getString(R.string._3d) -> builder.setQuality(YTSQuery.Quality.q3D)
+                        getString(R.string._4k) -> builder.setQuality(YTSQuery.Quality.q2160p)
+                        getString(R.string._1080p) -> builder.setQuality(YTSQuery.Quality.q1080p)
+                        getString(R.string._720p) -> builder.setQuality(YTSQuery.Quality.q720p)
                     }
                 }
                 queryMap = builder.build()
@@ -308,23 +304,14 @@ class MoreActivity : AppCompatActivity() {
             R.layout.custom_alert_filter, null
         )
 
-        dialogView.alertPositiveText.text = "Apply"
+        dialogView.alertPositiveText.text = getString(R.string.apply)
         dialogView.alertPositiveText.setOnClickListener {
 
             val map = HashMap<String, String>()
 
-            dialogView.sortChipGroup.forEach {
-                val chip = it as Chip
-                if (chip.isChecked) {
-                    map["sort_by"] = getQueryTextfromText(chip.text.toString())!!
-                }
-            }
-            dialogView.OrderChipGroup.forEach {
-                val chip = it as Chip
-                if (chip.isChecked) {
-                    map["order_by"] = getQueryTextfromText(chip.text.toString())!!
-                }
-            }
+            chipGroupToMap(dialogView.qualityChipGroup, "quality", map)
+            chipGroupToMap(dialogView.sortChipGroup, "sort_by", map)
+            chipGroupToMap(dialogView.OrderChipGroup, "order_by", map)
 
             initQueries(map)
 
@@ -345,32 +332,37 @@ class MoreActivity : AppCompatActivity() {
         }
     }
 
+    private fun chipGroupToMap(chipGroup: ChipGroup, type: String, outMap: HashMap<String, String>) {
+       chipGroup.forEach {
+           val chip = it as Chip
+           if (chip.isChecked) {
+               outMap[type] = getQueryTextfromText(chip.text.toString())
+           }
+       }
+    }
+
     private fun showAlertDialog() {
-        val values: ArrayList<String>? = ArrayList(queryMap?.values!!)
+        val values: List<String> = queryMap?.values!!.toList()
 
-        if (queryMap?.containsKey("sort_by") == true)
-            dialogView.sortChipGroup.forEach {
-                val chip = it as Chip
-                chip.isChecked = false
-                (0 until values?.size!!).forEach { i ->
-                    if (chip.text == getTextfromQuery(values[i]))
-                        chip.isChecked = true
-                }
-            }
-        else dialogView.sortChipGroup.clearCheck()
-
-        if (queryMap?.containsKey("order_by") == true)
-            dialogView.OrderChipGroup.forEach {
-                val chip = it as Chip
-                chip.isChecked = false
-                (0 until values?.size!!).forEach { i ->
-                    if (chip.text == getTextfromQuery(values[i]))
-                        chip.isChecked = true
-                }
-            }
-        else dialogView.OrderChipGroup.clearCheck()
+        preSelectChipGroup(dialogView.qualityChipGroup, "quality", values)
+        preSelectChipGroup(dialogView.sortChipGroup, "sort_by", values)
+        preSelectChipGroup(dialogView.OrderChipGroup, "order_by", values)
 
         alertDialog?.show()
+    }
+
+    private fun preSelectChipGroup(chipGroup: ChipGroup, type: String, values: List<String>) {
+        if (queryMap?.containsKey(type) == true)
+            chipGroup.forEach {
+                val chip = it as Chip
+                chip.isChecked = false
+                values.indices.forEach { i ->
+                    if (chip.text == getTextfromQuery(values[i]))
+                        chip.isChecked = true
+                }
+            }
+        else
+            chipGroup.clearCheck()
     }
 
     /** Since fetching live data depends on network parameter, so I've created
@@ -396,8 +388,9 @@ class MoreActivity : AppCompatActivity() {
         }
     }
 
-    private fun getTextfromQuery(text: String) =
+    private fun getTextfromQuery(text: String): String =
         when (text) {
+            "2160p" -> getString(R.string._4k)
             "desc" -> getString(R.string.desc)
             "asc" -> getString(R.string.asc)
             YTSQuery.SortBy.date_added.name -> getString(R.string.date)
@@ -406,28 +399,21 @@ class MoreActivity : AppCompatActivity() {
             YTSQuery.SortBy.seeds.name -> getString(R.string.seeders)
             YTSQuery.SortBy.rating.name -> getString(R.string.rating)
             YTSQuery.SortBy.like_count.name -> getString(R.string.popular)
-            else -> null
+            else -> text
         }
 
-    private fun getQueryTextfromText(text: String) =
+    private fun getQueryTextfromText(text: String): String =
         when (text) {
-            getString(R.string.date) ->
-                YTSQuery.SortBy.date_added.name
-            getString(R.string.download) ->
-                YTSQuery.SortBy.download_count.name
-            getString(R.string.popular) ->
-                YTSQuery.SortBy.like_count.name
-            getString(R.string.rating) ->
-                YTSQuery.SortBy.rating.name
-            getString(R.string.seeders) ->
-                YTSQuery.SortBy.seeds.name
-            getString(R.string.year) ->
-                YTSQuery.SortBy.year.name
-            getString(R.string.asc) ->
-                "asc"
-            getString(R.string.desc) ->
-                "desc"
-            else -> null
+            getString(R.string.date) -> YTSQuery.SortBy.date_added.name
+            getString(R.string.download) -> YTSQuery.SortBy.download_count.name
+            getString(R.string.popular) -> YTSQuery.SortBy.like_count.name
+            getString(R.string.rating) -> YTSQuery.SortBy.rating.name
+            getString(R.string.seeders) -> YTSQuery.SortBy.seeds.name
+            getString(R.string.year) -> YTSQuery.SortBy.year.name
+            getString(R.string.asc) -> "asc"
+            getString(R.string.desc) -> "desc"
+            getString(R.string._4k) -> "2160p"
+            else -> text
         }
 
 

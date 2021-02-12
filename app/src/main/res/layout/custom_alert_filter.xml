@@ -12,6 +12,36 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
+        android:text="@string/caf_quality"
+        android:textSize="18sp"/>
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/qualityChipGroup"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        app:singleSelection="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <com.google.android.material.chip.Chip
+            style="@style/customChipStyle"
+            android:text="@string/_720p"/>
+        <com.google.android.material.chip.Chip
+            style="@style/customChipStyle"
+            android:text="@string/_1080p"/>
+        <com.google.android.material.chip.Chip
+            style="@style/customChipStyle"
+            android:text="@string/_4k"/>
+        <com.google.android.material.chip.Chip
+            style="@style/customChipStyle"
+            android:text="@string/_3d"/>
+    </com.google.android.material.chip.ChipGroup>
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:textColor="?colorTextLight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
         android:text="@string/sort_by"
         android:textSize="18sp" />
 

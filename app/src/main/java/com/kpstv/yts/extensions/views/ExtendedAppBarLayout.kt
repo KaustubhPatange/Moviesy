@@ -2,6 +2,7 @@ package com.kpstv.yts.extensions.views
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
@@ -21,7 +22,7 @@ class ExtendedAppBarLayout : AppBarLayout, OnOffsetChangedListener {
         check(
             !(layoutParams !is CoordinatorLayout.LayoutParams
                     || parent !is CoordinatorLayout)
-        ) { "MyAppBarLayout must be a direct child of CoordinatorLayout." }
+        ) { "ExtendedAppBarLayout must be a direct child of CoordinatorLayout." }
         addOnOffsetChangedListener(this)
     }
 
@@ -29,6 +30,7 @@ class ExtendedAppBarLayout : AppBarLayout, OnOffsetChangedListener {
         appBarLayout: AppBarLayout,
         verticalOffset: Int
     ) {
+        Log.e(javaClass.name, "Vertical Offset: $verticalOffset")
         state = when {
             verticalOffset == 0 -> {
                 if (onStateChangeListener != null && state != State.EXPANDED) {

@@ -83,26 +83,6 @@ class AppInterface {
 
         const val PURCHASE_REGEX_PATTERN = "moviesy_premium_[\\d]+.json"
 
-        val GENRE_CATEGORY_LIST: List<GenreFragment.LocalGenreModel> = ArrayList<GenreFragment.LocalGenreModel>().apply {
-            add("Action", R.drawable.ic_action_genre, YTSQuery.Genre.action)
-            add("Adventure", R.drawable.ic_adventure_genre, YTSQuery.Genre.adventure)
-            add("Animation", R.drawable.ic_animation_genre, YTSQuery.Genre.animation)
-            add("Comedy", R.drawable.ic_comedy_genre, YTSQuery.Genre.comedy)
-            add("Crime", R.drawable.ic_crime_genre, YTSQuery.Genre.crime)
-            add("Documentary", R.drawable.ic_documentary_genre, YTSQuery.Genre.documentary)
-            add("Drama", R.drawable.ic_drama_genre, YTSQuery.Genre.drama)
-            add("Family", R.drawable.ic_family_genre, YTSQuery.Genre.family)
-            add("Fantasy", R.drawable.ic_fantasy_genre, YTSQuery.Genre.fantasy)
-            add("History", R.drawable.ic_history_genre, YTSQuery.Genre.history)
-            add("Horror", R.drawable.ic_horror_genre, YTSQuery.Genre.horror)
-            add("Musical", R.drawable.ic_musical_genre, YTSQuery.Genre.musical)
-            add("Romance", R.drawable.ic_romance_genre, YTSQuery.Genre.romance)
-            add("Sci-Fi", R.drawable.ic_sci_fi_genre, YTSQuery.Genre.sci_fi)
-            add("Sports", R.drawable.ic_sport_genre, YTSQuery.Genre.sport)
-            add("Thriller", R.drawable.ic_thriller_genre, YTSQuery.Genre.thriller)
-            add("Western", R.drawable.ic_western_genre, YTSQuery.Genre.western)
-        }.toList()
-
         fun setAppThemeNoAction(activity: Activity) {
             if (!IS_DARK_THEME) {
                 activity.setTheme(R.style.AppTheme_Light_NoAction)

@@ -10,6 +10,8 @@ import com.google.android.material.tabs.TabLayout
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.R
 import com.kpstv.yts.databinding.FragmentHomeBinding
+import com.kpstv.yts.extensions.YTSQuery
+import com.kpstv.yts.extensions.common.CustomMovieLayout
 import com.kpstv.yts.ui.activities.AbstractBottomNavActivity
 import com.kpstv.yts.ui.activities.MainActivity
 import com.kpstv.yts.ui.activities.SearchActivity
@@ -42,6 +44,13 @@ class HomeFragment : Fragment(R.layout.fragment_home), TabLayout.OnTabSelectedLi
         binding.searchCard.setOnClickListener {
             val intent = Intent(mainActivity, SearchActivity::class.java)
             startActivity(intent)
+        }
+
+        binding.tvFilter.setOnClickListener {
+            val queryMap = YTSQuery.ListMoviesBuilder.getDefault().apply {
+                setQuality(YTSQuery.Quality.q2160p)
+            }.build()
+            CustomMovieLayout.invokeMoreFunction(requireContext(), getString(R.string.search_filters), queryMap)
         }
 
         binding.tabLayout.addOnTabSelectedListener(this)

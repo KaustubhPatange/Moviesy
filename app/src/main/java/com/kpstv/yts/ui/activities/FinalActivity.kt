@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -541,7 +542,10 @@ class FinalActivity : AppCompatActivity(), MovieListener {
     override fun onBackPressed() {
         if (AppUtils.isLastActivity(this))
             startActivity(Intent(this, MainActivity::class.java))
-        super.onBackPressed()
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q)
+            finishAfterTransition() // Fix b\139738913
+        else
+            super.onBackPressed()
     }
 }
 

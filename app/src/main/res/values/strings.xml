@@ -211,4 +211,11 @@
     <string name="crash_report">This crash stacktrace has been automatically reported.</string>
     <string name="notify_featured_title">Featured movies</string>
     <string name="notify_featured_summary">Will send you a notification whenever a movie is featured in popular downloads.</string>
+    <string name="caf_quality">Quality</string>
+    <string name="_720p">720p</string>
+    <string name="_1080p">1080p</string>
+    <string name="_4k">4K</string>
+    <string name="_3d">3D</string>
+    <string name="apply">Apply</string>
+    <string name="search_filters">Search filters</string>
 </resources>

@@ -57,6 +57,15 @@ class YTSQuery {
     }
 
     class ListMoviesBuilder {
+        companion object {
+            fun getDefault(): ListMoviesBuilder =
+                ListMoviesBuilder()
+                    .setOrderBy(OrderBy.descending)
+                    .setSortBy(SortBy.date_added)
+                    .setPage(1)
+                    .setLimit(20)
+        }
+
         var vals: MutableMap<String, String> =
             HashMap()
 
