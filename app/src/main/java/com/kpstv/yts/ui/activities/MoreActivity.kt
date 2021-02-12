@@ -1,16 +1,24 @@
 package com.kpstv.yts.ui.activities
 
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
+import android.graphics.drawable.BitmapDrawable
+import android.icu.util.Measure
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.view.ViewParent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.animation.doOnEnd
 import androidx.core.view.children
+import androidx.core.view.drawToBitmap
 import androidx.core.view.forEach
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.Observer
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
@@ -117,7 +125,6 @@ class MoreActivity : AppCompatActivity() {
 
         binding.swipeRefreshLayout.isEnabled = false
         binding.recyclerView.layoutManager = GridLayoutManager(this, 3)
-        binding.amChipLayout.visibility = View.GONE
 
         /** Updating the base, endpoint static object
          */
@@ -376,9 +383,8 @@ class MoreActivity : AppCompatActivity() {
                 if (binding.recyclerView.adapter?.itemCount ?: 0 <= 0) {
                     updateHandler.postDelayed(this, 1000)
                 } else {
-
                     if (base == MovieBase.YTS)
-                        binding.amChipLayout.visibility = View.VISIBLE
+                        animateShowChipLayout()
 
                     binding.swipeRefreshLayout.isRefreshing = false
                 }
@@ -416,6 +422,36 @@ class MoreActivity : AppCompatActivity() {
             else -> text
         }
 
+    private fun animateShowChipLayout() = with(binding.amChipLayout) {
+        if (visibility == View.VISIBLE) return@with
+
+        val parent = parent as ViewGroup
+
+        if (!isLaidOut) {
+            measure(
+                View.MeasureSpec.makeMeasureSpec(parent.width, View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(parent.height, View.MeasureSpec.AT_MOST)
+            )
+            layout(parent.left, parent.height - measuredHeight, parent.width, parent.height)
+        }
+
+        val drawable = BitmapDrawable(context.resources, drawToBitmap())
+        drawable.setBounds(left, parent.height, right, parent.height + height)
+        parent.overlay.add(drawable)
+
+        ValueAnimator.ofInt(parent.height, top).apply {
+            duration = 250
+            addUpdateListener {
+                val value = it.animatedValue as Int
+                drawable.setBounds(0, value, parent.width, parent.height + value)
+            }
+            doOnEnd {
+                parent.overlay.remove(drawable)
+                visibility = View.VISIBLE
+            }
+            start()
+        }
+    }
 
     override fun onSupportNavigateUp(): Boolean {
         finish()

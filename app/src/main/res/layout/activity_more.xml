@@ -39,16 +39,18 @@
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <RelativeLayout
-        android:id="@+id/am_chipLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <LinearLayout
+            android:id="@+id/am_chipLayout"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:background="?colorForeground"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            tools:visibility="visible">
 
             <ImageView
                 android:layout_marginStart="5dp"
