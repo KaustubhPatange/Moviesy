@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.kpstv.yts.cast.CastHelper
 import com.kpstv.yts.extensions.toFile
@@ -19,10 +21,19 @@ class MainCastHelper(private val mainActivity: MainActivity, private val castHel
 
         LocalBroadcastManager.getInstance(this)
             .registerReceiver(broadcastReceiver, filters)
+
+        mainActivity.lifecycle.addObserver(castObserver)
     }
 
     fun unregister() = with(mainActivity) {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver)
+    }
+
+    private val castObserver = object: DefaultLifecycleObserver {
+        override fun onDestroy(owner: LifecycleOwner) {
+            unregister()
+            super.onDestroy(owner)
+        }
     }
 
     private val broadcastReceiver = object : BroadcastReceiver() {

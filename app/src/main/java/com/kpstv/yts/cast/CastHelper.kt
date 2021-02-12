@@ -15,6 +15,8 @@ import com.google.android.gms.cast.MediaMetadata
 import com.google.android.gms.cast.MediaTrack
 import com.google.android.gms.cast.framework.*
 import com.google.android.gms.cast.framework.media.RemoteMediaClient
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.common.images.WebImage
 import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.yts.AppInterface.Companion.APP_IMAGE_URL
@@ -51,8 +53,10 @@ class CastHelper {
          * Denotes if the device supports casting.
          */
         fun isCastingSupported(context: Context): Boolean {
+            val resultCode = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(context)
             val uiModeManager = context.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
-            if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
+            if (resultCode != ConnectionResult.SUCCESS
+                || uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
                 return false
             }
             return true

@@ -216,7 +216,6 @@ class MainActivity : AbstractBottomNavActivity() {
     override fun onDestroy() {
         stopService(Intent(this, DownloadService::class.java))
         stopService(Intent(this, CastTorrentService::class.java))
-        mainCastHelper.unregister()
         /** Stop the HTTP server if started */
         SimpleWebServer.stopServer()
         super.onDestroy()
