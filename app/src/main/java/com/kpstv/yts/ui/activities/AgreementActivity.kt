@@ -6,7 +6,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.common.GooglePlayServicesUtil
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kpstv.common_moviesy.extensions.viewBinding
+import com.kpstv.yts.R
 import com.kpstv.yts.databinding.ActivityAgreementBinding
 import com.kpstv.yts.defaultPreference
 import com.kpstv.yts.extensions.startActivityAndFinish
@@ -30,18 +32,14 @@ class AgreementActivity : AppCompatActivity() {
         binding.btnAgree.setOnClickListener {
             val errorCode = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this)
             if (errorCode != ConnectionResult.SUCCESS) {
-                val dialog = GoogleApiAvailability.getInstance().getErrorDialog(this, errorCode, GMS_RESULT_CODE)
-                dialog.show()
+                MaterialAlertDialogBuilder(this)
+                    .setTitle(getString(R.string.warning))
+                    .setMessage(getString(R.string.play_service_error) + " (Code: $errorCode).")
+                    .setPositiveButton(getString(R.string.okay)) { _, _ -> moveForward() }
+                    .show()
             } else {
                 moveForward()
             }
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == GMS_RESULT_CODE) {
-            moveForward()
         }
     }
 

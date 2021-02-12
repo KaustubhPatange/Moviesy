@@ -218,4 +218,7 @@
     <string name="_3d">3D</string>
     <string name="apply">Apply</string>
     <string name="search_filters">Search filters</string>
+    <string name="play_service_error">Google Play Service is not available on this device, some of the features will be disabled</string>
+    <string name="warning">Warning</string>
+    <string name="okay">OK</string>
 </resources>
