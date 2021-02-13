@@ -20,6 +20,7 @@
     <string name="webrip">WebRip</string>
     <string name="CHANNEL_ID_1">yts_01</string>
     <string name="CHANNEL_ID_2">yts_02</string>
+    <string name="CHANNEL_ID_3">yts_03</string>
     <string name="current">Current</string>
     <string name="pending">Pending Jobs</string>
     <string name="ask_delete">Delete files in storage?</string>
@@ -221,4 +222,8 @@
     <string name="play_service_error">Google Play Service is not available on this device, some of the features will be disabled</string>
     <string name="warning">Warning</string>
     <string name="okay">OK</string>
+    <string name="update">Update</string>
+    <string name="update_download">Update downloaded</string>
+    <string name="update_install">Tap to install the update</string>
+    <string name="update_error">Error while updating the app</string>
 </resources>

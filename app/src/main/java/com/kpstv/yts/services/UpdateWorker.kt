@@ -14,7 +14,7 @@ import com.kpstv.yts.interfaces.api.AppApi
 import java.io.File
 
 class UpdateWorker @WorkerInject constructor(
-    @Assisted val context: Context,
+    @Assisted context: Context,
     @Assisted workerParams: WorkerParameters,
     private val appApi: AppApi
 ) : CoroutineWorker(context, workerParams) {
@@ -54,7 +54,7 @@ class UpdateWorker @WorkerInject constructor(
                 },
                 onComplete = {
                     Notifications.removeUpdateProgressNotification()
-                    AppUtils.installApp(applicationContext, file)
+                    Notifications.sendDownloadCompleteNotification(applicationContext, file)
                 }
             )
             progressStreamer?.write(
@@ -67,7 +67,6 @@ class UpdateWorker @WorkerInject constructor(
         } else
             Result.failure()
     }
-
 
     companion object {
         private const val APP_UPDATE_WORK = "moviesy_app_update_work"

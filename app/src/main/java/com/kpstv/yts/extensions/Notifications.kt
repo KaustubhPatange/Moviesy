@@ -19,6 +19,7 @@ import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.receivers.CommonBroadCast
 import com.kpstv.yts.ui.activities.FinalActivity
 import com.kpstv.yts.ui.activities.SplashActivity
+import java.io.File
 import java.util.*
 
 object Notifications {
@@ -40,6 +41,13 @@ object Notifications {
                 NotificationManager.IMPORTANCE_DEFAULT
             )
             mgr.createNotificationChannel(channel)
+
+            mgr.createNotificationChannel(
+                NotificationChannel(
+                    getString(R.string.CHANNEL_ID_3),
+                    getString(R.string.update),
+                    NotificationManager.IMPORTANCE_LOW)
+            )
         }
     }
 
@@ -48,26 +56,15 @@ object Notifications {
         progress: Progress,
         fileName: String,
         cancelRequestCode: Int
-    ) =
-        with(context) {
+    ) = with(context) {
             val cancelIntent = Intent(this, CommonBroadCast::class.java).apply {
                 action = CommonBroadCast.STOP_UPDATE_WORKER
             }
             val pendingIntent =
                 PendingIntent.getBroadcast(this, cancelRequestCode, cancelIntent, 0)
-            val notification = NotificationCompat.Builder(
-                this,
-                getString(R.string.CHANNEL_ID_2)
-            )
+            val notification = NotificationCompat.Builder(this, getString(R.string.CHANNEL_ID_3))
                 .setContentTitle(fileName)
-                .setContentText(
-                    "${
-                        CommonUtils.getSizePretty(
-                            progress.currentBytes,
-                            false
-                        )
-                    } / ${CommonUtils.getSizePretty(progress.totalBytes)}"
-                )
+                .setContentText("${CommonUtils.getSizePretty(progress.currentBytes, false)} / ${CommonUtils.getSizePretty(progress.totalBytes)}")
                 .setSmallIcon(android.R.drawable.stat_sys_download)
                 .setOngoing(true)
                 .setProgress(
@@ -82,8 +79,7 @@ object Notifications {
             mgr.notify(UPDATE_PROGRESS_NOTIFICATION_ID, notification)
         }
 
-    fun removeUpdateProgressNotification() = mgr
-        .cancel(UPDATE_PROGRESS_NOTIFICATION_ID)
+    fun removeUpdateProgressNotification() = mgr.cancel(UPDATE_PROGRESS_NOTIFICATION_ID)
 
     fun sendUpdateNotification(context: Context, update: AppDatabase.Update) = with(context) {
         val updateIntent = Intent(this, SplashActivity::class.java)
@@ -134,6 +130,22 @@ object Notifications {
             notificationBuilder.setStyle(NotificationCompat.BigPictureStyle().bigPicture(bannerImage))
 
         mgr.notify(getRandomNumberCode(), notificationBuilder.build())
+    }
+
+    fun sendDownloadCompleteNotification(context: Context, file: File) = with(context) {
+        val installIntent = Intent(this, CommonBroadCast::class.java).apply {
+            action = CommonBroadCast.INSTALL_APK
+            putExtra(CommonBroadCast.ARGUMENT_APK_FILE, file.absolutePath)
+        }
+
+        val notification = NotificationCompat.Builder(this, getString(R.string.CHANNEL_ID_2))
+            .setContentTitle(getString(R.string.update_download))
+            .setContentText(getString(R.string.update_install))
+            .setSmallIcon(android.R.drawable.stat_sys_download_done)
+            .setContentIntent(PendingIntent.getBroadcast(this, getRandomNumberCode(), installIntent, 0))
+            .setAutoCancel(true)
+
+        mgr.notify(UPDATE_NOTIFICATION_ID,  notification.build())
     }
 
     fun sendDownloadNotification(context: Context, contentText: String) = with(context) {
