@@ -17,7 +17,6 @@ class AgreementActivity : AppCompatActivity() {
 
     companion object {
         const val SHOW_AGREEMENT_PREF = "show_agreement_pref"
-        private const val GMS_RESULT_CODE = 102
     }
 
     private val binding by viewBinding(ActivityAgreementBinding::inflate)
