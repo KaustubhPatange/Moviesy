@@ -9,7 +9,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlin.reflect.KClass
 
 /**
- * This class can be implemented in any activity which implements a [BottomNavigationView]
+ * This class can be implemented in any activity where you want to setup [BottomNavigationView]
  * without the need of JetPack Navigation to overcome some of its issue mainly
  * managing backstack & to gain more control over navigation.
  *
@@ -76,6 +76,7 @@ abstract class AbstractBottomNavActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+        // Setting it here because the view might be null before setting contentView.
         val bottomNav = findViewById<BottomNavigationView>(bottomNavigationViewId)
         bottomNav.setOnNavigationItemSelectedListener call@{ item ->
             val fragment = getFragmentFromBackstack(item.itemId)
