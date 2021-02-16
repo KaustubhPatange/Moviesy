@@ -8,7 +8,7 @@ import androidx.hilt.work.WorkerInject
 import androidx.work.*
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
-import com.kpstv.yts.data.db.repository.MainRepository
+import com.kpstv.yts.data.db.localized.MainDao
 import com.kpstv.yts.data.models.data.data_main
 import com.kpstv.yts.defaultPreference
 import com.kpstv.yts.extensions.Notifications
@@ -24,7 +24,7 @@ class AppWorker @WorkerInject constructor(
     @Assisted workerParams: WorkerParameters,
     private val tmdbApi: TMdbApi,
     private val ytsFeaturedUtils: YTSFeaturedUtils,
-    private val repository: MainRepository,
+    private val repository: MainDao,
     private val updateUtils: UpdateUtils
 ) : CoroutineWorker(appContext, workerParams) {
 
@@ -54,7 +54,7 @@ class AppWorker @WorkerInject constructor(
 
     private suspend fun fetchFeaturedMovies() {
         try {
-            val featuredMovies = repository.getMoviesByQuery(AppInterface.FEATURED_QUERY)
+            val oldFeaturedMovies = repository.getMoviesByQuery(AppInterface.FEATURED_QUERY)
 
             val list = ytsFeaturedUtils.fetch()
             val mainModel = data_main.from(list, AppInterface.FEATURED_QUERY)
@@ -62,7 +62,7 @@ class AppWorker @WorkerInject constructor(
             repository.saveMovies(mainModel)
 
             list.forEach { movie ->
-                if (featuredMovies?.movies?.any { it.url == movie.url } == false) {
+                if (oldFeaturedMovies?.movies?.any { it == movie } == false) {
                     val bannerImage: Bitmap? = if (movie.imdbCode != null) {
                         val bannerUrl = tmdbApi.getMovie(movie.imdbCode).getBannerImage()
                         AppUtils.getBitmapFromUrl(bannerUrl)

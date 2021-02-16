@@ -15,14 +15,12 @@ class FavouriteRepository @Inject constructor(
     private val favDao: FavouriteDao
 ) {
 
-    fun saveMovie(data: Model.response_favourite) {
-        Coroutines.io {
-            favDao.upsert(data)
-        }
+    suspend fun saveMovie(data: Model.response_favourite) {
+        favDao.upsert(data)
     }
 
     fun isMovieFavouriteLive(movieId: Int) = favDao.isDataExistLive(movieId)
-    fun isMovieFavourite(movieId: Int) = favDao.isDataExist(movieId)
+    suspend fun isMovieFavourite(movieId: Int) = favDao.isDataExist(movieId)
 
     /**
      * @return true if current [movie] is marked as favourite
@@ -47,10 +45,8 @@ class FavouriteRepository @Inject constructor(
         }
     }
 
-    fun deleteMovie(movieId: Int) {
-        Coroutines.io {
-            favDao.delete(movieId)
-        }
+    suspend fun deleteMovie(movieId: Int) {
+        favDao.delete(movieId)
     }
 
     fun getAllMovieId(): LiveData<List<Model.response_favourite>> {

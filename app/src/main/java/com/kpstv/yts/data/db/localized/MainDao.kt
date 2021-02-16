@@ -6,14 +6,20 @@ import com.kpstv.yts.data.models.data.data_main
 @Dao
 interface MainDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun upsert(data: data_main)
+    suspend fun upsert(data: data_main)
+
+    @Transaction
+    suspend fun saveMovies(dataMain: data_main) {
+        removeMoviesByQuery(dataMain.query)
+        upsert(dataMain)
+    }
 
     @Query("select * from table_main where `query` = :query")
-    fun getMovies(query: String): data_main?
+    suspend fun getMoviesByQuery(query: String): data_main?
 
     @Query("delete from table_main where `query` = :query")
-    fun deleteMovie(query: String)
+    suspend fun removeMoviesByQuery(query: String)
 
     @Delete
-    fun delete(data: data_main)
+    suspend fun deleteMovie(data: data_main)
 }

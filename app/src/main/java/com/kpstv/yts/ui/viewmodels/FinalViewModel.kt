@@ -9,10 +9,11 @@ import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppInterface.Companion.MOVIE_SPAN_DIFFERENCE
 import com.kpstv.yts.AppInterface.Companion.MainDateFormatter
+import com.kpstv.yts.data.db.localized.MovieDao
+import com.kpstv.yts.data.db.localized.RecommendDao
+import com.kpstv.yts.data.db.localized.SuggestionDao
 import com.kpstv.yts.data.db.repository.CastMovieRepository
 import com.kpstv.yts.data.db.repository.FavouriteRepository
-import com.kpstv.yts.data.db.repository.MovieRepository
-import com.kpstv.yts.data.db.repository.TMdbRepository
 import com.kpstv.yts.data.models.Cast
 import com.kpstv.yts.data.models.Crew
 import com.kpstv.yts.data.models.Movie
@@ -30,8 +31,9 @@ import kotlin.collections.ArrayList
 
 @SuppressLint("SimpleDateFormat")
 class FinalViewModel @ViewModelInject constructor(
-    private val movieRepository: MovieRepository,
-    private val tMdbRepository: TMdbRepository,
+    private val movieRepository: MovieDao,
+    private val suggestionDao: SuggestionDao,
+    private val recommendDao: RecommendDao,
     private val favouriteRepository: FavouriteRepository,
     private val castMovieRepository: CastMovieRepository,
     private val ytsApi: YTSApi,
@@ -166,7 +168,7 @@ class FinalViewModel @ViewModelInject constructor(
                 } else {
                     Log.e(TAG, "=> Getting data from repository")
 
-                    tMdbRepository.getRecommendMoviesByIMDB(imdbId)?.also {
+                    recommendDao.getMoviesByImDb(imdbId)?.also {
                         suggestionCallback.onComplete(it.movies, it.tag, it.isMore)
                     }
                 }
@@ -179,7 +181,7 @@ class FinalViewModel @ViewModelInject constructor(
     fun getSuggestions(imdbId: String, suggestionCallback: SuggestionCallback) {
         suggestionCallback.onStarted?.invoke()
 
-        Coroutines.main {
+        viewModelScope.launch {
             try {
                 if (isFetchNeeded(imdbId, MovieType.Suggestion)) {
                     Log.e(TAG, "=> Fetching New data")
@@ -195,7 +197,7 @@ class FinalViewModel @ViewModelInject constructor(
                 } else {
                     Log.e(TAG, "=> Getting data from repository")
 
-                    tMdbRepository.getSuggestMoviesByIMDB(imdbId)?.also {
+                    suggestionDao.getMoviesByImDb(imdbId)?.also {
                         suggestionCallback.onComplete(it.movies, it.tag, it.isMore)
                     }
                 }
@@ -229,8 +231,8 @@ class FinalViewModel @ViewModelInject constructor(
     private suspend fun isFetchNeeded(imdbId: String, movieType: MovieType): Boolean {
         try {
             val movieData = when (movieType) {
-                MovieType.Suggestion -> tMdbRepository.getSuggestMoviesByIMDB(imdbId)
-                MovieType.Recommend -> tMdbRepository.getRecommendMoviesByIMDB(imdbId)
+                MovieType.Suggestion -> suggestionDao.getMoviesByImDb(imdbId)
+                MovieType.Recommend -> recommendDao.getMoviesByImDb(imdbId)
             }
             movieData?.also {
                 val currentCalender = Calendar.getInstance()
@@ -240,8 +242,8 @@ class FinalViewModel @ViewModelInject constructor(
                 ).toLong()
                 return if (currentSpan > movieData.time) {
                     when (movieType) {
-                        MovieType.Suggestion -> tMdbRepository.deleteSuggestMovieModel(movieData)
-                        MovieType.Recommend -> tMdbRepository.deleteRecommendMovieModel(movieData)
+                        MovieType.Suggestion -> suggestionDao.deleteMovies(movieData)
+                        MovieType.Recommend -> recommendDao.deleteMovies(movieData)
                     }
                     true
                 } else false
@@ -252,10 +254,6 @@ class FinalViewModel @ViewModelInject constructor(
         }
     }
 
-    /** A common processing function for managing Suggestion and Recommend data list.
-     *  The function is also responsible for saving data to database.
-     */
-    @Synchronized
     private fun commonProcessTMdbMovies(
         suggestionCallback: SuggestionCallback,
         movies: ArrayList<TmDbMovie>,
@@ -263,36 +261,37 @@ class FinalViewModel @ViewModelInject constructor(
         movieType: MovieType,
         tag: String? = null
     ) {
-        val list = ArrayList<TmDbMovie>()
-        manageTmdbResponse(list, movies)
+        viewModelScope.launch {
+            val list = ArrayList<TmDbMovie>()
+            manageTmdbResponse(list, movies)
 
-        var toIndex = 7
-        if (list.size < 8) toIndex = list.size
+            var toIndex = 7
+            if (list.size < 8) toIndex = list.size
 
-        val isMore = list.size > 7
+            val isMore = list.size > 7
 
-        val movieList = ArrayList(list.subList(0, toIndex))
+            val movieList = ArrayList(list.subList(0, toIndex))
 
-        suggestionCallback.onComplete.invoke(
-            movieList,
-            tag,
-            isMore
-        )
+            /** We will save the data into TMdb database as per movieType */
 
-        /** We will save the data into TMdb database as per movieType
-         */
+            val data = data_tmdb(
+                imdbCode = imdbId,
+                time = MainDateFormatter.format(Calendar.getInstance().time).toLong(),
+                movies = movieList,
+                isMore = isMore,
+                tag = tag
+            )
 
-        val data = data_tmdb(
-            imdbCode = imdbId,
-            time = MainDateFormatter.format(Calendar.getInstance().time).toLong(),
-            movies = movieList,
-            isMore = isMore,
-            tag = tag
-        )
+            when (movieType) {
+                MovieType.Suggestion -> suggestionDao.saveMovies(data)
+                MovieType.Recommend -> recommendDao.saveMovies(data)
+            }
 
-        when (movieType) {
-            MovieType.Suggestion -> tMdbRepository.saveSuggestMoviesModel(data)
-            MovieType.Recommend -> tMdbRepository.saveRecommendMoviesModel(data)
+            suggestionCallback.onComplete.invoke(
+                movieList,
+                tag,
+                isMore
+            )
         }
     }
 

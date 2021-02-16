@@ -6,15 +6,16 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.yts.AppInterface.Companion.CUSTOM_LAYOUT_YTS_SPAN
 import com.kpstv.yts.AppInterface.Companion.FEATURED_QUERY
 import com.kpstv.yts.AppInterface.Companion.MainDateFormatter
 import com.kpstv.yts.AppInterface.Companion.QUERY_SPAN_DIFFERENCE
 import com.kpstv.yts.data.converters.QueryConverter
+import com.kpstv.yts.data.db.localized.MainDao
 import com.kpstv.yts.data.db.repository.DownloadRepository
 import com.kpstv.yts.data.db.repository.FavouriteRepository
-import com.kpstv.yts.data.db.repository.MainRepository
 import com.kpstv.yts.data.db.repository.PauseRepository
 import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.data.models.data.data_main
@@ -24,6 +25,7 @@ import com.kpstv.yts.extensions.lazyDeferred
 import com.kpstv.yts.extensions.utils.YTSFeaturedUtils
 import com.kpstv.yts.interfaces.api.YTSApi
 import com.kpstv.yts.ui.viewmodels.providers.*
+import kotlinx.coroutines.launch
 import retrofit2.await
 import java.util.*
 import kotlin.collections.ArrayList
@@ -31,7 +33,7 @@ import kotlin.collections.ArrayList
 class MainViewModel @ViewModelInject constructor(
     application: Application,
     private val ytsApi: YTSApi,
-    private val repository: MainRepository,
+    private val repository: MainDao,
     private val favouriteRepository: FavouriteRepository,
     private val pauseRepository: PauseRepository,
     private val downloadRepository: DownloadRepository,
@@ -57,8 +59,7 @@ class MainViewModel @ViewModelInject constructor(
         pauseRepository.getAllPauseJob()
     }
 
-    fun removeDownload(hash: String) =
-        downloadRepository.deleteDownload(hash)
+    fun removeDownload(hash: String) = downloadRepository.deleteDownload(hash)
 
     fun updateDownload(hash: String, recentlyPlayed: Boolean, lastPosition: Int) = Coroutines.io {
         downloadRepository.updateAllNormalDownloads()
@@ -66,20 +67,28 @@ class MainViewModel @ViewModelInject constructor(
     }
 
     fun isMovieFavourite(listener: (Boolean) -> Unit, movieId: Int) {
-        Coroutines.main {
+        viewModelScope.launch {
             listener.invoke(favouriteRepository.isMovieFavourite(movieId))
         }
     }
 
-    fun removeFavourite(movieId: Int) =
-        favouriteRepository.deleteMovie(movieId)
+    fun removeFavourite(movieId: Int) {
+        viewModelScope.launch {
+            favouriteRepository.deleteMovie(movieId)
+        }
+    }
 
-    fun addToFavourite(model: Model.response_favourite) =
-        favouriteRepository.saveMovie(model)
+    fun addToFavourite(model: Model.response_favourite) {
+        viewModelScope.launch {
+            favouriteRepository.saveMovie(model)
+        }
+    }
 
     fun removeYtsQuery(queryMap: Map<String, String>) {
-        val queryString = QueryConverter.fromMapToString(queryMap)
-        repository.removeMoviesByQuery(queryString)
+        viewModelScope.launch {
+            val queryString = QueryConverter.fromMapToString(queryMap)
+            repository.removeMoviesByQuery(queryString)
+        }
     }
 
     fun getYTSQuery(movieCallback: MoviesCallback, queryMap: Map<String, String>) {
