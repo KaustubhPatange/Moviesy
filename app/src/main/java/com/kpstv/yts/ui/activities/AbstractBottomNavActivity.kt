@@ -13,6 +13,9 @@ import kotlin.reflect.KClass
  * without the need of JetPack Navigation to overcome some of its issue mainly
  * managing backstack & to gain more control over navigation.
  *
+ * This can be done better by using a delegation pattern but current implementation is perfect
+ * for this app.
+ *
  * @Usage
  * Extend any activity with [BottomNavigationView] with this one & implement its abstract methods.
  */

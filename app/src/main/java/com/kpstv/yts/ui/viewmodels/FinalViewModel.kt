@@ -9,6 +9,7 @@ import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppInterface.Companion.MOVIE_SPAN_DIFFERENCE
 import com.kpstv.yts.AppInterface.Companion.MainDateFormatter
+import com.kpstv.yts.data.MovieResult
 import com.kpstv.yts.data.db.localized.MovieDao
 import com.kpstv.yts.data.db.localized.RecommendDao
 import com.kpstv.yts.data.db.localized.SuggestionDao
@@ -20,6 +21,7 @@ import com.kpstv.yts.data.models.Movie
 import com.kpstv.yts.data.models.TmDbMovie
 import com.kpstv.yts.data.models.data.data_tmdb
 import com.kpstv.yts.extensions.*
+import com.kpstv.yts.extensions.utils.YTSParser
 import com.kpstv.yts.interfaces.api.TMdbApi
 import com.kpstv.yts.interfaces.api.YTSApi
 import com.kpstv.yts.interfaces.listener.MovieListener
@@ -36,6 +38,7 @@ class FinalViewModel @ViewModelInject constructor(
     private val recommendDao: RecommendDao,
     private val favouriteRepository: FavouriteRepository,
     private val castMovieRepository: CastMovieRepository,
+    private val ytsParser: YTSParser,
     private val ytsApi: YTSApi,
     private val tMdbApi: TMdbApi
 ) : ViewModel() {
@@ -51,52 +54,81 @@ class FinalViewModel @ViewModelInject constructor(
         }
     }
 
-    fun getMovieDetail(movieListener: MovieListener, movieId: Int) {
+    fun fetchMovieUrl(movieListener: MovieListener, movieUrl: String) {
+        movieListener.onStarted()
+        Coroutines.main {
+            val movieShort = ytsParser.parseMovieUrl(movieUrl)
+            if (movieShort?.movieId != null) {
+                val movieResult = getMovieDetailYTS(movieShort.movieId)
+                when(movieResult) {
+                    is MovieResult.Success -> {
+                        movieListener.onComplete(movieResult.data)
+                    }
+                    is MovieResult.Error -> {
+                        movieListener.onFailure(movieResult.exception)
+                    }
+                }
+            } else {
+                movieListener.onFailure(Exception("Failed to fetch the movie"))
+            }
+        }
+    }
+
+    fun getMovieDetailYTS(movieListener: MovieListener, movieId: Int) {
         movieListener.onStarted()
 
+        viewModelScope.launch {
+            val movieResult = getMovieDetailYTS(movieId)
+            when(movieResult) {
+                is MovieResult.Success -> {
+                    movieListener.onComplete(movieResult.data)
+                }
+                is MovieResult.Error -> {
+                    movieListener.onFailure(movieResult.exception)
+                }
+            }
+        }
+    }
+
+    private suspend fun getMovieDetailYTS(movieId: Int): MovieResult {
         val query = YTSQuery.MovieBuilder()
             .setMovieId(movieId)
             .setIncludeCast(true)
             .build()
 
-        Coroutines.main {
-            try {
-                val response = ytsApi.getMovie(query).await()
-                val movie = response.data.movie
+        try {
+            val response = ytsApi.getMovie(query).await()
+            val movie = response.data.movie
 
-                /** Fetching crew details filtering only director */
-                val crews = movieRepository.getCrewById(movieId)
-                val casts = movieRepository.getCastById(movieId)
-                if (crews == null || casts == null) {
-                    val response1 = tMdbApi.getCast(movie?.imdb_code!!)
-                    if (!response1.crew.isNullOrEmpty()) {
-                        val crewList = response1.crew.filter { it.job == "Director" }.take(3)
-                            .map { Crew.from(it) }
-                        val castList = response1.cast?.take(4)?.map { Cast.from(it) }
-                        movie.crew = crewList
-                        movie.cast = castList
-                    }
-                } else {
-                    movie?.crew = crews
-                    movie?.cast = casts
+            /** Fetching crew details filtering only director */
+            val crews = movieRepository.getCrewById(movieId)
+            val casts = movieRepository.getCastById(movieId)
+            if (crews == null || casts == null) {
+                val response1 = tMdbApi.getCast(movie?.imdb_code!!)
+                if (!response1.crew.isNullOrEmpty()) {
+                    val crewList = response1.crew.filter { it.job == "Director" }.take(3)
+                        .map { Crew.from(it) }
+                    val castList = response1.cast?.take(4)?.map { Cast.from(it) }
+                    movie.crew = crewList
+                    movie.cast = castList
                 }
-                movieRepository.saveMovie(movie!!)
-                movieListener.onComplete(movie)
-
-            } catch (e: Exception) {
-                movieRepository.getMovieById(movieId).let {
-                    if (it != null)
-                        movieListener.onComplete(it)
-                }
-                movieListener.onFailure(e)
+            } else {
+                movie?.crew = crews
+                movie?.cast = casts
             }
+            movieRepository.saveMovie(movie!!)
+            return MovieResult.Success(movie)
+        } catch (e: Exception) {
+            return movieRepository.getMovieById(movieId)?.let { movie ->
+                MovieResult.Success(movie)
+            } ?: MovieResult.Error(e)
         }
     }
 
-    fun getMovieDetail(movieListener: MovieListener, queryString: String) {
+    fun getMovieDetailTMdb(movieListener: MovieListener, queryString: String) {
         movieListener.onStarted()
 
-        Coroutines.main {
+        viewModelScope.launch {
             try {
 
                 /** Since the queryString is nothing but a TMDB Movie ID

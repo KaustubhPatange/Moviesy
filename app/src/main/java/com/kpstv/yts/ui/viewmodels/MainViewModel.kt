@@ -22,7 +22,7 @@ import com.kpstv.yts.data.models.data.data_main
 import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.extensions.MoviesCallback
 import com.kpstv.yts.extensions.lazyDeferred
-import com.kpstv.yts.extensions.utils.YTSFeaturedUtils
+import com.kpstv.yts.extensions.utils.YTSParser
 import com.kpstv.yts.interfaces.api.YTSApi
 import com.kpstv.yts.ui.viewmodels.providers.*
 import kotlinx.coroutines.launch
@@ -37,7 +37,7 @@ class MainViewModel @ViewModelInject constructor(
     private val favouriteRepository: FavouriteRepository,
     private val pauseRepository: PauseRepository,
     private val downloadRepository: DownloadRepository,
-    private val ytsFeaturedUtils: YTSFeaturedUtils
+    private val ytsParser: YTSParser
 ) : AndroidViewModel(application) {
     private val TAG = "MainViewModel"
 
@@ -150,7 +150,7 @@ class MainViewModel @ViewModelInject constructor(
     }
 
     private suspend fun fetchFeaturedData(movieCallback: MoviesCallback) {
-        val list = ytsFeaturedUtils.fetch()
+        val list = ytsParser.fetchFeaturedMovies()
         if (list.isNotEmpty()) {
             val mainModel = data_main(
                 time = MainDateFormatter.format(Calendar.getInstance().time).toLong(),

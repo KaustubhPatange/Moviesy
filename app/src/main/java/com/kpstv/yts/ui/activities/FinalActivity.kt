@@ -2,9 +2,7 @@ package com.kpstv.yts.ui.activities
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.ActivityManager
 import android.app.ActivityOptions
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
@@ -14,12 +12,10 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.transition.TransitionManager
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.kpstv.common_moviesy.extensions.*
@@ -65,6 +61,7 @@ class FinalActivity : AppCompatActivity(), MovieListener {
 
     companion object {
         const val YOUTUBE_PLAYER_VIEW_REQUEST_CODE = 189
+        const val MOVIE_URL = "com.kpstv.moviesy.movie_url"
     }
 
     val TAG = "FinalActivity"
@@ -89,20 +86,25 @@ class FinalActivity : AppCompatActivity(), MovieListener {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         title = " "
 
-        val movieId = intent.extras?.get(MOVIE_ID)
-
         /** Initializing YouTube player instance */
         initializeYoutubePlayer()
 
+        val movieId = intent.extras?.get(MOVIE_ID)
+        val movieUrl = intent.extras?.getString(MOVIE_URL)
+
         /** Getting movie details for movieId */
-        when (movieId) {
-            is String -> {
+        when {
+            movieId is String -> {
                 /** Route TMDB movie id */
-                viewModel.getMovieDetail(this, movieId)
+                viewModel.getMovieDetailTMdb(this, movieId)
             }
-            is Int -> {
+            movieId is Int -> {
                 /** Route YTS movie id */
-                viewModel.getMovieDetail(this, movieId)
+                viewModel.getMovieDetailYTS(this, movieId)
+            }
+            movieUrl != null -> {
+                /** Parse YTS movie url (usually from a deep link) */
+                viewModel.fetchMovieUrl(this, movieUrl)
             }
             else -> {
                 CafebarToast(this, getString(R.string.invalid_movieId))
@@ -146,7 +148,7 @@ class FinalActivity : AppCompatActivity(), MovieListener {
         loadCastMovies()
 
         setContentButtons()
-        binding.swipeRefreshLayout.isRefreshing = false;
+        binding.swipeRefreshLayout.isRefreshing = false
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

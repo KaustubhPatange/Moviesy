@@ -14,7 +14,7 @@ import com.kpstv.yts.defaultPreference
 import com.kpstv.yts.extensions.Notifications
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.UpdateUtils
-import com.kpstv.yts.extensions.utils.YTSFeaturedUtils
+import com.kpstv.yts.extensions.utils.YTSParser
 import com.kpstv.yts.interfaces.api.TMdbApi
 import com.kpstv.yts.ui.settings.GeneralSettingsFragment
 import java.util.concurrent.TimeUnit
@@ -23,7 +23,7 @@ class AppWorker @WorkerInject constructor(
     @Assisted private val appContext: Context,
     @Assisted workerParams: WorkerParameters,
     private val tmdbApi: TMdbApi,
-    private val ytsFeaturedUtils: YTSFeaturedUtils,
+    private val ytsParser: YTSParser,
     private val repository: MainDao,
     private val updateUtils: UpdateUtils
 ) : CoroutineWorker(appContext, workerParams) {
@@ -56,7 +56,7 @@ class AppWorker @WorkerInject constructor(
         try {
             val oldFeaturedMovies = repository.getMoviesByQuery(AppInterface.FEATURED_QUERY)
 
-            val list = ytsFeaturedUtils.fetch()
+            val list = ytsParser.fetchFeaturedMovies()
             val mainModel = data_main.from(list, AppInterface.FEATURED_QUERY)
 
             repository.saveMovies(mainModel)

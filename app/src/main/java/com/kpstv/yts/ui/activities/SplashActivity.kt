@@ -17,23 +17,23 @@ import com.kpstv.yts.AppSettings.parseSettings
 import com.kpstv.yts.R
 import com.kpstv.yts.databinding.ActivitySplashBinding
 import com.kpstv.yts.defaultPreference
+import com.kpstv.yts.extensions.DelegatedAnimator
 import com.kpstv.yts.extensions.startActivityAndFinish
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.ProxyUtils
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
+import com.kpstv.yts.ui.helpers.DeepLinksHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.lang.RuntimeException
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /** Starting point of reading this app.
  */
 @AndroidEntryPoint
-class SplashActivity : AppCompatActivity(), Animation.AnimationListener {
+class SplashActivity : AppCompatActivity(), Animation.AnimationListener by DelegatedAnimator {
 
     companion object {
         const val ARG_ROUTE_TO_LIBRARY = "arg_route_to_library" // Type Boolean
@@ -50,7 +50,7 @@ class SplashActivity : AppCompatActivity(), Animation.AnimationListener {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        val rotate = AnimationUtils.loadAnimation(this, R.anim.anim_splah_play)
+        val rotate = AnimationUtils.loadAnimation(this, R.anim.anim_splash_play)
         binding.imageView.startAnimation(rotate)
 
         /** If this app is launched first time or suppose from previous use
@@ -118,18 +118,22 @@ class SplashActivity : AppCompatActivity(), Animation.AnimationListener {
     }
 
     private val TAG = javaClass.simpleName
-    override fun onAnimationRepeat(animation: Animation?) {}
 
     override fun onAnimationEnd(animation: Animation?) {
         CoroutineScope(Dispatchers.IO).launch {
-            delay(300)
-            if (appPreference.getBoolean(AgreementActivity.SHOW_AGREEMENT_PREF, false))
-                callMainActivity()
-            else startActivityAndFinish(Intent(this@SplashActivity, AgreementActivity::class.java))
+           // delay(300) // TODO: See why you need this delay. Seems like old me is responsible for this
+            runAfterAnimationEnd()
         }
     }
 
-    override fun onAnimationStart(animation: Animation?) {}
+    private fun runAfterAnimationEnd() {
+        if (DeepLinksHelper.handle(this, intent)) {
+            finish()
+        } else {
+            if (appPreference.getBoolean(AgreementActivity.SHOW_AGREEMENT_PREF, false)) callMainActivity()
+            else startActivityAndFinish(Intent(this@SplashActivity, AgreementActivity::class.java))
+        }
+    }
 
     private fun callMainActivity() {
         val routeToLibrary = intent?.getBooleanExtra(ARG_ROUTE_TO_LIBRARY, false)
