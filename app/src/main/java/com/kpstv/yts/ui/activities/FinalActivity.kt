@@ -30,10 +30,7 @@ import com.kpstv.yts.data.models.Cast
 import com.kpstv.yts.data.models.Crew
 import com.kpstv.yts.data.models.Movie
 import com.kpstv.yts.databinding.ActivityFinalBinding
-import com.kpstv.yts.extensions.CastMoviesCallback
-import com.kpstv.yts.extensions.Permissions
-import com.kpstv.yts.extensions.SuggestionCallback
-import com.kpstv.yts.extensions.YTSQuery
+import com.kpstv.yts.extensions.*
 import com.kpstv.yts.extensions.common.CustomMovieLayout
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.CafebarToast
@@ -161,15 +158,17 @@ class FinalActivity : AppCompatActivity(), MovieListener {
         if (::movie.isInitialized) {
             when (item.itemId) {
                 R.id.action_subtitles -> {
-                    val bottomSheetSubtitles =
-                        BottomSheetSubtitles()
-                    bottomSheetSubtitles.show(supportFragmentManager, movie.imdb_code)
+                    BottomSheetSubtitles().apply {
+                        show(supportFragmentManager, movie.imdb_code)
+                    }
                 }
                 R.id.action_favourite -> {
                     viewModel.toggleFavourite(movie) {
-                        Toasty.info(this@FinalActivity, getString(R.string.add_watchlist))
-                            .show()
+                        Toasty.info(this@FinalActivity, getString(R.string.add_watchlist)).show()
                     }
+                }
+                R.id.action_share -> {
+                    AppUtils.shareUrl(this, movie.url)
                 }
             }
         } else
@@ -231,7 +230,7 @@ class FinalActivity : AppCompatActivity(), MovieListener {
         })
         binding.activityFinalContent.recyclerViewGenre.adapter = genreAdapter
 
-        binding.activityFinalContent.afcCard.visibility = View.VISIBLE
+        binding.activityFinalContent.root.visibility = View.VISIBLE
     }
 
     private fun loadRecommendation() {
@@ -341,10 +340,10 @@ class FinalActivity : AppCompatActivity(), MovieListener {
         binding.activityFinalPreviews.root.visibility = View.VISIBLE
     }
 
-    private fun setSummary() {
+    private fun setSummary(): Unit = with(binding.activityFinalContent) {
         val color = CommonUtils.getColorFromAttr(this@FinalActivity, R.attr.colorText)
 
-        binding.activityFinalContent.afSummary.text = "${movie.description_full}\n\n"
+        afSummary.text = "${movie.description_full}\n\n"
 
         /** YTS sometimes doesn't add cast to its movie so we are checking it */
 
@@ -356,13 +355,13 @@ class FinalActivity : AppCompatActivity(), MovieListener {
             builder.append(movie.cast?.get(movie.cast?.size!! - 1)?.name)
 
             /** If cast not empty add details it to summary */
-            binding.activityFinalContent.afSummary.append(
+            afSummary.append(
                 CommonUtils.getColoredString(
                     "<b>Starring</b>",
                     color
                 )
             )
-            binding.activityFinalContent.afSummary.append(" ${CommonUtils.getHtmlText(builder.toString())}\n\n")
+            afSummary.append(" ${CommonUtils.getHtmlText(builder.toString())}\n\n")
         }
 
         /** Injecting director info */
@@ -370,22 +369,22 @@ class FinalActivity : AppCompatActivity(), MovieListener {
         val crews = movie.crew
         if (crews?.isNotEmpty() == true) {
             val directors = crews.joinToString(separator = "  &#8226;  ") { it.name }
-            binding.activityFinalContent.afSummary.append(
+            afSummary.append(
                 CommonUtils.getColoredString(
                     "<b>Director</b>",
                     color
                 )
             )
-            binding.activityFinalContent.afSummary.append(" ${CommonUtils.getHtmlText(directors)}\n\n")
+            afSummary.append(" ${CommonUtils.getHtmlText(directors)}\n\n")
         }
 
-        binding.activityFinalContent.afSummary.append(
+        afSummary.append(
             CommonUtils.getColoredString(
                 "<b>Runtime</b>",
                 color
             )
         )
-        binding.activityFinalContent.afSummary.append(" ${movie.runtime} mins")
+        afSummary.append(" ${movie.runtime} mins")
 
         /** Following code is optimized for handling,
          *  1. Auto resizing the textView when this button is clicked.
@@ -393,18 +392,18 @@ class FinalActivity : AppCompatActivity(), MovieListener {
          *  3. When textView is in selection mode, it will auto cancel it
          *     when this button is clicked.
          */
-        binding.activityFinalContent.afMoreTxt.setOnClickListener {
+        afMoreTxt.setOnClickListener {
             binding.root.enableDelayedTransition()
-            binding.activityFinalContent.afSummary.setTextIsSelectable(false)
-            if (binding.activityFinalContent.afMoreTxt.text.toString() == getString(R.string.more)) {
-                binding.activityFinalContent.afSummary.setTextIsSelectable(true)
-                binding.activityFinalContent.afMoreTxt.text = getString(R.string.less)
-                binding.activityFinalContent.afSummary.maxLines = Integer.MAX_VALUE
+            afSummary.setTextIsSelectable(false)
+            if (afMoreTxt.text.toString() == getString(R.string.more)) {
+                afSummary.setTextIsSelectable(true)
+                afMoreTxt.text = getString(R.string.less)
+                afSummary.maxLines = Integer.MAX_VALUE
             } else {
-                binding.activityFinalContent.afMoreTxt.text = getString(R.string.more)
-                binding.activityFinalContent.afSummary.maxLines = 3
+                afMoreTxt.text = getString(R.string.more)
+                afSummary.maxLines = 3
             }
-            binding.activityFinalContent.afSummary.moveCursorToVisibleOffset()
+            afSummary.moveCursorToVisibleOffset()
         }
     }
 
@@ -441,80 +440,49 @@ class FinalActivity : AppCompatActivity(), MovieListener {
     }
 
     private fun initializeYoutubePlayer() {
-        binding.activityFinalPreviews.youtubePlayerView.enableAutomaticInitialization = false;
-        binding.activityFinalPreviews.youtubePlayerView.initialize(object : YouTubePlayerListener {
-            override fun onApiChange(youTubePlayer: YouTubePlayer) {
-
-            }
-
-            override fun onCurrentSecond(youTubePlayer: YouTubePlayer, second: Float) {
-                youTubePlayerCurrentPosition = second
-            }
-
-            override fun onError(youTubePlayer: YouTubePlayer, error: PlayerConstants.PlayerError) {
-            }
-
-            override fun onPlaybackQualityChange(
-                youTubePlayer: YouTubePlayer,
-                playbackQuality: PlayerConstants.PlaybackQuality
-            ) {
-            }
-
-            override fun onPlaybackRateChange(
-                youTubePlayer: YouTubePlayer,
-                playbackRate: PlayerConstants.PlaybackRate
-            ) {
-            }
-
-            override fun onReady(youTubePlayer: YouTubePlayer) {
-                Log.e(TAG, "YouTubePlayerInitialized")
-                player = youTubePlayer
-                binding.activityFinalPreviews.afYtPreviewProgressBar.visibility = View.GONE
-                binding.activityFinalPreviews.afYtPreviewPlay.visibility = View.VISIBLE
-
-                binding.activityFinalPreviews.buttonFullscreen.setOnClickListener {
-                    player.pause()
-                    val i = Intent(this@FinalActivity, PlayerActivity::class.java)
-                    i.putExtra(PlayerActivity.VIDEO_ID, movie.yt_trailer_id)
-                    i.putExtra(PlayerActivity.LAST_PLAYED, youTubePlayerCurrentPosition)
-                    startActivityForResult(i, YOUTUBE_PLAYER_VIEW_REQUEST_CODE)
+        with(binding.activityFinalPreviews) {
+            youtubePlayerView.enableAutomaticInitialization = false;
+            youtubePlayerView.initialize(object : YouTubePlayerListener by DelegatedYouTubePlayerListener {
+                override fun onCurrentSecond(youTubePlayer: YouTubePlayer, second: Float) {
+                    youTubePlayerCurrentPosition = second
                 }
-            }
 
-            override fun onStateChange(
-                youTubePlayer: YouTubePlayer,
-                state: PlayerConstants.PlayerState
-            ) {
-                when (state) {
-                    PlayerConstants.PlayerState.PLAYING -> binding.activityFinalPreviews.buttonFullscreen.visibility =
-                        View.VISIBLE
-                    PlayerConstants.PlayerState.PAUSED -> binding.activityFinalPreviews.buttonFullscreen.visibility =
-                        View.GONE
-                    PlayerConstants.PlayerState.ENDED -> {
-                        binding.activityFinalPreviews.afYtPreviewPlay.visibility = View.VISIBLE
-                        binding.activityFinalPreviews.afYtPreviewProgressBar.visibility = View.GONE
-                        binding.activityFinalPreviews.youtubePlayerView.visibility = View.GONE
-                        binding.activityFinalPreviews.buttonFullscreen.visibility = View.GONE
+                override fun onReady(youTubePlayer: YouTubePlayer) {
+                    Log.e(TAG, "YouTubePlayerInitialized")
+                    player = youTubePlayer
+                    afYtPreviewProgressBar.visibility = View.GONE
+                    afYtPreviewPlay.visibility = View.VISIBLE
+
+                    buttonFullscreen.setOnClickListener {
+                        player.pause()
+                        val i = Intent(this@FinalActivity, PlayerActivity::class.java)
+                        i.putExtra(PlayerActivity.VIDEO_ID, movie.yt_trailer_id)
+                        i.putExtra(PlayerActivity.LAST_PLAYED, youTubePlayerCurrentPosition)
+                        startActivityForResult(i, YOUTUBE_PLAYER_VIEW_REQUEST_CODE)
                     }
                 }
-            }
 
-            override fun onVideoDuration(youTubePlayer: YouTubePlayer, duration: Float) {
-            }
-
-            override fun onVideoId(youTubePlayer: YouTubePlayer, videoId: String) {
-            }
-
-            override fun onVideoLoadedFraction(
-                youTubePlayer: YouTubePlayer,
-                loadedFraction: Float
-            ) {
-            }
-        })
+                override fun onStateChange(
+                    youTubePlayer: YouTubePlayer,
+                    state: PlayerConstants.PlayerState
+                ) {
+                    when (state) {
+                        PlayerConstants.PlayerState.PLAYING -> buttonFullscreen.show()
+                        PlayerConstants.PlayerState.PAUSED -> buttonFullscreen.hide()
+                        PlayerConstants.PlayerState.ENDED -> {
+                            binding.activityFinalPreviews.afYtPreviewPlay.visibility = View.VISIBLE
+                            binding.activityFinalPreviews.afYtPreviewProgressBar.visibility = View.GONE
+                            binding.activityFinalPreviews.youtubePlayerView.visibility = View.GONE
+                            binding.activityFinalPreviews.buttonFullscreen.visibility = View.GONE
+                        }
+                    }
+                }
+            })
+        }
     }
 
     private fun hideLayout() {
-        binding.activityFinalContent.afcCard.visibility = View.GONE
+        binding.activityFinalContent.root.visibility = View.GONE
         binding.activityFinalPreviews.root.visibility = View.GONE
         binding.activityFinalPreviews.afYtPreview.visibility = View.GONE
         binding.activityFinalPreviews.afYtBannerImage.visibility = View.GONE

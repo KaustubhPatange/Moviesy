@@ -66,7 +66,7 @@ class MainViewModel @ViewModelInject constructor(
         downloadRepository.updateDownload(hash, recentlyPlayed, lastPosition)
     }
 
-    fun isMovieFavourite(listener: (Boolean) -> Unit, movieId: Int) {
+    fun isMovieFavourite(movieId: Int, listener: (Boolean) -> Unit) {
         viewModelScope.launch {
             listener.invoke(favouriteRepository.isMovieFavourite(movieId))
         }

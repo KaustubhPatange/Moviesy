@@ -226,4 +226,9 @@
     <string name="update_download">Update downloaded</string>
     <string name="update_install">Tap to install the update</string>
     <string name="update_error">Error while updating the app</string>
+    <string name="share">Share</string>
+    <string name="add_to_watch">Add to watchlist</string>
+    <string name="remove_from_watchlist">Remove from watchlist</string>
+    <string name="get_subtitles">Get Subtitles</string>
+    <string name="favourites">Favourites</string>
 </resources>

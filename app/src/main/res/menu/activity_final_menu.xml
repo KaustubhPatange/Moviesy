@@ -3,13 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item android:id="@+id/action_favourite"
-        android:title="Favourites"
+        android:title="@string/favourites"
         android:icon="@drawable/ic_favorite_no"
         app:showAsAction="always"/>
 
+
     <item android:id="@+id/action_subtitles"
-        android:title="Get Subtitles"
+        android:title="@string/get_subtitles"
         android:icon="@drawable/ic_subtitles"
         app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/action_share"
+        android:title="@string/share"
+        android:icon="@drawable/ic_share_light"
+        app:showAsAction="always" />
 
 </menu>

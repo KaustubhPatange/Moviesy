@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
+import androidx.core.app.ShareCompat
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -17,6 +18,7 @@ import com.kpstv.yts.extensions.utils.AppUtils.Companion.getBulletSymbol
 import com.kpstv.yts.extensions.common.CustomBottomItem
 import com.kpstv.yts.extensions.utils.GlideApp
 import com.kpstv.common_moviesy.extensions.viewBinding
+import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
@@ -27,11 +29,13 @@ class BottomSheetQuickInfo : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
     private val viewModel by viewModels<MainViewModel>()
     private val binding by viewBinding(BottomSheetQuickinfoBinding::bind)
 
+    private lateinit var movie: MovieShort
+
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val movie = arguments?.getSerializable("model") as MovieShort
+        movie = arguments?.getSerializable("model") as? MovieShort ?: return
 
         GlideApp.with(requireContext().applicationContext).asBitmap().load(movie.bannerUrl)
             .into(object : CustomTarget<Bitmap>() {
@@ -45,21 +49,20 @@ class BottomSheetQuickInfo : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
         binding.itemTitle.text = movie.title
         binding.itemSubText.text = "${movie.year} ${getBulletSymbol()} ${movie.runtime} mins"
 
-        /** Injecting view options */
-        viewModel.isMovieFavourite({ b ->
-            var title = "Add to watchlist"
-            var icon = R.drawable.ic_favorite_no
+        setupMenus()
+    }
 
-            if (b) {
-                title = "Remove from watchlist"
-                icon = R.drawable.ic_favorite_yes
+    private fun setupMenus() {
+        val watchlistItem = CustomBottomItem(requireContext()).apply {
+            setUp(R.drawable.ic_favorite_no, getString(R.string.add_to_watch), binding.addLayout)
+        }
+        viewModel.isMovieFavourite(movie.movieId!!) { isFavourite ->
+            if (isFavourite) {
+                watchlistItem.updateTitle(getString(R.string.remove_from_watchlist))
+                watchlistItem.updateIcon(R.drawable.ic_favorite_yes)
             }
-
-            val watchlistLayout =
-                CustomBottomItem(requireContext())
-            watchlistLayout.setUp(icon, title, binding.addLayout)
-            watchlistLayout.onClickListener = {
-                if (b) {
+            watchlistItem.setOnClick {
+                if (isFavourite) {
                     viewModel.removeFavourite(movie.movieId!!)
                     Toasty.info(requireContext(), getString(R.string.remove_watchlist)).show()
                 } else {
@@ -68,7 +71,14 @@ class BottomSheetQuickInfo : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
                 }
                 dismiss()
             }
+        }
 
-        }, movie.movieId!!)
+        CustomBottomItem(requireContext()).apply {
+            setUp(R.drawable.ic_share, getString(R.string.share), binding.addLayout)
+            setOnClick {
+                AppUtils.shareUrl(requireActivity(), movie.url!!)
+                dismiss()
+            }
+        }
     }
 }

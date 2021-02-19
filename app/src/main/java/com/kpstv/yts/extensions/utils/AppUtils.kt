@@ -268,6 +268,13 @@ class AppUtils {
             }
         }
 
+        fun shareUrl(activity: Activity, url: String) {
+            ShareCompat.IntentBuilder.from(activity)
+                .setText(url)
+                .setType("text/plain")
+                .startChooser()
+        }
+
         private val TAG = "Utils"
     }
 }

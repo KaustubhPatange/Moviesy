@@ -12,15 +12,28 @@ import kotlinx.android.synthetic.main.custom_sheet_item.view.*
 class CustomBottomItem(private val context: Context) {
     lateinit var onClickListener: (View) -> Unit
 
-    fun setUp(@DrawableRes id: Int, text: String, parent: ViewGroup, bigItem: Boolean = false) = with(context) {
+    private lateinit var view: View
+
+    fun setUp(@DrawableRes id: Int, text: String, parent: ViewGroup, bigItem: Boolean = false): Unit = with(context) {
         var layout = R.layout.custom_sheet_item
         if (bigItem) layout = R.layout.custom_sheet_item2
-        val v: View =
-            LayoutInflater.from(this).inflate(layout, parent, false)
-        v.textView.text = text
-        v.imageView.setImageDrawable(drawableFrom(id))
+        view = LayoutInflater.from(this).inflate(layout, parent, false)
+        view.textView.text = text
+        view.imageView.setImageDrawable(drawableFrom(id))
 
-        v.mainLayout.setOnClickListener { onClickListener.invoke(it) }
-        parent.addView(v)
+        view.mainLayout.setOnClickListener { onClickListener.invoke(it) }
+        parent.addView(view)
+    }
+
+    fun updateTitle(title: String) {
+        view.textView.text = title
+    }
+
+    fun updateIcon(@DrawableRes id: Int) {
+        view.imageView.setImageDrawable(context.drawableFrom(id))
+    }
+
+    fun setOnClick(click: (View) -> Unit) {
+        onClickListener = click
     }
 }
