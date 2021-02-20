@@ -2,11 +2,8 @@ package com.kpstv.yts.ui.fragments.sheets
 
 import android.annotation.SuppressLint
 import android.app.DownloadManager
-import android.content.BroadcastReceiver
-import android.content.Context
+import android.content.*
 import android.content.Context.DOWNLOAD_SERVICE
-import android.content.Intent
-import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -15,24 +12,24 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.kpstv.common_moviesy.extensions.*
 import com.kpstv.common_moviesy.extensions.utils.FileUtils
-import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.AppInterface.Companion.SUBTITLE_LOCATION
 import com.kpstv.yts.AppInterface.Companion.YIFY_BASE_URL
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.Subtitle
 import com.kpstv.yts.databinding.BottomSheetSubtitlesBinding
 import com.kpstv.yts.extensions.AdapterOnSingleClick
-import com.kpstv.common_moviesy.extensions.colorFrom
+import com.kpstv.yts.data.models.Result
 import com.kpstv.yts.extensions.unzip
-import com.kpstv.yts.extensions.utils.AppUtils
-import com.kpstv.yts.extensions.utils.FlagUtils
-import com.kpstv.yts.extensions.utils.GlideApp
+import com.kpstv.yts.extensions.utils.*
 import com.kpstv.yts.extensions.views.ExtendedBottomSheetDialogFragment
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import com.kpstv.yts.ui.helpers.InterstitialAdHelper
+import com.kpstv.yts.ui.helpers.SubtitleHelper
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import io.reactivex.Observable
@@ -41,6 +38,8 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.bottom_sheet_subtitles.*
 import kotlinx.android.synthetic.main.item_subtitles.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
 import java.io.File
 import java.util.concurrent.Callable
@@ -61,11 +60,14 @@ class BottomSheetSubtitles : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
     lateinit var flagUtils: FlagUtils
 
     @Inject
+    lateinit var ytsParser: YTSParser
+
+    @Inject
     lateinit var interstitialAdHelper: InterstitialAdHelper
 
     private val TAG = "BottomSheetSubtiles"
 
-    private var subtitleModels = ArrayList<Subtitle>()
+    private var subtitleModels = listOf<Subtitle>()
     private lateinit var adapter: SubtitleAdapter
     private lateinit var subtitleFetch: Disposable
     private lateinit var imdb_code: String
@@ -76,75 +78,57 @@ class BottomSheetSubtitles : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.recyclerViewSubtitles.layoutManager = LinearLayoutManager(context)
-        binding.subtitleMainLayout.visibility = View.GONE
+        binding.subtitleMainLayout.hide()
         imdb_code = tag as String
 
         /** Fetching subtitles */
-        fetchSubtitles()
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            fetchSubtitles()
+        }
     }
 
-    private fun fetchSubtitles() {
-        subtitleFetch = Observable.fromCallable {
-            return@fromCallable Jsoup.connect("${YIFY_BASE_URL}/movie-imdb/${imdb_code}").get()
-                .html()
-        }.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
+    private suspend fun fetchSubtitles() {
+        val result = ytsParser.fetchSubtitles(imdb_code)
+        when(result) {
+            is SubtitleResult.Success -> {
                 progressBar.visibility = View.GONE
-                val subtitles = Jsoup.parse(it).getElementsByClass("high-rating")
-                subtitleModels.clear()
-                for (element in subtitles) {
-                    val a = element.select("a")[0]
 
-                    val country = element.getElementsByClass("sub-lang")[0].ownText()
-                    if (country == "Arabic") hasArabic = true
-                    if (country == "English") hasEnglish = true
-                    if (country == "Spanish") hasSpanish = true
+                if (result.list.isNotEmpty()) {
+                    subtitleModels = result.list
 
-                    subtitleModels.add(
-                        Subtitle(
-                            country,
-                            a.ownText(),
-                            element.getElementsByClass("label")[0].ownText().toInt(),
-                            element.getElementsByClass("uploader-cell")[0].ownText(),
-                            a.attr("href").toString()
-                        )
-                    )
-                }
-                if (subtitleModels.size > 0) {
-                    adapter =
-                        SubtitleAdapter(
-                            context = requireContext(),
-                            flagUtils = flagUtils,
-                            models = subtitleModels
-                        )
-                    adapter.setOnSingleClickListener { subtitle, i ->
+                    adapter = SubtitleAdapter(requireContext(), flagUtils, subtitleModels) { subtitle, i ->
                         /** @Admob Show ad first and then download subtitles */
                         interstitialAdHelper.showAd {
-                            parseSubtitle(subtitle, i)
+                            viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+                                parseSubtitle(subtitle, i)
+                            }
                         }
                     }
+
                     recyclerView_subtitles.setHasFixedSize(true)
                     recyclerView_subtitles.adapter = adapter
 
-                    binding.subtitleMainLayout.visibility = View.VISIBLE
+                    binding.subtitleMainLayout.show()
+
+                    hasArabic = result.hasArabic
+                    hasEnglish = result.hasEnglish
+                    hasSpanish = result.hasSpanish
 
                     handleFilter()
-
                 } else {
-                    Toasty.error(requireContext(), "No subtitles found").show()
+                    Toasty.error(requireContext(), getString(R.string.no_subtitles)).show()
                     dismiss()
                 }
-
-
-            }, {
-
-                AlertNoIconDialog.Companion.Builder(context).apply {
-                    setTitle("Error")
-                    setMessage("Failed to fetch subtitles due to: ${it.message}")
+            }
+            is SubtitleResult.Error -> {
+                AlertNoIconDialog.Companion.Builder(requireContext()).apply {
+                    setTitle(getString(R.string.error))
+                    setMessage("Failed to fetch subtitles due to: ${result.ex.message}")
                     setPositiveButton(getString(R.string.yes)) { dismiss() }
                 }.show()
-            })
+            }
+        }
     }
 
     private fun handleFilter() {
@@ -184,48 +168,34 @@ class BottomSheetSubtitles : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
         recyclerView_subtitles.smoothScrollToPosition(0)
     }
 
-    private fun parseSubtitle(model: Subtitle, i: Int) {
-        /** Update view to show progressbar */
+    private suspend fun parseSubtitle(model: Subtitle, i: Int) {
         model.isDownload = true
         adapter.notifyItemChanged(i)
 
-        /** Async task to fetch download link */
-
-        subtitleFetch = Observable.fromCallable(Callable<String> {
-            return@Callable Jsoup.connect("${YIFY_BASE_URL}${model.fetchEndpoint}").get().html()
-        })
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-
-                /** Downloading subtitles using DownloadManager with a broadcast */
-
-                val downloadLink = Jsoup.parse(it).getElementsByClass("download-subtitle")[0]
-                    .attr("href").toString();
-
-                Log.e(TAG, "DownloadLink $downloadLink")
-
-                downloadSubtitle(model, downloadLink, i)
-
-            }, {
+        val result = ytsParser.parseSubtitleLink(model.fetchEndpoint)
+        when(result) {
+            is Result.Success -> {
+                Log.e(TAG, "DownloadLink ${result.data}")
+                downloadSubtitle(model, result.data, i)
+            }
+            is Result.Error -> {
                 model.isDownload = false
                 adapter.notifyItemChanged(i)
 
-                it.printStackTrace()
                 AlertNoIconDialog.Companion.Builder(context).apply {
-                    setTitle("Error")
-                    setMessage("Failed to download subtitles due to: ${it.message}")
+                    setTitle(getString(R.string.error))
+                    setMessage("Failed to download subtitles due to: ${result.ex.message}")
                     setPositiveButton(getString(R.string.alright)) { dismiss() }
                 }.show()
-            })
-
+            }
+            else -> {}
+        }
     }
 
-    override fun onDestroy() {
-        Log.e(TAG, "onDestroy() called")
+    override fun onDismiss(dialog: DialogInterface) {
+        Log.e(TAG, "onDismiss() called")
         if (::subtitleFetch.isInitialized && !subtitleFetch.isDisposed) subtitleFetch.dispose()
-        subtitleModels.clear()
-        super.onDestroy()
+        super.onDismiss(dialog)
     }
 
     private fun downloadSubtitle(model: Subtitle, downloadLink: String, i: Int) {
@@ -242,9 +212,7 @@ class BottomSheetSubtitles : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
             override fun onReceive(context: Context?, intent: Intent?) {
                 if (temporarySaveZipLocation.exists()) {
 
-                    val nameofDownload =
-                        "${model.text}${downloadLink.substring(downloadLink.indexOf("-"))
-                            .replace(".zip", "")}.srt"
+                    val nameOfDownload = model.getDownloadFileName()
 
                     SUBTITLE_LOCATION.mkdirs()
 
@@ -256,7 +224,7 @@ class BottomSheetSubtitles : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
                         tempLocation.listFiles()[0].renameTo(
                             File(
                                 SUBTITLE_LOCATION,
-                                nameofDownload
+                                nameOfDownload
                             )
                         )
 
@@ -276,7 +244,7 @@ class BottomSheetSubtitles : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
             }
         }
 
-        context?.registerReceiver(
+        requireContext().registerReceiver(
             onComplete,
             IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
         )
@@ -296,10 +264,9 @@ class BottomSheetSubtitles : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
     class SubtitleAdapter(
         val context: Context,
         private val flagUtils: FlagUtils,
-        var models: List<Subtitle>
+        var models: List<Subtitle>,
+        val listener: AdapterOnSingleClick<Subtitle>
     ) : RecyclerView.Adapter<SubtitleAdapter.SubtitleHolder>() {
-
-        private lateinit var listener: AdapterOnSingleClick<Subtitle>
 
         override fun onBindViewHolder(holder: SubtitleHolder, i: Int) {
             val model = models[i]
@@ -335,13 +302,15 @@ class BottomSheetSubtitles : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
                 holder.itemLikes.visibility = View.VISIBLE
             }
 
+            if (SubtitleHelper.doesSubtitleExist(model.getDownloadFileName())) {
+                holder.title.setTextColor(context.colorFrom(R.color.premium))
+            } else {
+                holder.title.setTextColor(context.getColorAttr(R.attr.colorText))
+            }
+
             holder.mainCard.setOnClickListener {
                 listener.invoke(model, i)
             }
-        }
-
-        fun setOnSingleClickListener(listener: AdapterOnSingleClick<Subtitle>) {
-            this.listener = listener
         }
 
         override fun getItemViewType(position: Int): Int {
@@ -368,7 +337,5 @@ class BottomSheetSubtitles : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
             val itemLikes = view.item_likes
             val progressBar = view.item_progressBar
         }
-
-
     }
 }

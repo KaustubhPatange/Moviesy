@@ -24,9 +24,6 @@ import com.kpstv.yts.extensions.utils.ProxyUtils
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import com.kpstv.yts.ui.helpers.DeepLinksHelper
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -120,13 +117,6 @@ class SplashActivity : AppCompatActivity(), Animation.AnimationListener by Deleg
     private val TAG = javaClass.simpleName
 
     override fun onAnimationEnd(animation: Animation?) {
-        CoroutineScope(Dispatchers.IO).launch {
-           // delay(300) // TODO: See why you need this delay. Seems like old me is responsible for this
-            runAfterAnimationEnd()
-        }
-    }
-
-    private fun runAfterAnimationEnd() {
         if (DeepLinksHelper.handle(this, intent)) {
             finish()
         } else {

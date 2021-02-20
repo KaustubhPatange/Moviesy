@@ -76,7 +76,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts), HomeFragment.HomeFrag
             setLifeCycleOwner(viewLifecycleOwner)
             setupFeaturedCallbacks(viewModel) {
                 cmlFeatured.removeView(binding.addLayout)
-                Toasty.warning(requireActivity(), getString(R.string.featured_movies)).show()
+                Toasty.warning(requireContext(), getString(R.string.featured_movies)).show()
             }
         }
 

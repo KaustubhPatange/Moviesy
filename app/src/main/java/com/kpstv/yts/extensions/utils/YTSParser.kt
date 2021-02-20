@@ -5,6 +5,8 @@ import androidx.core.text.isDigitsOnly
 import com.kpstv.common_moviesy.extensions.await
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.data.models.MovieShort
+import com.kpstv.yts.data.models.Result
+import com.kpstv.yts.data.models.Subtitle
 import okhttp3.Request
 import org.jsoup.Jsoup
 import java.util.concurrent.TimeUnit
@@ -15,6 +17,7 @@ import javax.inject.Singleton
 class YTSParser @Inject constructor(
     retrofitUtils: RetrofitUtils
 ) {
+
     private val client = retrofitUtils.getHttpBuilder()
         .callTimeout(120, TimeUnit.SECONDS)
         .connectTimeout(100, TimeUnit.SECONDS)
@@ -27,7 +30,8 @@ class YTSParser @Inject constructor(
     suspend fun fetchFeaturedMovies(): ArrayList<MovieShort> {
         val list = ArrayList<MovieShort>()
         try {
-            val response = client.newCall(Request.Builder().url(AppInterface.YTS_BASE_URL).build()).await()
+            val response =
+                client.newCall(Request.Builder().url(AppInterface.YTS_BASE_URL).build()).await()
             if (!response.isSuccessful) return list
 
             val doc = Jsoup.parse(response.body?.string())
@@ -105,8 +109,79 @@ class YTSParser @Inject constructor(
             }
 
             return MovieShort(movieId, link, title, year, rating, runtime, imdbCode, bannerUrl)
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             return null
         }
     }
+
+    /**
+     * Fetch subtitles from imdb Code
+     */
+    suspend fun fetchSubtitles(imDbCode: String): SubtitleResult {
+        val list = ArrayList<Subtitle>()
+        var hasArabic = false
+        var hasEnglish = false
+        var hasSpanish = false
+
+        try {
+            val response = client.newCall(
+                Request.Builder().url("${AppInterface.YIFY_BASE_URL}/movie-imdb/${imDbCode}")
+                    .build()
+            ).await()
+
+            val subtitles = Jsoup.parse(response.body?.string()).getElementsByClass("high-rating")
+            response.close() // Always close the response when not needed
+
+            for (element in subtitles) {
+                val a = element.select("a")[0]
+
+                val country = element.getElementsByClass("sub-lang")[0].ownText()
+                if (country == "Arabic") hasArabic = true
+                if (country == "English") hasEnglish = true
+                if (country == "Spanish") hasSpanish = true
+
+                list.add(
+                    Subtitle(
+                        country,
+                        a.ownText(),
+                        element.getElementsByClass("label")[0].ownText().toInt(),
+                        element.getElementsByClass("uploader-cell")[0].ownText(),
+                        "${AppInterface.YIFY_BASE_URL}${a.attr("href")}"
+                    )
+                )
+            }
+            return SubtitleResult.Success(list, hasArabic, hasEnglish, hasSpanish)
+        } catch (e: Exception) {
+            return SubtitleResult.Error(e)
+        }
+    }
+
+    /**
+     * Parse the subtitle link
+     */
+    suspend fun parseSubtitleLink(endPoint: String): Result<String> {
+        return try {
+            val response = client.newCall(
+                Request.Builder().url(endPoint).build()
+            ).await()
+
+            val link = Jsoup.parse(response.body?.string()).getElementsByClass("download-subtitle")[0]
+                .attr("href").toString();
+
+            response.close()
+            Result.success(link)
+        } catch (e: Exception) {
+            Result.error(e)
+        }
+    }
+}
+
+sealed class SubtitleResult {
+    data class Success(
+        val list: List<Subtitle>,
+        val hasArabic: Boolean,
+        val hasEnglish: Boolean,
+        val hasSpanish: Boolean
+    ) : SubtitleResult()
+    data class Error(val ex: Exception) : SubtitleResult()
 }

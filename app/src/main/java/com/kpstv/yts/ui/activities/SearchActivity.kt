@@ -310,6 +310,7 @@ class SearchActivity : AppCompatActivity() {
                         suggestionAdapter.notifyDataSetChanged()
                     }
                 }
+                else -> { }
             }
             isSearchClicked = false
         })

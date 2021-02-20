@@ -160,6 +160,7 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
                         )
                         try {
                             startActivity(intent)
+                            dismiss()
                         } catch (e: Exception) {
                             Toasty.error(requireContext(), getString(R.string.no_action)).show()
                         }
@@ -263,7 +264,7 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
     }
 
     private fun setUpCast() {
-        if (CastHelper.anyDeviceAvailable(requireContext())) {
+        if (CastHelper.isCastingSupported(requireContext()) && CastHelper.anyDeviceAvailable(requireContext())) {
             castHelper = CastHelper()
             castHelper.init(
                 activity = requireActivity(),

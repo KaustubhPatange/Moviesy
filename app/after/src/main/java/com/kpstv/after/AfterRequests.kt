@@ -15,6 +15,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.kpstv.after.After.showTime
+import com.kpstv.after.After.textSize
 import com.kpstv.after.After.typeface
 import com.kpstv.after.databinding.CustomToastBinding
 import com.kpstv.after.utils.SimpleCallback
@@ -65,7 +66,8 @@ class AfterRequests(
         try {
 
             val binding = CustomToastBinding.inflate(LayoutInflater.from(context))
-            if (typeface != null) binding.tvMessage.typeface = typeface
+            typeface?.let { binding.tvMessage.typeface = it }
+            textSize?.let { binding.tvMessage.textSize = it }
 
             binding.tvMessage.text = message
 

@@ -28,6 +28,19 @@ class SubtitleHelper {
 
     private var singleAdapter: SelectSubAdapter? = null
 
+    companion object {
+        fun doesSubtitleExist(fileName: String): Boolean {
+            var name = fileName.replace("(.zip)".toRegex(), "")
+            if (!name.endsWith(".srt")) name = "$name.srt"
+            AppInterface.SUBTITLE_LOCATION.listFiles()?.let { files ->
+                files.forEach { if (it.name == name)
+                    return true
+                }
+            }
+            return false
+        }
+    }
+
     fun getSelectedSubtitle(): File? {
         singleAdapter?.models?.forEach {
             if (it.isChecked) {
@@ -86,7 +99,7 @@ class SubtitleHelper {
     }
 
     private fun String.removeSpecialCharacters() =
-        replace("[']".toRegex(), "")
+        replace("[':]".toRegex(), "")
 
     private fun showAlertAndDeleteSubtitles(fileName: String, pos: Int) = with(activity) {
         AlertNoIconDialog.Companion.Builder(this)

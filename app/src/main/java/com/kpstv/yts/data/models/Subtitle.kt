@@ -1,5 +1,6 @@
 package com.kpstv.yts.data.models
 
+import android.net.Uri
 import java.io.Serializable
 
 data class Subtitle(
@@ -9,4 +10,9 @@ data class Subtitle(
     val uploader: String,
     val fetchEndpoint: String,
     var isDownload: Boolean = false
-) : Serializable
+) : Serializable {
+    fun getDownloadFileName(): String {
+        val uri = Uri.parse(fetchEndpoint)
+        return "${text}-${uri.lastPathSegment}.srt"
+    }
+}

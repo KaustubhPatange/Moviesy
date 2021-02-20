@@ -1,6 +1,8 @@
 package com.kpstv.after
 
+import android.content.res.Resources
 import android.graphics.Typeface
+import android.util.TypedValue
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import java.util.concurrent.TimeUnit
@@ -13,15 +15,15 @@ import java.util.concurrent.TimeUnit
 object After {
     internal const val showTime: Long = 3800
     internal var typeface: Typeface? = null
-    internal var textSize: Int? = null
+    internal var textSize: Float? = null
 
     fun time(time: Long, unit: TimeUnit): AfterRequests {
         return AfterRequests(time, unit)
     }
 
     object Config {
-        fun setTextSize(int: Int): Config {
-            textSize = int
+        fun setTextSize(unit: Int, value: Float): Config {
+            textSize = TypedValue.applyDimension(unit, value, Resources.getSystem().displayMetrics)
             return this
         }
 
