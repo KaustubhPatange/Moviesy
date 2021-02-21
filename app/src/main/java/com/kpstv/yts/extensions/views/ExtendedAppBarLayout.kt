@@ -30,7 +30,6 @@ class ExtendedAppBarLayout : AppBarLayout, OnOffsetChangedListener {
         appBarLayout: AppBarLayout,
         verticalOffset: Int
     ) {
-        Log.e(javaClass.name, "Vertical Offset: $verticalOffset")
         state = when {
             verticalOffset == 0 -> {
                 if (onStateChangeListener != null && state != State.EXPANDED) {

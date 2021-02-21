@@ -25,6 +25,7 @@ class CommonInitializer : Initializer<Unit> {
             Toasty.Config.getInstance()
                 .setTextSize(14)
                 .setToastTypeface(typeface)
+                .allowQueue(false)
                 .apply()
 
             /** Set configs for After */
