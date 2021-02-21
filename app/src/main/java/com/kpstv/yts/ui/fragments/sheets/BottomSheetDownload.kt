@@ -128,7 +128,7 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
         adapter.setDownloadClickListener(object : DownloadAdapter.DownloadClickListener {
             override fun onClick(torrent: Torrent, pos: Int) {
                 /** @Admob Show ads and then do something on complete */
-                interstitialAdHelper.showAd {
+                interstitialAdHelper.showAd(viewLifecycleOwner) {
                     when (viewType) {
                         ViewType.WATCH -> { // When watch button is clicked
                             singleClickForWatch(torrent)
@@ -150,7 +150,7 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
             override fun onLongClick(torrent: Torrent, pos: Int) {
                 if (viewType == ViewType.DOWNLOAD) {
                     /** @Admob Show ads and then do something on complete */
-                    interstitialAdHelper.showAd {
+                    interstitialAdHelper.showAd(viewLifecycleOwner) {
                         val intent = Intent(ACTION_VIEW)
                         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                         intent.data = Uri.parse(

@@ -1,6 +1,7 @@
 package com.kpstv.yts.data.models
 
 import android.net.Uri
+import com.kpstv.yts.ui.helpers.SubtitleHelper.Companion.removeSpecialCharacters
 import java.io.Serializable
 
 data class Subtitle(
@@ -13,6 +14,6 @@ data class Subtitle(
 ) : Serializable {
     fun getDownloadFileName(): String {
         val uri = Uri.parse(fetchEndpoint)
-        return "${text}-${uri.lastPathSegment}.srt"
+        return "${text.removeSpecialCharacters()}-${uri.lastPathSegment}.srt"
     }
 }

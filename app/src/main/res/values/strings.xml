@@ -157,7 +157,7 @@
     <string name="remove_history">Remove from search history?</string>
     <string name="remove">REMOVE</string>
     <string name="agree">Agree</string>
-    <string name="disclaimer_text"><![CDATA[Disclaimer,\n\n\nApp let\'s you download & stream HD movies on the go (illegally).\n\nIf this is something you don\'t want, you must stop using it.\n\nThis is indeed a hobby project!]]></string>
+    <string name="disclaimer_text"><b>Disclaimer</b>,\n\n\nApp let\'s you download &#38; stream HD movies from YTS website on the go (illegally).\n\nIt is basically an API + web-scrapping interface built on top of the website.\n\nIf this is something you don\'t want, you must stop using it.\n\nThis is indeed a hobby project!</string>
     <string name="unlock_premium">Unlock premium</string>
     <string name="unlock_premium_text">Unlock complete features of the app by paying one-time payment for a reasonable price.</string>
     <string name="no_action">No supported action found</string>

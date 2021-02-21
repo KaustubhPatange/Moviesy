@@ -2,6 +2,8 @@ package com.kpstv.yts.ui.helpers
 
 import android.content.Context
 import android.util.Log
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
@@ -10,8 +12,11 @@ import com.kpstv.yts.AppInterface
 import com.kpstv.yts.BuildConfig
 import com.kpstv.yts.extensions.SimpleCallback
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.lang.ref.WeakReference
 import javax.inject.Inject
 import javax.inject.Singleton
+
+typealias LifecycleCallback = suspend () -> Unit
 
 @Singleton
 class InterstitialAdHelper @Inject constructor(
@@ -20,7 +25,8 @@ class InterstitialAdHelper @Inject constructor(
     private val TAG = javaClass.simpleName
 
     private var mInterstitialAd: InterstitialAd = InterstitialAd(context)
-    private var onAdClosed: SimpleCallback? = null
+    private var onAdClosed: LifecycleCallback? = null
+    private var lifecycleReference = WeakReference<LifecycleOwner>(null)
 
     fun init() {
         mInterstitialAd.adListener = object : AdListener() {
@@ -48,18 +54,24 @@ class InterstitialAdHelper @Inject constructor(
     }
 
     private fun invokeCallback() {
-        try {
-            onAdClosed?.invoke()
-        } catch (e: Exception) {
-            Log.w(TAG, "Something unexpected happened", e)
+        lifecycleReference.get()?.let { lifecycleOwner ->
+            lifecycleOwner.lifecycleScope.launchWhenStarted {
+                try {
+                    onAdClosed?.invoke()
+                } catch (e: Exception) {
+                    Log.w(TAG, "Something unexpected happened", e)
+                }
+            }
+            dispose()
         }
     }
 
-    fun showAd(onAdClosed: SimpleCallback? = null) {
+    fun showAd(lifecycleOwner: LifecycleOwner, onAdClosed: LifecycleCallback? = null) {
+        this.lifecycleReference = WeakReference(lifecycleOwner)
         this.onAdClosed = onAdClosed
 
         if (AppInterface.IS_PREMIUM_UNLOCKED) {
-            onAdClosed?.invoke()
+            invokeCallback()
             return
         }
 
@@ -67,11 +79,12 @@ class InterstitialAdHelper @Inject constructor(
             mInterstitialAd.show()
         } else {
             Log.e(TAG, "The interstitial wasn't loaded yet.")
-            onAdClosed?.invoke()
+            invokeCallback()
         }
     }
 
     fun dispose() {
+        lifecycleReference.clear()
         onAdClosed = null
     }
 }

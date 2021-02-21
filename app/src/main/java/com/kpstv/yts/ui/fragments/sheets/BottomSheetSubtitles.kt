@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.common_moviesy.extensions.*
 import com.kpstv.common_moviesy.extensions.utils.FileUtils
 import com.kpstv.yts.AppInterface.Companion.SUBTITLE_LOCATION
-import com.kpstv.yts.AppInterface.Companion.YIFY_BASE_URL
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.Subtitle
 import com.kpstv.yts.databinding.BottomSheetSubtitlesBinding
@@ -32,17 +31,10 @@ import com.kpstv.yts.ui.helpers.InterstitialAdHelper
 import com.kpstv.yts.ui.helpers.SubtitleHelper
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.bottom_sheet_subtitles.*
 import kotlinx.android.synthetic.main.item_subtitles.view.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import org.jsoup.Jsoup
 import java.io.File
-import java.util.concurrent.Callable
 import javax.inject.Inject
 
 /**
@@ -99,10 +91,8 @@ class BottomSheetSubtitles : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
 
                     adapter = SubtitleAdapter(requireContext(), flagUtils, subtitleModels) { subtitle, i ->
                         /** @Admob Show ad first and then download subtitles */
-                        interstitialAdHelper.showAd {
-                            viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-                                parseSubtitle(subtitle, i)
-                            }
+                        interstitialAdHelper.showAd(viewLifecycleOwner) {
+                            parseSubtitle(subtitle, i)
                         }
                     }
 
@@ -221,7 +211,7 @@ class BottomSheetSubtitles : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
                     if (temporarySaveZipLocation.exists()) temporarySaveZipLocation.delete()
 
                     if (tempLocation.listFiles()?.isNotEmpty() == true) {
-                        tempLocation.listFiles()[0].renameTo(
+                        tempLocation.listFiles()?.get(0)?.renameTo(
                             File(
                                 SUBTITLE_LOCATION,
                                 nameOfDownload

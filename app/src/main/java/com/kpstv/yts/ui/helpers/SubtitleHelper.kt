@@ -39,6 +39,8 @@ class SubtitleHelper {
             }
             return false
         }
+        fun String.removeSpecialCharacters() =
+            replace("[':]".toRegex(), "")
     }
 
     fun getSelectedSubtitle(): File? {
@@ -97,9 +99,6 @@ class SubtitleHelper {
                 fileName.contains(title.replace("\\s".toRegex(), "."))) &&
                 f.extension.toLowerCase(Locale.ROOT) == "srt"
     }
-
-    private fun String.removeSpecialCharacters() =
-        replace("[':]".toRegex(), "")
 
     private fun showAlertAndDeleteSubtitles(fileName: String, pos: Int) = with(activity) {
         AlertNoIconDialog.Companion.Builder(this)

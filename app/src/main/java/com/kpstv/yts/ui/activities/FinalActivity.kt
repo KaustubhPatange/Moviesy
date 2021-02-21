@@ -158,8 +158,10 @@ class FinalActivity : AppCompatActivity(), MovieListener {
         if (::movie.isInitialized) {
             when (item.itemId) {
                 R.id.action_subtitles -> {
-                    BottomSheetSubtitles().apply {
-                        show(supportFragmentManager, movie.imdb_code)
+                    Permissions.verifyStoragePermission(this) {
+                        BottomSheetSubtitles().apply {
+                            show(supportFragmentManager, movie.imdb_code)
+                        }
                     }
                 }
                 R.id.action_favourite -> {
