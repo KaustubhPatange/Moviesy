@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.text.HtmlCompat
 import com.github.se_bastiaan.torrentstream.StreamStatus
 import com.github.se_bastiaan.torrentstream.Torrent
 import com.github.se_bastiaan.torrentstream.TorrentOptions
@@ -305,7 +306,7 @@ class TorrentPlayerActivity : AppCompatActivity() {
                     if (models.isNotEmpty()) {
                         if (!subShowing) {
                             if (currentPosition >= models[0].startTime) {
-                                binding.subtitle.text = models[0].text
+                                binding.subtitle.text = HtmlCompat.fromHtml(models[0].text, HtmlCompat.FROM_HTML_MODE_COMPACT)
                                 subShowing = true
                             }
                         } else if (subShowing) {

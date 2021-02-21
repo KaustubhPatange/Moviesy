@@ -92,7 +92,6 @@
             android:theme="@style/AppTheme.Dark.NoAction" />
         <activity
             android:name=".ui.activities.MainActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Dark.Main" />
         <activity
             android:name=".ui.activities.FinalActivity"
