@@ -2,7 +2,6 @@ package com.kpstv.yts.ui.activities
 
 import android.annotation.SuppressLint
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -49,6 +48,8 @@ class TorrentPlayerActivity : AppCompatActivity() {
         const val ARG_TORRENT_HASH = "com.kpstv.yts.arg_torrent_hash"
         const val ARG_LAST_SAVE_POS = "com.kpstv.yts.arg_last_save_pos"
         const val ARG_SUBTITLE_NAME = "com.kpstv.yts.arg_subtitle_name"
+
+        const val LAST_POSITION = "com.kpstv.yts.last_position"
     }
 
     private val viewModel by viewModels<MainViewModel>()
@@ -66,7 +67,10 @@ class TorrentPlayerActivity : AppCompatActivity() {
     private var hasSubtitle: Boolean = false
     private var isLoadedfromLast: Boolean = false
 
-    private var lastPausePosition: Int? = 0
+    private var lastPausePosition: Int = 0
+
+    private var sleep: Boolean = false
+
     private var filePath: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,6 +87,8 @@ class TorrentPlayerActivity : AppCompatActivity() {
             lastSubtitlePosition = it
             isLoadedfromLast = true
         }
+
+        savedInstanceState?.getInt(LAST_POSITION)?.let { lastPausePosition = it }
 
         /** Check if the callback is for torrentLink and recreate that methods.
          */
@@ -125,29 +131,20 @@ class TorrentPlayerActivity : AppCompatActivity() {
         try {
 
             if (filePath == null) return super.onPause()
+            sleep = true
 
             /** Here we are saving current player position to database,
              *  so that we can retrieve and show Play from checkbox in bottom sheet.
              */
             val position = binding.giraffePlayer.player.currentPosition
+            lastPausePosition = position
             Log.e(TAG, "=> LastSavedPosition: $position")
             viewModel.updateDownload(
                 hash, true, position
             )
 
-            /**  We will save current player position to last pause position,
-             *   so in onResume we can retrieve it.
-             *   We are also releasing the player since it still plays in
-             *   background even after pausing the video.
-             */
-            lastPausePosition = binding.giraffePlayer.player.currentPosition
-
-            binding.giraffePlayer.player.release()
-
-            /** We will also remove subtitle handler callbacks, which does
-             *  automatically triggers play() on player during syncing.
-             */
             if (hasSubtitle) subtitleHandler.removeCallbacks(updateTask)
+            binding.giraffePlayer.player.stop()
         } catch (e: Exception) {
         }
         super.onPause()
@@ -155,18 +152,16 @@ class TorrentPlayerActivity : AppCompatActivity() {
 
     override fun onResume() {
         WindowUtils.activateFullScreen(this) // For devices that has navigation button overlay
+        lastSubtitlePosition = lastPausePosition
         Log.e(TAG, "onResume() called $lastPausePosition")
         try {
-
             if (filePath == null) return super.onResume()
-
-            /** Since player is destroyed in onPause() we will recreate
-             *  player instance. It will automatically sync it to
-             *  last pause position.
-             */
-            startPlayer(File(filePath), File(filePath).name)
-        } catch (e: Exception) {
-        }
+            if (sleep) {
+                sleep = false
+                val file = File(filePath)
+                startPlayer(file, file.name)
+            }
+        }catch (e: Exception) {}
         super.onResume()
     }
 
@@ -289,7 +284,7 @@ class TorrentPlayerActivity : AppCompatActivity() {
     private val updateTask: Runnable = object : Runnable {
         override fun run() {
             try {
-                if (binding.giraffePlayer.isCurrentActivePlayer) {
+                if (binding.giraffePlayer.isCurrentActivePlayer && !sleep) {
                     val currentPosition = binding.giraffePlayer.player!!.currentPosition
 
                     if (currentPosition < lastSubtitlePosition || currentPosition > lastSubtitlePosition + 7 * 1000) {
@@ -297,11 +292,11 @@ class TorrentPlayerActivity : AppCompatActivity() {
 
                         Log.e(TAG, "=> Player seekTo change")
                         subShowing = false
-                        binding.giraffePlayer.player.pause()
+                        //binding.giraffePlayer.player.pause() TODO: Why we needed this I don't know but it's causing problem.
                         handlerHandler()
-                        if (noPlayerStartHandler) {
+                     /*   if (noPlayerStartHandler) {
                             noPlayerStartHandler = false
-                        } else binding.giraffePlayer.player.start()
+                        } else binding.giraffePlayer.player.start()*/
                     }
                     if (models.isNotEmpty()) {
                         if (!subShowing) {
@@ -361,7 +356,7 @@ class TorrentPlayerActivity : AppCompatActivity() {
 
         override fun onPrepared(giraffePlayer: GiraffePlayer?) {
             Log.e(TAG, "=> onPrepared $lastPausePosition")
-            giraffePlayer?.seekTo(lastPausePosition!!)
+            giraffePlayer?.seekTo(lastPausePosition)
         }
 
         override fun onRelease(giraffePlayer: GiraffePlayer?) {
@@ -392,63 +387,7 @@ class TorrentPlayerActivity : AppCompatActivity() {
 
             isLoadedfromLast = false
 
-            /** I had to do this hacks since the Player doesn't have removeListener method
-             */
-            binding.giraffePlayer.playerListener = object : PlayerListener {
-                override fun onTimedText(giraffePlayer: GiraffePlayer?, text: IjkTimedText?) {
-                }
-
-                override fun onPrepared(giraffePlayer: GiraffePlayer?) {
-                }
-
-                override fun onRelease(giraffePlayer: GiraffePlayer?) {
-                }
-
-                override fun onCompletion(giraffePlayer: GiraffePlayer?) {
-                }
-
-                override fun onPause(giraffePlayer: GiraffePlayer?) {
-                }
-
-                override fun onLazyLoadError(giraffePlayer: GiraffePlayer?, message: String?) {
-                }
-
-                override fun onTargetStateChange(oldState: Int, newState: Int) {
-                }
-
-                override fun onDisplayModelChange(oldModel: Int, newModel: Int) {
-                }
-
-                override fun onSeekComplete(giraffePlayer: GiraffePlayer?) {
-                }
-
-                override fun onInfo(giraffePlayer: GiraffePlayer?, what: Int, extra: Int): Boolean {
-                    return false
-                }
-
-                override fun onBufferingUpdate(giraffePlayer: GiraffePlayer?, percent: Int) {
-                }
-
-                override fun onCurrentStateChange(oldState: Int, newState: Int) {
-                }
-
-                override fun onLazyLoadProgress(giraffePlayer: GiraffePlayer?, progress: Int) {
-                }
-
-                override fun onError(
-                    giraffePlayer: GiraffePlayer?,
-                    what: Int,
-                    extra: Int
-                ): Boolean {
-                    return false
-                }
-
-                override fun onPreparing(giraffePlayer: GiraffePlayer?) {
-                }
-
-                override fun onStart(giraffePlayer: GiraffePlayer?) {
-                }
-            }
+            binding.giraffePlayer.playerListener = null
         }
 
         override fun onInfo(giraffePlayer: GiraffePlayer?, what: Int, extra: Int): Boolean {
@@ -475,5 +414,10 @@ class TorrentPlayerActivity : AppCompatActivity() {
 
         override fun onStart(giraffePlayer: GiraffePlayer?) {
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putInt(LAST_POSITION, lastPausePosition)
+        super.onSaveInstanceState(outState)
     }
 }
