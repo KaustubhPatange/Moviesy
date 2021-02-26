@@ -42,7 +42,7 @@ class BottomSheetQuickInfo : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
                 override fun onLoadCleared(placeholder: Drawable?) {}
 
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    binding.shimmerImageView.setImage(resource)
+                    binding.shimmerImageView.setImageBitmap(resource)
                 }
             })
 

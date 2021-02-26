@@ -9,23 +9,17 @@
     android:focusable="true"
     android:padding="15dp">
 
-    <com.kpstv.shimmer.ShimmerImageView
-        android:id="@+id/item_imageCard"
+    <com.kpstv.imageloaderview.ImageLoaderView
+        android:id="@+id/item_shimmerImage"
         android:layout_width="65dp"
-        app:cardCornerRadius="5dp"
+        android:layout_height="98dp"
+        app:corner_radius="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_height="98dp">
-
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_play_circle"
-            app:tint="?attr/colorBackground" />
-
-    </com.kpstv.shimmer.ShimmerImageView>
+        app:overlay_drawable="@drawable/ic_play_circle"
+        app:overlay_drawable_padding="5dp"
+        app:shimmering="true" />
 
     <TextView
         android:id="@+id/item_title"
@@ -35,7 +29,7 @@
         android:textColor="?colorTextLight"
         android:textSize="15sp"
         app:layout_constraintEnd_toStartOf="@+id/item_remove_favourites"
-        app:layout_constraintStart_toEndOf="@id/item_imageCard"
+        app:layout_constraintStart_toEndOf="@id/item_shimmerImage"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="@string/af_title" />
 
@@ -48,7 +42,7 @@
         android:fontFamily="@font/google_sans_regular"
         android:textSize="14sp"
         app:layout_constraintEnd_toStartOf="@+id/item_remove_favourites"
-        app:layout_constraintStart_toEndOf="@id/item_imageCard"
+        app:layout_constraintStart_toEndOf="@id/item_shimmerImage"
         app:layout_constraintTop_toBottomOf="@id/item_title"
         tools:text="2013 &#8226; 182 mins" />
 

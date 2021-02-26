@@ -38,7 +38,7 @@ class LibraryDownloadAdapter(
         val bannerImagePath = File(model.imagePath!!)
         if (bannerImagePath.exists()) {
             val bitmap = BitmapFactory.decodeFile(bannerImagePath.absolutePath)
-            holder.binding.shimmerImageView.setImage(bitmap)
+            holder.binding.shimmerImageView.setImageBitmap(bitmap)
         }
         holder.binding.itemSubText.text =
             "${CommonUtils.getSizePretty(model.size)} ${getBulletSymbol()} ${model.total_video_length / (1000 * 60)} mins"

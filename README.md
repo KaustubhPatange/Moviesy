@@ -27,7 +27,7 @@ Since this project involves a private payment system 📃 some of the source fil
 ## Project Libraries
 
 - [After](app/after) - A library that helps you to dispatch events "after" some time one of which is displaying prompts.
-- [ShimmerImageView](app/shimmer) - An extension over Facebook's standard [shimmer](https://facebook.github.io/shimmer-android) effect library.
+- [ImageLoaderView](https://github.com/KaustubhPatange/ImageLoaderView) - An ImageView with cool loading effects eg: shimmer, overlay tinting.
 - [Auto Bindings](https://github.com/KaustubhPatange/AutoBindings) - Set of annotations that aims to eliminate biolerplate code.
 
 ## Built with 🛠

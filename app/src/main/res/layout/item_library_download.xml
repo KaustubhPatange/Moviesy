@@ -3,16 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:clickable="true"
     android:background="?selectableItemBackground"
+    android:clickable="true"
     android:focusable="true"
     android:padding="15dp">
 
-    <com.kpstv.shimmer.ShimmerImageView
+    <com.kpstv.imageloaderview.ImageLoaderView
         android:id="@+id/shimmerImageView"
         android:layout_width="65dp"
         android:layout_height="97dp"
-        app:cardCornerRadius="5dp"
+        app:corner_radius="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -31,12 +31,12 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:layout_marginEnd="10dp"
         android:id="@+id/item_subText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
         android:layout_marginTop="5dp"
+        android:layout_marginEnd="10dp"
         android:fontFamily="@font/google_sans_regular"
         android:text="2.2 GB &#8226; 182 mins"
         android:textSize="14sp"
@@ -47,13 +47,13 @@
     <TextView
         android:id="@+id/smallLabel"
         android:layout_width="0dp"
-        android:textColor="?colorTextLight"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
         android:layout_marginTop="10dp"
         android:background="@color/colorAccent"
         android:padding="3dp"
         android:text="Recently played\u0020"
+        android:textColor="?colorTextLight"
         android:textSize="12sp"
         android:textStyle="italic"
         app:layout_constraintBottom_toBottomOf="parent"

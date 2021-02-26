@@ -28,11 +28,13 @@ class WatchlistAdapter(
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: WatchlistHolder, i: Int) {
         val model = getItem(i)
-        
-        holder.binding.itemImageCard.getImageView().load(
+
+        holder.binding.itemShimmerImage.isShimmering = true
+        holder.binding.itemShimmerImage.load(
             uri = model.imageUrl,
             onSuccess = { resource ->
-                holder.binding.itemImageCard.setImage(resource)
+                holder.binding.itemShimmerImage.setImageBitmap(resource)
+                holder.binding.itemShimmerImage.isShimmering = false
             }
         )
 

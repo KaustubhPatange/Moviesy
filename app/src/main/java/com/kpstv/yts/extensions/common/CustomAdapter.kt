@@ -44,15 +44,16 @@ class CustomAdapter(
     override fun onBindViewHolder(holder: CustomHolder, i: Int) {
         val movie = list[i]
 
-        var imageUri = movie.bannerUrl
+        val imageUri = movie.bannerUrl
 
-        holder.binding.shimmerImageView.getImageView().load(
+        holder.binding.shimmerImageView.isShimmering = true
+        holder.binding.shimmerImageView.load(
             uri = imageUri,
             onSuccess = { bitmap ->
-                holder.binding.shimmerImageView.setImage(bitmap)
+                holder.binding.shimmerImageView.setImageBitmap(bitmap)
+                holder.binding.shimmerImageView.isShimmering = false
             }
         )
-
         holder.binding.mainText.text = movie.title
 
         holder.binding.shimmerImageView.setOnClickListener {

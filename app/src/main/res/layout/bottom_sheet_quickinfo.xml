@@ -6,12 +6,12 @@
     android:background="?colorForeground"
     android:paddingBottom="15dp">
 
-    <com.kpstv.shimmer.ShimmerImageView
+    <com.kpstv.imageloaderview.ImageLoaderView
         android:id="@+id/shimmerImageView"
         android:layout_width="57dp"
         android:layout_height="85dp"
         android:layout_margin="15dp"
-        app:cardCornerRadius="5dp"
+        app:corner_radius="5dp"
         app:layout_constraintBottom_toTopOf="@id/separatorView"
         app:layout_constraintEnd_toStartOf="@id/item_title"
         app:layout_constraintStart_toStartOf="parent"

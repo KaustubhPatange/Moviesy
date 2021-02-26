@@ -52,6 +52,7 @@ private object LibraryVersion {
     const val FIREBASE_BOM = "26.1.0"
     const val AUTOBINDINGS = "1.1-alpha12"
     const val APP_STARTUP = "1.0.0"
+    const val IMAGELOADERVIEW = "0.3"
 }
 
 object LibraryDependency {
@@ -126,4 +127,5 @@ object LibraryDependency {
     const val GIRAFFE_PLAYER2 = "com.github.tcking:giraffeplayer2:${LibraryVersion.GIRAFFE_PLAYER}"
     const val AUTOBINDINGS = "io.github.kaustubhpatange:autobindings:${LibraryVersion.AUTOBINDINGS}"
     const val AUTOBINDINGS_COMPILER = "io.github.kaustubhpatange:autobindings-compiler:${LibraryVersion.AUTOBINDINGS}"
+    const val IMAGELOADERVIEW = "io.github.kaustubhpatange:imageloaderview:${LibraryVersion.IMAGELOADERVIEW}"
 }

@@ -15,7 +15,6 @@
             <option value="$PROJECT_DIR$/app/after" />
             <option value="$PROJECT_DIR$/app/common" />
             <option value="$PROJECT_DIR$/app/purchase" />
-            <option value="$PROJECT_DIR$/app/shimmer" />
             <option value="$PROJECT_DIR$/buildSrc" />
           </set>
         </option>

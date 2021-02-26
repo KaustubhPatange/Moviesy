@@ -146,6 +146,7 @@ dependencies {
     implementation(LibraryDependency.HILT_VIEWODEL)
     implementation(LibraryDependency.HILT_WORK_MANAGER)
     implementation(LibraryDependency.AUTOBINDINGS)
+    implementation(LibraryDependency.IMAGELOADERVIEW)
 
     implementation(LibraryDependency.GOOGLE_HTTPCLIENT_API) {
         exclude(group = GradlePluginId.APACHE_HTTP)
