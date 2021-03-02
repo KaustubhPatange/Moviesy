@@ -16,9 +16,7 @@ import es.dmoral.toasty.Toasty
 @AndroidEntryPoint
 class ChartsFragment : Fragment(R.layout.fragment_charts), HomeFragment.HomeFragmentCallbacks {
 
-    private val viewModel by viewModels<MainViewModel>(
-        ownerProducer = { requireActivity() }
-    )
+    private val viewModel by viewModels<MainViewModel>()
 
     private val binding by viewBinding(FragmentChartsBinding::bind)
     private lateinit var cmlFeatured: CustomMovieLayout
@@ -38,7 +36,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts), HomeFragment.HomeFrag
 
         /** Restoring previous state of nestedScrollView */
         binding.nestedScrollView.onRestoreInstanceState(
-            viewModel.chartFragmentState.nestedScrollState
+            viewModel.uiState.chartFragmentState.nestedScrollState
         )
     }
 
@@ -145,7 +143,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts), HomeFragment.HomeFrag
      */
     override fun onStop() {
         super.onStop()
-        viewModel.chartFragmentState.nestedScrollState =
+        viewModel.uiState.chartFragmentState.nestedScrollState =
             binding.nestedScrollView.onSaveInstanceState()
     }
 }

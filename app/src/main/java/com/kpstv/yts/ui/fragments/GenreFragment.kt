@@ -24,9 +24,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class GenreFragment : Fragment(R.layout.fragment_genre), HomeFragment.HomeFragmentCallbacks {
 
-    private val viewModel by viewModels<MainViewModel>(
-        ownerProducer = { requireActivity() }
-    )
+    private val viewModel by viewModels<MainViewModel>()
     private val binding by viewBinding(FragmentGenreBinding::bind)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -48,7 +46,7 @@ class GenreFragment : Fragment(R.layout.fragment_genre), HomeFragment.HomeFragme
 
         /** Restoring recyclerView state */
         binding.recyclerView.layoutManager?.onRestoreInstanceState(
-            viewModel.genreFragmentState.recyclerViewState
+            viewModel.uiState.genreFragmentState.recyclerViewState
         )
     }
 
@@ -61,7 +59,7 @@ class GenreFragment : Fragment(R.layout.fragment_genre), HomeFragment.HomeFragme
      */
     override fun onStop() {
         super.onStop()
-        viewModel.genreFragmentState.recyclerViewState =
+        viewModel.uiState.genreFragmentState.recyclerViewState =
             binding.recyclerView.layoutManager?.onSaveInstanceState()
     }
 

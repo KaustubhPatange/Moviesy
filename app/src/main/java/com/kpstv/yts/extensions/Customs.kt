@@ -8,14 +8,6 @@ import kotlinx.coroutines.*
 import java.io.File
 import java.util.*
 
-fun <T> lazyDeferred(block: suspend CoroutineScope.() -> T): Lazy<Deferred<T>> {
-    return lazy {
-        GlobalScope.async(start = CoroutineStart.LAZY) {
-            block.invoke(this)
-        }
-    }
-}
-
 fun String.small() = toLowerCase(Locale.ROOT)
 
 fun ArrayList<GenreFragment.LocalGenreModel>.add(

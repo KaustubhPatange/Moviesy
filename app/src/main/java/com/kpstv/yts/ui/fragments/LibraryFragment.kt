@@ -112,9 +112,9 @@ class LibraryFragment : Fragment(R.layout.fragment_library), AbstractBottomNavAc
             }
 
             /** Restore previous state of recyclerView */
-            if (viewModel.libraryFragmentState.recyclerViewState != null) {
-                binding.recyclerViewDownload.layoutManager?.onRestoreInstanceState(viewModel.libraryFragmentState.recyclerViewState)
-                viewModel.libraryFragmentState.recyclerViewState = null
+            if (viewModel.uiState.libraryFragmentState.recyclerViewState != null) {
+                binding.recyclerViewDownload.layoutManager?.onRestoreInstanceState(viewModel.uiState.libraryFragmentState.recyclerViewState)
+                viewModel.uiState.libraryFragmentState.recyclerViewState = null
             }
         })
     }
@@ -205,7 +205,7 @@ class LibraryFragment : Fragment(R.layout.fragment_library), AbstractBottomNavAc
      */
     override fun onStop() {
         super.onStop()
-        viewModel.libraryFragmentState.recyclerViewState =
+        viewModel.uiState.libraryFragmentState.recyclerViewState =
             binding.recyclerViewDownload.layoutManager?.onSaveInstanceState()
     }
 }

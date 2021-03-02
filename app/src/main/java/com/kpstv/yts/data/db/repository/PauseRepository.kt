@@ -34,9 +34,7 @@ class PauseRepository @Inject constructor(
         }
     }
 
-    suspend fun getAllPauseJob(): LiveData<List<Model.response_pause>> {
-        return withContext(Dispatchers.IO) {
-            pauseDao.getAllData()
-        }
+    fun getAllPauseJob(): LiveData<List<Model.response_pause>> {
+       return pauseDao.getAllData()
     }
 }

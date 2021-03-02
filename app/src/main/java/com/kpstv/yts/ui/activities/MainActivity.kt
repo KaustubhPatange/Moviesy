@@ -139,7 +139,7 @@ class MainActivity : AbstractBottomNavActivity() {
         navigations.setUp(binding.navigationLayout.navRecyclerView, models) { navigationModel, _ ->
             navigateTo(navigationModel.tag)
         }
-        viewModel.pauseMovieJob.await().observe(this, Observer {
+        viewModel.pauseMovieJob.observe(this, Observer {
             navigations.updateNotification(NAV_DOWNLOAD_QUEUE, it.size)
         })
     }

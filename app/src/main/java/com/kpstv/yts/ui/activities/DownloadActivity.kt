@@ -125,7 +125,7 @@ class DownloadActivity : AppCompatActivity() {
         }
 
         binding.recyclerViewPause.adapter = pauseAdapter
-        viewModel.pauseMovieJob.await().observe(this, Observer {
+        viewModel.pauseMovieJob.observe(this, Observer {
             pauseAdapter.updateModels(it)
             if (pauseAdapter.itemCount > 0) {
                 binding.layoutPauseQueue.show()

@@ -56,10 +56,10 @@ class HomeFragment : Fragment(R.layout.fragment_home), TabLayout.OnTabSelectedLi
         binding.tabLayout.addOnTabSelectedListener(this)
 
         /** Restore tab position */
-        setCurrentTab(viewModel.homeFragmentState.tabPosition)
+        setCurrentTab(viewModel.uiState.homeFragmentState.tabPosition)
 
         /** Restore app bar state */
-        if (viewModel.homeFragmentState.isAppBarExpanded == false)
+        if (viewModel.uiState.homeFragmentState.isAppBarExpanded == false)
             binding.appBarLayout.collapse()
     }
 
@@ -101,9 +101,9 @@ class HomeFragment : Fragment(R.layout.fragment_home), TabLayout.OnTabSelectedLi
      */
     override fun onStop() {
         super.onStop()
-        viewModel.homeFragmentState.isAppBarExpanded =
+        viewModel.uiState.homeFragmentState.isAppBarExpanded =
             binding.appBarLayout.isAppBarExpanded
-        viewModel.homeFragmentState.tabPosition =
+        viewModel.uiState.homeFragmentState.tabPosition =
             binding.tabLayout.selectedTabPosition
     }
 

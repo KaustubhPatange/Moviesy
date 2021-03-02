@@ -21,10 +21,9 @@ import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.data.models.data.data_main
 import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.extensions.MoviesCallback
-import com.kpstv.yts.extensions.lazyDeferred
 import com.kpstv.yts.extensions.utils.YTSParser
 import com.kpstv.yts.interfaces.api.YTSApi
-import com.kpstv.yts.ui.viewmodels.providers.*
+import com.kpstv.yts.ui.viewmodels.state.UIState
 import kotlinx.coroutines.launch
 import retrofit2.await
 import java.util.*
@@ -37,27 +36,14 @@ class MainViewModel @ViewModelInject constructor(
     private val favouriteRepository: FavouriteRepository,
     private val pauseRepository: PauseRepository,
     private val downloadRepository: DownloadRepository,
+    val uiState: UIState,
     private val ytsParser: YTSParser
 ) : AndroidViewModel(application) {
     private val TAG = "MainViewModel"
 
-    val watchFragmentState = WatchState()
-    val libraryFragmentState = LibraryState()
-    val homeFragmentState = HomeState()
-    val chartFragmentState = ChartState()
-    val genreFragmentState = GenreState()
-
-    private val _favouriteMovieIds = MutableLiveData<List<Model.response_favourite>>()
-    val favouriteMovieIds: LiveData<List<Model.response_favourite>>
-        get() = _favouriteMovieIds
-
-    private val _downloadMovieIds = MutableLiveData<List<Model.response_download>>()
-    val downloadMovieIds: LiveData<List<Model.response_download>>
-        get() = _downloadMovieIds
-
-    val pauseMovieJob by lazyDeferred {
-        pauseRepository.getAllPauseJob()
-    }
+    val favouriteMovieIds by lazy { favouriteRepository.getAllMovieId() }
+    val downloadMovieIds by lazy { downloadRepository.getAllDownloads() }
+    val pauseMovieJob by lazy { pauseRepository.getAllPauseJob() }
 
     fun removeDownload(hash: String) = downloadRepository.deleteDownload(hash)
 
@@ -94,7 +80,7 @@ class MainViewModel @ViewModelInject constructor(
     fun getYTSQuery(movieCallback: MoviesCallback, queryMap: Map<String, String>) {
         movieCallback.onStarted?.invoke()
 
-        Coroutines.io {
+        viewModelScope.launch {
             try {
                 val queryString = QueryConverter.fromMapToString(queryMap)
 
@@ -106,18 +92,15 @@ class MainViewModel @ViewModelInject constructor(
                     repository.getMoviesByQuery(
                         queryString
                     )?.let {
-                        Coroutines.main {
-                            movieCallback.onComplete.invoke(
-                                it.movies,
-                                queryMap,
-                                it.isMore
-                            )
-                        }
+                        movieCallback.onComplete.invoke(
+                            it.movies,
+                            queryMap,
+                            it.isMore
+                        )
                     }
                 }
-
             } catch (e: Exception) {
-                Coroutines.main { movieCallback.onFailure?.invoke(e) }
+                movieCallback.onFailure?.invoke(e)
             }
         }
     }
@@ -125,7 +108,7 @@ class MainViewModel @ViewModelInject constructor(
     fun getFeaturedMovies(moviesCallback: MoviesCallback) {
         moviesCallback.onStarted?.invoke()
 
-        Coroutines.main {
+        viewModelScope.launch {
             try {
                 val queryMap = QueryConverter.toMapfromString(FEATURED_QUERY)
                 if (isFetchNeeded(FEATURED_QUERY)) {
@@ -224,15 +207,6 @@ class MainViewModel @ViewModelInject constructor(
         } catch (e: Exception) {
             e.printStackTrace()
             return true
-        }
-    }
-
-    init {
-        favouriteRepository.getAllMovieId().observeForever {
-            _favouriteMovieIds.value = it
-        }
-        downloadRepository.getAllDownloads().observeForever {
-            _downloadMovieIds.value = it
         }
     }
 }
