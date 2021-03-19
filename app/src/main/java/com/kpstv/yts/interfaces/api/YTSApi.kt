@@ -13,7 +13,7 @@ interface YTSApi {
      *  YTSQuery.MovieBuilder class*/
 
     @GET("movie_details.json")
-    fun getMovie(@QueryMap params: Map<String, String>): Deferred<Model.response_movie>
+    suspend fun getMovie(@QueryMap params: Map<String, String>): Model.response_movie?
 
     /** List movies by passing certain queries build using
      *  YTSQuery.ListMovieBuilder class*/

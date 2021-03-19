@@ -242,13 +242,23 @@ class AppUtils {
         }
 
         @Suppress("DEPRECATION")
-        fun isLastActivity(activity: Activity): Boolean = with(activity) {
-            val mngr =
-                getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-
-            val taskList = mngr.getRunningTasks(10)
-
+        fun isLastActivity(activity: Activity): Boolean {
+            val manager = activity.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+            val taskList = manager.getRunningTasks(10)
             return taskList[0].numActivities == 1 && taskList[0].topActivity!!.className == activity.javaClass.name
+        }
+
+        @Suppress("DEPRECATION")
+        fun <T> hasActivity(context: Context, clazz: Class<T>): Boolean {
+            val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+            val taskList = manager.getRunningTasks(10)
+            taskList.forEach { info ->
+                when {
+                    info.baseActivity!!.className == clazz.name -> return true
+                    info.topActivity!!.className == clazz.name -> return true
+                }
+            }
+            return false
         }
 
         // Suspend needed to make sure we call it from worker thread only.

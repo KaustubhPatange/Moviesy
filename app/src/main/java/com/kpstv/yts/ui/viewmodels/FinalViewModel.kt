@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppInterface.Companion.MOVIE_SPAN_DIFFERENCE
 import com.kpstv.yts.AppInterface.Companion.MainDateFormatter
@@ -56,7 +55,7 @@ class FinalViewModel @ViewModelInject constructor(
 
     fun fetchMovieUrl(movieListener: MovieListener, movieUrl: String) {
         movieListener.onStarted()
-        Coroutines.main {
+        viewModelScope.launch {
             val movieShort = ytsParser.parseMovieUrl(movieUrl)
             if (movieShort?.movieId != null) {
                 val movieResult = getMovieDetailYTS(movieShort.movieId)
@@ -93,32 +92,26 @@ class FinalViewModel @ViewModelInject constructor(
     private suspend fun getMovieDetailYTS(movieId: Int): MovieResult {
         val query = YTSQuery.MovieBuilder()
             .setMovieId(movieId)
-            .setIncludeCast(true)
             .build()
 
         try {
-            val response = ytsApi.getMovie(query).await()
-            val movie = response.data.movie
+            val response = ytsApi.getMovie(query)
+            val movie = response?.data?.movie ?: return MovieResult.Error(Exception("Couldn't find the required movie."))
 
             /** Fetching crew details filtering only director */
             val crews = movieRepository.getCrewById(movieId)
             val casts = movieRepository.getCastById(movieId)
+            Log.e(TAG, "Reached at middle")
             if (crews == null || casts == null) {
-                val response1 = tMdbApi.getCast(movie?.imdb_code!!)
-                if (!response1.crew.isNullOrEmpty()) {
-                    val crewList = response1.crew.filter { it.job == "Director" }.take(3)
-                        .map { Crew.from(it) }
-                    val castList = response1.cast?.take(4)?.map { Cast.from(it) }
-                    movie.crew = crewList
-                    movie.cast = castList
-                }
+                injectCastInfo(movie)
             } else {
-                movie?.crew = crews
-                movie?.cast = casts
+                movie.crew = crews
+                movie.cast = casts
             }
-            movieRepository.saveMovie(movie!!)
+            movieRepository.saveMovie(movie)
             return MovieResult.Success(movie)
         } catch (e: Exception) {
+            e.printStackTrace()
             return movieRepository.getMovieById(movieId)?.let { movie ->
                 MovieResult.Success(movie)
             } ?: MovieResult.Error(e)
@@ -152,14 +145,9 @@ class FinalViewModel @ViewModelInject constructor(
 
                     /** A patch that will modify movie and inject cast & director
                      */
-                    val response1 = tMdbApi.getCast(movie.imdb_code)
-                    if (response1.cast?.isNotEmpty() == true && response1.crew?.isNotEmpty() == true) {
-                        val casts = response1.cast.take(4).map { Cast.from(it) }
-                        val crewList = response1.crew.filter { it.job == "Director" }.take(3)
-                            .map { Crew.from(it) }
-                        movie.cast = casts
-                        movie.crew = crewList
-                        movieListener.onCastFetched(casts, crewList)
+                    injectCastInfo(movie)
+                    if (movie.cast != null && movie.crew != null) {
+                        movieListener.onCastFetched(movie.cast!!, movie.crew!!)
                     }
 
                     movieRepository.saveMovie(movie)
@@ -173,9 +161,23 @@ class FinalViewModel @ViewModelInject constructor(
         }
     }
 
+    private suspend fun injectCastInfo(movie: Movie) {
+        try {
+            val tmDbResponse = tMdbApi.getCast(movie.imdb_code)
+            if (tmDbResponse.crew != null && tmDbResponse.cast != null) {
+                val casts = tmDbResponse.cast.take(4).map { Cast.from(it) }
+                val crewList = tmDbResponse.crew.filter { it.job == "Director" }.take(3).map { Crew.from(it) }
+                movie.cast = casts
+                movie.crew = crewList
+            }
+        }catch (e: Exception) {
+            // low-level exception can be ignored.
+        }
+    }
+
     fun getRecommendations(imdbId: String, suggestionCallback: SuggestionCallback) {
         suggestionCallback.onStarted?.invoke()
-        Coroutines.main {
+        viewModelScope.launch {
             try {
 
                 if (isFetchNeeded(imdbId, MovieType.Recommend)) {

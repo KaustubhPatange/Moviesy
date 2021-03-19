@@ -34,6 +34,8 @@ class YTSQuery {
 
         /**
          * When set the data returned will include the added image URLs.
+         *
+         * Note: Response will not be successful sometimes when this is set to true
          */
         fun setIncludeImages(`val`: Boolean): MovieBuilder {
             vals["with_images"] = `val`.toString() + ""
@@ -42,6 +44,8 @@ class YTSQuery {
 
         /**
          * When set the data returned will include the added information about the cast.
+         *
+         * Note: Response will not be successful sometimes when this is set to true
          */
         fun setIncludeCast(`val`: Boolean): MovieBuilder {
             vals["with_cast"] = `val`.toString() + ""

@@ -512,12 +512,20 @@ class FinalActivity : AppCompatActivity(), MovieListener {
     }
 
     override fun onBackPressed() {
-        if (AppUtils.isLastActivity(this))
+        if (isTaskRoot)
             startActivity(Intent(this, MainActivity::class.java))
+
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q)
             finishAfterTransition() // Fix b\139738913
         else
             super.onBackPressed()
+    }
+
+    private fun bringMainActivityToFront() {
+        Intent(this, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_NEW_TASK
+            startActivity(this)
+        }
     }
 }
 
