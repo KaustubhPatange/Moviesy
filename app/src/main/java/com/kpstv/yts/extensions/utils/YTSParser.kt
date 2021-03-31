@@ -2,6 +2,7 @@ package com.kpstv.yts.extensions.utils
 
 import android.util.Log
 import androidx.core.text.isDigitsOnly
+import com.google.api.client.http.HttpStatusCodes
 import com.kpstv.common_moviesy.extensions.await
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.data.models.MovieShort
@@ -12,6 +13,7 @@ import org.jsoup.Jsoup
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import javax.net.ssl.SSLHandshakeException
 
 @Singleton
 class YTSParser @Inject constructor(
@@ -32,6 +34,7 @@ class YTSParser @Inject constructor(
         try {
             val response =
                 client.newCall(Request.Builder().url(AppInterface.YTS_BASE_URL).build()).await()
+            if (response.code == 525) throw SSLHandshakeException("Could not establish successful connection with server")
             if (!response.isSuccessful) return list
 
             val doc = Jsoup.parse(response.body?.string())

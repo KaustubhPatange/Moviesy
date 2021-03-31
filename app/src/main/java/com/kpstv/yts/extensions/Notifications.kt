@@ -10,6 +10,7 @@ import android.graphics.Bitmap
 import android.os.Build.VERSION.SDK_INT
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import com.google.android.gms.common.internal.service.Common
 import com.kpstv.common_moviesy.extensions.colorFrom
 import com.kpstv.common_moviesy.extensions.utils.CommonUtils
 import com.kpstv.yts.AppInterface
@@ -179,6 +180,25 @@ object Notifications {
                 setAutoCancel(true)
                 priority = Notification.PRIORITY_LOW
             }.build()
+
+        mgr.notify(getRandomNumberCode(), notification)
+    }
+
+    fun sendSSLHandshakeNotification(context: Context) = with(context) {
+        val openIntent = Intent(this, CommonBroadCast::class.java).apply {
+            action = CommonBroadCast.OPEN_YTS_SITE
+        }
+        val notification =
+            NotificationCompat.Builder(this, getString(R.string.CHANNEL_ID_2))
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setContentTitle(getString(R.string.error_ssl_handshake_title))
+                .setContentText(getString(R.string.error_ssl_handshake_text))
+                .setColor(colorFrom(R.color.colorPrimary_New_DARK))
+                .setSmallIcon(R.drawable.ic_error_outline)
+                .setAutoCancel(true)
+                .setContentIntent(PendingIntent.getBroadcast(this, getRandomNumberCode(), openIntent, 0))
+                .setPriority(Notification.PRIORITY_LOW)
+                .build()
 
         mgr.notify(getRandomNumberCode(), notification)
     }

@@ -101,7 +101,6 @@ class FinalViewModel @ViewModelInject constructor(
             /** Fetching crew details filtering only director */
             val crews = movieRepository.getCrewById(movieId)
             val casts = movieRepository.getCastById(movieId)
-            Log.e(TAG, "Reached at middle")
             if (crews == null || casts == null) {
                 injectCastInfo(movie)
             } else {

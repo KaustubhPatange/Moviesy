@@ -27,6 +27,7 @@ import com.kpstv.yts.ui.viewmodels.state.UIState
 import kotlinx.coroutines.launch
 import retrofit2.await
 import java.util.*
+import javax.net.ssl.SSLHandshakeException
 import kotlin.collections.ArrayList
 
 class MainViewModel @ViewModelInject constructor(

@@ -18,6 +18,7 @@ import com.kpstv.yts.extensions.utils.YTSParser
 import com.kpstv.yts.interfaces.api.TMdbApi
 import com.kpstv.yts.ui.settings.GeneralSettingsFragment
 import java.util.concurrent.TimeUnit
+import javax.net.ssl.SSLHandshakeException
 
 class AppWorker @WorkerInject constructor(
     @Assisted private val appContext: Context,
@@ -76,6 +77,8 @@ class AppWorker @WorkerInject constructor(
                     )
                 }
             }
+        } catch (e: SSLHandshakeException) {
+            Notifications.sendSSLHandshakeNotification(appContext)
         } catch (e: Exception) {
             Log.w(TAG, "Failed: ${e.message}", e)
         }
