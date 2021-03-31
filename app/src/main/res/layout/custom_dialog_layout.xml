@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:textAlignment="center"
-            android:textSize="13sp"
+            android:textSize="14sp"
             tools:text="This is a long title that should be possible to show here" />
     </LinearLayout>
 

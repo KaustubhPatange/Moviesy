@@ -2,18 +2,17 @@ package com.kpstv.yts.ui.dialogs
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import androidx.annotation.RawRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
-import com.kpstv.yts.databinding.CustomErrorDialogBinding
+import com.kpstv.yts.databinding.CustomDialogLayoutBinding
 import com.kpstv.yts.extensions.SimpleCallback
 
 class WindowDialog(context: Context) : AlertDialog(context) {
 
     class Builder(private val context: Context) {
         private val dialog = WindowDialog(context)
-        private val view = CustomErrorDialogBinding.inflate(LayoutInflater.from(context))
+        private val view = CustomDialogLayoutBinding.inflate(LayoutInflater.from(context))
         fun setCancellable(value: Boolean): Builder {
             dialog.setCancelable(value)
             return this

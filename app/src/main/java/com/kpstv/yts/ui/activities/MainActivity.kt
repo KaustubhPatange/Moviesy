@@ -28,6 +28,7 @@ import com.kpstv.yts.services.DownloadService
 import com.kpstv.yts.ui.fragments.HomeFragment
 import com.kpstv.yts.ui.fragments.LibraryFragment
 import com.kpstv.yts.ui.fragments.WatchlistFragment
+import com.kpstv.yts.ui.helpers.ChangelogHelper
 import com.kpstv.yts.ui.helpers.MainCastHelper
 import com.kpstv.yts.ui.helpers.PremiumHelper
 import com.kpstv.yts.ui.settings.SettingsActivity
@@ -91,6 +92,8 @@ class MainActivity : AbstractBottomNavActivity() {
         setPremiumButtonClicked()
 
         setNavigationDrawerItemClicks()
+
+        ChangelogHelper(this).show()
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {

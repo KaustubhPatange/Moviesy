@@ -1,0 +1,22 @@
+{
+  "version": "1.6",
+  "summary": [
+    "<br/><h4>Added:</h4><br/>",
+    "• Support for sharing movie links.<br/>",
+    "• Downloaded subtitles will now be highlighted.<br/>",
+    "• App can now handle SSL handshake error & notify user about the same.<br/>",
+    "• Changelog viewer to let user know about the release notes.<br/>",
+    "<br/><h4>Improved:</h4><br/>",
+    "• Torrent streaming service.<br/>",
+    "• After library for font & text size loading.<br/>",
+    "• Logic for fetching subtitles.<br/>",
+    "• Logic for notifying \"Featured\" & \"Latest\" movies.<br/>",
+    "<br/><h4>Fixed:</h4><br/>",
+    "• Issues with loading movie cast/crew.<br/>",
+    "• Font resource loading at startup.<br/>",
+    "• Some unsupported cast device issues.<br/>",
+    "• Subtitle helper issue.<br/>",
+    "• Issues when downloading update in background.<br/>",
+    "• Refactoring & lot's of internal fixes."
+  ]
+}

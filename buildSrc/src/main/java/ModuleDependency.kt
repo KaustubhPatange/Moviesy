@@ -1,13 +1,12 @@
 import kotlin.reflect.full.memberProperties
 
-const val NKO = ":app"
-
 @Suppress("unused")
 object ModuleDependency {
     const val APP = ":app"
     const val PURCHASE = ":app:purchase"
     const val COMMON = ":app:common"
     const val AFTER = ":app:after"
+    const val SHEETS = ":app:sheets"
 
     fun getAllModules() = ModuleDependency::class.memberProperties
         .filter { it.isConst }

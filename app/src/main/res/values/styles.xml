@@ -164,4 +164,14 @@
         <item name="android:textSize">12sp</item>
     </style>
 
+    <style name="AppBottomSheetStyle" parent="BottomSheetDialogTheme">
+        <item name="colorForeground">?colorSeparator</item>
+        <item name="sheetBackgroundColor">?colorForeground</item>
+        <item name="materialButtonStyle">@style/BottomSheetButtonStyle</item>
+    </style>
+
+    <style name="BottomSheetButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="android:backgroundTint">?colorPrimarySurface</item>
+    </style>
+
 </resources>
