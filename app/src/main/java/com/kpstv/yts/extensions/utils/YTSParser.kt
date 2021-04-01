@@ -2,18 +2,17 @@ package com.kpstv.yts.extensions.utils
 
 import android.util.Log
 import androidx.core.text.isDigitsOnly
-import com.google.api.client.http.HttpStatusCodes
 import com.kpstv.common_moviesy.extensions.await
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.data.models.Result
 import com.kpstv.yts.data.models.Subtitle
+import com.kpstv.yts.extensions.errors.SSLHandshakeException
 import okhttp3.Request
 import org.jsoup.Jsoup
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
-import javax.net.ssl.SSLHandshakeException
 
 @Singleton
 class YTSParser @Inject constructor(
@@ -31,23 +30,19 @@ class YTSParser @Inject constructor(
      */
     suspend fun fetchFeaturedMovies(): ArrayList<MovieShort> {
         val list = ArrayList<MovieShort>()
-        try {
-            val response =
-                client.newCall(Request.Builder().url(AppInterface.YTS_BASE_URL).build()).await()
-            if (response.code == 525) throw SSLHandshakeException("Could not establish successful connection with server")
-            if (!response.isSuccessful) return list
+        val response =
+            client.newCall(Request.Builder().url(AppInterface.YTS_BASE_URL).build()).await()
+        if (response.code == 525) throw SSLHandshakeException("Could not establish successful connection with server")
+        if (!response.isSuccessful) return list
 
-            val doc = Jsoup.parse(response.body?.string())
-            val elements = doc.getElementsByClass("browse-movie-link")
+        val doc = Jsoup.parse(response.body?.string())
+        val elements = doc.getElementsByClass("browse-movie-link")
 
-            response.close() // Always close the response when not needed
+        response.close() // Always close the response when not needed
 
-            for (i in 0..3) {
-                val link = elements[i].attr("href").toString()
-                parseMovieUrl(link)?.let { list.add(it) }
-            }
-        } catch (e: Exception) {
-            Log.e(javaClass.simpleName, "Featured fetch failed", e)
+        for (i in 0..3) {
+            val link = elements[i].attr("href").toString()
+            parseMovieUrl(link)?.let { list.add(it) }
         }
         return list
     }

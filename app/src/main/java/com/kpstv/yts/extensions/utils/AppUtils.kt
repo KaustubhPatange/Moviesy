@@ -20,9 +20,11 @@ import androidx.core.app.ShareCompat
 import androidx.core.content.FileProvider
 import com.kpstv.common_moviesy.extensions.colorFrom
 import com.kpstv.common_moviesy.extensions.utils.CommonUtils
+import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppInterface.Companion.handleRetrofitError
 import com.kpstv.yts.R
 import com.kpstv.yts.databinding.CustomPurchaseDialogBinding
+import com.kpstv.yts.ui.dialogs.WindowDialog
 import es.dmoral.toasty.Toasty
 import java.io.*
 import java.net.HttpURLConnection
@@ -283,6 +285,19 @@ class AppUtils {
                 .setText(url)
                 .setType("text/plain")
                 .startChooser()
+        }
+
+        fun showSSLHandshakeDialog(context: Context) {
+            WindowDialog.Builder(context)
+                .setTitle(R.string.error_ssl_handshake_title)
+                .setSubtitle(R.string.error_ssl_handshake_text_dialog)
+                .setCancellable(false)
+                .setLottieRes(R.raw.error)
+                .setNegativeButton(android.R.string.cancel)
+                .setPositiveButton(R.string.alright) {
+                    launchUrlIntent(context, AppInterface.YTS_BASE_URL)
+                }
+                .show()
         }
 
         private val TAG = "Utils"

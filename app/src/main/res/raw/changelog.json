@@ -5,6 +5,7 @@
     "• Support for sharing movie links.<br/>",
     "• Downloaded subtitles will now be highlighted.<br/>",
     "• App can now handle SSL handshake error & notify user about the same.<br/>",
+    "• Ability to let user know that this app doesn't work with some carriers.<br/>",
     "• Changelog viewer to let user know about the release notes.<br/>",
     "<br/><h4>Improved:</h4><br/>",
     "• Torrent streaming service.<br/>",

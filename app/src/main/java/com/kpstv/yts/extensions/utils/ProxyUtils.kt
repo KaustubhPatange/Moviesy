@@ -10,6 +10,7 @@ import com.kpstv.yts.data.converters.AppDatabaseConverter
 import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.common_moviesy.extensions.await
 import com.kpstv.yts.data.models.AppDatabase
+import com.kpstv.yts.extensions.errors.SSLHandshakeException
 import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.Request
 import javax.inject.Inject
@@ -70,6 +71,7 @@ class ProxyUtils @Inject constructor(
             Log.e(TAG, "Checking for YTS proxy again!")
             val testResponse =
                 retrofitUtils.makeHttpCallAsync("${AppInterface.YTS_BASE_API_URL}list_movies.json")
+            if (testResponse.code == 525) throw SSLHandshakeException("The app couldn't connect to server")
             if (!testResponse.isSuccessful) throw Exception("Updated proxy is invalid. If you see this message, contact developer to update proxies manually!")
             testResponse.close() // Close response for memory leaks
         } else

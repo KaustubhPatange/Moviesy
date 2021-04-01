@@ -10,12 +10,12 @@ import com.kpstv.yts.R
 import com.kpstv.yts.databinding.FragmentChartsBinding
 import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.extensions.common.CustomMovieLayout
+import com.kpstv.yts.extensions.errors.SSLHandshakeException
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.ui.dialogs.WindowDialog
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
-import javax.net.ssl.SSLHandshakeException
 
 @AndroidEntryPoint
 class ChartsFragment : Fragment(R.layout.fragment_charts), HomeFragment.HomeFragmentCallbacks {
@@ -79,7 +79,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts), HomeFragment.HomeFrag
             setupFeaturedCallbacks(viewModel) { ex ->
                 cmlFeatured.removeView(binding.addLayout)
                 if (ex is SSLHandshakeException) {
-                    showSSLHandshakeDialog()
+                    AppUtils.showSSLHandshakeDialog(requireContext())
                 } else {
                     Toasty.warning(requireContext(), getString(R.string.featured_movies)).show()
                 }
@@ -144,19 +144,6 @@ class ChartsFragment : Fragment(R.layout.fragment_charts), HomeFragment.HomeFrag
             setLifeCycleOwner(viewLifecycleOwner)
             setupCallbacks(viewModel, queryMap5)
         }
-    }
-
-    private fun showSSLHandshakeDialog() {
-        WindowDialog.Builder(requireContext())
-            .setTitle(R.string.error_ssl_handshake_title)
-            .setSubtitle(R.string.error_ssl_handshake_text_dialog)
-            .setCancellable(false)
-            .setLottieRes(R.raw.error)
-            .setNegativeButton(android.R.string.cancel)
-            .setPositiveButton(R.string.alright) {
-                AppUtils.launchUrlIntent(requireContext(), AppInterface.YTS_BASE_URL)
-            }
-            .show()
     }
 
     /**

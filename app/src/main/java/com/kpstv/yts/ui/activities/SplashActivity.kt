@@ -18,6 +18,7 @@ import com.kpstv.yts.R
 import com.kpstv.yts.databinding.ActivitySplashBinding
 import com.kpstv.yts.defaultPreference
 import com.kpstv.yts.extensions.DelegatedAnimator
+import com.kpstv.yts.extensions.errors.SSLHandshakeException
 import com.kpstv.yts.extensions.startActivityAndFinish
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.ProxyUtils
@@ -81,16 +82,20 @@ class SplashActivity : AppCompatActivity(), Animation.AnimationListener by Deleg
                 onError = { e ->
                     if (::afterRequests.isInitialized) afterRequests.stop()
 
-                    AlertNoIconDialog.Companion.Builder(this)
-                        .setTitle(getString(R.string.error))
-                        .setMessage(e.message ?: getString(R.string.error_unknown))
-                        .setCancelable(false)
-                        .setPositiveButton(getString(R.string.dismiss)) { finish() }
-                        .setNegativeButton(getString(R.string.need_help)) {
-                            AppUtils.launchUrlIntent(this, getString(R.string.app_help))
-                            finish()
-                        }
-                        .show()
+                    if (e is SSLHandshakeException) {
+                        AppUtils.showSSLHandshakeDialog(this)
+                    } else {
+                        AlertNoIconDialog.Companion.Builder(this)
+                            .setTitle(getString(R.string.error))
+                            .setMessage(e.message ?: getString(R.string.error_unknown))
+                            .setCancelable(false)
+                            .setPositiveButton(getString(R.string.dismiss)) { finish() }
+                            .setNegativeButton(getString(R.string.need_help)) {
+                                AppUtils.launchUrlIntent(this, getString(R.string.app_help))
+                                finish()
+                            }
+                            .show()
+                    }
                 }
             )
 
