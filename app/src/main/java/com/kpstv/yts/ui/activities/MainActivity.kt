@@ -3,13 +3,14 @@ package com.kpstv.yts.ui.activities
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.kpstv.common_moviesy.extensions.Coroutines
-import com.kpstv.common_moviesy.extensions.hide
+import com.kpstv.common_moviesy.extensions.registerFragmentLifecycleForLogging
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppInterface.Companion.IS_DARK_THEME
@@ -94,6 +95,11 @@ class MainActivity : AbstractBottomNavActivity() {
         setNavigationDrawerItemClicks()
 
         ChangelogHelper(this).show()
+
+        // TODO: Remove this logging
+        registerFragmentLifecycleForLogging { fragment, which ->
+            Log.e(fragment::class.java.simpleName, "-> $which")
+        }
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -157,14 +163,14 @@ class MainActivity : AbstractBottomNavActivity() {
     }
 
     private fun setPremiumButtonClicked() {
-        if (!AppInterface.IS_PREMIUM_UNLOCKED)
-            binding.navigationLayout.customDrawerPremium.root.setOnClickListener {
-                drawerLayout.closeDrawer(GravityCompat.START)
-
+        binding.navigationLayout.customDrawerPremium.root.setOnClickListener {
+            drawerLayout.closeDrawer(GravityCompat.START)
+            if (!AppInterface.IS_PREMIUM_UNLOCKED) {
                 PremiumHelper.openPurchaseFragment(this)
+            } else {
+                PremiumHelper.showPremiumAlreadyPurchasedDialog(this)
             }
-        else
-            binding.navigationLayout.customDrawerPremium.root.hide()
+        }
     }
 
     private fun checkIntentArguments() {

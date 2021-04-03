@@ -5,14 +5,10 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.kpstv.common_moviesy.extensions.viewBinding
-import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
 import com.kpstv.yts.databinding.FragmentChartsBinding
 import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.extensions.common.CustomMovieLayout
-import com.kpstv.yts.extensions.errors.SSLHandshakeException
-import com.kpstv.yts.extensions.utils.AppUtils
-import com.kpstv.yts.ui.dialogs.WindowDialog
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
@@ -72,17 +68,16 @@ class ChartsFragment : Fragment(R.layout.fragment_charts), HomeFragment.HomeFrag
     }
 
     private fun setViewAndLayout() {
+        // FIXME: (Needs Investigation) Sometimes getActivity() returns null & thus it crashes
+        // val context = if (activity != null) requireActivity() else if (context != null) requireContext() else return
+
         /** Featured Layout */
         cmlFeatured = CustomMovieLayout(requireActivity(), getString(R.string.featured)).apply {
             injectViewAt(binding.addLayout)
-            setLifeCycleOwner(viewLifecycleOwner)
-            setupFeaturedCallbacks(viewModel) { ex ->
+            setLifecycleOwner(viewLifecycleOwner)
+            setupFeaturedCallbacks(viewModel) {
                 cmlFeatured.removeView(binding.addLayout)
-                if (ex is SSLHandshakeException) {
-                    AppUtils.showSSLHandshakeDialog(requireContext())
-                } else {
-                    Toasty.warning(requireContext(), getString(R.string.featured_movies)).show()
-                }
+                Toasty.warning(requireContext(), getString(R.string.featured_movies)).show()
             }
         }
 
@@ -93,7 +88,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts), HomeFragment.HomeFrag
 
         cmlRecent = CustomMovieLayout(requireActivity(), getString(R.string.recently_added)).apply {
             injectViewAt(binding.addLayout)
-            setLifeCycleOwner(viewLifecycleOwner)
+            setLifecycleOwner(viewLifecycleOwner)
             setupCallbacks(viewModel, queryMap6)
         }
 
@@ -105,7 +100,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts), HomeFragment.HomeFrag
 
         cmlTopRated = CustomMovieLayout(requireActivity(), getString(R.string.top_rated)).apply {
             injectViewAt(binding.addLayout)
-            setLifeCycleOwner(viewLifecycleOwner)
+            setLifecycleOwner(viewLifecycleOwner)
             setupCallbacks(viewModel, queryMap)
         }
 
@@ -117,7 +112,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts), HomeFragment.HomeFrag
 
         cmlPopular = CustomMovieLayout(requireActivity(), getString(R.string.popular)).apply {
             injectViewAt(binding.addLayout)
-            setLifeCycleOwner(viewLifecycleOwner)
+            setLifecycleOwner(viewLifecycleOwner)
             setupCallbacks(viewModel, queryMap3)
         }
 
@@ -129,7 +124,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts), HomeFragment.HomeFrag
 
         cmlMostLiked = CustomMovieLayout(requireActivity(), getString(R.string.most_liked)).apply {
             injectViewAt(binding.addLayout)
-            setLifeCycleOwner(viewLifecycleOwner)
+            setLifecycleOwner(viewLifecycleOwner)
             setupCallbacks(viewModel, queryMap4)
         }
 
@@ -141,7 +136,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts), HomeFragment.HomeFrag
 
         cmlLatest = CustomMovieLayout(requireActivity(), getString(R.string.latest)).apply {
             injectViewAt(binding.addLayout)
-            setLifeCycleOwner(viewLifecycleOwner)
+            setLifecycleOwner(viewLifecycleOwner)
             setupCallbacks(viewModel, queryMap5)
         }
     }

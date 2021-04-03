@@ -16,6 +16,8 @@ typealias ExceptionCallback = (Exception) -> Unit
 typealias WorkManagerCallback = (LiveData<WorkInfo>) -> Unit
 typealias SearchResults = List<HistoryModel>
 
+typealias MovieOnComplete = (movies: ArrayList<MovieShort>, queryMap: Map<String, String>, isMoreAvailable: Boolean) -> Unit
+
 typealias AdapterOnSingleClick<T> = (T, Int) -> Unit
 
 data class CastMoviesCallback(
@@ -25,7 +27,7 @@ data class CastMoviesCallback(
 
 data class MoviesCallback(
     val onStarted: SimpleCallback? = null,
-    val onComplete: (movies: ArrayList<MovieShort>, queryMap: Map<String, String>, isMoreAvailable: Boolean) -> Unit,
+    val onComplete: MovieOnComplete,
     val onFailure: ExceptionCallback? = null
 )
 

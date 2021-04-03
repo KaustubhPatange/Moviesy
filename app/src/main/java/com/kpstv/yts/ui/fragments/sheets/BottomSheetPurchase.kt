@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.kpstv.after.After
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.purchase.Options
 import com.kpstv.purchase.PurchaseHelper
@@ -22,8 +21,6 @@ import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.ui.helpers.PremiumHelper
 import com.kpstv.yts.ui.helpers.SignInHelper
 import es.dmoral.toasty.Toasty
-import java.util.concurrent.TimeUnit
-
 
 class BottomSheetPurchase : ExtendedBottomSheetDialogFragment(R.layout.bottom_sheet_purchase) {
 
@@ -78,11 +75,12 @@ class BottomSheetPurchase : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
         if (requestCode == PurchaseHelper.PURCHASE_CLIENT_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 Handler().postDelayed({
-                    commonUnlock()
+                    proceedRequest()
                 }, 1000)
             } else {
                 val message = data?.getStringExtra(PurchaseHelper.ERROR_EXTRA) ?: "Cancelled"
                 Toasty.warning(requireContext(), message).show()
+                dismiss()
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
@@ -94,7 +92,7 @@ class BottomSheetPurchase : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
             .build()
             .checkout(
                 onUserExist = {
-                    commonUnlock()
+                    proceedRequest()
                 },
                 onError = {
                     Toasty.error(requireContext(), "Failed: ${it.message}").show()
@@ -103,8 +101,9 @@ class BottomSheetPurchase : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
             )
     }
 
-    private fun commonUnlock() {
+    private fun proceedRequest() {
         PremiumHelper.activatePurchase(requireContext())
+        binding.lottiePurchaseComplete.setAnimation(R.raw.check)
         binding.lottiePurchaseComplete.addAnimatorListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {}
 

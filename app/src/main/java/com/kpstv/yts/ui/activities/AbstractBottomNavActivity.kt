@@ -85,7 +85,7 @@ abstract class AbstractBottomNavActivity : AppCompatActivity() {
             val fragment = getFragmentFromBackstack(item.itemId)
 
             if (selectedFragment === fragment) {
-                if (fragment is BottomNavFragmentSelection) {
+                if (fragment is BottomNavFragmentSelection && fragment.isVisible) {
                     fragment.onReselected()
                 }
             } else {

@@ -10,6 +10,8 @@ import com.kpstv.yts.data.models.AppDatabase
 import com.kpstv.yts.extensions.SearchType
 import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.extensions.add
+import com.kpstv.yts.extensions.errors.SSLHandshakeException
+import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.ui.fragments.GenreFragment
 import es.dmoral.toasty.Toasty
 import java.io.File
@@ -95,13 +97,13 @@ class AppInterface {
             }
         }
 
-
         @SuppressLint("SimpleDateFormat")
         val MainDateFormatter = SimpleDateFormat("yyyyMMddHH")
 
         @SuppressLint("SimpleDateFormat")
         val HistoryDateFormatter = SimpleDateFormat("yyyyMMddHHmmss")
 
+        private var isSSLDialogActive = false
         @SuppressLint("Range")
         fun handleRetrofitError(context: Context, t: Exception?) {
             var message = "Site is not responding. Try to change proxy from settings."
@@ -120,17 +122,26 @@ class AppInterface {
             }.apply()
 
             if (context is Activity) {
-                CafeBar.builder(context)
-                    .content(message)
-                    .floating(true)
-                    .duration(CafeBar.Duration.INDEFINITE)
-                    .neutralText(context.getString(R.string.dismiss))
-                    .onNeutral {
-                        context.finish()
+                if (t is SSLHandshakeException || t?.message?.trim() == "HTTP 525") {
+                    if (!isSSLDialogActive) {
+                        isSSLDialogActive = true
+                        AppUtils.showSSLHandshakeDialog(context) {
+                            isSSLDialogActive = false
+                        }
                     }
-                    .autoDismiss(false)
-                    .showShadow(true)
-                    .show()
+                } else {
+                    CafeBar.builder(context)
+                        .content(message)
+                        .floating(true)
+                        .duration(CafeBar.Duration.INDEFINITE)
+                        .neutralText(context.getString(R.string.dismiss))
+                        .onNeutral {
+                            context.finish()
+                        }
+                        .autoDismiss(false)
+                        .showShadow(true)
+                        .show()
+                }
             } else {
                 Toasty.error(context, message, Toasty.LENGTH_LONG).show()
             }

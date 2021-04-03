@@ -195,6 +195,8 @@
     <string name="create_issue">Create issue</string>
     <string name="crash_text">Oops! Looks like we\'ve crashed</string>
     <string name="no_purchase_exist">No saved purchase found</string>
+    <string name="premium_purchase_text">You\'ve Premium</string>
+    <string name="premium_purchase_message">Thank you for buying the premium &amp; supporting the app. It keeps me motivated to work on this project.</string>
     <string name="premium_unlock_text">Premium Unlocked</string>
     <string name="premium_unlock_message">Your premium content has been automatically unlocked.</string>
     <string name="need_help">Need help?</string>
@@ -238,4 +240,5 @@
     <string name="error_ssl_handshake_title">Error: SSL Handshake</string>
     <string name="error_ssl_handshake_text">There is an issue with YTS website. Click to verify it!</string>
     <string name="error_ssl_handshake_text_dialog">The app couldn\'t connect to YTS server due to SSL handshake error. This means that the YTS website is offline for some reason &amp; not the incorrect functioning of app.\n\nIn most cases it should resolve within few hours. If not let me know :)</string>
+    <string name="err_no_browser">No browser is installed to handle the web urls</string>
 </resources>

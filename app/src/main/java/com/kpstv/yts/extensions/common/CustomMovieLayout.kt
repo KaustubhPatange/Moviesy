@@ -12,12 +12,9 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.kpstv.yts.AppInterface.Companion.TMDB_IMAGE_PREFIX
 import com.kpstv.yts.AppInterface.Companion.handleRetrofitError
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.MovieShort
@@ -25,11 +22,13 @@ import com.kpstv.yts.data.models.TmDbMovie
 import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.extensions.ExceptionCallback
 import com.kpstv.yts.extensions.MovieBase
+import com.kpstv.yts.extensions.MovieOnComplete
 import com.kpstv.yts.extensions.MoviesCallback
 import com.kpstv.yts.ui.activities.MoreActivity
 import com.kpstv.yts.ui.fragments.sheets.BottomSheetQuickInfo
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import kotlinx.android.synthetic.main.custom_movie_layout.view.*
+import kotlinx.coroutines.ensureActive
 
 /** Usage:
  *  ------
@@ -61,6 +60,7 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
     private val viewModel: CustomViewModel? = if (context is AppCompatActivity)
         ViewModelProvider(context).get(CustomViewModel::class.java)
     else null
+    private var lifecycleOwner: LifecycleOwner? = null
 
     companion object {
         /** Creating this companion object so that we can call it from
@@ -190,7 +190,8 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
      *  Make sure to pass [AppCompatActivity] as [context] while initializing this layout.
      * @param owner LifeCycleOwner of the view
      */
-    fun setLifeCycleOwner(owner: LifecycleOwner?) {
+    fun setLifecycleOwner(owner: LifecycleOwner?) {
+        this.lifecycleOwner = owner
         owner?.lifecycle?.addObserver(stateObserver)
     }
 
@@ -297,7 +298,7 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
     /** Some methods for saving state of RecyclerView and maybe other stuff.
      *
      * What it does is it subscribe [stateObserver] to a lifecycle owner through
-     * [setLifeCycleOwner] and save all the state to viewModel in onStop method.
+     * [setLifecycleOwner] and save all the state to viewModel in onStop method.
      *
      * It then restore the state at appropriate places as well.
      */

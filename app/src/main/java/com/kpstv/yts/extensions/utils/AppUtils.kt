@@ -24,6 +24,7 @@ import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppInterface.Companion.handleRetrofitError
 import com.kpstv.yts.R
 import com.kpstv.yts.databinding.CustomPurchaseDialogBinding
+import com.kpstv.yts.extensions.SimpleCallback
 import com.kpstv.yts.ui.dialogs.WindowDialog
 import es.dmoral.toasty.Toasty
 import java.io.*
@@ -57,9 +58,13 @@ class AppUtils {
         }
 
         fun launchUrlIntent(context: Context, url: String?) {
-            val i = Intent(Intent.ACTION_VIEW)
-            i.data = Uri.parse(url)
-            context.startActivity(i)
+            try {
+                val i = Intent(Intent.ACTION_VIEW)
+                i.data = Uri.parse(url)
+                context.startActivity(i)
+            } catch (e: Exception) {
+                Toasty.error(context, context.getString(R.string.err_no_browser)).show()
+            }
         }
 
         fun shareApp(activity: Activity) = with(activity) {
@@ -287,7 +292,7 @@ class AppUtils {
                 .startChooser()
         }
 
-        fun showSSLHandshakeDialog(context: Context) {
+        fun showSSLHandshakeDialog(context: Context, onClose: SimpleCallback = {}) {
             WindowDialog.Builder(context)
                 .setTitle(R.string.error_ssl_handshake_title)
                 .setSubtitle(R.string.error_ssl_handshake_text_dialog)
@@ -296,6 +301,10 @@ class AppUtils {
                 .setNegativeButton(android.R.string.cancel)
                 .setPositiveButton(R.string.alright) {
                     launchUrlIntent(context, AppInterface.YTS_BASE_URL)
+                    onClose.invoke()
+                }
+                .setNegativeButton(android.R.string.cancel) {
+                    onClose.invoke()
                 }
                 .show()
         }

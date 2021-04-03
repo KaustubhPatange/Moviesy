@@ -203,7 +203,7 @@ class TorrentPlayerActivity : AppCompatActivity() {
             Log.e(TAG, "onStreamStarted() called with: torrent = [$torrent]")
         }
 
-        override fun onStreamError(torrent: Torrent, e: Exception) {
+        override fun onStreamError(torrent: Torrent?, e: Exception) {
             Log.e(TAG, "onStreamError() called with: torrent = [$torrent], e = [$e]")
             Toasty.error(this@TorrentPlayerActivity, "Torrent stream error: ${e.message}")
                 .show()

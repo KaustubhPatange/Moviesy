@@ -46,6 +46,9 @@ android {
                 "proguard-rules.pro"
             )
         }
+        getByName(BuildType.DEBUG) {
+            applicationIdSuffix = ".debug"
+        }
     }
 
     compileOptions {

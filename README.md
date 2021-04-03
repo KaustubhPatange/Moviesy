@@ -20,6 +20,10 @@ A **_beautiful_** client for [YTS](https://www.google.com/search?q=yts) website 
 - **Cast** to chromecast devices.
 - Lot more...
 
+## Discussions
+
+[Discussions](https://github.com/KaustubhPatange/Moviesy/discussions) is a place where you can ask anything like question, feature discussion, pre-bug reports or any topic of your choice as long as it is related to the project.
+
 ## Compilation Guide
 
 Since this project involves a private payment system 📃 some of the source files has been ignored. Read this [guide](https://github.com/KaustubhPatange/Moviesy/wiki/Compilation-guide) in order to compile 🗃 the project.

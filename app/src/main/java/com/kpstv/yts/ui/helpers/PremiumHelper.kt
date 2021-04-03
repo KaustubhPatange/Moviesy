@@ -5,6 +5,8 @@ import android.content.Context
 import android.os.Environment
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.RawRes
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
@@ -93,16 +95,36 @@ class PremiumHelper {
             }
         }
 
-        @SuppressLint("SetTextI18n")
-        fun showPremiumActivatedDialog(context: Context): Unit = with(context) {
+        fun showPremiumActivatedDialog(context: Context) {
+            showLottieDialog(
+                context = context,
+                anim = R.raw.premium_unlocked,
+                title = R.string.premium_unlock_text,
+                message = R.string.premium_unlock_message
+            )
+        }
+
+        fun showPremiumAlreadyPurchasedDialog(context: Context) {
+            showLottieDialog(
+                context = context,
+                anim = R.raw.heart,
+                scale = 1.8f,
+                title = R.string.premium_purchase_text,
+                message = R.string.premium_purchase_message
+            )
+        }
+
+        private fun showLottieDialog(context: Context, @RawRes anim: Int, @StringRes title: Int, @StringRes message: Int, scale: Float = 1.0f): Unit = with(context) {
             var alertDialog: AlertDialog? = null
 
             val binding = CustomPurchaseDialogBinding.inflate(LayoutInflater.from(this))
 
-            binding.lottieView.setAnimation(R.raw.premium_unlocked)
+            binding.lottieView.setAnimation(anim)
             binding.lottieView.repeatCount = 0
-            binding.title.text = getString(R.string.premium_unlock_text)
-            binding.message.text = getString(R.string.premium_unlock_message)
+            binding.lottieView.scaleX = scale
+            binding.lottieView.scaleY = scale
+            binding.title.text = getString(title)
+            binding.message.text = getString(message)
             binding.btnClose.invisible()
             binding.btnDetails.text = getString(R.string.close)
             binding.btnDetails.setOnClickListener {

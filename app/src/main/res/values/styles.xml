@@ -140,7 +140,7 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
-    <style name="SplashTheme" parent="Theme.MaterialComponents.NoActionBar">
+    <style name="SplashTheme" parent="AppTheme.Dark.Main">
         <item name="android:windowBackground">#9B68DA</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
