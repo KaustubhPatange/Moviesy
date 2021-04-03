@@ -97,9 +97,9 @@ class MainActivity : AbstractBottomNavActivity() {
         ChangelogHelper(this).show()
 
         // TODO: Remove this logging
-        registerFragmentLifecycleForLogging { fragment, which ->
+        /*registerFragmentLifecycleForLogging { fragment, which ->
             Log.e(fragment::class.java.simpleName, "-> $which")
-        }
+        }*/
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
