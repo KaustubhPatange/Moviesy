@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/afs_layout"
     android:layout_width="match_parent"
+    android:clipChildren="false"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
@@ -46,6 +47,7 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:clipChildren="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -69,6 +71,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/cm_recyclerView"
+            android:clipChildren="false"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"

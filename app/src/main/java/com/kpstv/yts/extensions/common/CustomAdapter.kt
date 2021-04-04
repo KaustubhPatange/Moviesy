@@ -6,14 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.MovieShort
-import com.kpstv.yts.extensions.MovieBase
-import com.kpstv.common_moviesy.extensions.hide
 import com.kpstv.yts.databinding.ItemSuggestionBinding
+import com.kpstv.yts.extensions.MovieBase
 import com.kpstv.yts.extensions.load
-import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.ui.activities.FinalActivity
 import kotlinx.android.synthetic.main.item_common_banner.view.*
 import kotlinx.android.synthetic.main.item_suggestion.view.*
@@ -56,22 +55,9 @@ class CustomAdapter(
         )
         holder.binding.mainText.text = movie.title
 
-        holder.binding.shimmerImageView.setOnClickListener {
-            val intent = Intent(context, FinalActivity::class.java)
-            when (base) {
-                MovieBase.YTS -> {
-                    intent.putExtra(AppInterface.MOVIE_ID, movie.movieId)
-                    context.startActivity(intent)
-                }
-                MovieBase.TMDB -> {
-
-                    /** We are passing movie_id as string for TMDB Movie so that in
-                     * Final View Model we can use the second route to get Movie Details*/
-
-                    intent.putExtra(AppInterface.MOVIE_ID, "${movie.movieId}")
-                    context.startActivity(intent)
-                }
-            }
+        holder.binding.shimmerImageView.setOnClickListener { view ->
+            scaleInAndOutAnimation(view)
+            launchDetailScreen(movie)
         }
 
         if (::setOnLongListener.isInitialized) {
@@ -84,10 +70,34 @@ class CustomAdapter(
 
     override fun getItemCount() = list.size
 
+    private fun scaleInAndOutAnimation(to: View) {
+        to.animate().scaleX(1.2f).scaleY(1.2f)
+            .withEndAction {
+                to.scaleX = 1f
+                to.scaleY = 1f
+            }
+            .start()
+    }
+
+    private fun launchDetailScreen(movie: MovieShort) {
+        val intent = Intent(context, FinalActivity::class.java)
+        when (base) {
+            MovieBase.YTS -> {
+                intent.putExtra(AppInterface.MOVIE_ID, movie.movieId)
+                context.startActivity(intent)
+            }
+            MovieBase.TMDB -> {
+
+                /** We are passing movie_id as string for TMDB Movie so that in
+                 * Final View Model we can use the second route to get Movie Details*/
+
+                intent.putExtra(AppInterface.MOVIE_ID, "${movie.movieId}")
+                context.startActivity(intent)
+            }
+        }
+    }
+
     class CustomHolder(view: View) : RecyclerView.ViewHolder(view) {
         val binding = ItemSuggestionBinding.bind(view)
-       /* val shimmerImageView = view.shimmerImageView
-        val mainText = view.mainText
-        val mainImage = view.mainImage*/
     }
 }

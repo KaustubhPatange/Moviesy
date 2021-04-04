@@ -52,7 +52,7 @@ private object LibraryVersion {
     const val FIREBASE_BOM = "26.1.0"
     const val AUTOBINDINGS = "1.1-alpha12"
     const val APP_STARTUP = "1.0.0"
-    const val IMAGELOADERVIEW = "0.5"
+    const val IMAGELOADERVIEW = "0.7-beta02"
 }
 
 object LibraryDependency {
