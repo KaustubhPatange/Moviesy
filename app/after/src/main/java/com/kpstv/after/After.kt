@@ -22,8 +22,8 @@ object After {
     }
 
     object Config {
-        fun setTextSize(unit: Int, value: Float): Config {
-            textSize = TypedValue.applyDimension(unit, value, Resources.getSystem().displayMetrics)
+        fun setTextSize(value: Float): Config {
+            textSize = value
             return this
         }
 

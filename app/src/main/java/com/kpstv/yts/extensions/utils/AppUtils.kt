@@ -25,6 +25,7 @@ import com.kpstv.yts.AppInterface.Companion.handleRetrofitError
 import com.kpstv.yts.R
 import com.kpstv.yts.databinding.CustomPurchaseDialogBinding
 import com.kpstv.yts.extensions.SimpleCallback
+import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import com.kpstv.yts.ui.dialogs.WindowDialog
 import es.dmoral.toasty.Toasty
 import java.io.*
@@ -304,6 +305,19 @@ class AppUtils {
                     onClose.invoke()
                 }
                 .setNegativeButton(android.R.string.cancel) {
+                    onClose.invoke()
+                }
+                .show()
+        }
+
+        fun showUnknownErrorDialog(context: Context, e: Exception, onClose: SimpleCallback) = with(context) {
+            AlertNoIconDialog.Companion.Builder(this)
+                .setTitle(getString(R.string.error))
+                .setMessage(e.message ?: getString(R.string.error_unknown))
+                .setCancelable(false)
+                .setPositiveButton(getString(R.string.dismiss), onClose)
+                .setNegativeButton(getString(R.string.need_help)) {
+                    launchUrlIntent(context, getString(R.string.app_help))
                     onClose.invoke()
                 }
                 .show()

@@ -6,6 +6,8 @@ import android.util.Log
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import com.kpstv.after.After
 import com.kpstv.after.AfterRequests
 import com.kpstv.common_moviesy.extensions.hide
@@ -24,6 +26,7 @@ import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.ProxyUtils
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import com.kpstv.yts.ui.helpers.DeepLinksHelper
+import com.kpstv.yts.ui.helpers.InitializationHelper
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -40,6 +43,9 @@ class SplashActivity : AppCompatActivity(), Animation.AnimationListener by Deleg
     @Inject
     lateinit var proxyUtils: ProxyUtils
 
+    @Inject
+    lateinit var initializationHelper: InitializationHelper
+
     private val binding by viewBinding(ActivitySplashBinding::inflate)
     private val appPreference by defaultPreference()
     private lateinit var afterRequests: AfterRequests
@@ -49,7 +55,7 @@ class SplashActivity : AppCompatActivity(), Animation.AnimationListener by Deleg
         setContentView(binding.root)
 
         val rotate = AnimationUtils.loadAnimation(this, R.anim.anim_splash_play)
-        binding.imageView.startAnimation(rotate)
+        binding.ivLogo.startAnimation(rotate)
 
         /** If this app is launched first time or suppose from previous use
          *  there was an error in making okHttp request or any other crash.
@@ -66,6 +72,9 @@ class SplashActivity : AppCompatActivity(), Animation.AnimationListener by Deleg
              */
             parseSettings(this)
         }
+
+        // Initialize heavy weight dependency.
+        initializationHelper.initializeDependencies()
     }
 
     private fun proxyCheckPreference(block: () -> Unit) {
@@ -75,6 +84,7 @@ class SplashActivity : AppCompatActivity(), Animation.AnimationListener by Deleg
             binding.progressBar.show()
             /** A progressBar effect */
             proxyUtils.check(
+                context = lifecycleScope.coroutineContext,
                 onComplete = {
                     binding.progressBar.hide()
                     block.invoke()

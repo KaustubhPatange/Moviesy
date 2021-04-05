@@ -53,17 +53,21 @@ class NavigationAdapter(
     private val onSingleClick: AdapterOnSingleClick<NavigationModel>
 ) : RecyclerView.Adapter<NavigationAdapter.NavigationHolder>() {
 
-    class NavigationHolder(view: View) : RecyclerView.ViewHolder(view)
+    class NavigationHolder(val binding: ItemNavigationBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        NavigationHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.item_navigation, parent, false)
-        )
+        NavigationHolder(ItemNavigationBinding.inflate(
+            LayoutInflater.from(parent.context), parent, false
+        )).apply {
+            binding.root.setOnClickListener {
+                onSingleClick.invoke(models[adapterPosition], adapterPosition)
+            }
+        }
 
     override fun getItemCount() = models.size
 
     override fun onBindViewHolder(holder: NavigationHolder, position: Int) {
-        val binding = ItemNavigationBinding.bind(holder.itemView)
+        val binding = holder.binding
 
         val item = models[position]
 
@@ -75,7 +79,5 @@ class NavigationAdapter(
         binding.tvTitle.text = item.title
         binding.tvBadge.text = item.notificationCount.toString()
         binding.imageView.setImageDrawable(binding.root.context.drawableFrom(item.drawableRes))
-
-        binding.root.setOnClickListener { onSingleClick.invoke(item, position) }
     }
 }

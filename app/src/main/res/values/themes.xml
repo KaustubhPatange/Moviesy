@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="StartTheme.Light" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:windowActivityTransitions">true</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="android:fontFamily">@font/google_sans_medium</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+
+        <item name="colorBackground">@color/background_light</item>
+        <item name="colorForeground">@color/light_white</item>
+        <item name="colorText">@color/black</item>
+        <item name="colorTextInverse">@color/inverse_light</item>
+        <item name="colorTextLight">@color/light_black</item>
+        <item name="colorSeparator">@color/separator_light</item>
+        <item name="colorNavSeparator">@color/separator_light</item>
+        <item name="castMiniControllerStyle">@style/CastMiniController.Light</item>
+    </style>
+
+    <style name="StartTheme.Dark" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="android:windowActivityTransitions">true</item>
+        <item name="colorAccent">@color/colorAccent_Dark</item>
+        <item name="android:fontFamily">@font/google_sans_medium</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+
+        <item name="colorBackground">#121212</item>
+        <item name="colorForeground">#1E1E1E</item>
+        <item name="colorText">@color/white</item>
+        <item name="colorTextInverse">@color/inverse_dark</item>
+        <item name="colorTextLight">@color/light_white</item>
+        <item name="colorSeparator">@color/separator_dark</item>
+        <item name="colorNavSeparator">@color/separator_dark</item>
+        <item name="castMiniControllerStyle">@style/CastMiniController.Dark</item>
+    </style>
+
+    <style name="StartTheme.Splash" parent="StartTheme.Dark">
+        <item name="android:windowBackground">#9B68DA</item>
+    </style>
+</resources>

@@ -20,10 +20,19 @@ fun View.show() {
 
 fun View.enableDelayedTransition() = TransitionManager.beginDelayedTransition(this as ViewGroup)
 
-fun View.applyBottomInsets() {
+fun View.applyBottomInsets(to: View = this) {
     setOnApplyWindowInsetsListener { v, insets ->
-        v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+        to.updateLayoutParams<ViewGroup.MarginLayoutParams> {
             updateMargins(bottom = insets.systemWindowInsetBottom)
+        }
+        insets
+    }
+}
+
+fun View.applyTopInsets(to: View = this) {
+    setOnApplyWindowInsetsListener { v, insets ->
+        to.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+            updateMargins(top = insets.systemWindowInsetTop)
         }
         insets
     }

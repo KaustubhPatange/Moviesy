@@ -1,21 +1,18 @@
 package com.kpstv.yts.initializer
 
 import android.content.Context
-import android.util.TypedValue
-import androidx.core.content.res.ResourcesCompat
 import androidx.startup.Initializer
 import cat.ereza.customactivityoncrash.config.CaocConfig
-import com.google.android.gms.ads.MobileAds
 import com.kpstv.after.After
 import com.kpstv.common_moviesy.extensions.loadFont
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.BuildConfig
 import com.kpstv.yts.R
 import com.kpstv.yts.extensions.Notifications
-import com.kpstv.yts.services.AppWorker
-import com.kpstv.yts.services.LatestMovieWorker
 import com.kpstv.yts.ui.activities.CrashOnActivity
 import es.dmoral.toasty.Toasty
+
+// Light weight configuration should be added here.
 
 @Suppress("unused")
 class CommonInitializer : Initializer<Unit> {
@@ -30,7 +27,7 @@ class CommonInitializer : Initializer<Unit> {
             /** Set configs for After */
             After.Config
                 .setTypeface(typeface)
-                .setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
+                .setTextSize(15f)
         }
 
         /** Setting up notifications */

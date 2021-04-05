@@ -4,17 +4,16 @@ import android.content.Context
 import android.util.Log
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
+import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppSettings
 import com.kpstv.yts.data.converters.AppDatabaseConverter
-import com.kpstv.common_moviesy.extensions.Coroutines
-import com.kpstv.common_moviesy.extensions.await
-import com.kpstv.yts.data.models.AppDatabase
 import com.kpstv.yts.extensions.errors.SSLHandshakeException
 import dagger.hilt.android.qualifiers.ApplicationContext
-import okhttp3.Request
+import kotlinx.coroutines.*
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.coroutines.CoroutineContext
 
 @Singleton
 class ProxyUtils @Inject constructor(
@@ -27,14 +26,20 @@ class ProxyUtils @Inject constructor(
      * To make this suspend worker run on non suspendable method
      * we use a callback function.
      */
-    fun check(onComplete: () -> Unit, onError: (Exception) -> Unit) = Coroutines.io {
-        try {
-            checkAsync()
-            Coroutines.main { onComplete.invoke() }
-        } catch (e: Exception) {
-            Coroutines.main { onError.invoke(e) }
+    fun check(context: CoroutineContext, onComplete: () -> Unit, onError: (Exception) -> Unit): Job {
+        val job = SupervisorJob()
+        val appScope = CoroutineScope(context)
+        CoroutineScope(job + Dispatchers.IO).launch {
+            try {
+                checkAsync()
+                appScope.launch { onComplete.invoke() }
+            } catch (e: Exception) {
+                appScope.launch { onError.invoke(e) }
+            }
         }
+        return job
     }
+
 
     /**
      * Method will check for updated proxy which are available on app

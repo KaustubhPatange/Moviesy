@@ -45,10 +45,11 @@
             android:name=".ui.settings.SettingsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Dark.NoAction" />
+<!--            android:name=".ui.activities.SplashActivity"-->
         <activity
-            android:name=".ui.activities.SplashActivity"
+            android:name=".ui.activities.StartActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/SplashTheme">
+            android:theme="@style/StartTheme.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

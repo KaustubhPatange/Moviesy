@@ -2,12 +2,23 @@ package com.kpstv.yts
 
 import android.content.Context
 import androidx.core.content.edit
+import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import java.io.File
 
 class AppPreference(context: Context) {
+    companion object {
+        private const val SHOULD_CHECK_PROXY = "should_check_proxy"
+        private const val IS_FIRST_LAUNCH = "is_first_launch"
+    }
 
     private val pm = PreferenceManager.getDefaultSharedPreferences(context)
+
+    fun shouldCheckProxy(): Boolean = getBoolean(SHOULD_CHECK_PROXY, false)
+
+    fun isFirstLaunch(): Boolean = getBoolean(IS_FIRST_LAUNCH, true)
+
+    fun isFirstLaunch(value: Boolean) = writeBoolean(IS_FIRST_LAUNCH, value)
 
     fun getBoolean(key: String, default: Boolean) =
         pm.getBoolean(key, default)
@@ -20,6 +31,9 @@ class AppPreference(context: Context) {
 
 fun Context.defaultPreference() =
     lazy { AppPreference(this) }
+
+fun Fragment.defaultPreference() =
+    lazy { AppPreference(requireContext()) }
 
 object AppSettings {
     fun parseSettings(context: Context) {
