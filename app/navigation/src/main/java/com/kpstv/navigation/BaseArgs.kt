@@ -1,4 +1,4 @@
-package com.kpstv.yts.ui.navigation
+package com.kpstv.navigation
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

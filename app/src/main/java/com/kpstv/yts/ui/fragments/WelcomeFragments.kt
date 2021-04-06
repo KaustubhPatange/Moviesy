@@ -1,17 +1,10 @@
 package com.kpstv.yts.ui.fragments
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
-import android.view.ViewAnimationUtils
-import android.widget.FrameLayout
-import android.widget.ImageView
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
-import androidx.core.animation.addListener
-import androidx.core.view.drawToBitmap
 import androidx.fragment.app.activityViewModels
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
@@ -23,9 +16,9 @@ import com.kpstv.yts.R
 import com.kpstv.yts.databinding.ActivityAgreementBinding
 import com.kpstv.yts.defaultPreference
 import com.kpstv.yts.ui.activities.StartActivity
-import com.kpstv.yts.ui.navigation.BaseArgs
-import com.kpstv.yts.ui.navigation.KeyedFragment
-import com.kpstv.yts.ui.navigation.Navigator
+import com.kpstv.navigation.BaseArgs
+import com.kpstv.navigation.KeyedFragment
+import com.kpstv.navigation.Navigator
 import com.kpstv.yts.ui.viewmodels.StartViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.parcel.Parcelize
@@ -130,6 +123,7 @@ class WelcomeCarrierFragment : AbstractWelcomeFragment() {
         appPreference.isFirstLaunch(false)
         navViewModel.navigateTo(
             screen = StartActivity.Screen.MAIN,
+            popUpTo = true,
             transition = Navigator.TransitionType.FADE
         )
     }

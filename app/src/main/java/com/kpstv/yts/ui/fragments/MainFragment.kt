@@ -1,13 +1,17 @@
 package com.kpstv.yts.ui.fragments
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.View
 import androidx.core.view.GravityCompat
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.kpstv.common_moviesy.extensions.*
+import com.kpstv.navigation.BaseArgs
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
 import com.kpstv.yts.databinding.ActivityMainBinding
@@ -17,31 +21,33 @@ import com.kpstv.yts.extensions.Navigations
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.ui.activities.DownloadActivity
 import com.kpstv.yts.ui.activities.MainActivity
+import com.kpstv.yts.ui.activities.StartActivity
 import com.kpstv.yts.ui.helpers.ChangelogHelper
 import com.kpstv.yts.ui.helpers.PremiumHelper
 import com.kpstv.yts.ui.helpers.ThemeHelper.updateTheme
-import com.kpstv.yts.ui.navigation.KeyedFragment
-import com.kpstv.yts.ui.settings.SettingsActivity
+import com.kpstv.navigation.KeyedFragment
+import com.kpstv.navigation.Navigator
+import com.kpstv.yts.ui.helpers.ThemeHelper.registerForThemeChange
 import com.kpstv.yts.ui.viewmodels.MainViewModel
+import com.kpstv.yts.ui.viewmodels.StartViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.parcel.Parcelize
 
 @AndroidEntryPoint
 class MainFragment : KeyedFragment(R.layout.activity_main) {
     private val binding by viewBinding(ActivityMainBinding::bind)
+    private val navViewModel by activityViewModels<StartViewModel>()
     private val viewModel by viewModels<MainViewModel>()
     private val navigations by lazy {
         Navigations(requireContext())
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        context?.updateTheme()
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        registerForThemeChange(parentFragmentManager)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        requireActivity().window.setBackgroundDrawable(
-            ColorDrawable(requireContext().getColorAttr(R.attr.colorBackground))
-        )
         super.onViewCreated(view, savedInstanceState)
         binding.apply {
             root.applyTopInsets(navigationLayout.navRootLayout)
@@ -52,8 +58,18 @@ class MainFragment : KeyedFragment(R.layout.activity_main) {
         setNavigationDrawer()
         setNavigationDrawerItemClicks()
         setPremiumButtonClicked()
+        if (hasKeyArgs()) {
+            manageArguments()
+        }
 
         ChangelogHelper(requireActivity()).show() // TODO: Update this
+    }
+
+    private fun manageArguments() {
+        val args = getKeyArgs<Args>()
+        if (args.moveToLibrary) {
+            // TODO: Move to Library
+        }
     }
 
     private fun setNavigationDrawer() = Coroutines.main {
@@ -98,8 +114,11 @@ class MainFragment : KeyedFragment(R.layout.activity_main) {
                 startActivity(downloadIntent)
             }
             MainActivity.NAV_SETTINGS -> {
-                val settingIntent = Intent(requireContext(), SettingsActivity::class.java)
-                startActivity(settingIntent)
+                navViewModel.navigateTo(
+                    StartActivity.Screen.SETTING,
+                    transition = Navigator.TransitionType.FADE,
+                    addToBackStack = true
+                )
             }
         }
     }
@@ -123,4 +142,7 @@ class MainFragment : KeyedFragment(R.layout.activity_main) {
     private fun animateBottomNavDown() {
         binding.bottomNav.animate().translationY(500f).start()
     }
+
+    @Parcelize
+    data class Args(val moveToLibrary: Boolean =  false) : BaseArgs(), Parcelable
 }

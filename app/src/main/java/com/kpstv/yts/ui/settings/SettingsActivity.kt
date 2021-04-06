@@ -96,7 +96,7 @@ class SettingsActivity : AppCompatActivity() {
     /** This fragment will hold the category names to navigate within.
      *  A listener is called by parent activity which navigates accordingly.
      */
-    class SettingsMainFragment : Fragment() {
+    class SettingsMainFragment : Fragment() { // Should be KeyedFragment
         lateinit var listener: (String, String) -> Unit
         override fun onCreateView(
             inflater: LayoutInflater,
@@ -108,32 +108,28 @@ class SettingsActivity : AppCompatActivity() {
             mainLayout.orientation = LinearLayout.VERTICAL
 
             // General Settings
-            val general =
-                CustomBottomItem(requireContext())
+            val general = CustomBottomItem(requireContext())
             general.setUp(R.drawable.ic_slider, getString(R.string.general), mainLayout, true)
             general.onClickListener = {
                 listener.invoke(GENERAL_FRAG, getString(R.string.general))
             }
 
             // Storage Settings
-            val storage =
-                CustomBottomItem(requireContext())
+            val storage = CustomBottomItem(requireContext())
             storage.setUp(R.drawable.ic_storage, getString(R.string.storage), mainLayout, true)
             storage.onClickListener = {
                 listener.invoke(STORAGE_FRAG, getString(R.string.storage))
             }
 
             // Look & Feel Settings
-            val lookFeel =
-                CustomBottomItem(requireContext())
+            val lookFeel = CustomBottomItem(requireContext())
             lookFeel.setUp(R.drawable.ic_look_feel, getString(R.string.look_feel), mainLayout, true)
             lookFeel.onClickListener = {
                 listener.invoke(LOOK_FEEL_FRAG, getString(R.string.look_feel))
             }
 
             // Account Settings
-            val account =
-                CustomBottomItem(requireContext())
+            val account = CustomBottomItem(requireContext())
             account.setUp(R.drawable.ic_account, getString(R.string.account), mainLayout, true)
             account.onClickListener = {
                 listener.invoke(ACCOUNT_FRAG, getString(R.string.account))
@@ -156,8 +152,7 @@ class SettingsActivity : AppCompatActivity() {
             }
 
             // About
-            val about =
-                CustomBottomItem(requireContext())
+            val about = CustomBottomItem(requireContext())
             about.setUp(R.drawable.ic_about, getString(R.string.about), mainLayout, true)
             about.onClickListener = {
                 listener.invoke(ABOUT_FRAG, getString(R.string.about))

@@ -1,3 +1,19 @@
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+    dependencies {
+        classpath(GradleDependency.GRADLE_BUILD_TOOLS)
+        classpath(GradleDependency.KOTLIN_PLUGIN)
+        classpath(GradleDependency.SAFE_ARGS)
+        classpath(GradleDependency.DAGGER_HILT)
+        classpath(GradleDependency.MAVEN_GRADLE)
+        classpath(GradleDependency.GOOGLE_SERVICE)
+        classpath(GradleDependency.CRASHLYTICS)
+    }
+}
+
 allprojects {
     repositories {
         google()

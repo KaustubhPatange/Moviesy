@@ -1,9 +1,8 @@
-package com.kpstv.yts.ui.navigation
+package com.kpstv.navigation
 
 import android.os.Bundle
 import android.view.View
 import android.view.ViewAnimationUtils
-import android.view.Window
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.core.animation.addListener
@@ -12,14 +11,18 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import kotlin.math.hypot
 
-class NavigatorCircularTransform(window: Window, private val fm: FragmentManager) {
-    private val contentView = window.decorView.rootView as FrameLayout
+internal class NavigatorCircularTransform(
+    private val fm: FragmentManager,
+    private val containerView: FrameLayout
+) {
 
     fun circularTransform() {
-        val viewBitmap = contentView.drawToBitmap()
+        if (containerView.childCount <= 0) return
+
+        val viewBitmap = containerView.drawToBitmap()
         val overlayView = createEmptyImageView().apply {
             setImageBitmap(viewBitmap)
-            contentView.addView(this)
+            setTag(R.id.fragment_container_view_tag, Fragment()) // For fragment container
         }
 
         fm.registerFragmentLifecycleCallbacks(object : FragmentManager.FragmentLifecycleCallbacks() {
@@ -30,16 +33,19 @@ class NavigatorCircularTransform(window: Window, private val fm: FragmentManager
                 savedInstanceState: Bundle?
             ) {
                 super.onFragmentViewCreated(fm, f, v, savedInstanceState)
+                containerView.addView(overlayView)
 
-                val overlayView2 = createEmptyImageView()
-                contentView.addView(overlayView2)
+                val overlayView2 = createEmptyImageView().apply {
+                    setTag(R.id.fragment_container_view_tag, Fragment()) // For fragment container
+                    containerView.addView(this)
+                }
 
                 val anim = ViewAnimationUtils.createCircularReveal(
                     overlayView2,
-                    contentView.width / 2,
-                    contentView.height / 2,
+                    containerView.width / 2,
+                    containerView.height / 2,
                     0f,
-                    hypot(contentView.width.toFloat(), contentView.height.toFloat())
+                    hypot(containerView.width.toFloat(), containerView.height.toFloat())
                 ).apply {
                     addListener(
                         onStart = {
@@ -47,8 +53,8 @@ class NavigatorCircularTransform(window: Window, private val fm: FragmentManager
                             overlayView2.setImageBitmap(secondBitmap)
                         },
                         onEnd = {
-                            contentView.removeView(overlayView)
-                            contentView.removeView(overlayView2)
+                            containerView.removeView(overlayView)
+                            containerView.removeView(overlayView2)
                         }
                     )
                     duration = 400
@@ -63,7 +69,7 @@ class NavigatorCircularTransform(window: Window, private val fm: FragmentManager
     }
 
     private fun createEmptyImageView() : ImageView {
-        return ImageView(contentView.context).apply {
+        return ImageView(containerView.context).apply {
             layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
         }
     }

@@ -1,4 +1,4 @@
-package com.kpstv.yts.ui.navigation
+package com.kpstv.navigation
 
 /**
  * Parent context must implement this interface to propagate Navigator

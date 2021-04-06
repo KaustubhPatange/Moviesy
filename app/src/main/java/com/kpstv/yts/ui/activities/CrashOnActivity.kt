@@ -12,6 +12,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.setPadding
 import cat.ereza.customactivityoncrash.CustomActivityOnCrash
+import com.kpstv.common_moviesy.extensions.makeFullScreen
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.R
 import com.kpstv.yts.databinding.ActivityCrashOnBinding
@@ -23,6 +24,7 @@ class CrashOnActivity : AppCompatActivity() {
     private val binding by viewBinding(ActivityCrashOnBinding::inflate)
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        makeFullScreen()
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 

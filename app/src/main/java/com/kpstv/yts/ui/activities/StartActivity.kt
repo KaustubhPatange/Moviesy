@@ -12,8 +12,9 @@ import com.kpstv.yts.extensions.errors.SSLHandshakeException
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.ui.fragments.*
 import com.kpstv.yts.ui.helpers.InitializationHelper
-import com.kpstv.yts.ui.navigation.Navigator
-import com.kpstv.yts.ui.navigation.NavigatorTransmitter
+import com.kpstv.navigation.Navigator
+import com.kpstv.navigation.NavigatorTransmitter
+import com.kpstv.navigation.canFinish
 import com.kpstv.yts.ui.viewmodels.StartViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -36,7 +37,7 @@ class StartActivity : AppCompatActivity(), NavigatorTransmitter {
         makeFullScreen()
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        navigator = Navigator(window, supportFragmentManager, binding.fragmentContainer.id)
+        navigator = Navigator(supportFragmentManager, binding.fragmentContainer)
 
         navViewModel.navigation.observe(this, navigationObserver)
         navViewModel.errors.observe(this, errorObserver)
@@ -74,8 +75,6 @@ class StartActivity : AppCompatActivity(), NavigatorTransmitter {
     }
 
     override fun onBackPressed() {
-        if (navigator.canGoBack() && navigator.goBack())
-            return
-        super.onBackPressed()
+        if (navigator.canFinish()) super.onBackPressed()
     }
 }

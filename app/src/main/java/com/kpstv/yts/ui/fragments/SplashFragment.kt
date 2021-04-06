@@ -17,8 +17,8 @@ import com.kpstv.yts.extensions.SimpleCallback
 import com.kpstv.yts.extensions.errors.SSLHandshakeException
 import com.kpstv.yts.extensions.utils.ProxyUtils
 import com.kpstv.yts.ui.activities.StartActivity
-import com.kpstv.yts.ui.navigation.KeyedFragment
-import com.kpstv.yts.ui.navigation.Navigator
+import com.kpstv.navigation.KeyedFragment
+import com.kpstv.navigation.Navigator
 import com.kpstv.yts.ui.viewmodels.StartViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.TimeUnit

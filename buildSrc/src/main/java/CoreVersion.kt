@@ -1,5 +1,5 @@
 object CoreVersion {
-    const val KOTLIN = "1.4.0"
+    const val KOTLIN = "1.4.30"
     const val ANDROID_COROUTINES = "1.3.8"
 
     const val JETPACK_NAVIGATION = "2.3.0-rc01"

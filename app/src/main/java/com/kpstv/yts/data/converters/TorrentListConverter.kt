@@ -6,7 +6,6 @@ import com.google.gson.reflect.TypeToken
 import com.kpstv.yts.data.models.Torrent
 import java.lang.reflect.Type
 
-
 object TorrentListConverter {
     @TypeConverter
     @JvmStatic

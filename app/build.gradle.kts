@@ -5,7 +5,6 @@ plugins {
     kotlin(GradlePluginId.ANDROID_KTX)
     kotlin(GradlePluginId.ANDROID_EXTENSIONS_KTX)
     kotlin(GradlePluginId.KAPT)
-    id(GradlePluginId.SAFE_ARGS)
     id(GradlePluginId.DAGGER_HILT)
     id(GradlePluginId.GOOGLE_SERVICE)
     id(GradlePluginId.FIREBASE_CRASHLYTICS)
@@ -160,14 +159,14 @@ dependencies {
     }
     implementation(LibraryDependency.GUAVA_CONFLICT)
 
-    kapt(LibraryDependency.ROOM_COMPILER_KAPT)
+    kapt(LibraryDependency.AUTOBINDINGS_COMPILER)
     kapt(LibraryDependency.GLIDE_COMPILER)
     kapt(LibraryDependency.HILT_COMPILER)
     kapt(LibraryDependency.HILT_VIEWODEL_COMPILER)
-    kapt(LibraryDependency.AUTOBINDINGS_COMPILER)
+    kapt(LibraryDependency.ROOM_COMPILER_KAPT)
 
-    debugImplementation(TestLibraryDependency.ANDROID_DEBUG_DB)
-    debugImplementation(TestLibraryDependency.STETHO)
+    //debugImplementation(TestLibraryDependency.ANDROID_DEBUG_DB)
+    //debugImplementation(TestLibraryDependency.STETHO)
    // debugImplementation(TestLibraryDependency.LEAK_CANARY) // TODO: Some memory leaks need to fixed but are in won't fix mode
 
     annotationProcessor(LibraryDependency.GLIDE_COMPILER)

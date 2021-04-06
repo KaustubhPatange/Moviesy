@@ -2,14 +2,12 @@ plugins {
     id(GradlePluginId.ANDROID_LIBRARY)
     kotlin(GradlePluginId.ANDROID_KTX)
     kotlin(GradlePluginId.KAPT)
-    kotlin(GradlePluginId.ANDROID_EXTENSIONS_KTX)
+    id(GradlePluginId.PARCELIZE)
 }
 
 android {
     compileSdkVersion(AndroidConfig.COMPILE_SDK_VERSION)
     buildToolsVersion(AndroidConfig.BUILD_TOOLS_VERSION)
-
-    viewBinding.isEnabled = true
 
     defaultConfig {
         minSdkVersion(AndroidConfig.MIN_SDK_VERSION)
@@ -43,8 +41,9 @@ android {
 
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
+    implementation(project(ModuleDependency.COMMON))
     implementation(LibraryDependency.KOTLIN_STDLIB)
-    implementation(LibraryDependency.APP_COMPAT)
     implementation(LibraryDependency.CORE_KTX)
-    implementation(LibraryDependency.CARDVIEW)
+    implementation(LibraryDependency.APP_COMPAT)
+    implementation(LibraryDependency.FRAGMENT_KTX)
 }

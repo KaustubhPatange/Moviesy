@@ -9,7 +9,7 @@ private object LibraryVersion {
     const val CONSTRAINT_LAYOUT = "1.1.3"
     const val MATERIAL = "1.2.0-beta01"
     const val PREFERENCES = "1.1.1"
-    const val ROOM = "2.3.0-alpha02"
+    const val ROOM = "2.2.5"
     const val LIFECYCLE = "2.2.0"
     const val PAGING = "2.1.2"
     const val RETROFIT = "2.9.0"
@@ -50,7 +50,7 @@ private object LibraryVersion {
     const val CAOC = "2.3.0"
     const val FIREBASE_AUTH = "19.3.2"
     const val FIREBASE_BOM = "26.1.0"
-    const val AUTOBINDINGS = "1.1-alpha12"
+    const val AUTOBINDINGS = "1.1-alpha16"
     const val APP_STARTUP = "1.0.0"
     const val IMAGELOADERVIEW = "0.7-beta02"
 }

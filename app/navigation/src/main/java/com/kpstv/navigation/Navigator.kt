@@ -1,16 +1,16 @@
-package com.kpstv.yts.ui.navigation
+package com.kpstv.navigation
 
 import android.os.Bundle
-import android.view.Window
-import androidx.annotation.IdRes
+import android.widget.FrameLayout
+import androidx.core.view.children
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
+import androidx.fragment.app.commitNow
 import kotlin.reflect.KClass
 
 typealias FragClazz = KClass<out Fragment>
-class Navigator(window: Window, private val fm: FragmentManager, @IdRes private val containerId: Int) {
+class Navigator(private val fm: FragmentManager, private val containerView: FrameLayout) {
 
     data class NavOptions(
         val clazz: FragClazz,
@@ -24,7 +24,7 @@ class Navigator(window: Window, private val fm: FragmentManager, @IdRes private 
     private var primaryFragClass: FragClazz? = null
     private var hasPrimaryFragment: Boolean = false
 
-    private val navigatorTransitionManager = NavigatorCircularTransform(window, fm)
+    private val navigatorTransitionManager = NavigatorCircularTransform(fm, containerView)
 
     /**
      * Sets the default fragment as the host. The [FragmentManager.popBackStack] will be called recursively
@@ -47,24 +47,43 @@ class Navigator(window: Window, private val fm: FragmentManager, @IdRes private 
             if (args != null)
                 putParcelable(KeyedFragment.ARGUMENTS, args)
         }
-        if (popUpToThis) popUpToEnd()
+        if (popUpToThis && getBackStackCount() > 0) {
+            fm.popBackStack(getCurrentFragment()?.tag, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        }
         fm.commit {
-            if (transition == TransitionType.FADE)
-                setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)
-            when(type) {
-                TransactionType.REPLACE -> replace(containerId, clazz.java, bundle, tagName)
-                TransactionType.ADD -> add(containerId, clazz.java, bundle, tagName)
+            if (popUpToThis) {
+                fm.fragments.forEach { remove(it) }
             }
-            if (addToBackStack)
-                addToBackStack(tagName)
+            if (transition == TransitionType.FADE)
+                setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out)
+            if (transition == TransitionType.SLIDE)
+                setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
+            when(type) {
+                TransactionType.REPLACE -> replace(containerView.id, clazz.java, bundle, tagName)
+                TransactionType.ADD -> add(containerView.id, clazz.java, bundle, tagName)
+            }
+            if (addToBackStack) addToBackStack(tagName)
         }
     }
 
-    fun canGoBack() : Boolean = fm.backStackEntryCount > 0
+    fun canGoBack() : Boolean {
+        val count = getBackStackCount()
+        if (count == 0) {
+            val fragment = getCurrentFragment() ?: return false
+            if (fragment is NavigatorTransmitter) {
+                return fragment.getNavigator().canGoBack()
+            } else {
+                return false
+            }
+        } else {
+            return true
+        }
+    }
 
     /**
-     * If returned True the activity should not call super.onBackPressed as it indicates the
-     * back press is consumed on the fragment level.
+     * Determines if "it went back" aka any fragment from tbe backStack
+     * has been removed or not.
+     * @return True if the current fragment is removed from the backStack.
      */
     fun goBack(): Boolean {
         val clazz = primaryFragClass
@@ -74,34 +93,35 @@ class Navigator(window: Window, private val fm: FragmentManager, @IdRes private 
         if (!canGoBack() && clazz != null && !hasPrimaryFragment) {
             // Create primary fragment
             navigateTo(NavOptions(clazz, transition = TransitionType.FADE))
-            return true
+            return false
         }
         val currentFragment = getCurrentFragment()
-        val handledBackPressed = if (currentFragment is KeyedFragment) {
-            val handle = currentFragment.onBackPressed()
-            if (fm.backStackEntryCount == 1 && currentFragment::class.simpleName == primaryFragClass?.simpleName)
+        val shouldPopStack = if (currentFragment is KeyedFragment) {
+            !currentFragment.onBackPressed()
+           /* if (fm.backStackEntryCount == 1 && currentFragment::class.simpleName == primaryFragClass?.simpleName)
                 false // last primary fragment indicates activity to destroy
             else if (handle)
                 return true // handled means returning true from [KeyedFragment.onBackPressed]
             else
-                false
+                false*/
         } else {
-            false
+            true
         }
-        fm.popBackStack()
-        return handledBackPressed
+        if (shouldPopStack) fm.popBackStackImmediate()
+       /* if (currentFragment?.view != null) {
+            containerView.removeView(currentFragment.view)
+        }*/
+        return shouldPopStack
     }
 
-    private fun popUpToEnd() {
-        if (canGoBack()) {
-            val count = fm.backStackEntryCount
-            for(i in 0 until count) {
-                fm.popBackStack()
-            }
-        }
-    }
+    /**
+     * Returns the current fragment class.
+     */
+    fun getCurrentFragmentClass(): FragClazz? = fm.findFragmentById(containerView.id)?.let { it::class }
 
-    private fun getCurrentFragment() = fm.findFragmentById(containerId)
+    private fun getBackStackCount() : Int = fm.backStackEntryCount
+
+    private fun getCurrentFragment() = fm.findFragmentById(containerView.id)
 
     private fun getFragmentTagName(clazz: FragClazz): String = clazz.java.simpleName + "_base"
 
@@ -113,6 +133,7 @@ class Navigator(window: Window, private val fm: FragmentManager, @IdRes private 
     enum class TransitionType {
         NONE,
         FADE,
+        SLIDE,
         CIRCULAR
     }
 }

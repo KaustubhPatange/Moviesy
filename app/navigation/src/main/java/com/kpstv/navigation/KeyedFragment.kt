@@ -1,14 +1,27 @@
-package com.kpstv.yts.ui.navigation
+package com.kpstv.navigation
 
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
+import kotlin.jvm.Throws
 
 open class KeyedFragment(@LayoutRes id: Int) : Fragment(id) {
+    constructor() : this(0)
+
     companion object {
         const val ARGUMENTS = "keyed_args"
     }
 
+    fun hasKeyArgs(): Boolean {
+        return arguments?.containsKey(ARGUMENTS) ?: false
+    }
+
+    /**
+     * Parse the parcelable from & returns it. It is best practice to check [hasKeyArgs]
+     * & then proceed with this call.
+     *
+     * @throws NullPointerException When it does not exist.
+     */
     fun<T : BaseArgs> getKeyArgs(): T {
         return arguments?.getParcelable<T>(ARGUMENTS) as T
     }
@@ -26,8 +39,7 @@ open class KeyedFragment(@LayoutRes id: Int) : Fragment(id) {
     }
 
     /**
-     * If True the event has consumed & will not call super.onBackPressed of the
-     * parent activity.
+     * If True the event has been consumed by the [KeyedFragment].
      */
     open fun onBackPressed(): Boolean {
         return false
