@@ -1,5 +1,6 @@
 package com.kpstv.common_moviesy.extensions
 
+import android.graphics.Rect
 import android.transition.TransitionManager
 import android.view.View
 import android.view.ViewGroup
@@ -36,4 +37,10 @@ fun View.applyTopInsets(to: View = this) {
         }
         insets
     }
+}
+
+fun View.globalVisibleRect(): Rect {
+    val rect = Rect()
+    getGlobalVisibleRect(rect)
+    return rect
 }

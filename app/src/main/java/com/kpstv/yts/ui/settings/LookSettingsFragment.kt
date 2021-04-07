@@ -1,8 +1,11 @@
 package com.kpstv.yts.ui.settings
 
+import android.graphics.Rect
 import android.os.Bundle
+import android.view.View
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
+import com.kpstv.common_moviesy.extensions.globalVisibleRect
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
 import com.kpstv.yts.AppSettings.IS_DARK_THEME_PREF
@@ -27,7 +30,7 @@ class LookSettingsFragment(
 
 class LookSettingsFragment2 : PreferenceFragmentCompat() {
     interface ThemeChangeCallbacks {
-        fun onThemeChanged(theme: ThemeHelper.AppTheme)
+        fun onThemeChanged(viewRect: Rect)
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -35,12 +38,9 @@ class LookSettingsFragment2 : PreferenceFragmentCompat() {
 
         findPreference<SwitchPreferenceCompat>(IS_DARK_THEME_PREF)?.setOnPreferenceChangeListener { _, newValue ->
             AppInterface.IS_DARK_THEME = newValue as Boolean
-            (parentFragment as ThemeChangeCallbacks).onThemeChanged(
-                if (AppInterface.IS_DARK_THEME)
-                    ThemeHelper.AppTheme.DARK
-                else
-                    ThemeHelper.AppTheme.LIGHT
-            )
+
+            val switchView = requireView().findViewById<View>(R.id.switchWidget)
+            (parentFragment as ThemeChangeCallbacks).onThemeChanged(switchView.globalVisibleRect())
             true
         }
     }

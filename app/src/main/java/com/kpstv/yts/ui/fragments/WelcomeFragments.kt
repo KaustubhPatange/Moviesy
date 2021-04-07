@@ -11,12 +11,14 @@ import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kpstv.common_moviesy.extensions.applyBottomInsets
 import com.kpstv.common_moviesy.extensions.colorFrom
+import com.kpstv.common_moviesy.extensions.globalVisibleRect
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.R
 import com.kpstv.yts.databinding.ActivityAgreementBinding
 import com.kpstv.yts.defaultPreference
 import com.kpstv.yts.ui.activities.StartActivity
 import com.kpstv.navigation.BaseArgs
+import com.kpstv.navigation.CircularPayload
 import com.kpstv.navigation.KeyedFragment
 import com.kpstv.navigation.Navigator
 import com.kpstv.yts.ui.viewmodels.StartViewModel
@@ -32,7 +34,7 @@ data class WelcomeArgs(
 ) : BaseArgs(), Parcelable
 
 abstract class AbstractWelcomeFragment : KeyedFragment(R.layout.activity_agreement) {
-    private val binding by viewBinding(ActivityAgreementBinding::bind)
+    val binding by viewBinding(ActivityAgreementBinding::bind)
 
     abstract fun onNextClick()
 
@@ -98,9 +100,12 @@ class WelcomeDisclaimerFragment : AbstractWelcomeFragment() {
     private fun moveForward() {
         navViewModel.navigateTo(
             screen = StartActivity.Screen.WELCOME_CARRIER_DISCLAIMER,
-            transition = Navigator.TransitionType.CIRCULAR,
             args = WelcomeCarrierFragment.args,
-            addToBackStack = true
+            addToBackStack = true,
+            transition = Navigator.TransitionType.CIRCULAR,
+            transitionPayload = CircularPayload(
+                fromTarget = binding.btnAgree.globalVisibleRect()
+            )
         )
     }
 }

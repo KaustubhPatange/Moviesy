@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.kpstv.yts.ui.activities.StartActivity
 import com.kpstv.navigation.BaseArgs
 import com.kpstv.navigation.Navigator
+import com.kpstv.navigation.TransitionPayload
 
 class StartViewModel : ViewModel() {
     private val _navigation = MutableLiveData<Navigator.NavOptions?>(null)
@@ -19,6 +20,7 @@ class StartViewModel : ViewModel() {
         args: BaseArgs? = null,
         transactionType: Navigator.TransactionType = Navigator.TransactionType.REPLACE,
         transition: Navigator.TransitionType = Navigator.TransitionType.NONE,
+        transitionPayload: TransitionPayload? = null,
         addToBackStack: Boolean = false,
         popUpTo: Boolean = false
     ) {
@@ -27,6 +29,7 @@ class StartViewModel : ViewModel() {
             args = args,
             type = transactionType,
             transition = transition,
+            transitionPayload = transitionPayload,
             addToBackStack = addToBackStack,
             popUpToThis = popUpTo
         )

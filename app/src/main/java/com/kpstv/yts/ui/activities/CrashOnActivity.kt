@@ -24,7 +24,6 @@ class CrashOnActivity : AppCompatActivity() {
     private val binding by viewBinding(ActivityCrashOnBinding::inflate)
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        makeFullScreen()
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 

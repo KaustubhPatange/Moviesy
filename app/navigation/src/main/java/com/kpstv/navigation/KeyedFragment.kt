@@ -17,7 +17,7 @@ open class KeyedFragment(@LayoutRes id: Int) : Fragment(id) {
     }
 
     /**
-     * Parse the parcelable from & returns it. It is best practice to check [hasKeyArgs]
+     * Parse the parcelable from bundle & returns it. It is best practice to check [hasKeyArgs]
      * & then proceed with this call.
      *
      * @throws NullPointerException When it does not exist.

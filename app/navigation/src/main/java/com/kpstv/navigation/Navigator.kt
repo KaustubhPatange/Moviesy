@@ -2,11 +2,9 @@ package com.kpstv.navigation
 
 import android.os.Bundle
 import android.widget.FrameLayout
-import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
-import androidx.fragment.app.commitNow
 import kotlin.reflect.KClass
 
 typealias FragClazz = KClass<out Fragment>
@@ -17,6 +15,7 @@ class Navigator(private val fm: FragmentManager, private val containerView: Fram
         val args: BaseArgs? = null,
         val type: TransactionType = TransactionType.REPLACE,
         val transition: TransitionType = TransitionType.NONE,
+        val transitionPayload: TransitionPayload? = null,
         val addToBackStack: Boolean = false,
         val popUpToThis: Boolean = false
     )
@@ -38,10 +37,20 @@ class Navigator(private val fm: FragmentManager, private val containerView: Fram
         this.primaryFragClass = clazz
     }
 
+    /**
+     * A fragment transaction.
+     *
+     * See: [NavOptions]
+     */
     fun navigateTo(navOptions: NavOptions) = with(navOptions) {
         val tagName = getFragmentTagName(clazz)
         if (transition == TransitionType.CIRCULAR) {
-            navigatorTransitionManager.circularTransform()
+            val oldPayload = transitionPayload as? CircularPayload
+            val payload = CircularPayload(
+                forFragment = oldPayload?.forFragment ?: clazz,
+                fromTarget = oldPayload?.fromTarget
+            )
+            navigatorTransitionManager.circularTransform(payload)
         }
         val bundle = Bundle().apply {
             if (args != null)
@@ -49,6 +58,18 @@ class Navigator(private val fm: FragmentManager, private val containerView: Fram
         }
         if (popUpToThis && getBackStackCount() > 0) {
             fm.popBackStack(getCurrentFragment()?.tag, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        }
+
+        // Remove duplicate backStack entry name & add it again if exist.
+        // Useful when fragment is navigating to self.
+        var innerAddToBackStack = false
+        for(i in 0 until fm.backStackEntryCount) {
+            val record = fm.getBackStackEntryAt(i)
+            if (record.name == tagName) {
+                fm.popBackStack(tagName, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                innerAddToBackStack = true
+                break
+            }
         }
         fm.commit {
             if (popUpToThis) {
@@ -62,10 +83,18 @@ class Navigator(private val fm: FragmentManager, private val containerView: Fram
                 TransactionType.REPLACE -> replace(containerView.id, clazz.java, bundle, tagName)
                 TransactionType.ADD -> add(containerView.id, clazz.java, bundle, tagName)
             }
-            if (addToBackStack) addToBackStack(tagName)
+            if (addToBackStack || innerAddToBackStack) addToBackStack(tagName)
         }
     }
 
+    /**
+     * Determines if "it can go back" aka backStack is empty or not.
+     *
+     * The call is recursive through child [Fragment]s that uses [Navigator].
+     * By collecting information throughput it will return True or False.
+     *
+     * @return True means it is safe to [goBack].
+     */
     fun canGoBack() : Boolean {
         val count = getBackStackCount()
         if (count == 0) {
@@ -81,9 +110,15 @@ class Navigator(private val fm: FragmentManager, private val containerView: Fram
     }
 
     /**
-     * Determines if "it went back" aka any fragment from tbe backStack
-     * has been removed or not.
-     * @return True if the current fragment is removed from the backStack.
+     * Remove the latest entry from [FragmentManager]'s backStack.
+     *
+     * The call is recursive to child [Fragment]s, in this way their
+     * [KeyedFragment.onBackPressed] are also called which returns if the backPress
+     * is consumed or not. If consumed then it means child [Fragment] don't want the
+     * parent [Navigator] to go back, hence in such case [goBack] will return false
+     * & no entry will be removed from the current [FragmentManager].
+     *
+     * @return True if the entry is removed.
      */
     fun goBack(): Boolean {
         val clazz = primaryFragClass
@@ -107,10 +142,16 @@ class Navigator(private val fm: FragmentManager, private val containerView: Fram
         } else {
             true
         }
-        if (shouldPopStack) fm.popBackStackImmediate()
-       /* if (currentFragment?.view != null) {
-            containerView.removeView(currentFragment.view)
-        }*/
+        if (shouldPopStack) {
+            fm.popBackStackImmediate()
+
+            // Sometimes a view is retained in container view even after removing from backStack.
+            // First case was found in Moviesy while changing the theme.
+            // Main -> Setting -> LookFeel -> (Change theme) -> (Press back x2), the fragment will still be their in the containerView
+            // This below check removes it.
+           /* val index = containerView.indexOfChild(currentFragment?.view)
+            if (index != -1) containerView.removeViewAt(index)*/
+        }
         return shouldPopStack
     }
 

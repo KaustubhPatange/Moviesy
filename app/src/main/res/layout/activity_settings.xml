@@ -8,6 +8,7 @@
     tools:context=".ui.settings.SettingsActivity">
 
     <androidx.appcompat.widget.Toolbar
+        android:elevation="3dp"
         android:background="?colorForeground"
         app:title="Settings"
         android:layout_width="match_parent"

@@ -49,6 +49,7 @@ class MainFragment : KeyedFragment(R.layout.activity_main) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         binding.apply {
             root.applyTopInsets(navigationLayout.navRootLayout)
             root.applyBottomInsets(navigationLayout.navRootLayout)
@@ -62,7 +63,7 @@ class MainFragment : KeyedFragment(R.layout.activity_main) {
             manageArguments()
         }
 
-        ChangelogHelper(requireActivity()).show() // TODO: Update this
+        ChangelogHelper(requireActivity()).show() // TODO: Update this & make it for childFragmentManager
     }
 
     private fun manageArguments() {
@@ -72,7 +73,7 @@ class MainFragment : KeyedFragment(R.layout.activity_main) {
         }
     }
 
-    private fun setNavigationDrawer() = Coroutines.main {
+    private fun setNavigationDrawer() {
         val models = NavigationModels().apply {
             add(
                 NavigationModel(
@@ -92,8 +93,8 @@ class MainFragment : KeyedFragment(R.layout.activity_main) {
         navigations.setUp(binding.navigationLayout.navRecyclerView, models) { navigationModel, _ ->
             navigateTo(navigationModel.tag)
         }
-        viewModel.pauseMovieJob.observe(viewLifecycleOwner, Observer {
-            navigations.updateNotification(MainActivity.NAV_DOWNLOAD_QUEUE, it.size) // TODO: Update this
+        viewModel.pauseMovieJob.observe(viewLifecycleOwner, {
+            navigations.updateNotification(MainActivity.NAV_DOWNLOAD_QUEUE, it.size) // TODO: Update this & make it for childFragmentManager
         })
     }
 
@@ -127,7 +128,7 @@ class MainFragment : KeyedFragment(R.layout.activity_main) {
         binding.navigationLayout.customDrawerPremium.root.setOnClickListener {
             binding.drawerLayout.closeDrawer(GravityCompat.START)
             if (!AppInterface.IS_PREMIUM_UNLOCKED) {
-                PremiumHelper.openPurchaseFragment(requireActivity()) // TODO: Update this
+                PremiumHelper.openPurchaseFragment(requireActivity()) // TODO: Update this & make for childFragmentManager
             } else {
                 PremiumHelper.showPremiumAlreadyPurchasedDialog(requireContext())
             }

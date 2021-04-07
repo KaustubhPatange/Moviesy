@@ -1,7 +1,7 @@
 package com.kpstv.yts.ui.fragments
 
 import android.content.Context
-import android.graphics.drawable.ColorDrawable
+import android.graphics.Rect
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
@@ -11,7 +11,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.kpstv.common_moviesy.extensions.applyTopInsets
 import com.kpstv.common_moviesy.extensions.drawableFrom
-import com.kpstv.common_moviesy.extensions.getColorAttr
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.navigation.*
 import com.kpstv.yts.R
@@ -19,7 +18,6 @@ import com.kpstv.yts.databinding.ActivitySettingsBinding
 import com.kpstv.yts.ui.activities.StartActivity
 import com.kpstv.yts.ui.helpers.ThemeHelper
 import com.kpstv.yts.ui.helpers.ThemeHelper.registerForThemeChange
-import com.kpstv.yts.ui.helpers.ThemeHelper.updateTheme
 import com.kpstv.yts.ui.settings.*
 import com.kpstv.yts.ui.viewmodels.SettingNavViewModel
 import com.kpstv.yts.ui.viewmodels.StartViewModel
@@ -74,11 +72,15 @@ class SettingFragment : KeyedFragment(R.layout.activity_settings), NavigatorTran
         }
     }
 
-    override fun onThemeChanged(theme: ThemeHelper.AppTheme) {
+    override fun onThemeChanged(viewRect: Rect) {
         navViewModel.navigateTo(
             screen = StartActivity.Screen.SETTING,
             args = Args(openLookFeel = true),
-            transition = Navigator.TransitionType.FADE
+            transition = Navigator.TransitionType.CIRCULAR,
+            transitionPayload = CircularPayload(
+                forFragment = LookSettingsFragment2::class,
+                fromTarget = viewRect
+            )
         )
     }
 

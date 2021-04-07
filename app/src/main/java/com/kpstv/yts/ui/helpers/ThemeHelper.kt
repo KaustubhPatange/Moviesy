@@ -28,6 +28,8 @@ object ThemeHelper {
         } else
             AppTheme.LIGHT.style
 
+        theme.applyStyle(style, true)
+
         if (Build.VERSION.SDK_INT < 23) {
             activity.window.statusBarColor = Color.BLACK
             activity.window.navigationBarColor = Color.BLACK
@@ -42,9 +44,6 @@ object ThemeHelper {
         activity.window.setBackgroundDrawable(
             ColorDrawable(activity.getColorAttr(R.attr.colorBackground))
         )
-
-        theme.applyStyle(style, true)
-
     }
 
     /**
@@ -61,6 +60,7 @@ object ThemeHelper {
                 super.onFragmentCreated(fm, f, savedInstanceState)
                 if (this@registerForThemeChange::class == f::class) {
                     context?.updateTheme(requireActivity())
+                    fm.unregisterFragmentLifecycleCallbacks(this)
                 }
             }
         }, false)
