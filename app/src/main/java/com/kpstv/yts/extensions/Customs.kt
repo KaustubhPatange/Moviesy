@@ -4,12 +4,14 @@ import android.app.Activity
 import android.content.Intent
 import androidx.annotation.DrawableRes
 import com.kpstv.yts.ui.fragments.GenreFragment
+import com.kpstv.yts.ui.fragments.GenreFragment2
 import kotlinx.coroutines.*
 import java.io.File
 import java.util.*
 
 fun String.small() = toLowerCase(Locale.ROOT)
 
+@Deprecated("Should be removed")
 fun ArrayList<GenreFragment.LocalGenreModel>.add(
     title: String,
     @DrawableRes drawable: Int,

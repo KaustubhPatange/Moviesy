@@ -7,14 +7,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.kpstv.common_moviesy.extensions.makeFullScreen
 import com.kpstv.common_moviesy.extensions.viewBinding
+import com.kpstv.navigation.Navigator
+import com.kpstv.navigation.NavigatorTransmitter
+import com.kpstv.navigation.canFinish
 import com.kpstv.yts.databinding.ActivityStartBinding
 import com.kpstv.yts.extensions.errors.SSLHandshakeException
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.ui.fragments.*
 import com.kpstv.yts.ui.helpers.InitializationHelper
-import com.kpstv.navigation.Navigator
-import com.kpstv.navigation.NavigatorTransmitter
-import com.kpstv.navigation.canFinish
 import com.kpstv.yts.ui.viewmodels.StartViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -42,7 +42,9 @@ class StartActivity : AppCompatActivity(), NavigatorTransmitter {
         navViewModel.navigation.observe(this, navigationObserver)
         navViewModel.errors.observe(this, errorObserver)
 
-        navViewModel.navigateTo(Screen.SPLASH)
+        if (savedInstanceState == null) {
+            navViewModel.navigateTo(Screen.SPLASH)
+        }
     }
 
     override fun onStart() {

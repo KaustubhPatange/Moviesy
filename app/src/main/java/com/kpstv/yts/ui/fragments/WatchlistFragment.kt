@@ -63,9 +63,9 @@ class WatchlistFragment : Fragment(R.layout.fragment_watchlist), AbstractBottomN
                 binding.layoutNoFavourite.root.show()
 
             /** Restore previous state of recyclerView */
-            if (viewModel.uiState.watchFragmentState.recyclerViewState != null) {
-                binding.recyclerView.layoutManager?.onRestoreInstanceState(viewModel.uiState.watchFragmentState.recyclerViewState)
-                viewModel.uiState.watchFragmentState.recyclerViewState = null
+            if (viewModel.uiState_old.watchFragmentState.recyclerViewState != null) {
+                binding.recyclerView.layoutManager?.onRestoreInstanceState(viewModel.uiState_old.watchFragmentState.recyclerViewState)
+                viewModel.uiState_old.watchFragmentState.recyclerViewState = null
             }
         })
     }
@@ -110,7 +110,7 @@ class WatchlistFragment : Fragment(R.layout.fragment_watchlist), AbstractBottomN
         }
 
         /** Restoring AppBarLayout State */
-        if (viewModel.uiState.watchFragmentState.isAppBarExpanded == false)
+        if (viewModel.uiState_old.watchFragmentState.isAppBarExpanded == false)
             binding.appBarLayout.collapse()
     }
 
@@ -119,9 +119,9 @@ class WatchlistFragment : Fragment(R.layout.fragment_watchlist), AbstractBottomN
      */
     override fun onStop() {
         super.onStop()
-        viewModel.uiState.watchFragmentState.recyclerViewState =
+        viewModel.uiState_old.watchFragmentState.recyclerViewState =
             binding.recyclerView.layoutManager?.onSaveInstanceState()
-        viewModel.uiState.watchFragmentState.isAppBarExpanded =
+        viewModel.uiState_old.watchFragmentState.isAppBarExpanded =
             binding.appBarLayout.isAppBarExpanded
     }
 }

@@ -5,6 +5,7 @@ import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
+import androidx.lifecycle.Lifecycle
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlin.reflect.KClass
 

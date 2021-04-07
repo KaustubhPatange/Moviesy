@@ -1,12 +1,9 @@
 package com.kpstv.yts.ui.viewmodels
 
-import android.app.Application
 import android.util.Log
+import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.yts.AppInterface.Companion.CUSTOM_LAYOUT_YTS_SPAN
 import com.kpstv.yts.AppInterface.Companion.FEATURED_QUERY
@@ -24,23 +21,26 @@ import com.kpstv.yts.extensions.MoviesCallback
 import com.kpstv.yts.extensions.utils.YTSParser
 import com.kpstv.yts.interfaces.api.YTSApi
 import com.kpstv.yts.ui.viewmodels.state.UIState
+import com.kpstv.yts.ui.viewmodels.state.UIState2
 import kotlinx.coroutines.launch
 import retrofit2.await
 import java.util.*
-import javax.net.ssl.SSLHandshakeException
 import kotlin.collections.ArrayList
 
 class MainViewModel @ViewModelInject constructor(
-    application: Application,
+    @Assisted savedStateHandle: SavedStateHandle,
     private val ytsApi: YTSApi,
     private val repository: MainDao,
     private val favouriteRepository: FavouriteRepository,
     private val pauseRepository: PauseRepository,
     private val downloadRepository: DownloadRepository,
-    val uiState: UIState,
+    @Deprecated("Use uiState instead")
+    val uiState_old: UIState2, // TODO: Remove this property
     private val ytsParser: YTSParser
-) : AndroidViewModel(application) {
+) : ViewModel() {
     private val TAG = "MainViewModel"
+
+    val uiState = UIState(savedStateHandle)
 
     val favouriteMovieIds by lazy { favouriteRepository.getAllMovieId() }
     val downloadMovieIds by lazy { downloadRepository.getAllDownloads() }

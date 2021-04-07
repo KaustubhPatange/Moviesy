@@ -11,36 +11,53 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.kpstv.common_moviesy.extensions.*
-import com.kpstv.navigation.BaseArgs
+import com.kpstv.navigation.*
 import com.kpstv.yts.AppInterface
+import com.kpstv.yts.BuildConfig
 import com.kpstv.yts.R
+import com.kpstv.yts.cast.CastHelper
 import com.kpstv.yts.databinding.ActivityMainBinding
 import com.kpstv.yts.extensions.NavigationModel
 import com.kpstv.yts.extensions.NavigationModels
 import com.kpstv.yts.extensions.Navigations
 import com.kpstv.yts.extensions.utils.AppUtils
+import com.kpstv.yts.extensions.utils.UpdateUtils
 import com.kpstv.yts.ui.activities.DownloadActivity
 import com.kpstv.yts.ui.activities.MainActivity
 import com.kpstv.yts.ui.activities.StartActivity
 import com.kpstv.yts.ui.helpers.ChangelogHelper
+import com.kpstv.yts.ui.helpers.MainCastHelper
+import com.kpstv.yts.ui.helpers.MainCastHelper2
 import com.kpstv.yts.ui.helpers.PremiumHelper
 import com.kpstv.yts.ui.helpers.ThemeHelper.updateTheme
-import com.kpstv.navigation.KeyedFragment
-import com.kpstv.navigation.Navigator
 import com.kpstv.yts.ui.helpers.ThemeHelper.registerForThemeChange
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import com.kpstv.yts.ui.viewmodels.StartViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import es.dmoral.toasty.Toasty
+import io.github.dkbai.tinyhttpd.nanohttpd.webserver.SimpleWebServer
 import kotlinx.android.parcel.Parcelize
+import javax.inject.Inject
+
+
+interface MainFragmentDrawerCallbacks {
+    fun openDrawer()
+}
 
 @AndroidEntryPoint
-class MainFragment : KeyedFragment(R.layout.activity_main) {
+class MainFragment : KeyedFragment(R.layout.activity_main), MainFragmentDrawerCallbacks, LibraryFragment2.Callbacks {
     private val binding by viewBinding(ActivityMainBinding::bind)
     private val navViewModel by activityViewModels<StartViewModel>()
     private val viewModel by viewModels<MainViewModel>()
     private val navigations by lazy {
         Navigations(requireContext())
     }
+    private lateinit var navigator: Navigator
+    private val castHelper = CastHelper()
+    private val mainCastHelper by lazy { MainCastHelper2(requireActivity(), lifecycle, castHelper) }
+    @Inject lateinit var updateUtils: UpdateUtils
+
+    private var currentBottomNavId: Int = 0
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -49,6 +66,18 @@ class MainFragment : KeyedFragment(R.layout.activity_main) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        navigator = Navigator(childFragmentManager, binding.fragmentContainer)
+        navigator.install(this, object : Navigator.BottomNavigation() {
+            override val bottomNavigationViewId: Int = R.id.bottom_nav
+            override val bottomNavigationFragments: Map<Int, FragClazz> = mapOf(
+                R.id.homeFragment to HomeFragment2::class,
+                R.id.watchFragment to WatchlistFragment2::class,
+                R.id.libraryFragment to LibraryFragment2::class
+            )
+            override fun onBottomNavigationSelectionChanged(selectedId: Int) {
+                currentBottomNavId = selectedId
+            }
+        })
 
         binding.apply {
             root.applyTopInsets(navigationLayout.navRootLayout)
@@ -63,13 +92,56 @@ class MainFragment : KeyedFragment(R.layout.activity_main) {
             manageArguments()
         }
 
+        if (CastHelper.isCastingSupported(requireContext())) {
+            SimpleWebServer.init(requireContext(), BuildConfig.DEBUG)
+            castHelper.initCastSession(requireActivity())
+            mainCastHelper.setUpCastRelatedStuff()
+        }
+
         ChangelogHelper(requireActivity()).show() // TODO: Update this & make it for childFragmentManager
+    }
+
+    override fun onStart() {
+        super.onStart()
+        updateUtils.check(
+            onUpdateAvailable = {
+                updateUtils.showUpdateDialog(requireContext()) {
+                    updateUtils.processUpdate(it)
+                    Toasty.info(requireContext(), getString(R.string.update_download_text)).show()
+                }
+            },
+            onUpdateNotFound = {
+                checkForAutoPurchase()
+            },
+            onVersionDeprecated = {
+                AppUtils.doOnVersionDeprecated(requireContext())
+            },
+            onError = {
+                Toasty.error(requireContext(), "Failed: ${it.message}").show()
+            }
+        )
+    }
+
+    override fun openDrawer() {
+        binding.drawerLayout.openDrawer(GravityCompat.START)
+    }
+
+    override fun getCastHelper(): CastHelper = castHelper
+
+    override fun onBackPressed(): Boolean {
+        when {
+            binding.drawerLayout.isDrawerOpen(GravityCompat.START) -> binding.drawerLayout.closeDrawer(GravityCompat.START)
+            currentBottomNavId != R.id.homeFragment -> binding.bottomNav.selectedItemId = R.id.homeFragment
+            else -> return super.onBackPressed()
+        }
+        return true
     }
 
     private fun manageArguments() {
         val args = getKeyArgs<Args>()
         if (args.moveToLibrary) {
             // TODO: Move to Library
+            // binding.bottomNav.selectedItemId = R.id.libraryFragment
         }
     }
 
@@ -135,9 +207,20 @@ class MainFragment : KeyedFragment(R.layout.activity_main) {
         }
     }
 
+    private fun checkForAutoPurchase() {
+        PremiumHelper.scanForAutoPurchase(requireActivity(),
+            onPremiumActivated = {
+                PremiumHelper.showPremiumActivatedDialog(requireContext())
+            },
+            onNoPremiumFound = {
+                PremiumHelper.showPurchaseInfo(requireActivity())
+            }
+        )
+    }
+
     private fun animateBottomNavUp() {
         binding.bottomNav.translationY = 500f
-        binding.bottomNav.animate().translationY(0f).start()
+        binding.bottomNav.animate().translationY(0f).setDuration(100).start()
     }
 
     private fun animateBottomNavDown() {

@@ -43,9 +43,11 @@ class SettingFragment : KeyedFragment(R.layout.activity_settings), NavigatorTran
         setToolbar()
         viewModel.navigation.observe(viewLifecycleOwner, navigationObserver)
 
-        navigator.navigateTo(Navigator.NavOptions(
-            clazz = Screen.MAIN.clazz
-        ))
+        if (savedInstanceState == null) {
+            navigator.navigateTo(Navigator.NavOptions(
+                clazz = Screen.MAIN.clazz
+            ))
+        }
 
         if (hasKeyArgs()) {
             manageArguments()

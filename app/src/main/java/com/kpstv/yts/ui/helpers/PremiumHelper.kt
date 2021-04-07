@@ -1,6 +1,5 @@
 package com.kpstv.yts.ui.helpers
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Environment
 import android.view.LayoutInflater
@@ -9,6 +8,7 @@ import androidx.annotation.RawRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.work.WorkManager
 import com.kpstv.common_moviesy.extensions.invisible
@@ -23,6 +23,7 @@ import com.kpstv.yts.ui.fragments.sheets.BottomSheetPurchase
 import es.dmoral.toasty.Toasty
 
 @Suppress("DEPRECATION")
+// TODO: Re-think this with perspective of fragment manager & remove its dependency over Fragment Activity.
 class PremiumHelper {
     companion object {
 

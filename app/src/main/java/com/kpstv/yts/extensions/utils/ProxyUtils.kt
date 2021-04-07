@@ -74,10 +74,9 @@ class ProxyUtils @Inject constructor(
             AppSettings.writeSettings(context)
 
             Log.e(TAG, "Checking for YTS proxy again!")
-            val testResponse =
-                retrofitUtils.makeHttpCallAsync("${AppInterface.YTS_BASE_API_URL}list_movies.json")
-            //  TODO: Remove this.. if (testResponse.code == 525) throw SSLHandshakeException("The app couldn't connect to server")
-           // TODO: Remove this.. if (!testResponse.isSuccessful) throw Exception("Updated proxy is invalid. If you see this message, contact developer to update proxies manually!")
+            val testResponse = retrofitUtils.makeHttpCallAsync("${AppInterface.YTS_BASE_API_URL}list_movies.json")
+            if (testResponse.code == 525) throw SSLHandshakeException("The app couldn't connect to server")
+            if (!testResponse.isSuccessful) throw Exception("Updated proxy is invalid. If you see this message, contact developer to update proxies manually!")
             testResponse.close() // Close response for memory leaks
         } else
             throw Exception("Failed to retrieve app database")

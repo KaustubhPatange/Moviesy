@@ -14,19 +14,18 @@ import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 
 @AndroidEntryPoint
-class ChartsFragment : Fragment(R.layout.fragment_charts), HomeFragment.HomeFragmentCallbacks {
-
-    private val viewModel by viewModels<MainViewModel>()
-
+class ChartsFragment2 : Fragment(R.layout.fragment_charts), HomeFragment2.Callbacks {
     private val binding by viewBinding(FragmentChartsBinding::bind)
-    private lateinit var cmlFeatured: CustomMovieLayout
+    private val viewModel by viewModels<MainViewModel>(
+        ownerProducer = { requireParentFragment().requireParentFragment() }
+    )
 
+    private lateinit var cmlFeatured: CustomMovieLayout
     private lateinit var cmlRecent: CustomMovieLayout
     private lateinit var cmlTopRated: CustomMovieLayout
     private lateinit var cmlPopular: CustomMovieLayout
     private lateinit var cmlMostLiked: CustomMovieLayout
     private lateinit var cmlLatest: CustomMovieLayout
-    private val TAG = javaClass.simpleName
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -36,7 +35,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts), HomeFragment.HomeFrag
 
         /** Restoring previous state of nestedScrollView */
         binding.nestedScrollView.onRestoreInstanceState(
-            viewModel.uiState_old.chartFragmentState.nestedScrollState
+            viewModel.uiState.chartFragmentState.nestedScrollState
         )
     }
 
@@ -68,7 +67,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts), HomeFragment.HomeFrag
     }
 
     private fun setViewAndLayout() {
-        // FIXME: (Needs Investigation) Sometimes getActivity() returns null & thus it crashes
+        // FIXME: (Needs Investigation) Sometimes getActivity() returns null & thus it crashes, Edit: This might not be valid for this
         // val context = if (activity != null) requireActivity() else if (context != null) requireContext() else return
 
         /** Featured Layout */
@@ -141,12 +140,9 @@ class ChartsFragment : Fragment(R.layout.fragment_charts), HomeFragment.HomeFrag
         }
     }
 
-    /**
-     * Save your state here.
-     */
     override fun onStop() {
         super.onStop()
-        viewModel.uiState_old.chartFragmentState.nestedScrollState =
+        viewModel.uiState.chartFragmentState.nestedScrollState =
             binding.nestedScrollView.onSaveInstanceState()
     }
 }

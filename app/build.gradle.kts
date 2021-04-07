@@ -47,6 +47,7 @@ android {
         }
         getByName(BuildType.DEBUG) {
             applicationIdSuffix = ".debug"
+            isDebuggable = true
         }
     }
 

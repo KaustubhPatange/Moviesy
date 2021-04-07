@@ -2,9 +2,11 @@ package com.kpstv.navigation
 
 import android.os.Bundle
 import android.widget.FrameLayout
+import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlin.reflect.KClass
 
 typealias FragClazz = KClass<out Fragment>
@@ -59,7 +61,6 @@ class Navigator(private val fm: FragmentManager, private val containerView: Fram
         if (popUpToThis && getBackStackCount() > 0) {
             fm.popBackStack(getCurrentFragment()?.tag, FragmentManager.POP_BACK_STACK_INCLUSIVE)
         }
-
         // Remove duplicate backStack entry name & add it again if exist.
         // Useful when fragment is navigating to self.
         var innerAddToBackStack = false
@@ -79,9 +80,16 @@ class Navigator(private val fm: FragmentManager, private val containerView: Fram
                 setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out)
             if (transition == TransitionType.SLIDE)
                 setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
-            when(type) {
-                TransactionType.REPLACE -> replace(containerView.id, clazz.java, bundle, tagName)
-                TransactionType.ADD -> add(containerView.id, clazz.java, bundle, tagName)
+
+            val currentFragment = fm.findFragmentByTag(tagName)
+            if (currentFragment != null && currentFragment::class != clazz) {
+                // (maybe) should popUp it's childFragmentManager in this case.
+                show(currentFragment)
+            } else {
+                when(type) {
+                    TransactionType.REPLACE -> replace(containerView.id, clazz.java, bundle, tagName)
+                    TransactionType.ADD -> add(containerView.id, clazz.java, bundle, tagName)
+                }
             }
             if (addToBackStack || innerAddToBackStack) addToBackStack(tagName)
         }
@@ -115,7 +123,7 @@ class Navigator(private val fm: FragmentManager, private val containerView: Fram
      * The call is recursive to child [Fragment]s, in this way their
      * [KeyedFragment.onBackPressed] are also called which returns if the backPress
      * is consumed or not. If consumed then it means child [Fragment] don't want the
-     * parent [Navigator] to go back, hence in such case [goBack] will return false
+     * parent [Navigator] to go back, hence [goBack] will return false
      * & no entry will be removed from the current [FragmentManager].
      *
      * @return True if the entry is removed.
@@ -156,9 +164,20 @@ class Navigator(private val fm: FragmentManager, private val containerView: Fram
     }
 
     /**
+     * Set up navigation for [BottomNavigationView].
+     *
+     * The host must implement [NavigatorTransmitter] before setting up for Bottom navigation.
+     */
+  /*  fun install(activity: FragmentActivity, obj: BottomNavigation) {
+       // (activity.applicationContext as Application).registerActivityLifecycleCallbacks(object : ActivityLifecycle(activity))
+    }*/
+
+    /**
      * Returns the current fragment class.
      */
-    fun getCurrentFragmentClass(): FragClazz? = fm.findFragmentById(containerView.id)?.let { it::class }
+    fun getCurrentFragmentClass() : FragClazz? = fm.findFragmentById(containerView.id)?.let { it::class }
+
+    internal fun getFragmentManager() : FragmentManager = fm
 
     private fun getBackStackCount() : Int = fm.backStackEntryCount
 
@@ -176,5 +195,24 @@ class Navigator(private val fm: FragmentManager, private val containerView: Fram
         FADE,
         SLIDE,
         CIRCULAR
+    }
+
+    open class BottomNavigation {
+        open val bottomNavigationViewId: Int = -1
+        open val bottomNavigationFragments: Map<Int, FragClazz> = mapOf()
+        /**
+         * Default selection will be the first Id of [bottomNavigationFragments]
+         */
+        open val selectedBottomNavigationId: Int = -1
+        open fun onBottomNavigationSelectionChanged(@IdRes selectedId: Int) {}
+
+        /**
+         * Implement this interface on child fragments to get notified
+         * about selection or re-selection.
+         */
+        interface Callbacks {
+            fun onSelected() {}
+            fun onReselected() {}
+        }
     }
 }

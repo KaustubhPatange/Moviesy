@@ -242,4 +242,6 @@
     <string name="error_ssl_handshake_text">There is an issue with YTS website. Click to verify it!</string>
     <string name="error_ssl_handshake_text_dialog">The app couldn\'t connect to YTS server due to SSL handshake error. This means that the YTS website is offline for some reason &amp; not the incorrect functioning of app.\n\nIn most cases it should resolve within few hours. If not let me know :)</string>
     <string name="err_no_browser">No browser is installed to handle the web urls</string>
+    <string name="download_tip_title">Existing downloads</string>
+    <string name="download_tip_text"><![CDATA[In any case, your existing download doesn\'t show up here you can go to Settings > Storage > Scan existing downloads.]]></string>
 </resources>

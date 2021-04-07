@@ -45,15 +45,9 @@ internal class NavigatorCircularTransform(
                 if (f.requireView().isLaidOut) {
                     performRestCircularTransform(overlayView, target)
                 } else {
-                    f.requireView().viewTreeObserver?.addOnPreDrawListener(object: ViewTreeObserver.OnPreDrawListener{
-                        override fun onPreDraw(): Boolean {
-                            if (f.requireView().isLaidOut) {
-                                f.requireView().viewTreeObserver.removeOnPreDrawListener(this)
-                                performRestCircularTransform(overlayView, target)
-                            }
-                            return true
-                        }
-                    })
+                    f.requireView().doOnLaidOut {
+                        performRestCircularTransform(overlayView, target)
+                    }
                 }
             }
         }, true)

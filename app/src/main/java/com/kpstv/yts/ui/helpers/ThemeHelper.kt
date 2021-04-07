@@ -34,6 +34,9 @@ object ThemeHelper {
             activity.window.statusBarColor = Color.BLACK
             activity.window.navigationBarColor = Color.BLACK
         } else if (Build.VERSION.SDK_INT >= 23) {
+            val color = activity.getColorAttr(R.attr.colorBackground)
+            activity.window.statusBarColor = color
+
             if (!AppInterface.IS_DARK_THEME) {
                 decorView.systemUiVisibility = decorView.systemUiVisibility or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             } else {
@@ -57,11 +60,11 @@ object ThemeHelper {
                 f: Fragment,
                 savedInstanceState: Bundle?
             ) {
-                super.onFragmentCreated(fm, f, savedInstanceState)
                 if (this@registerForThemeChange::class == f::class) {
                     context?.updateTheme(requireActivity())
                     fm.unregisterFragmentLifecycleCallbacks(this)
                 }
+                super.onFragmentCreated(fm, f, savedInstanceState)
             }
         }, false)
     }

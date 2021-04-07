@@ -46,4 +46,5 @@ dependencies {
     implementation(LibraryDependency.CORE_KTX)
     implementation(LibraryDependency.APP_COMPAT)
     implementation(LibraryDependency.FRAGMENT_KTX)
+    implementation(LibraryDependency.MATERIAL) // Used for BottomNav see if you want to abstract it as a plugin
 }

@@ -14,7 +14,7 @@ import com.kpstv.yts.ui.viewmodels.SettingNavViewModel
 
 class MainSettingFragment : KeyedFragment() {
     private val navViewModel by viewModels<SettingNavViewModel>(
-        ownerProducer = { requireParentFragment() }
+        ownerProducer = ::requireParentFragment
     )
 
     override fun onCreateView(
