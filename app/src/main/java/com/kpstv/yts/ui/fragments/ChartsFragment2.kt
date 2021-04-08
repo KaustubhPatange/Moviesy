@@ -3,6 +3,7 @@ package com.kpstv.yts.ui.fragments
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.R
@@ -10,6 +11,7 @@ import com.kpstv.yts.databinding.FragmentChartsBinding
 import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.extensions.common.CustomMovieLayout
 import com.kpstv.yts.ui.viewmodels.MainViewModel
+import com.kpstv.yts.ui.viewmodels.StartViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 
@@ -19,6 +21,7 @@ class ChartsFragment2 : Fragment(R.layout.fragment_charts), HomeFragment2.Callba
     private val viewModel by viewModels<MainViewModel>(
         ownerProducer = { requireParentFragment().requireParentFragment() }
     )
+    private val navViewModel by activityViewModels<StartViewModel>()
 
     private lateinit var cmlFeatured: CustomMovieLayout
     private lateinit var cmlRecent: CustomMovieLayout
@@ -74,7 +77,7 @@ class ChartsFragment2 : Fragment(R.layout.fragment_charts), HomeFragment2.Callba
         cmlFeatured = CustomMovieLayout(requireActivity(), getString(R.string.featured)).apply {
             injectViewAt(binding.addLayout)
             setLifecycleOwner(viewLifecycleOwner)
-            setupFeaturedCallbacks(viewModel) {
+            setupFeaturedCallbacks2(navViewModel, viewModel) {
                 cmlFeatured.removeView(binding.addLayout)
                 Toasty.warning(requireContext(), getString(R.string.featured_movies)).show()
             }
@@ -88,7 +91,7 @@ class ChartsFragment2 : Fragment(R.layout.fragment_charts), HomeFragment2.Callba
         cmlRecent = CustomMovieLayout(requireActivity(), getString(R.string.recently_added)).apply {
             injectViewAt(binding.addLayout)
             setLifecycleOwner(viewLifecycleOwner)
-            setupCallbacks(viewModel, queryMap6)
+            setupCallbacks2(viewModel, navViewModel, queryMap6)
         }
 
         /** Top Rated Layout */
@@ -100,7 +103,7 @@ class ChartsFragment2 : Fragment(R.layout.fragment_charts), HomeFragment2.Callba
         cmlTopRated = CustomMovieLayout(requireActivity(), getString(R.string.top_rated)).apply {
             injectViewAt(binding.addLayout)
             setLifecycleOwner(viewLifecycleOwner)
-            setupCallbacks(viewModel, queryMap)
+            setupCallbacks2(viewModel, navViewModel, queryMap)
         }
 
         /** Popular Layout */
@@ -112,7 +115,7 @@ class ChartsFragment2 : Fragment(R.layout.fragment_charts), HomeFragment2.Callba
         cmlPopular = CustomMovieLayout(requireActivity(), getString(R.string.popular)).apply {
             injectViewAt(binding.addLayout)
             setLifecycleOwner(viewLifecycleOwner)
-            setupCallbacks(viewModel, queryMap3)
+            setupCallbacks2(viewModel, navViewModel, queryMap3)
         }
 
         /** Most Liked Layout */
@@ -124,7 +127,7 @@ class ChartsFragment2 : Fragment(R.layout.fragment_charts), HomeFragment2.Callba
         cmlMostLiked = CustomMovieLayout(requireActivity(), getString(R.string.most_liked)).apply {
             injectViewAt(binding.addLayout)
             setLifecycleOwner(viewLifecycleOwner)
-            setupCallbacks(viewModel, queryMap4)
+            setupCallbacks2(viewModel, navViewModel, queryMap4)
         }
 
         /** Latest Layout */
@@ -136,7 +139,7 @@ class ChartsFragment2 : Fragment(R.layout.fragment_charts), HomeFragment2.Callba
         cmlLatest = CustomMovieLayout(requireActivity(), getString(R.string.latest)).apply {
             injectViewAt(binding.addLayout)
             setLifecycleOwner(viewLifecycleOwner)
-            setupCallbacks(viewModel, queryMap5)
+            setupCallbacks2(viewModel, navViewModel, queryMap5)
         }
     }
 

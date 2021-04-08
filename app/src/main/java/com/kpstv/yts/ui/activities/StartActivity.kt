@@ -73,7 +73,10 @@ class StartActivity : AppCompatActivity(), NavigatorTransmitter {
         WELCOME_DISCLAIMER (WelcomeDisclaimerFragment::class),
         WELCOME_CARRIER_DISCLAIMER (WelcomeCarrierFragment::class),
         MAIN (MainFragment::class),
-        SETTING (SettingFragment::class)
+        SETTING (SettingFragment::class),
+        MORE (MoreFragment::class),
+        SEARCH (SearchFragment::class),
+        DETAIL (DetailFragment::class)
     }
 
     override fun onBackPressed() {

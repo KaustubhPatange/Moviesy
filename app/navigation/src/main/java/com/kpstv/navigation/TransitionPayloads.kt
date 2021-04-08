@@ -22,3 +22,7 @@ data class CircularPayload(
      */
     val fromTarget: Rect? = null
 ) : TransitionPayload()
+
+data class SharedPayload(
+    val elements: Map<View, Int>
+) : TransitionPayload()

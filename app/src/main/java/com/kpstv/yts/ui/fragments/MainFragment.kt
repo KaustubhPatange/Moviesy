@@ -2,15 +2,16 @@ package com.kpstv.yts.ui.fragments
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
 import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
-import com.kpstv.common_moviesy.extensions.*
+import com.kpstv.common_moviesy.extensions.applyBottomInsets
+import com.kpstv.common_moviesy.extensions.applyTopInsets
+import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.navigation.*
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.BuildConfig
@@ -26,10 +27,8 @@ import com.kpstv.yts.ui.activities.DownloadActivity
 import com.kpstv.yts.ui.activities.MainActivity
 import com.kpstv.yts.ui.activities.StartActivity
 import com.kpstv.yts.ui.helpers.ChangelogHelper
-import com.kpstv.yts.ui.helpers.MainCastHelper
 import com.kpstv.yts.ui.helpers.MainCastHelper2
 import com.kpstv.yts.ui.helpers.PremiumHelper
-import com.kpstv.yts.ui.helpers.ThemeHelper.updateTheme
 import com.kpstv.yts.ui.helpers.ThemeHelper.registerForThemeChange
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import com.kpstv.yts.ui.viewmodels.StartViewModel
@@ -39,9 +38,9 @@ import io.github.dkbai.tinyhttpd.nanohttpd.webserver.SimpleWebServer
 import kotlinx.android.parcel.Parcelize
 import javax.inject.Inject
 
-
 interface MainFragmentDrawerCallbacks {
     fun openDrawer()
+    fun isDrawerOpen(): Boolean
 }
 
 @AndroidEntryPoint
@@ -99,6 +98,10 @@ class MainFragment : KeyedFragment(R.layout.activity_main), MainFragmentDrawerCa
         }
 
         ChangelogHelper(requireActivity()).show() // TODO: Update this & make it for childFragmentManager
+
+        if (savedInstanceState == null) {
+            if (viewModel.uiState.mainFragmentState.isDrawerOpen == true) openDrawer()
+        }
     }
 
     override fun onStart() {
@@ -126,11 +129,20 @@ class MainFragment : KeyedFragment(R.layout.activity_main), MainFragmentDrawerCa
         binding.drawerLayout.openDrawer(GravityCompat.START)
     }
 
+    private fun closeDrawer() {
+        binding.drawerLayout.closeDrawer(GravityCompat.START)
+    }
+
+    override fun isDrawerOpen(): Boolean = binding.drawerLayout.isDrawerOpen(GravityCompat.START)
+
     override fun getCastHelper(): CastHelper = castHelper
+
+    override val forceBackPress: Boolean
+        get() = (currentBottomNavId != R.id.homeFragment) or isDrawerOpen()
 
     override fun onBackPressed(): Boolean {
         when {
-            binding.drawerLayout.isDrawerOpen(GravityCompat.START) -> binding.drawerLayout.closeDrawer(GravityCompat.START)
+            binding.drawerLayout.isDrawerOpen(GravityCompat.START) -> closeDrawer()
             currentBottomNavId != R.id.homeFragment -> binding.bottomNav.selectedItemId = R.id.homeFragment
             else -> return super.onBackPressed()
         }
@@ -180,7 +192,7 @@ class MainFragment : KeyedFragment(R.layout.activity_main), MainFragmentDrawerCa
     }
 
     private fun navigateTo(tag: String) {
-        binding.root.closeDrawer(GravityCompat.START)
+        closeDrawer()
         when (tag) {
             MainActivity.NAV_DOWNLOAD_QUEUE -> {
                 val downloadIntent = Intent(requireContext(), DownloadActivity::class.java)
@@ -225,6 +237,12 @@ class MainFragment : KeyedFragment(R.layout.activity_main), MainFragmentDrawerCa
 
     private fun animateBottomNavDown() {
         binding.bottomNav.animate().translationY(500f).start()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        viewModel.uiState.mainFragmentState.isDrawerOpen =
+            view?.findViewById<DrawerLayout>(R.id.drawer_layout)?.isDrawerOpen(GravityCompat.START)
     }
 
     @Parcelize

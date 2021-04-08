@@ -3,6 +3,14 @@ package com.kpstv.yts.ui.viewmodels.providers
 import android.os.Parcelable
 import androidx.lifecycle.SavedStateHandle
 
+class MainState(private val savedStateHandle: SavedStateHandle) {
+    companion object {
+        private const val DRAWER_OPEN_STATE = "main_is_drawer_open"
+    }
+    var isDrawerOpen: Boolean?
+        get() = savedStateHandle.get(DRAWER_OPEN_STATE)
+        set(value) = savedStateHandle.set(DRAWER_OPEN_STATE, value)
+}
 
 class HomeState(private val savedStateHandle: SavedStateHandle) {
     companion object {

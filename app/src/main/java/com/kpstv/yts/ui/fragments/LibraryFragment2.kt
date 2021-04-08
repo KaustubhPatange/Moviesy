@@ -5,11 +5,9 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
-import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kpstv.common_moviesy.extensions.applyTopInsets
 import com.kpstv.common_moviesy.extensions.hide
@@ -26,15 +24,14 @@ import com.kpstv.yts.databinding.FragmentLibraryBinding
 import com.kpstv.yts.extensions.common.CustomTipLayout
 import com.kpstv.yts.extensions.deleteRecursive
 import com.kpstv.yts.ui.activities.FinalActivity
-import com.kpstv.yts.ui.activities.SearchActivity
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import com.kpstv.yts.ui.fragments.sheets.BottomSheetLibraryDownload
 import com.kpstv.yts.ui.fragments.sheets.PlaybackType
 import com.kpstv.yts.ui.viewmodels.MainViewModel
+import com.kpstv.yts.ui.viewmodels.StartViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import java.io.File
-import java.lang.ref.WeakReference
 
 @AndroidEntryPoint
 class LibraryFragment2 : Fragment(R.layout.fragment_library), Navigator.BottomNavigation.Callbacks {
@@ -46,7 +43,7 @@ class LibraryFragment2 : Fragment(R.layout.fragment_library), Navigator.BottomNa
     private val viewModel by viewModels<MainViewModel>(
         ownerProducer = ::requireParentFragment
     )
-
+    private val navViewModel by activityViewModels<StartViewModel>()
     private val isCastingSupported by lazy { CastHelper.isCastingSupported(requireContext()) }
     private val castHelper by lazy { (requireParentFragment() as Callbacks).getCastHelper() }
     private lateinit var downloadAdapter: LibraryDownloadAdapter
@@ -139,7 +136,7 @@ class LibraryFragment2 : Fragment(R.layout.fragment_library), Navigator.BottomNa
             when (it.itemId) {
                 R.id.action_details -> startActivity(
                     Intent(requireContext(), FinalActivity::class.java).apply {
-                        putExtra(AppInterface.MOVIE_ID, model.movieId)
+                        putExtra(AppInterface.MOVIE_ID, model.movieId) // TODO: Migrate Final activity
                     }
                 )
                 R.id.action_show_location -> {
@@ -183,8 +180,7 @@ class LibraryFragment2 : Fragment(R.layout.fragment_library), Navigator.BottomNa
 
         binding.toolbar.setOnMenuItemClickListener {
             if (it.itemId == R.id.action_search) {
-                val intent = Intent(requireContext(), SearchActivity::class.java) // TODO: Create search fragment.
-                startActivity(intent)
+                navViewModel.goToSearch()
             }
             return@setOnMenuItemClickListener true
         }
@@ -202,7 +198,6 @@ class LibraryFragment2 : Fragment(R.layout.fragment_library), Navigator.BottomNa
      */
     override fun onStop() {
         super.onStop()
-        viewModel.uiState.libraryFragmentState.recyclerViewState =
-            binding.recyclerViewDownload.layoutManager?.onSaveInstanceState()
+        viewModel.uiState.libraryFragmentState.recyclerViewState = binding.recyclerViewDownload.layoutManager?.onSaveInstanceState()
     }
 }

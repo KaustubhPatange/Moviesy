@@ -26,12 +26,13 @@ import com.kpstv.yts.extensions.utils.AppUtils.Companion.getImdbUrl
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.launchUrl
 import com.kpstv.yts.extensions.load
 import com.kpstv.yts.ui.activities.FinalActivity
+import com.kpstv.yts.ui.viewmodels.StartViewModel
 import kotlinx.android.synthetic.main.item_common_banner.view.*
 
 /** An adapter class to manage the pagination library
  */
 class CustomPagedAdapter(
-    private val context: Context,
+    private val navViewModel: StartViewModel,
     private val base: MovieBase
 ) :
     PagedListAdapter<MovieShort, CustomPagedAdapter.CustomHolder>(DIFF_CALLBACK) {
@@ -69,13 +70,13 @@ class CustomPagedAdapter(
                 holder.mainSubTextView.text =
                     "${movie.year} ${getBulletSymbol()} ${movie.runtime} mins"
                 holder.mainImdbButton.text = "imdb ${movie.rating}"
-                holder.mainImdbButton.setOnClickListener {
-                    movie.imdbCode?.let { launchUrl(context, getImdbUrl(it), IS_DARK_THEME) }
+                holder.mainImdbButton.setOnClickListener { view ->
+                    movie.imdbCode?.let { launchUrl(view.context, getImdbUrl(it), IS_DARK_THEME) }
                 }
                 holder.mainLayout.setOnClickListener {
-                    val intent = Intent(context, FinalActivity::class.java)
+                    /*val intent = Intent(context, FinalActivity::class.java)
                     intent.putExtra(MOVIE_ID, movie.movieId)
-                    context.startActivity(intent)
+                    context.startActivity(intent)*/
                 }
             }
 
@@ -93,20 +94,14 @@ class CustomPagedAdapter(
             holder.mainText.text = movie.title
 
             holder.mainCard.setOnClickListener {
-                val intent = Intent(context, FinalActivity::class.java)
                 when (base) {
                     MovieBase.YTS -> {
-                        /** Passing movie Id as Int to normally fetch the movie details.
-                         */
-                        intent.putExtra(MOVIE_ID, movie.movieId)
-                        context.startActivity(intent)
+                        navViewModel.goToDetail(ytsId = movie.movieId)
                     }
                     MovieBase.TMDB -> {
-                        /** Here we are passing movie Id as string to fetch movie
-                         *  using second route.
-                         */
-                        intent.putExtra(MOVIE_ID, "${movie.movieId}")
-                        context.startActivity(intent)
+                        /** We are passing movie_id as string for TMDB Movie so that in
+                         * Final View Model we can use the second route to get Movie Details*/
+                        navViewModel.goToDetail(tmDbId = movie.movieId.toString())
                     }
                 }
             }

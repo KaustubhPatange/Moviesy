@@ -1,24 +1,20 @@
 package com.kpstv.yts.extensions.common
 
-import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.kpstv.common_moviesy.extensions.Coroutines
-import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.databinding.ItemSuggestionBinding
 import com.kpstv.yts.extensions.MovieBase
 import com.kpstv.yts.extensions.load
-import com.kpstv.yts.ui.activities.FinalActivity
+import com.kpstv.yts.ui.viewmodels.StartViewModel
 import kotlinx.android.synthetic.main.item_common_banner.view.*
 import kotlinx.android.synthetic.main.item_suggestion.view.*
 
 class CustomAdapter(
-    private val context: Context,
+    private val navViewModel: StartViewModel,
     private val list: ArrayList<MovieShort>,
     private val base: MovieBase
 ) :
@@ -80,19 +76,14 @@ class CustomAdapter(
     }
 
     private fun launchDetailScreen(movie: MovieShort) {
-        val intent = Intent(context, FinalActivity::class.java)
         when (base) {
             MovieBase.YTS -> {
-                intent.putExtra(AppInterface.MOVIE_ID, movie.movieId)
-                context.startActivity(intent)
+               navViewModel.goToDetail(ytsId = movie.movieId)
             }
             MovieBase.TMDB -> {
-
                 /** We are passing movie_id as string for TMDB Movie so that in
                  * Final View Model we can use the second route to get Movie Details*/
-
-                intent.putExtra(AppInterface.MOVIE_ID, "${movie.movieId}")
-                context.startActivity(intent)
+                navViewModel.goToDetail(tmDbId = movie.movieId.toString())
             }
         }
     }

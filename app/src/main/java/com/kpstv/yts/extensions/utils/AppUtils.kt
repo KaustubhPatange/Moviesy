@@ -31,6 +31,7 @@ import es.dmoral.toasty.Toasty
 import java.io.*
 import java.net.HttpURLConnection
 import java.net.URL
+import kotlin.random.Random
 import kotlin.reflect.KClass
 import kotlin.system.exitProcess
 
@@ -322,6 +323,8 @@ class AppUtils {
                 }
                 .show()
         }
+
+        fun getUniqueBackStackName() = "${this::class.simpleName}_base${Random.nextInt(0, 1000)}"
 
         private val TAG = "Utils"
     }

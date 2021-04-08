@@ -15,6 +15,7 @@ class UIState2 @Inject constructor() {
 }
 
 class UIState(savedStateHandle: SavedStateHandle) {
+    val mainFragmentState = MainState(savedStateHandle)
     val watchFragmentState = WatchState(savedStateHandle)
     val libraryFragmentState = LibraryState(savedStateHandle)
     val homeFragmentState = HomeState(savedStateHandle)

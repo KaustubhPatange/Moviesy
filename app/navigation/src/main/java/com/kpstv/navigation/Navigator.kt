@@ -6,7 +6,8 @@ import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.kpstv.navigation.internals.NavigatorCircularTransform
+import com.kpstv.navigation.internals.prepareForSharedTransition
 import kotlin.reflect.KClass
 
 typealias FragClazz = KClass<out Fragment>
@@ -44,8 +45,12 @@ class Navigator(private val fm: FragmentManager, private val containerView: Fram
      *
      * See: [NavOptions]
      */
-    fun navigateTo(navOptions: NavOptions) = with(navOptions) {
-        val tagName = getFragmentTagName(clazz)
+    fun navigateTo(navOptions: NavOptions) = with(navOptions) options@ {
+        val newFragment = clazz.java.getConstructor().newInstance()
+        val tagName = if (newFragment is KeyedFragment && newFragment.backStackName != null) {
+            newFragment.backStackName
+        } else getFragmentTagName(clazz)
+
         if (transition == TransitionType.CIRCULAR) {
             val oldPayload = transitionPayload as? CircularPayload
             val payload = CircularPayload(
@@ -80,15 +85,18 @@ class Navigator(private val fm: FragmentManager, private val containerView: Fram
                 setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out)
             if (transition == TransitionType.SLIDE)
                 setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
+            if (transition == TransitionType.SHARED)
+                prepareForSharedTransition(fm, this@options)
 
             val currentFragment = fm.findFragmentByTag(tagName)
             if (currentFragment != null && currentFragment::class != clazz) {
                 // (maybe) should popUp it's childFragmentManager in this case.
                 show(currentFragment)
             } else {
+                newFragment.arguments = bundle
                 when(type) {
-                    TransactionType.REPLACE -> replace(containerView.id, clazz.java, bundle, tagName)
-                    TransactionType.ADD -> add(containerView.id, clazz.java, bundle, tagName)
+                    TransactionType.REPLACE -> replace(containerView.id, newFragment, tagName)
+                    TransactionType.ADD -> add(containerView.id, newFragment, tagName)
                 }
             }
             if (addToBackStack || innerAddToBackStack) addToBackStack(tagName)
@@ -103,19 +111,30 @@ class Navigator(private val fm: FragmentManager, private val containerView: Fram
      *
      * @return True means it is safe to [goBack].
      */
+    @Suppress("RedundantIf")
     fun canGoBack() : Boolean {
         val count = getBackStackCount()
         if (count == 0) {
             val fragment = getCurrentFragment() ?: return false
             if (fragment is NavigatorTransmitter) {
                 return fragment.getNavigator().canGoBack()
+            } else if (fragment is KeyedFragment && fragment.forceBackPress) {
+                // Special Bottom Navigation case.
+/*                val bottomImpl = containerView.getTag(R.id.bottom_nav_impl) as? BottomNavigationImpl
+                val defaultSelectionId = containerView.getTag(R.id.bottom_nav_default_selection_id) as? Int
+                if (bottomImpl != null && defaultSelectionId != null) {
+                    if (bottomImpl.bottomNav.selectedItemId == defaultSelectionId) {
+                        return true
+                    }
+                }*/
+                return true
             } else {
                 return false
             }
         } else {
             return true
         }
-    }
+     }
 
     /**
      * Remove the latest entry from [FragmentManager]'s backStack.
@@ -139,8 +158,22 @@ class Navigator(private val fm: FragmentManager, private val containerView: Fram
             return false
         }
         val currentFragment = getCurrentFragment()
+
         val shouldPopStack = if (currentFragment is KeyedFragment) {
+/*
+            // Special Bottom Navigation case
+            val bottomImpl = containerView.getTag(R.id.bottom_nav_impl) as? BottomNavigationImpl
+            val defaultSelectionId = containerView.getTag(R.id.bottom_nav_default_selection_id) as? Int
+            if (bottomImpl != null && defaultSelectionId != null) {
+                if (bottomImpl.bottomNav.selectedItemId != defaultSelectionId) {
+                    bottomImpl.bottomNav.selectedItemId = defaultSelectionId
+                    return false
+                }
+            }
+*/
+
             !currentFragment.onBackPressed()
+//            !currentFragment.onBackPressed()
            /* if (fm.backStackEntryCount == 1 && currentFragment::class.simpleName == primaryFragClass?.simpleName)
                 false // last primary fragment indicates activity to destroy
             else if (handle)
@@ -164,26 +197,19 @@ class Navigator(private val fm: FragmentManager, private val containerView: Fram
     }
 
     /**
-     * Set up navigation for [BottomNavigationView].
-     *
-     * The host must implement [NavigatorTransmitter] before setting up for Bottom navigation.
-     */
-  /*  fun install(activity: FragmentActivity, obj: BottomNavigation) {
-       // (activity.applicationContext as Application).registerActivityLifecycleCallbacks(object : ActivityLifecycle(activity))
-    }*/
-
-    /**
      * Returns the current fragment class.
      */
     fun getCurrentFragmentClass() : FragClazz? = fm.findFragmentById(containerView.id)?.let { it::class }
 
     internal fun getFragmentManager() : FragmentManager = fm
 
+    internal fun getContainerView() : FrameLayout = containerView
+
     private fun getBackStackCount() : Int = fm.backStackEntryCount
 
     private fun getCurrentFragment() = fm.findFragmentById(containerView.id)
 
-    private fun getFragmentTagName(clazz: FragClazz): String = clazz.java.simpleName + "_base"
+    private fun getFragmentTagName(clazz: FragClazz): String = clazz.java.simpleName + FRAGMENT_SUFFIX
 
     enum class TransactionType {
         REPLACE,
@@ -194,14 +220,16 @@ class Navigator(private val fm: FragmentManager, private val containerView: Fram
         NONE,
         FADE,
         SLIDE,
-        CIRCULAR
+        CIRCULAR,
+        SHARED
     }
 
     open class BottomNavigation {
         open val bottomNavigationViewId: Int = -1
         open val bottomNavigationFragments: Map<Int, FragClazz> = mapOf()
         /**
-         * Default selection will be the first Id of [bottomNavigationFragments]
+         * Default selection will be the first Id of [bottomNavigationFragments].
+         *
          */
         open val selectedBottomNavigationId: Int = -1
         open fun onBottomNavigationSelectionChanged(@IdRes selectedId: Int) {}
@@ -214,5 +242,9 @@ class Navigator(private val fm: FragmentManager, private val containerView: Fram
             fun onSelected() {}
             fun onReselected() {}
         }
+    }
+
+    companion object {
+        private const val FRAGMENT_SUFFIX = "_navigator"
     }
 }

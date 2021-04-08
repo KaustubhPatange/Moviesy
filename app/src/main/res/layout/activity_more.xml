@@ -46,9 +46,9 @@
             android:id="@+id/am_chipLayout"
             android:visibility="gone"
             android:layout_width="match_parent"
+            android:background="?colorForeground"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:background="?colorForeground"
             android:orientation="horizontal"
             tools:visibility="visible">
 

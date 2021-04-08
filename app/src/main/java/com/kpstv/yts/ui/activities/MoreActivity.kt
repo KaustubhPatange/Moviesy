@@ -45,9 +45,13 @@ import kotlinx.android.synthetic.main.item_chip.view.*
 class MoreActivity : AppCompatActivity() {
 
     companion object {
+        @Deprecated("Should not be used")
         var endPoint: String? = null
+        @Deprecated("Should not be used")
         var base: MovieBase? = null
+        @Deprecated("Should not be used")
         var queryMap: Map<String, String>? = null
+        @Deprecated("Should not be used")
         var genre: String? = null
 
         const val ARG_TITLE = "com.kpstv.yts.arg_title"
@@ -284,7 +288,7 @@ class MoreActivity : AppCompatActivity() {
         if (queryMap != null)
             Log.e(TAG, "=> Query: ${QueryConverter.fromMapToString(queryMap!!)}")
 
-        adapter = CustomPagedAdapter(this, base!!)
+        //adapter = CustomPagedAdapter(this, base!!)
 
         viewModel.itemPagedList?.observe(this, observer)
 

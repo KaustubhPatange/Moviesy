@@ -11,6 +11,7 @@ import com.kpstv.yts.AppInterface.Companion.MOVIE_FETCH_SIZE
 import com.kpstv.yts.interfaces.api.TMdbApi
 import com.kpstv.yts.interfaces.api.YTSApi
 import com.kpstv.yts.data.models.MovieShort
+import com.kpstv.yts.extensions.MovieBase
 import com.kpstv.yts.ui.viewmodels.providers.CustomDataSourceFactory
 import dagger.hilt.android.qualifiers.ApplicationContext
 
@@ -29,9 +30,8 @@ class MoreViewModel @ViewModelInject constructor(
      * Recreate the source factory. Must be called before to start
      * pagination.
      */
-    fun buildNewConfig() {
-        val sourceFactory =
-            CustomDataSourceFactory(context, tMdbApi, ytsApi)
+    fun buildNewConfig(endPoint: String? = null, base: MovieBase? = null, queryMap: Map<String, String>? = null) {
+        val sourceFactory = CustomDataSourceFactory(context, tMdbApi, ytsApi, endPoint, base, queryMap)
         liveDataSource = sourceFactory.itemLiveDataSource
 
         val config: PagedList.Config = PagedList.Config.Builder()

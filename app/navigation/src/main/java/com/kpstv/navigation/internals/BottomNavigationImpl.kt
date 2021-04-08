@@ -1,4 +1,4 @@
-package com.kpstv.navigation
+package com.kpstv.navigation.internals
 
 import android.os.Bundle
 import android.widget.FrameLayout
@@ -6,9 +6,10 @@ import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
-import androidx.fragment.app.commitNow
 import androidx.lifecycle.LifecycleCoroutineScope
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.kpstv.navigation.CommonLifecycleCallbacks
+import com.kpstv.navigation.Navigator
 
 internal class BottomNavigationImpl(
     private val fm: FragmentManager,
@@ -47,8 +48,10 @@ internal class BottomNavigationImpl(
            topSelectionId = bn.bottomNavigationFragments.keys.elementAt(selectedIndex)
        }
 
+        bottomNav.selectedItemId = topSelectionId
+
         bottomNav.setOnNavigationItemSelectedListener call@{ item ->
-            val fragment = getFragmentFromBackStack(item.itemId)
+            val fragment = getFragmentFromTag(item.itemId)
 
             if (selectedFragment === fragment) {
                 if (fragment is Navigator.BottomNavigation.Callbacks && fragment.isVisible) {
@@ -91,7 +94,7 @@ internal class BottomNavigationImpl(
             .map { it.key }.first()
     }
 
-    private fun getFragmentFromBackStack(@IdRes id: Int): Fragment {
+    private fun getFragmentFromTag(@IdRes id: Int): Fragment {
         val tag = bn.bottomNavigationFragments[id]!!.java.simpleName + FRAGMENT_SUFFIX
         return fm.findFragmentByTag(tag) ?: throw IllegalAccessException("The fragment could not be found in backstack")
     }

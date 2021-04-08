@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updateMargins
+import androidx.core.view.updatePadding
 
 fun View.invisible() {
     visibility = View.INVISIBLE
@@ -21,19 +22,27 @@ fun View.show() {
 
 fun View.enableDelayedTransition() = TransitionManager.beginDelayedTransition(this as ViewGroup)
 
-fun View.applyBottomInsets(to: View = this) {
+fun View.applyBottomInsets(to: View = this, pad: Boolean = false) {
     setOnApplyWindowInsetsListener { v, insets ->
-        to.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-            updateMargins(bottom = insets.systemWindowInsetBottom)
+        if (pad) {
+            v.updatePadding(bottom = insets.systemWindowInsetBottom)
+        } else {
+            to.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                updateMargins(bottom = insets.systemWindowInsetBottom)
+            }
         }
         insets
     }
 }
 
-fun View.applyTopInsets(to: View = this) {
+fun View.applyTopInsets(to: View = this, pad: Boolean = false) {
     setOnApplyWindowInsetsListener { v, insets ->
-        to.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-            updateMargins(top = insets.systemWindowInsetTop)
+        if (pad) {
+            v.updatePadding(top = insets.systemWindowInsetTop)
+        } else {
+            to.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                updateMargins(top = insets.systemWindowInsetTop)
+            }
         }
         insets
     }

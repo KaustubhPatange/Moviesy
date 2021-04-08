@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.kpstv.navigation.Navigator
 import com.kpstv.yts.AppInterface.Companion.handleRetrofitError
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.MovieShort
@@ -25,8 +26,11 @@ import com.kpstv.yts.extensions.MovieBase
 import com.kpstv.yts.extensions.MovieOnComplete
 import com.kpstv.yts.extensions.MoviesCallback
 import com.kpstv.yts.ui.activities.MoreActivity
+import com.kpstv.yts.ui.activities.StartActivity
+import com.kpstv.yts.ui.fragments.MoreFragment
 import com.kpstv.yts.ui.fragments.sheets.BottomSheetQuickInfo
 import com.kpstv.yts.ui.viewmodels.MainViewModel
+import com.kpstv.yts.ui.viewmodels.StartViewModel
 import kotlinx.android.synthetic.main.custom_movie_layout.view.*
 import kotlinx.coroutines.ensureActive
 
@@ -61,11 +65,13 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
         ViewModelProvider(context).get(CustomViewModel::class.java)
     else null
     private var lifecycleOwner: LifecycleOwner? = null
+    private var navViewModel: StartViewModel? = null
 
     companion object {
         /** Creating this companion object so that we can call it from
          *  other activities as well.
          */
+        @Deprecated("Use v2")
         fun invokeMoreFunction(
             context: Context,
             titleText: String,
@@ -85,6 +91,25 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
             intent.putExtra(MoreActivity.ARG_KEYS, keys)
             intent.putExtra(MoreActivity.ARG_VALUES, values)
             context.startActivity(intent)
+        }
+
+        fun invokeMoreFunction2(
+            navViewModel: StartViewModel,
+            titleText: String,
+            queryMap: Map<String, String>,
+            base: MovieBase = MovieBase.YTS
+        ) {
+            navViewModel.navigateTo(
+                screen = StartActivity.Screen.MORE,
+                transition = Navigator.TransitionType.FADE,
+                addToBackStack = true,
+                args = MoreFragment.Args(
+                    title = titleText,
+                    movieBaseString = base.toString(),
+                    keyArrayList = ArrayList(queryMap.keys),
+                    valueArrayList = ArrayList(queryMap.values)
+                )
+            )
         }
     }
 
@@ -118,12 +143,40 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
     /** This is a special callback which will fetch featured movies
      *  from YTS website.
      */
+    @Deprecated("Use v2")
     fun setupFeaturedCallbacks(
         viewModel: MainViewModel,
         onFailure: ExceptionCallback? = null
     ): Unit = with(context) {
         base = MovieBase.YTS
         mainViewModel = viewModel
+
+        val listener = MoviesCallback(
+            onFailure = { e ->
+                e.printStackTrace()
+                onFailure?.invoke(e)
+            },
+            onComplete = { movies, queryMap, isMoreAvailable ->
+                this@CustomMovieLayout.isMoreAvailable = isMoreAvailable
+                setupCallbacksNoMore(movies, queryMap, viewModel)
+            }
+        )
+
+        if (!isRestoringConfiguration())
+            viewModel.getFeaturedMovies(listener)
+    }
+
+    /** This is a special callback which will fetch featured movies
+     *  from YTS website.
+     */
+    fun setupFeaturedCallbacks2(
+        navViewModel: StartViewModel,
+        viewModel: MainViewModel,
+        onFailure: ExceptionCallback? = null
+    ): Unit = with(context) {
+        base = MovieBase.YTS
+        mainViewModel = viewModel
+        this@CustomMovieLayout.navViewModel = navViewModel
 
         val listener = MoviesCallback(
             onFailure = { e ->
@@ -159,10 +212,40 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
     }
 
     @JvmName("setupCallbacks")
+    @Deprecated("Use v2")
     fun setupCallbacks(viewModel: MainViewModel, queryMap: Map<String, String>) {
         base = MovieBase.YTS
         mainViewModel = viewModel
         this.queryMap = queryMap
+        this.navViewModel = navViewModel
+
+        val listener = MoviesCallback(
+            onFailure = { e ->
+                handleRetrofitError(context, e)
+                e.printStackTrace()
+            },
+            onComplete = { movies, map, isMoreAvailable ->
+                this@CustomMovieLayout.isMoreAvailable = isMoreAvailable
+                models = movies
+                setupRecyclerView(models, viewModel)
+                if (isMoreAvailable)
+                    setupMoreButton(map)
+                else hideMoreCallbacks()
+            }
+        )
+
+        /** Restoring previous items from recyclerView */
+        if (!isRestoringConfiguration()) {
+            viewModel.getYTSQuery(listener, queryMap)
+        }
+    }
+
+    @JvmName("setupCallbacks2")
+    fun setupCallbacks2(viewModel: MainViewModel, navViewModel: StartViewModel, queryMap: Map<String, String>) {
+        base = MovieBase.YTS
+        mainViewModel = viewModel
+        this.queryMap = queryMap
+        this.navViewModel = navViewModel
 
         val listener = MoviesCallback(
             onFailure = { e ->
@@ -218,8 +301,8 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
          */
 
         val listener = View.OnClickListener {
-            invokeMoreFunction(
-                context,
+            invokeMoreFunction2(
+                navViewModel!!,
                 view.cm_text.text.toString(),
                 queryMap
             )
@@ -229,6 +312,7 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
         clickableLayout.setOnClickListener(listener)
     }
 
+    @Deprecated("Use v2")
     @JvmName("setupCallbacks1")
     fun setupCallbacks(list: ArrayList<TmDbMovie>, endPointUrl: String, isMore: Boolean) {
         base = MovieBase.TMDB
@@ -244,7 +328,37 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
         } else hideMoreCallbacks()
     }
 
+    @JvmName("setupCallbacks21")
+    fun setupCallbacks(navViewModel: StartViewModel, list: ArrayList<TmDbMovie>, endPointUrl: String, isMore: Boolean) {
+        this.navViewModel = navViewModel
+        base = MovieBase.TMDB
+        models = ArrayList()
+        list.forEach {
+            if (it.release_date?.contains("-") == true) {
+                models.add(MovieShort.from(it))
+            }
+        }
+        setupRecyclerView(models)
+        if (isMore) {
+            setupMoreButton(endPointUrl)
+        } else hideMoreCallbacks()
+    }
+
+    @Deprecated("Use v2")
     fun setupCallbacks(title: String, list: List<Model.response_cast_movie.Cast>) {
+        base = MovieBase.TMDB
+        models = ArrayList()
+        list.forEach { cast ->
+            models.add(MovieShort.from(cast))
+        }
+        models.removeAll { it.title == title }
+        setupRecyclerView(models)
+
+        hideMoreCallbacks()
+    }
+
+    fun setupCallbacks2(navViewModel: StartViewModel, title: String, list: List<Model.response_cast_movie.Cast>) {
+        this.navViewModel = navViewModel
         base = MovieBase.TMDB
         models = ArrayList()
         list.forEach { cast ->
@@ -259,21 +373,27 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
     /** Usually for TMDB movies */
     private fun setupMoreButton(endPointUrl: String) {
         val listener = View.OnClickListener {
-            val intent = Intent(context, MoreActivity::class.java)
-            intent.putExtra(MoreActivity.ARG_TITLE, view.cm_text.text.toString())
-            intent.putExtra(MoreActivity.ARG_ENDPOINT, endPointUrl)
-            intent.putExtra(MoreActivity.ARG_BASE_VALUE, base.toString())
-            context.startActivity(intent)
+            navViewModel?.navigateTo(
+                screen = StartActivity.Screen.MORE,
+                addToBackStack = true,
+                args = MoreFragment.Args(
+                    title = view.cm_text.text.toString(),
+                    endPoint = endPointUrl,
+                    movieBaseString = base.toString()
+                ),
+                transition = Navigator.TransitionType.FADE
+            )
         }
 
         moreButton.setOnClickListener(listener)
         clickableLayout.setOnClickListener(listener)
     }
 
+    // TODO: Set the bottom sheet that depends on activity.
     private fun setupRecyclerView(list: ArrayList<MovieShort>, viewModel: MainViewModel? = null) {
         view.shimmerEffect.hideShimmer()
         view.shimmerEffect.visibility = View.GONE
-        val adapter = CustomAdapter(context, list, base)
+        val adapter = CustomAdapter(navViewModel!!, list, base)
 
         if (viewModel != null && context is Activity)
             adapter.setOnLongListener = { movieShort, _ ->

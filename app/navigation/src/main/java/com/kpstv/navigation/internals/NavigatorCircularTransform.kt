@@ -1,4 +1,4 @@
-package com.kpstv.navigation
+package com.kpstv.navigation.internals
 
 import android.graphics.Rect
 import android.os.Bundle
@@ -6,10 +6,12 @@ import android.view.*
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.core.animation.addListener
-import androidx.core.view.doOnLayout
 import androidx.core.view.drawToBitmap
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.kpstv.navigation.CircularPayload
+import com.kpstv.navigation.R
+import com.kpstv.navigation.doOnLaidOut
 import kotlin.math.hypot
 
 internal class NavigatorCircularTransform(

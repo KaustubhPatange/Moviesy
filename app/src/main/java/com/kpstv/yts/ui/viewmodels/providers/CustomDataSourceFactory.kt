@@ -9,14 +9,14 @@ import com.kpstv.yts.extensions.MovieBase
 import com.kpstv.yts.interfaces.api.TMdbApi
 import com.kpstv.yts.interfaces.api.YTSApi
 import com.kpstv.yts.data.models.MovieShort
-import com.kpstv.yts.ui.activities.MoreActivity.Companion.base
-import com.kpstv.yts.ui.activities.MoreActivity.Companion.endPoint
-import com.kpstv.yts.ui.activities.MoreActivity.Companion.queryMap
 
 class CustomDataSourceFactory(
     private val context: Context,
     private val tMdbApi: TMdbApi,
-    private val ytsApi: YTSApi
+    private val ytsApi: YTSApi,
+    private val endPoint: String? = null,
+    private val base: MovieBase? = null,
+    private val queryMap: Map<String, String>? = null
 ): DataSource.Factory<Int,MovieShort>() {
 
     val itemLiveDataSource: MutableLiveData<PageKeyedDataSource<Int, MovieShort>> = MutableLiveData()

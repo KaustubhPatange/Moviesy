@@ -104,7 +104,7 @@ class AppInterface {
         val HistoryDateFormatter = SimpleDateFormat("yyyyMMddHHmmss")
 
         private var isSSLDialogActive = false
-        @SuppressLint("Range")
+        @SuppressLint("Range") // TODO: Use something like snackbar
         fun handleRetrofitError(context: Context, t: Exception?) {
             var message = "Site is not responding. Try to change proxy from settings."
             if (t?.message == null) {

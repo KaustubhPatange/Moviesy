@@ -9,12 +9,14 @@
     <com.kpstv.yts.extensions.views.ExtendedAppBarLayout
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="?colorForeground">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
+            android:elevation="3dp"
             app:layout_scrollFlags="scroll|snap|enterAlways"
             app:navigationIcon="@drawable/ic_menu" />
     </com.kpstv.yts.extensions.views.ExtendedAppBarLayout>

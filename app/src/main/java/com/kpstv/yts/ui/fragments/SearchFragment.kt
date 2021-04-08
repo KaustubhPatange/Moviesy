@@ -1,89 +1,89 @@
-package com.kpstv.yts.ui.activities
+package com.kpstv.yts.ui.fragments
 
 import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.kpstv.common_moviesy.extensions.enableDelayedTransition
-import com.kpstv.common_moviesy.extensions.hide
-import com.kpstv.common_moviesy.extensions.show
+import com.kpstv.common_moviesy.extensions.*
 import com.kpstv.common_moviesy.extensions.utils.KeyboardUtils
-import com.kpstv.common_moviesy.extensions.viewBinding
+import com.kpstv.navigation.KeyedFragment
+import com.kpstv.navigation.SharedPayload
 import com.kpstv.yts.AppInterface
-import com.kpstv.yts.AppInterface.Companion.setAppThemeNoAction
 import com.kpstv.yts.R
 import com.kpstv.yts.adapters.CustomPagedAdapter
 import com.kpstv.yts.adapters.HistoryModel
 import com.kpstv.yts.adapters.SearchAdapter
-import com.kpstv.yts.data.CustomDataSource.Companion.INITIAL_QUERY_FETCHED
+import com.kpstv.yts.data.CustomDataSource
 import com.kpstv.yts.data.converters.QueryConverter
 import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.data.models.Result
 import com.kpstv.yts.databinding.ActivitySearchBinding
-import com.kpstv.yts.extensions.*
+import com.kpstv.yts.extensions.MovieBase
+import com.kpstv.yts.extensions.SuggestionCallback
+import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.extensions.common.CustomMovieLayout
+import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.RetrofitUtils
-import com.kpstv.yts.ui.activities.MoreActivity.Companion.base
-import com.kpstv.yts.ui.activities.MoreActivity.Companion.queryMap
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import com.kpstv.yts.ui.helpers.AdaptiveSearchHelper
 import com.kpstv.yts.ui.viewmodels.FinalViewModel
 import com.kpstv.yts.ui.viewmodels.MoreViewModel
 import com.kpstv.yts.ui.viewmodels.SearchViewModel
+import com.kpstv.yts.ui.viewmodels.StartViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
 
+// As it is implementation from the old model.
+
 @FlowPreview
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class SearchActivity : AppCompatActivity() {
-
+class SearchFragment : KeyedFragment(R.layout.activity_search) {
+    private val binding by viewBinding(ActivitySearchBinding::bind)
     private val moreViewModel by viewModels<MoreViewModel>()
     private val finalViewModel by viewModels<FinalViewModel>()
     private val searchViewModel by viewModels<SearchViewModel>()
+    private val navViewModel by activityViewModels<StartViewModel>()
 
-    private val binding by viewBinding(ActivitySearchBinding::inflate)
-
-    @Inject
-    lateinit var retrofitUtils: RetrofitUtils
-
-    private val TAG = "SearchActivity"
+    @Inject lateinit var retrofitUtils: RetrofitUtils
 
     private lateinit var suggestionAdapter: SearchAdapter
-
     private val suggestionModels = ArrayList<HistoryModel>()
     private var isSearchClicked = false
     private lateinit var adapter: CustomPagedAdapter
     private var updateHandler = Handler()
-    private var gridLayoutManager = GridLayoutManager(this, 3)
-    private var linearLayoutManager = LinearLayoutManager(this)
 
+    private val TAG = javaClass.simpleName
+
+    private val gridLayoutManager by lazy { GridLayoutManager(requireContext(), 3) } // Calculate it somehow
+    private val linearLayoutManager by lazy { LinearLayoutManager(requireContext()) } // Calculate it somehow
     private val adaptiveSearchHelper by lazy {
-        AdaptiveSearchHelper(this)
+        AdaptiveSearchHelper(requireContext(), viewLifecycleOwner)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setAppThemeNoAction(this)
-        setContentView(binding.root)
+    companion object {
+        fun createSharedPayload(fromView: View) = SharedPayload(
+            mapOf(fromView to R.id.appbarLayout)
+        )
+    }
 
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        title = " "
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setToolbar()
         binding.swipeRefreshLayout.isEnabled = false
 
         /** Hiding noMovieFound layout & initializing adaptive search
@@ -93,9 +93,9 @@ class SearchActivity : AppCompatActivity() {
 
         /** Setting suggestion RecyclerView and adapter with empty models
          */
-        binding.suggestionRecyclerView.layoutManager = LinearLayoutManager(this)
+        binding.suggestionRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         suggestionAdapter = SearchAdapter(
-            context = this,
+            context = requireContext(),
             list = suggestionModels,
             onClick = { model, _ ->
                 updateQuery(model.query)
@@ -137,6 +137,71 @@ class SearchActivity : AppCompatActivity() {
         binding.itemClose.hide()
     }
 
+    private fun setToolbar() {
+        binding.appbarLayout.applyTopInsets()
+        binding.toolbar.title = " "
+        binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
+        binding.toolbar.setNavigationOnClickListener { goBack() }
+    }
+
+    /** This will update the recyclerView following certain events as well.
+     */
+    private fun updateQuery(text: String) {
+        Log.e(TAG, "Updating: $text")
+
+        if (text.isEmpty()) {
+            Toasty.error(requireContext(), getString(R.string.empty_query)).show()
+            return
+        }
+
+        binding.activitySearchSingle.root.enableDelayedTransition()
+
+        /** Saving raw query to history */
+        searchViewModel.addToHistory(text)
+
+        /** Get the adaptive query */
+        val searchQuery = if (AppInterface.IS_ADAPTIVE_SEARCH)
+            adaptiveSearchHelper.querySearch(text)
+        else text
+
+        /** We need to recreate pagination list */
+        val queryMap = YTSQuery.ListMoviesBuilder().apply {
+            setQuery(text)
+        }.build()
+        moreViewModel.buildNewConfig(base = MovieBase.YTS, queryMap = queryMap)
+
+        /** Hiding noMovieFound layout if visible
+         */
+        binding.activitySearchSingle.layoutNoMovieFound.hide()
+
+        /** Setting this boolean true because search was clicked */
+        isSearchClicked = true
+
+        binding.searchEditText.clearFocus()
+
+        /** Autocomplete text in search EditText */
+        binding.searchEditText.setText(searchQuery)
+
+        /** Hide the keyboard after search was clicked */
+        KeyboardUtils.hideKeyboard(requireContext())
+
+        removeSuggestionRecyclerView()
+
+        setupRecyclerView()
+    }
+
+    /** Instead of removing recyclerView we are clearing it's item models
+     *  and notifying the adapter to display empty list.
+     *
+     *  We are also hiding the suggestionLayout (Relative layout) which owns
+     *  suggestion RecyclerView.
+     */
+    private fun removeSuggestionRecyclerView() {
+        suggestionModels.clear()
+        suggestionAdapter.notifyDataSetChanged()
+        binding.suggestionLayout.hide()
+    }
+
     /** This will setup final RecyclerView which will show all query.
      *
      *  Remember we've two types of handling searches.
@@ -154,18 +219,9 @@ class SearchActivity : AppCompatActivity() {
          */
         binding.activitySearchSingle.addLayout.removeAllViews()
 
-        /** Setting up static queryMap and base of MoreActivity.
-         */
-        queryMap = YTSQuery.ListMoviesBuilder().apply {
-            setQuery(binding.searchEditText.text.toString())
-        }.build()
-        base = MovieBase.YTS
+        adapter = CustomPagedAdapter(navViewModel, MovieBase.YTS)
 
-        Log.e(TAG, "=> Query: ${QueryConverter.fromMapToString(queryMap!!)}")
-
-        //adapter = CustomPagedAdapter(this, MovieBase.YTS)
-
-        moreViewModel.itemPagedList?.observe(this, observer)
+        moreViewModel.itemPagedList?.observe(viewLifecycleOwner, observer)
 
         /** Setting layout manager as grid layout at first we will update it
          *  to linear layout manager if there is only single match.
@@ -177,9 +233,7 @@ class SearchActivity : AppCompatActivity() {
         updateHandler.postDelayed(updateTask, 1000)
     }
 
-    /** This will be observing the live-data coming from DataSource.
-     */
-    private val observer = Observer<PagedList<MovieShort>?> {
+    private val observer = Observer<PagedList<MovieShort>> {
         Log.e(TAG, "=> Called submit list")
         adapter.submitList(it)
     }
@@ -195,7 +249,7 @@ class SearchActivity : AppCompatActivity() {
                     /** A hack used to know if there are no results found
                      *  and certainly displaying noMovieFound layout.
                      */
-                    if (INITIAL_QUERY_FETCHED) {
+                    if (CustomDataSource.INITIAL_QUERY_FETCHED) {
                         binding.swipeRefreshLayout.isRefreshing = false
                         binding.activitySearchSingle.layoutNoMovieFound.show()
                     } else
@@ -213,8 +267,7 @@ class SearchActivity : AppCompatActivity() {
                      *  @see CustomPagedAdapter
                      */
                     if (adapter.itemCount == 1) {
-                        binding.activitySearchSingle.recyclerView.layoutManager =
-                            linearLayoutManager
+                        binding.activitySearchSingle.recyclerView.layoutManager = linearLayoutManager
                     }
 
                     if (adapter.itemCount <= 10) {
@@ -224,13 +277,10 @@ class SearchActivity : AppCompatActivity() {
                         adapter.currentList?.get(0)?.imdbCode?.let { imdbCode ->
                             finalViewModel.getSuggestions(imdbCode, SuggestionCallback(
                                 onComplete = { movies, tag, isMoreAvailable ->
-                                    val layout =
-                                        CustomMovieLayout(
-                                            this@SearchActivity,
-                                            "Suggested"
-                                        )
+                                    val layout = CustomMovieLayout(requireContext(),"Suggested")
                                     layout.injectViewAt(binding.activitySearchSingle.addLayout)
                                     layout.setupCallbacks(
+                                        navViewModel,
                                         movies,
                                         "${imdbCode}/similar",
                                         isMoreAvailable
@@ -241,79 +291,25 @@ class SearchActivity : AppCompatActivity() {
                     }
                 }
             } catch (e: Exception) {
-                Toasty.error(applicationContext, "Error: ${e.message}").show()
+                e.printStackTrace()
+                Toasty.error(requireContext(), "Error: ${e.message}").show()
             }
         }
     }
 
-    /** This will update the recyclerView following certain events as well.
+    /** Method will show an alert dialog to delete the history item.
      */
-    private fun updateQuery(text: String) {
-        Log.e(TAG, "Updating: $text")
-
-        if (text.isEmpty()) {
-            Toasty.error(this, getString(R.string.empty_query)).show()
-            return
-        }
-
-        binding.activitySearchSingle.root.enableDelayedTransition()
-
-        /** Saving raw query to history */
-        searchViewModel.addToHistory(text)
-
-        /** Get the adaptive query */
-        val searchQuery = if (AppInterface.IS_ADAPTIVE_SEARCH)
-            adaptiveSearchHelper.querySearch(text)
-        else text
-
-        /** We need to recreate pagination list */
-        moreViewModel.buildNewConfig(base = base, queryMap = queryMap)
-
-        /** Hiding noMovieFound layout if visible
-         */
-        binding.activitySearchSingle.layoutNoMovieFound.hide()
-
-        /** Setting this boolean true because search was clicked */
-        isSearchClicked = true
-
-        binding.searchEditText.clearFocus()
-
-        /** Autocomplete text in search EditText */
-        binding.searchEditText.setText(searchQuery)
-
-        /** Hide the keyboard after search was clicked */
-        KeyboardUtils.hideKeyboard(this)
-
-        removeSuggestionRecyclerView()
-
-        setupRecyclerView()
-    }
-
-    /** This will be used to observe suggestions and based on [Result]
-     *  suggestions are updated and shown.
-     */
-    private fun setSuggestionObservable() {
-        searchViewModel.searchResults.observe(this, Observer { result ->
-            suggestionModels.clear()
-            Log.e(TAG, "Emitting result $result")
-            when (result) {
-                is Result.Empty -> {
-                    Log.e(TAG, "No previous search history")
-                    removeSuggestionRecyclerView()
-                }
-                is Result.Success -> {
-                    if (!isSearchClicked) {
-                        suggestionModels.addAll(result.data)
-                        if (suggestionModels.isNotEmpty())
-                            binding.suggestionLayout.show()
-
-                        suggestionAdapter.notifyDataSetChanged()
-                    }
-                }
-                else -> { }
+    private fun showAlertAndDelete(model: HistoryModel, pos: Int) {
+        AlertNoIconDialog.Companion.Builder(requireContext())
+            .setTitle(model.query)
+            .setMessage(getString(R.string.remove_history))
+            .setPositiveButton(getString(R.string.remove)) {
+                searchViewModel.deleteFromHistory(model.query)
+                suggestionModels.removeAt(pos)
+                suggestionAdapter.notifyDataSetChanged()
             }
-            isSearchClicked = false
-        })
+            .setNegativeButton(getString(R.string.cancel)) { }
+            .show()
     }
 
     /** Whenever user press search button on keyboard we will updateQuery
@@ -342,31 +338,31 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    /** Instead of removing recyclerView we are clearing it's item models
-     *  and notifying the adapter to display empty list.
-     *
-     *  We are also hiding the suggestionLayout (Relative layout) which owns
-     *  suggestion RecyclerView.
+    /** This will be used to observe suggestions and based on [Result]
+     *  suggestions are updated and shown.
      */
-    private fun removeSuggestionRecyclerView() {
-        suggestionModels.clear()
-        suggestionAdapter.notifyDataSetChanged()
-        binding.suggestionLayout.hide()
-    }
+    private fun setSuggestionObservable() {
+        searchViewModel.searchResults.observe(viewLifecycleOwner, Observer { result ->
+            suggestionModels.clear()
+            Log.e(TAG, "Emitting result $result")
+            when (result) {
+                is Result.Empty -> {
+                    Log.e(TAG, "No previous search history")
+                    removeSuggestionRecyclerView()
+                }
+                is Result.Success -> {
+                    if (!isSearchClicked) {
+                        suggestionModels.addAll(result.data)
+                        if (suggestionModels.isNotEmpty())
+                            binding.suggestionLayout.show()
 
-    /** Method will show an alert dialog to delete the history item.
-     */
-    private fun showAlertAndDelete(model: HistoryModel, pos: Int) {
-        AlertNoIconDialog.Companion.Builder(this)
-            .setTitle(model.query)
-            .setMessage(getString(R.string.remove_history))
-            .setPositiveButton(getString(R.string.remove)) {
-                searchViewModel.deleteFromHistory(model.query)
-                suggestionModels.removeAt(pos)
-                suggestionAdapter.notifyDataSetChanged()
+                        suggestionAdapter.notifyDataSetChanged()
+                    }
+                }
+                else -> { }
             }
-            .setNegativeButton(getString(R.string.cancel)) { }
-            .show()
+            isSearchClicked = false
+        })
     }
 
     /** For some reasons close Button was hiding once it lost its focus from
@@ -379,21 +375,18 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
-        return true
-    }
-
-    override fun onBackPressed() {
-        if (binding.suggestionLayout.isVisible) {
+    override fun onBackPressed(): Boolean {
+        return if (binding.suggestionLayout.isVisible) {
             binding.suggestionLayout.hide()
-            KeyboardUtils.hideKeyboard(this)
+            KeyboardUtils.hideKeyboard(requireContext())
+            true
         } else
             super.onBackPressed()
     }
 
-    override fun onDestroy() {
+    override fun onDestroyView() {
+        moreViewModel.itemPagedList?.removeObserver(observer)
         updateHandler.removeCallbacks(updateTask)
-        super.onDestroy()
+        super.onDestroyView()
     }
 }

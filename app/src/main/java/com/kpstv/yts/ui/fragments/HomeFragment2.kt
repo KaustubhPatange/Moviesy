@@ -1,9 +1,9 @@
 package com.kpstv.yts.ui.fragments
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.google.android.material.tabs.TabLayout
 import com.kpstv.common_moviesy.extensions.applyTopInsets
@@ -13,8 +13,8 @@ import com.kpstv.yts.R
 import com.kpstv.yts.databinding.FragmentHomeBinding
 import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.extensions.common.CustomMovieLayout
-import com.kpstv.yts.ui.activities.SearchActivity
 import com.kpstv.yts.ui.viewmodels.MainViewModel
+import com.kpstv.yts.ui.viewmodels.StartViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -24,6 +24,7 @@ class HomeFragment2 : Fragment(R.layout.fragment_home), TabLayout.OnTabSelectedL
     private val viewModel by viewModels<MainViewModel>(
         ownerProducer = ::requireParentFragment
     )
+    private val navViewModel by activityViewModels<StartViewModel>()
 
     interface Callbacks {
         fun doOnReselection() { }
@@ -40,14 +41,13 @@ class HomeFragment2 : Fragment(R.layout.fragment_home), TabLayout.OnTabSelectedL
                 caller.openDrawer()
             }
             searchCard.setOnClickListener {
-                val intent = Intent(requireContext(), SearchActivity::class.java) // TODO: Create a search fragment as well.
-                startActivity(intent)
+                navViewModel.goToSearch(SearchFragment.createSharedPayload(it))
             }
             tvFilter.setOnClickListener {
                 val queryMap = YTSQuery.ListMoviesBuilder.getDefault().apply {
                     setQuality(YTSQuery.Quality.q2160p)
                 }.build()
-                CustomMovieLayout.invokeMoreFunction(requireContext(), getString(R.string.search_filters), queryMap)
+                CustomMovieLayout.invokeMoreFunction2(navViewModel, getString(R.string.search_filters), queryMap)
             }
             tabLayout.addOnTabSelectedListener(this@HomeFragment2)
         }
@@ -96,10 +96,8 @@ class HomeFragment2 : Fragment(R.layout.fragment_home), TabLayout.OnTabSelectedL
     override fun onStop() {
         super.onStop()
         // Save UI state
-        viewModel.uiState.homeFragmentState.isAppBarExpanded =
-            binding.appBarLayout.isAppBarExpanded
-        viewModel.uiState.homeFragmentState.tabPosition =
-            binding.tabLayout.selectedTabPosition
+        viewModel.uiState.homeFragmentState.isAppBarExpanded = binding.appBarLayout.isAppBarExpanded
+        viewModel.uiState.homeFragmentState.tabPosition = binding.tabLayout.selectedTabPosition
     }
 
     companion object {
