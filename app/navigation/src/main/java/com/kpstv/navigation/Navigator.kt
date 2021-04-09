@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
 import com.kpstv.navigation.internals.NavigatorCircularTransform
+import com.kpstv.navigation.internals.doOnLaidOut
 import com.kpstv.navigation.internals.prepareForSharedTransition
 import kotlin.reflect.KClass
 

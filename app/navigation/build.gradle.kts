@@ -41,7 +41,6 @@ android {
 
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-    implementation(project(ModuleDependency.COMMON))
     implementation(LibraryDependency.KOTLIN_STDLIB)
     implementation(LibraryDependency.CORE_KTX)
     implementation(LibraryDependency.APP_COMPAT)

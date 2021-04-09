@@ -18,6 +18,7 @@ import com.kpstv.yts.ui.activities.SearchActivity
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
+@Deprecated("Use v2")
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home), TabLayout.OnTabSelectedListener,
     AbstractBottomNavActivity.BottomNavFragmentSelection {
@@ -50,7 +51,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), TabLayout.OnTabSelectedLi
             val queryMap = YTSQuery.ListMoviesBuilder.getDefault().apply {
                 setQuality(YTSQuery.Quality.q2160p)
             }.build()
-            CustomMovieLayout.invokeMoreFunction(requireContext(), getString(R.string.search_filters), queryMap)
+//            CustomMovieLayout.invokeMoreFunction(requireContext(), getString(R.string.search_filters), queryMap)
         }
 
         binding.tabLayout.addOnTabSelectedListener(this)

@@ -154,8 +154,7 @@ class CustomDataSource(
                     MovieBase.TMDB -> {
                         val response = executeTMdbQuery(params.key)
                         response?.let {
-                            val key =
-                                if (response.page != response.total_pages) params.key + 1 else null
+                            val key = if (response.page != response.total_pages && response.total_pages < 130) params.key + 1 else null
                             callback.onResult(createMovieShort(it.results), key)
                         }
                     }

@@ -8,8 +8,8 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.Log
-import android.view.Menu
 import android.view.View
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -58,7 +58,7 @@ class DetailFragment : KeyedFragment(R.layout.activity_final), MovieListener {
     private val binding by viewBinding(ActivityFinalBinding::bind)
     private val viewModel by viewModels<FinalViewModel>()
     private val navViewModel by activityViewModels<StartViewModel>()
-    private lateinit var movie: Movie
+    private lateinit var movieDetail: Movie
     private lateinit var genreAdapter: GenreAdapter
     private lateinit var player: YouTubePlayer
     private var youTubePlayerCurrentPosition: Float = 0f
@@ -91,7 +91,7 @@ class DetailFragment : KeyedFragment(R.layout.activity_final), MovieListener {
                 viewModel.fetchMovieUrl(this, args.movieUrl)
             }
             else -> {
-                AppUtils.CafebarToast(requireActivity(), getString(R.string.invalid_movieId))
+                Toasty.error(requireContext(), getString(R.string.invalid_movieId)).show()
             }
         }
     }
@@ -103,19 +103,19 @@ class DetailFragment : KeyedFragment(R.layout.activity_final), MovieListener {
     }
 
     override fun onFailure(e: Exception) {
-        AppInterface.handleRetrofitError(requireActivity(), e)
+        AppInterface.handleRetrofitError(requireContext(), e)
         e.printStackTrace()
         Log.e(TAG, "Failed--> " + e.message)
     }
 
     override fun onCastFetched(casts: List<Cast>, crews: List<Crew>) {
-        this.movie.cast = casts
-        this.movie.crew = crews
+        this.movieDetail.cast = casts
+        this.movieDetail.crew = crews
         setSummary()
     }
 
     override fun onComplete(movie: Movie) {
-        this.movie = movie
+        this.movieDetail = movie
         binding.root.enableDelayedTransition()
         setMovieMenu()
         loadData()
@@ -124,22 +124,24 @@ class DetailFragment : KeyedFragment(R.layout.activity_final), MovieListener {
         loadRecommendation()
         loadCastMovies()
         setContentButtons()
-        binding.swipeRefreshLayout.isRefreshing = false
+        binding.root.doOnPreDraw {
+            binding.swipeRefreshLayout.isRefreshing = false
+        }
     }
 
     private fun setSummary(): Unit = with(binding.activityFinalContent) {
         val color = CommonUtils.getColorFromAttr(requireActivity(), R.attr.colorText)
 
-        afSummary.text = "${movie.description_full}\n\n"
+        afSummary.text = "${movieDetail.description_full}\n\n"
 
         /** YTS sometimes doesn't add cast to its movie so we are checking it */
 
-        if (movie.cast?.isNotEmpty() == true) {
+        if (movieDetail.cast?.isNotEmpty() == true) {
             val builder = StringBuilder()
-            for (i in 0 until movie.cast?.size!! - 1) {
-                builder.append(movie.cast?.get(i)?.name).append("  &#8226;  ")
+            for (i in 0 until movieDetail.cast?.size!! - 1) {
+                builder.append(movieDetail.cast?.get(i)?.name).append("  &#8226;  ")
             }
-            builder.append(movie.cast?.get(movie.cast?.size!! - 1)?.name)
+            builder.append(movieDetail.cast?.get(movieDetail.cast?.size!! - 1)?.name)
 
             /** If cast not empty add details it to summary */
             afSummary.append(
@@ -153,7 +155,7 @@ class DetailFragment : KeyedFragment(R.layout.activity_final), MovieListener {
 
         /** Injecting director info */
 
-        val crews = movie.crew
+        val crews = movieDetail.crew
         if (crews?.isNotEmpty() == true) {
             val directors = crews.joinToString(separator = "  &#8226;  ") { it.name }
             afSummary.append(
@@ -171,7 +173,7 @@ class DetailFragment : KeyedFragment(R.layout.activity_final), MovieListener {
                 color
             )
         )
-        afSummary.append(" ${movie.runtime} mins")
+        afSummary.append(" ${movieDetail.runtime} mins")
 
         /** Following code is optimized for handling,
          *  1. Auto resizing the textView when this button is clicked.
@@ -198,7 +200,7 @@ class DetailFragment : KeyedFragment(R.layout.activity_final), MovieListener {
      *  to the menu item based on if Favourite exist or not.
      */
     private fun setMovieMenu() {
-        viewModel.isMovieFavourite(movie.id).observe(this, Observer { value ->
+        viewModel.isMovieFavourite(movieDetail.id).observe(this, Observer { value ->
             if (value) {
                 binding.toolbar.menu?.getItem(0)?.icon =
                     drawableFrom(R.drawable.ic_favorite_yes).apply {
@@ -214,22 +216,22 @@ class DetailFragment : KeyedFragment(R.layout.activity_final), MovieListener {
 
     private fun loadData() {
         /** Set top data */
-        binding.activityFinalContent.afTitle.text = movie.title
+        binding.activityFinalContent.afTitle.text = movieDetail.title
         binding.activityFinalContent.afSubtitle.text =
-            "${LangCodeUtils.parse(movie.language)} ${AppUtils.getBulletSymbol()} ${movie.year}"
-        binding.activityFinalContent.afImdbButton.text = "imdb ${movie.rating}"
+            "${LangCodeUtils.parse(movieDetail.language)} ${AppUtils.getBulletSymbol()} ${movieDetail.year}"
+        binding.activityFinalContent.afImdbButton.text = "imdb ${movieDetail.rating}"
         binding.activityFinalContent.afImdbButton.setOnClickListener {
-            AppUtils.launchUrl(requireContext(), AppUtils.getImdbUrl(movie.imdb_code))
+            AppUtils.launchUrl(requireContext(), AppUtils.getImdbUrl(movieDetail.imdb_code))
         }
         binding.activityFinalContent.afPgButton.text =
-            if (movie.mpa_rating.isEmpty()) "R" else movie.mpa_rating
+            if (movieDetail.mpa_rating.isEmpty()) "R" else movieDetail.mpa_rating
 
         setSummary()
 
         /** Set recyclerview data */
         binding.activityFinalContent.recyclerViewGenre.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        genreAdapter = GenreAdapter(movie.genres)
+        genreAdapter = GenreAdapter(movieDetail.genres)
         genreAdapter.setOnClickListener(object : GenreAdapter.OnClickListener {
             override fun onClick(text: String, position: Int) {
                 val genre = GenreEnumConverter.toGenrefromString(text)
@@ -238,11 +240,7 @@ class DetailFragment : KeyedFragment(R.layout.activity_final), MovieListener {
                         setGenre(genre)
                         setOrderBy(YTSQuery.OrderBy.descending)
                     }.build()
-                    CustomMovieLayout.invokeMoreFunction2(
-                        navViewModel,
-                        "Based on $text",
-                        queryMap
-                    )
+                    navViewModel.goToMore("${getString(R.string.genre_select)} $text", queryMap, add = true)
                 } else Toasty.error(requireContext(), "Genre $text does not exist").show()
             }
         })
@@ -252,7 +250,7 @@ class DetailFragment : KeyedFragment(R.layout.activity_final), MovieListener {
     }
 
     private fun setPreviews() {
-        GlideApp.with(requireView()).asBitmap().load(movie.background_image)
+        GlideApp.with(requireView()).asBitmap().load(movieDetail.background_image)
             .into(object : CustomTarget<Bitmap>() {
                 override fun onLoadCleared(placeholder: Drawable?) {}
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
@@ -262,7 +260,7 @@ class DetailFragment : KeyedFragment(R.layout.activity_final), MovieListener {
                     binding.activityFinalPreviews.afYtPreviewImage.setOnClickListener {
                         Log.e(TAG, "OnClicked")
                         if (::player.isInitialized) {
-                            player.loadVideo(movie.yt_trailer_id, 0f)
+                            player.loadVideo(movieDetail.yt_trailer_id, 0f)
                             binding.activityFinalPreviews.youtubePlayerView.show()
                         } else {
                             binding.activityFinalPreviews.afYtPreviewPlay.hide()
@@ -274,7 +272,7 @@ class DetailFragment : KeyedFragment(R.layout.activity_final), MovieListener {
                 }
             })
 
-        GlideApp.with(requireView()).asBitmap().load(movie.medium_cover_image)
+        GlideApp.with(requireView()).asBitmap().load(movieDetail.medium_cover_image)
             .into(object : CustomTarget<Bitmap>() {
                 override fun onLoadCleared(placeholder: Drawable?) {}
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
@@ -284,7 +282,7 @@ class DetailFragment : KeyedFragment(R.layout.activity_final), MovieListener {
                     binding.activityFinalPreviews.afYtBannerImage.visibility = View.VISIBLE
                     binding.activityFinalPreviews.afYtBannerImage.setOnClickListener {
                         val intent = Intent(requireContext(), ImageViewActivity::class.java) // TODO: Migrate to ImageFragment
-                        intent.putExtra(ImageViewActivity.IMAGE_URL, movie.large_cover_image)
+                        intent.putExtra(ImageViewActivity.IMAGE_URL, movieDetail.large_cover_image)
                         val options = ActivityOptions
                             .makeSceneTransitionAnimation(
                                 requireActivity(),
@@ -303,6 +301,10 @@ class DetailFragment : KeyedFragment(R.layout.activity_final), MovieListener {
             onComplete = { movies, tag, isMoreAvailable ->
                 val recommendLayout = CustomMovieLayout(requireContext(), getString(R.string.recommend))
                 recommendLayout.injectViewAt(binding.afSuggestionAddLayout)
+                recommendLayout.listenForClicks { view, movie ->
+                    view.scaleInOut()
+                    navViewModel.goToDetail(tmDbId = movie.movieId?.toString(), add = true)
+                }
                 recommendLayout.setupCallbacks(navViewModel, movies, "$tag/recommendations", isMoreAvailable)
             },
             onFailure = { e ->
@@ -310,7 +312,7 @@ class DetailFragment : KeyedFragment(R.layout.activity_final), MovieListener {
             }
         )
 
-        viewModel.getRecommendations(movie.imdb_code, suggestionListener)
+        viewModel.getRecommendations(movieDetail.imdb_code, suggestionListener)
     }
 
     private fun loadSimilar() {
@@ -318,13 +320,17 @@ class DetailFragment : KeyedFragment(R.layout.activity_final), MovieListener {
             onComplete = { movies, tag, isMoreAvailable ->
                 val similarLayout = CustomMovieLayout(requireContext(), getString(R.string.suggested))
                 similarLayout.injectViewAt(binding.afSuggestionAddLayout)
-                similarLayout.setupCallbacks(navViewModel, movies, "${movie.imdb_code}/similar", isMoreAvailable)
+                similarLayout.listenForClicks { view, movie ->
+                    view.scaleInOut()
+                    navViewModel.goToDetail(tmDbId = movie.movieId?.toString(), add = true)
+                }
+                similarLayout.setupCallbacks(navViewModel, movies, "${movieDetail.imdb_code}/similar", isMoreAvailable)
             },
             onFailure = { e ->
                 e.printStackTrace()
             }
         )
-        viewModel.getSuggestions(movie.imdb_code, suggestionListener)
+        viewModel.getSuggestions(movieDetail.imdb_code, suggestionListener)
     }
 
     private fun loadCastMovies() {
@@ -333,14 +339,18 @@ class DetailFragment : KeyedFragment(R.layout.activity_final), MovieListener {
                 results.forEach {
                     val movieLayout = CustomMovieLayout(requireContext(), "${getString(R.string.more_with)} ${it.name}")
                     movieLayout.injectViewAt(binding.afMoreAddLayout)
-                    movieLayout.setupCallbacks2(navViewModel, movie.title, it.movies)
+                    movieLayout.listenForClicks { view, movie ->
+                        view.scaleInOut()
+                        navViewModel.goToDetail(tmDbId = movie.movieId?.toString(), add = true)
+                    }
+                    movieLayout.setupCallbacks(navViewModel, movieDetail.title, it.movies)
                 }
             },
             onFailure = { e ->
                 Log.e(TAG, "Failed: ${e.message}", e)
             }
         )
-        viewModel.getTopCrewMovies(movie.imdb_code, castCallback)
+        viewModel.getTopCrewMovies(movieDetail.imdb_code, castCallback)
     }
 
     private fun setContentButtons() {
@@ -356,11 +366,11 @@ class DetailFragment : KeyedFragment(R.layout.activity_final), MovieListener {
         Permissions.verifyStoragePermission(this) {
             val sheet = BottomSheetDownload()
             val bundle = Bundle()
-            bundle.putSerializable(BottomSheetDownload.TORRENTS, movie.torrents)
-            bundle.putString(BottomSheetDownload.TITLE, movie.title)
-            bundle.putString(BottomSheetDownload.IMDB_CODE, movie.imdb_code)
-            bundle.putString(BottomSheetDownload.IMAGE_URI, movie.medium_cover_image)
-            bundle.putInt(BottomSheetDownload.MOVIE_ID, movie.id)
+            bundle.putSerializable(BottomSheetDownload.TORRENTS, movieDetail.torrents)
+            bundle.putString(BottomSheetDownload.TITLE, movieDetail.title)
+            bundle.putString(BottomSheetDownload.IMDB_CODE, movieDetail.imdb_code)
+            bundle.putString(BottomSheetDownload.IMAGE_URI, movieDetail.medium_cover_image)
+            bundle.putInt(BottomSheetDownload.MOVIE_ID, movieDetail.id)
             sheet.arguments = bundle
             sheet.show(childFragmentManager, type.name)
         }
@@ -382,22 +392,21 @@ class DetailFragment : KeyedFragment(R.layout.activity_final), MovieListener {
         binding.toolbar.setNavigationOnClickListener { goBack() }
         binding.toolbar.inflateMenu(R.menu.activity_final_menu)
         binding.toolbar.setOnMenuItemClickListener { item ->
-            if (::movie.isInitialized) {
+            if (::movieDetail.isInitialized) {
                 when (item.itemId) {
                     R.id.action_subtitles -> {
                         Permissions.verifyStoragePermission(this) {
-                            BottomSheetSubtitles().apply {
-                                show(childFragmentManager, movie.imdb_code)
-                            }
+                            val sheet = BottomSheetSubtitles()
+                            sheet.show(childFragmentManager, movieDetail.imdb_code)
                         }
                     }
                     R.id.action_favourite -> {
-                        viewModel.toggleFavourite(movie) {
+                        viewModel.toggleFavourite(movieDetail) {
                             Toasty.info(requireContext(), getString(R.string.add_watchlist)).show()
                         }
                     }
                     R.id.action_share -> {
-                        AppUtils.shareUrl(requireActivity(), movie.url)
+                        AppUtils.shareUrl(requireActivity(), movieDetail.url)
                     }
                 }
             } else
@@ -423,7 +432,7 @@ class DetailFragment : KeyedFragment(R.layout.activity_final), MovieListener {
                     buttonFullscreen.setOnClickListener {
                         player.pause()
                         val i = Intent(requireContext(), PlayerActivity::class.java)
-                        i.putExtra(PlayerActivity.VIDEO_ID, movie.yt_trailer_id)
+                        i.putExtra(PlayerActivity.VIDEO_ID, movieDetail.yt_trailer_id)
                         i.putExtra(PlayerActivity.LAST_PLAYED, youTubePlayerCurrentPosition)
                         startActivityForResult(i, YOUTUBE_PLAYER_VIEW_REQUEST_CODE)
                     }

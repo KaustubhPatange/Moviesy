@@ -1,33 +1,27 @@
 package com.kpstv.yts.adapters
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.kpstv.imageloaderview.ImageLoaderView
 import com.kpstv.yts.AppInterface.Companion.IS_DARK_THEME
-import com.kpstv.yts.AppInterface.Companion.MOVIE_ID
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.extensions.MovieBase
-import com.kpstv.common_moviesy.extensions.hide
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.getBulletSymbol
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.getImdbUrl
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.launchUrl
 import com.kpstv.yts.extensions.load
-import com.kpstv.yts.ui.activities.FinalActivity
 import com.kpstv.yts.ui.viewmodels.StartViewModel
-import kotlinx.android.synthetic.main.item_common_banner.view.*
 
 /** An adapter class to manage the pagination library
  */
@@ -74,9 +68,9 @@ class CustomPagedAdapter(
                     movie.imdbCode?.let { launchUrl(view.context, getImdbUrl(it), IS_DARK_THEME) }
                 }
                 holder.mainLayout.setOnClickListener {
-                    /*val intent = Intent(context, FinalActivity::class.java)
-                    intent.putExtra(MOVIE_ID, movie.movieId)
-                    context.startActivity(intent)*/
+                    navViewModel.goToDetail(
+                        ytsId = movie.movieId, add = true
+                    )
                 }
             }
 
@@ -84,7 +78,7 @@ class CustomPagedAdapter(
                 uri = movie.bannerUrl,
                 onSuccess = { resource ->
                     holder.mainImage.setImageBitmap(resource)
-                    holder.itemView.shimmerFrame.hide()
+                    holder.mainImage.isShimmering = false
                 },
                 onError = {
                     Log.e(TAG, "=> Glide failed for: ${movie.title}")
@@ -93,15 +87,15 @@ class CustomPagedAdapter(
 
             holder.mainText.text = movie.title
 
-            holder.mainCard.setOnClickListener {
+            holder.mainImage.setOnClickListener {
                 when (base) {
                     MovieBase.YTS -> {
-                        navViewModel.goToDetail(ytsId = movie.movieId)
+                        navViewModel.goToDetail(ytsId = movie.movieId, add = true)
                     }
                     MovieBase.TMDB -> {
                         /** We are passing movie_id as string for TMDB Movie so that in
                          * Final View Model we can use the second route to get Movie Details*/
-                        navViewModel.goToDetail(tmDbId = movie.movieId.toString())
+                        navViewModel.goToDetail(tmDbId = movie.movieId.toString(), add = true)
                     }
                 }
             }
@@ -124,9 +118,8 @@ class CustomPagedAdapter(
      *  will be null instead of producing crash which synthetic binding would cause.
      */
     class CustomHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val mainCard = view.findViewById<CardView>(R.id.mainCard)
         val mainText = view.findViewById<TextView>(R.id.mainText)
-        val mainImage = view.findViewById<ImageView>(R.id.mainImage)
+        val mainImage = view.findViewById<ImageLoaderView>(R.id.mainImage)
 
         val mainLayout = view.findViewById<ConstraintLayout>(R.id.mainLayout)
         val mainSubTextView = view.findViewById<TextView>(R.id.mainSubText)

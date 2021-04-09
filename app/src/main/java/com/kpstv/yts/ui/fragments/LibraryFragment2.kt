@@ -1,10 +1,10 @@
 package com.kpstv.yts.ui.fragments
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -14,7 +14,6 @@ import com.kpstv.common_moviesy.extensions.hide
 import com.kpstv.common_moviesy.extensions.show
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.navigation.Navigator
-import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppSettings
 import com.kpstv.yts.R
 import com.kpstv.yts.adapters.LibraryDownloadAdapter
@@ -23,7 +22,6 @@ import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.databinding.FragmentLibraryBinding
 import com.kpstv.yts.extensions.common.CustomTipLayout
 import com.kpstv.yts.extensions.deleteRecursive
-import com.kpstv.yts.ui.activities.FinalActivity
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import com.kpstv.yts.ui.fragments.sheets.BottomSheetLibraryDownload
 import com.kpstv.yts.ui.fragments.sheets.PlaybackType
@@ -78,9 +76,11 @@ class LibraryFragment2 : Fragment(R.layout.fragment_library), Navigator.BottomNa
             if (downloads.isNotEmpty()) {
                 binding.fragmentLibraryNoDownload.root.hide()
                 binding.flDownloadLayout.show()
+                binding.downloadHeader.hide()
             } else {
                 binding.fragmentLibraryNoDownload.root.show()
                 binding.flDownloadLayout.hide()
+                binding.downloadHeader.show()
             }
 
             // Restore previous state of recyclerView
@@ -96,7 +96,7 @@ class LibraryFragment2 : Fragment(R.layout.fragment_library), Navigator.BottomNa
     }
 
     override fun onDestroyView() {
-        //if (isCastingSupported) mainActivity.castHelper.unInit()
+        //if (isCastingSupported) mainActivity.castHelper.unInit() // TODO:
         super.onDestroyView()
     }
 
@@ -134,11 +134,7 @@ class LibraryFragment2 : Fragment(R.layout.fragment_library), Navigator.BottomNa
         popupMenu.inflate(R.menu.library_menu)
         popupMenu.setOnMenuItemClickListener {
             when (it.itemId) {
-                R.id.action_details -> startActivity(
-                    Intent(requireContext(), FinalActivity::class.java).apply {
-                        putExtra(AppInterface.MOVIE_ID, model.movieId) // TODO: Migrate Final activity
-                    }
-                )
+                R.id.action_details -> navViewModel.goToDetail(ytsId = model.movieId)
                 R.id.action_show_location -> {
                     AlertNoIconDialog.Companion.Builder(context).apply {
                         setTitle(getString(R.string.location))
@@ -187,10 +183,12 @@ class LibraryFragment2 : Fragment(R.layout.fragment_library), Navigator.BottomNa
     }
 
     private fun addDownloadTip() {
-        CustomTipLayout.Builder(binding.addLayout)
-            .setTitle(getString(R.string.download_tip_title))
-            .setMessage(getString(R.string.download_tip_text))
-            .show(AppSettings.SHOW_DOWNLOAD_TIP_PREF)
+        binding.root.doOnPreDraw {
+            CustomTipLayout.Builder(binding.addLayout)
+                .setTitle(getString(R.string.download_tip_title))
+                .setMessage(getString(R.string.download_tip_text))
+                .show(AppSettings.SHOW_DOWNLOAD_TIP_PREF)
+        }
     }
 
     /**

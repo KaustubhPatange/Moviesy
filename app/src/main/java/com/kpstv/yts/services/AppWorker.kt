@@ -46,7 +46,7 @@ class AppWorker @WorkerInject constructor(
         try {
             val updatePair = updateUtils.checkAsync()
             if (updatePair.second) {
-                Notifications.sendUpdateNotification(applicationContext, updatePair.first)
+                Notifications.sendUpdateNotification(applicationContext)
             } else Log.e(TAG, appContext.getString(R.string.no_updates))
         } catch (e: Exception) {
             Log.w(TAG, "Failed: ${e.message}", e)

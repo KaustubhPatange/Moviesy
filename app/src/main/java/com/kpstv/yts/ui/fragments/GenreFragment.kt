@@ -21,6 +21,7 @@ import com.kpstv.yts.extensions.common.CustomMovieLayout
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
+@Deprecated("Use v2")
 @AndroidEntryPoint
 class GenreFragment : Fragment(R.layout.fragment_genre), HomeFragment.HomeFragmentCallbacks {
 
@@ -37,9 +38,9 @@ class GenreFragment : Fragment(R.layout.fragment_genre), HomeFragment.HomeFragme
                 setGenre(model.genre)
             }.build()
 
-            CustomMovieLayout.invokeMoreFunction(
+            /*CustomMovieLayout.invokeMoreFunction(
                 requireContext(), "Based on ${model.title}", queryMap
-            )
+            )*/
         }
 
         binding.recyclerView.adapter = adapter

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
 import androidx.core.view.GravityCompat
+import androidx.core.view.doOnPreDraw
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -24,7 +25,6 @@ import com.kpstv.yts.extensions.Navigations
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.UpdateUtils
 import com.kpstv.yts.ui.activities.DownloadActivity
-import com.kpstv.yts.ui.activities.MainActivity
 import com.kpstv.yts.ui.activities.StartActivity
 import com.kpstv.yts.ui.helpers.ChangelogHelper
 import com.kpstv.yts.ui.helpers.MainCastHelper2
@@ -57,10 +57,11 @@ class MainFragment : KeyedFragment(R.layout.activity_main), MainFragmentDrawerCa
     @Inject lateinit var updateUtils: UpdateUtils
 
     private var currentBottomNavId: Int = 0
+    private var isUpdateChecked = false
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        registerForThemeChange(parentFragmentManager)
+        registerForThemeChange()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -73,9 +74,20 @@ class MainFragment : KeyedFragment(R.layout.activity_main), MainFragmentDrawerCa
                 R.id.watchFragment to WatchlistFragment2::class,
                 R.id.libraryFragment to LibraryFragment2::class
             )
+
             override fun onBottomNavigationSelectionChanged(selectedId: Int) {
                 currentBottomNavId = selectedId
             }
+
+            override val selectedBottomNavigationId: Int
+                get() {
+                    if (hasKeyArgs()) {
+                        if (getKeyArgs<Args>().moveToLibrary) {
+                            return R.id.libraryFragment
+                        }
+                    }
+                    return super.selectedBottomNavigationId
+                }
         })
 
         binding.apply {
@@ -87,42 +99,45 @@ class MainFragment : KeyedFragment(R.layout.activity_main), MainFragmentDrawerCa
         setNavigationDrawer()
         setNavigationDrawerItemClicks()
         setPremiumButtonClicked()
-        if (hasKeyArgs()) {
-            manageArguments()
-        }
 
-        if (CastHelper.isCastingSupported(requireContext())) {
+        if (CastHelper.isCastingSupported(requireContext())) { // TODO: Move to Activity Level
             SimpleWebServer.init(requireContext(), BuildConfig.DEBUG)
             castHelper.initCastSession(requireActivity())
             mainCastHelper.setUpCastRelatedStuff()
         }
 
-        ChangelogHelper(requireActivity()).show() // TODO: Update this & make it for childFragmentManager
+        ChangelogHelper(requireContext(), childFragmentManager).show()
 
         if (savedInstanceState == null) {
+            if (hasKeyArgs()) {
+                manageArgumentsAndConsume()
+            }
             if (viewModel.uiState.mainFragmentState.isDrawerOpen == true) openDrawer()
         }
     }
 
     override fun onStart() {
         super.onStart()
-        updateUtils.check(
-            onUpdateAvailable = {
-                updateUtils.showUpdateDialog(requireContext()) {
-                    updateUtils.processUpdate(it)
-                    Toasty.info(requireContext(), getString(R.string.update_download_text)).show()
+        if (!isUpdateChecked) {
+            isUpdateChecked = true
+            updateUtils.check(
+                onUpdateAvailable = {
+                    updateUtils.showUpdateDialog(requireContext()) {
+                        updateUtils.processUpdate(it)
+                        Toasty.info(requireContext(), getString(R.string.update_download_text)).show()
+                    }
+                },
+                onUpdateNotFound = {
+                    checkForAutoPurchase()
+                },
+                onVersionDeprecated = {
+                    AppUtils.doOnVersionDeprecated(requireContext())
+                },
+                onError = {
+                    Toasty.error(requireContext(), "Failed: ${it.message}").show()
                 }
-            },
-            onUpdateNotFound = {
-                checkForAutoPurchase()
-            },
-            onVersionDeprecated = {
-                AppUtils.doOnVersionDeprecated(requireContext())
-            },
-            onError = {
-                Toasty.error(requireContext(), "Failed: ${it.message}").show()
-            }
-        )
+            )
+        }
     }
 
     override fun openDrawer() {
@@ -149,26 +164,33 @@ class MainFragment : KeyedFragment(R.layout.activity_main), MainFragmentDrawerCa
         return true
     }
 
-    private fun manageArguments() {
+    private fun manageArgumentsAndConsume() {
         val args = getKeyArgs<Args>()
-        if (args.moveToLibrary) {
-            // TODO: Move to Library
-            // binding.bottomNav.selectedItemId = R.id.libraryFragment
+        if (args.forceUpdateCheck) {
+            isUpdateChecked = false
         }
+        requireView().doOnPreDraw {
+            if (args.moveToDetail != null) {
+                val a = args.moveToDetail
+                navViewModel.goToDetail(a.ytsId, a.tmDbId, a.movieUrl)
+            }
+        }
+
+        clearArgs()
     }
 
     private fun setNavigationDrawer() {
         val models = NavigationModels().apply {
             add(
                 NavigationModel(
-                    tag = MainActivity.NAV_DOWNLOAD_QUEUE,
+                    tag = NAV_DOWNLOAD_QUEUE,
                     title = getString(R.string.nav_download),
                     drawableRes = R.drawable.ic_queue
                 )
             )
             add(
                 NavigationModel(
-                    tag = MainActivity.NAV_SETTINGS,
+                    tag = NAV_SETTINGS,
                     title = getString(R.string.settings),
                     drawableRes = R.drawable.ic_settings
                 )
@@ -178,7 +200,7 @@ class MainFragment : KeyedFragment(R.layout.activity_main), MainFragmentDrawerCa
             navigateTo(navigationModel.tag)
         }
         viewModel.pauseMovieJob.observe(viewLifecycleOwner, {
-            navigations.updateNotification(MainActivity.NAV_DOWNLOAD_QUEUE, it.size) // TODO: Update this & make it for childFragmentManager
+            navigations.updateNotification(NAV_DOWNLOAD_QUEUE, it.size) // TODO: Update this & make it for childFragmentManager
         })
     }
 
@@ -194,11 +216,11 @@ class MainFragment : KeyedFragment(R.layout.activity_main), MainFragmentDrawerCa
     private fun navigateTo(tag: String) {
         closeDrawer()
         when (tag) {
-            MainActivity.NAV_DOWNLOAD_QUEUE -> {
+            NAV_DOWNLOAD_QUEUE -> {
                 val downloadIntent = Intent(requireContext(), DownloadActivity::class.java)
                 startActivity(downloadIntent)
             }
-            MainActivity.NAV_SETTINGS -> {
+            NAV_SETTINGS -> {
                 navViewModel.navigateTo(
                     StartActivity.Screen.SETTING,
                     transition = Navigator.TransitionType.FADE,
@@ -232,7 +254,11 @@ class MainFragment : KeyedFragment(R.layout.activity_main), MainFragmentDrawerCa
 
     private fun animateBottomNavUp() {
         binding.bottomNav.translationY = 500f
-        binding.bottomNav.animate().translationY(0f).setDuration(100).start()
+        binding.root.doOnPreDraw {
+            if (isVisible) {
+                binding.bottomNav.animate().translationY(0f).setDuration(100).start()
+            }
+        }
     }
 
     private fun animateBottomNavDown() {
@@ -246,5 +272,14 @@ class MainFragment : KeyedFragment(R.layout.activity_main), MainFragmentDrawerCa
     }
 
     @Parcelize
-    data class Args(val moveToLibrary: Boolean =  false) : BaseArgs(), Parcelable
+    data class Args(
+        val moveToLibrary: Boolean =  false,
+        val moveToDetail: DetailFragment.Args? = null,
+        val forceUpdateCheck: Boolean = false
+    ) : BaseArgs(), Parcelable
+
+    companion object {
+        const val NAV_DOWNLOAD_QUEUE = "nav_download_queue"
+        const val NAV_SETTINGS = "nav_settings"
+    }
 }

@@ -30,7 +30,6 @@ class CommonBroadCast : BroadcastReceiver() {
         const val STOP_UPDATE_WORKER = "com.kpstv.actions.stop_update_worker"
         const val STOP_CAST_SERVICE = "com.kpstv.actions.stop_cast_service"
         const val INSTALL_APK = "com.kpstv.actions.install_apk"
-        const val OPEN_YTS_SITE = "com.kpstv.actions.open_yts_site"
 
         const val ARGUMENT_APK_FILE = "apk_file_argument"
     }
@@ -76,11 +75,6 @@ class CommonBroadCast : BroadcastReceiver() {
                    } else {
                        Toasty.error(context, context.getString(R.string.update_error))
                    }
-                }
-            }
-            OPEN_YTS_SITE -> {
-                if (context != null) {
-                    AppUtils.launchUrlIntent(context, AppInterface.YTS_BASE_URL)
                 }
             }
         }

@@ -3,20 +3,18 @@ package com.kpstv.yts.extensions.common
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.doOnPreDraw
 import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.databinding.ItemSuggestionBinding
-import com.kpstv.yts.extensions.MovieBase
 import com.kpstv.yts.extensions.load
-import com.kpstv.yts.ui.viewmodels.StartViewModel
 import kotlinx.android.synthetic.main.item_common_banner.view.*
 import kotlinx.android.synthetic.main.item_suggestion.view.*
 
 class CustomAdapter(
-    private val navViewModel: StartViewModel,
     private val list: ArrayList<MovieShort>,
-    private val base: MovieBase
+    private val onClick: (View, MovieShort) -> Unit
 ) :
     RecyclerView.Adapter<CustomAdapter.CustomHolder>() {
 
@@ -42,18 +40,18 @@ class CustomAdapter(
         val imageUri = movie.bannerUrl
 
         holder.binding.shimmerImageView.isShimmering = true
-        holder.binding.shimmerImageView.load(
-            uri = imageUri,
-            onSuccess = { bitmap ->
-                holder.binding.shimmerImageView.setImageBitmap(bitmap)
-                holder.binding.shimmerImageView.isShimmering = false
-            }
-        )
         holder.binding.mainText.text = movie.title
-
         holder.binding.shimmerImageView.setOnClickListener { view ->
-            scaleInAndOutAnimation(view)
-            launchDetailScreen(movie)
+            onClick.invoke(view, movie)
+        }
+        holder.binding.root.doOnPreDraw {
+            holder.binding.shimmerImageView.load(
+                uri = imageUri,
+                onSuccess = { bitmap ->
+                    holder.binding.shimmerImageView.setImageBitmap(bitmap)
+                    holder.binding.shimmerImageView.isShimmering = false
+                }
+            )
         }
 
         if (::setOnLongListener.isInitialized) {
@@ -65,28 +63,6 @@ class CustomAdapter(
     }
 
     override fun getItemCount() = list.size
-
-    private fun scaleInAndOutAnimation(to: View) {
-        to.animate().scaleX(1.2f).scaleY(1.2f)
-            .withEndAction {
-                to.scaleX = 1f
-                to.scaleY = 1f
-            }
-            .start()
-    }
-
-    private fun launchDetailScreen(movie: MovieShort) {
-        when (base) {
-            MovieBase.YTS -> {
-               navViewModel.goToDetail(ytsId = movie.movieId)
-            }
-            MovieBase.TMDB -> {
-                /** We are passing movie_id as string for TMDB Movie so that in
-                 * Final View Model we can use the second route to get Movie Details*/
-                navViewModel.goToDetail(tmDbId = movie.movieId.toString())
-            }
-        }
-    }
 
     class CustomHolder(view: View) : RecyclerView.ViewHolder(view) {
         val binding = ItemSuggestionBinding.bind(view)

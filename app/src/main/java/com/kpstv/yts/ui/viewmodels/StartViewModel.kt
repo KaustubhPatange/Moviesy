@@ -1,15 +1,16 @@
 package com.kpstv.yts.ui.viewmodels
 
-import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.kpstv.yts.ui.activities.StartActivity
 import com.kpstv.navigation.BaseArgs
 import com.kpstv.navigation.Navigator
 import com.kpstv.navigation.SharedPayload
 import com.kpstv.navigation.TransitionPayload
+import com.kpstv.yts.extensions.MovieBase
+import com.kpstv.yts.ui.activities.StartActivity
 import com.kpstv.yts.ui.fragments.DetailFragment
+import com.kpstv.yts.ui.fragments.MoreFragment
 
 class StartViewModel : ViewModel() {
     private val _navigation = MutableLiveData<Navigator.NavOptions?>(null)
@@ -47,12 +48,33 @@ class StartViewModel : ViewModel() {
         )
     }
 
-    fun goToDetail(ytsId: Int? = null, tmDbId: String? = null) {
+    fun goToDetail(ytsId: Int? = null, tmDbId: String? = null, movieUrl: String? = null, add: Boolean = false) {
         navigateTo(
             screen = StartActivity.Screen.DETAIL,
-            args = DetailFragment.Args(tmDbId = tmDbId, ytsId = ytsId),
+            args = DetailFragment.Args(tmDbId = tmDbId, ytsId = ytsId, movieUrl = movieUrl),
             addToBackStack = true,
+            transactionType = if (add) Navigator.TransactionType.ADD else Navigator.TransactionType.REPLACE,
             transition = Navigator.TransitionType.FADE,
+        )
+    }
+
+    fun goToMore(
+        titleText: String,
+        queryMap: Map<String, String>,
+        base: MovieBase = MovieBase.YTS,
+        add: Boolean = false
+    ) {
+        navigateTo(
+            screen = StartActivity.Screen.MORE,
+            transition = Navigator.TransitionType.FADE,
+            transactionType = if (add) Navigator.TransactionType.ADD else Navigator.TransactionType.REPLACE,
+            addToBackStack = true,
+            args = MoreFragment.Args(
+                title = titleText,
+                movieBaseString = base.toString(),
+                keyArrayList = ArrayList(queryMap.keys),
+                valueArrayList = ArrayList(queryMap.values)
+            )
         )
     }
 

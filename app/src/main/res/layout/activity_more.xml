@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?colorBackground"
     tools:context=".ui.activities.MoreActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -18,7 +19,6 @@
             android:baselineAligned="false"
             app:layout_scrollFlags="scroll|enterAlways" />
     </com.google.android.material.appbar.AppBarLayout>
-
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
@@ -44,19 +44,19 @@
 
         <LinearLayout
             android:id="@+id/am_chipLayout"
-            android:visibility="gone"
             android:layout_width="match_parent"
-            android:background="?colorForeground"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:background="?colorForeground"
             android:orientation="horizontal"
+            android:visibility="gone"
             tools:visibility="visible">
 
             <ImageView
-                android:layout_marginStart="5dp"
                 android:id="@+id/item_filter_more"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
+                android:layout_marginStart="5dp"
                 android:background="?selectableItemBackground"
                 android:clickable="true"
                 android:focusable="true"
@@ -65,11 +65,10 @@
                 app:tint="?colorTextLight" />
 
             <com.google.android.material.chip.ChipGroup
-                android:layout_marginStart="3dp"
                 android:id="@+id/am_chipGroup"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent">
-            </com.google.android.material.chip.ChipGroup>
+                android:layout_height="match_parent"
+                android:layout_marginStart="3dp"></com.google.android.material.chip.ChipGroup>
 
         </LinearLayout>
 

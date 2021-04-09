@@ -9,8 +9,7 @@ import com.kpstv.yts.defaultPreference
 
 class CustomTipLayout {
     data class Builder(private val view: ViewGroup) {
-        val binding
-                = CustomTipLayoutBinding.inflate(LayoutInflater.from(view.context), view, false)
+        val binding = CustomTipLayoutBinding.inflate(LayoutInflater.from(view.context), view, false)
         private val preference by view.context.defaultPreference()
 
         init {

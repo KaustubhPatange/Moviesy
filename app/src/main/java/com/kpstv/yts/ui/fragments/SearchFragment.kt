@@ -25,7 +25,6 @@ import com.kpstv.yts.adapters.CustomPagedAdapter
 import com.kpstv.yts.adapters.HistoryModel
 import com.kpstv.yts.adapters.SearchAdapter
 import com.kpstv.yts.data.CustomDataSource
-import com.kpstv.yts.data.converters.QueryConverter
 import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.data.models.Result
 import com.kpstv.yts.databinding.ActivitySearchBinding
@@ -33,7 +32,6 @@ import com.kpstv.yts.extensions.MovieBase
 import com.kpstv.yts.extensions.SuggestionCallback
 import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.extensions.common.CustomMovieLayout
-import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.RetrofitUtils
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import com.kpstv.yts.ui.helpers.AdaptiveSearchHelper
@@ -236,6 +234,7 @@ class SearchFragment : KeyedFragment(R.layout.activity_search) {
     private val observer = Observer<PagedList<MovieShort>> {
         Log.e(TAG, "=> Called submit list")
         adapter.submitList(it)
+        binding.searchEditText.hideKeyboard()
     }
 
     /** A handler basically to hide Refreshing of swipeLayout but now
@@ -378,7 +377,7 @@ class SearchFragment : KeyedFragment(R.layout.activity_search) {
     override fun onBackPressed(): Boolean {
         return if (binding.suggestionLayout.isVisible) {
             binding.suggestionLayout.hide()
-            KeyboardUtils.hideKeyboard(requireContext())
+            binding.searchEditText.hideKeyboard()
             true
         } else
             super.onBackPressed()

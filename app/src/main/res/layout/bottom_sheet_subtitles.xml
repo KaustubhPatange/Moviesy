@@ -1,94 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:background="?colorForeground"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:background="?colorForeground"
+    android:orientation="vertical">
 
     <ProgressBar
-        android:layout_marginTop="10dp"
         android:id="@+id/progressBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp" />
 
-  <LinearLayout
-      android:id="@+id/subtitleMainLayout"
-      android:orientation="vertical"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content">
-      <LinearLayout
-          android:id="@+id/filterLayout"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="7dp"
-          android:gravity="center_vertical"
-          android:orientation="horizontal">
+    <LinearLayout
+        android:id="@+id/subtitleMainLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-          <TextView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_margin="10dp"
-              android:fontFamily="@font/google_sans_regular"
-              android:text="@string/filter"
-              android:textSize="15sp" />
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-          <com.google.android.material.chip.ChipGroup
-              app:singleSelection="true"
-              app:selectionRequired="true"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content">
-              <com.google.android.material.chip.Chip
-                  android:id="@+id/chip_all"
-                  android:checked="true"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_marginStart="5dp"
-                  android:checkable="true"
-                  android:text="All" />
+            <LinearLayout
+                android:id="@+id/filterLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-              <com.google.android.material.chip.Chip
-                  android:id="@+id/chip_arabic"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_marginStart="5dp"
-                  android:checkable="true"
-                  android:text="Arabic" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:fontFamily="@font/google_sans_regular"
+                    android:text="@string/filter"
+                    android:textSize="15sp" />
 
-              <com.google.android.material.chip.Chip
-                  android:id="@+id/chip_english"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_marginStart="5dp"
-                  android:checkable="true"
-                  android:text="English" />
+                <com.google.android.material.chip.ChipGroup
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:selectionRequired="true"
+                    app:singleSelection="true">
 
-              <com.google.android.material.chip.Chip
-                  android:id="@+id/chip_spanish"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_marginStart="5dp"
-                  android:checkable="true"
-                  android:text="Spanish" />
-          </com.google.android.material.chip.ChipGroup>
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_all"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:checkable="true"
+                        android:checked="true"
+                        android:text="All" />
 
-      </LinearLayout>
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_arabic"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:checkable="true"
+                        android:text="Arabic" />
 
-      <View
-          android:id="@+id/separatorView"
-          android:layout_width="match_parent"
-          android:layout_height="1dp"
-          android:layout_marginTop="7dp"
-          android:background="?attr/colorSeparator" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_english"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:checkable="true"
+                        android:text="English" />
 
-      <androidx.recyclerview.widget.RecyclerView
-          android:layout_marginTop="7dp"
-          android:scrollbars="vertical"
-          android:overScrollMode="never"
-          android:padding="10dp"
-          android:clipToPadding="false"
-          android:id="@+id/recyclerView_subtitles"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content" />
-  </LinearLayout>
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_spanish"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:checkable="true"
+                        android:text="Spanish" />
+                </com.google.android.material.chip.ChipGroup>
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <View
+            android:id="@+id/separatorView"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="7dp"
+            android:background="?attr/colorSeparator" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView_subtitles"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:clipToPadding="false"
+            android:overScrollMode="never"
+            android:padding="10dp"
+            android:scrollbars="vertical" />
+    </LinearLayout>
 </LinearLayout>

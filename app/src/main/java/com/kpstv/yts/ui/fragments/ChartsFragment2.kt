@@ -5,9 +5,12 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import com.kpstv.common_moviesy.extensions.scaleInOut
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.R
+import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.databinding.FragmentChartsBinding
+import com.kpstv.yts.extensions.MovieBase
 import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.extensions.common.CustomMovieLayout
 import com.kpstv.yts.ui.viewmodels.MainViewModel
@@ -69,15 +72,22 @@ class ChartsFragment2 : Fragment(R.layout.fragment_charts), HomeFragment2.Callba
         binding.addLayout.removeAllViews()
     }
 
+    private fun onItemClick(view: View, movie: MovieShort) {
+        view.scaleInOut()
+        navViewModel.goToDetail(ytsId = movie.movieId)
+    }
+
     private fun setViewAndLayout() {
+        if (isRemoving) return
         // FIXME: (Needs Investigation) Sometimes getActivity() returns null & thus it crashes, Edit: This might not be valid for this
         // val context = if (activity != null) requireActivity() else if (context != null) requireContext() else return
 
         /** Featured Layout */
-        cmlFeatured = CustomMovieLayout(requireActivity(), getString(R.string.featured)).apply {
+        cmlFeatured = CustomMovieLayout(requireContext(), childFragmentManager, getString(R.string.featured)).apply {
             injectViewAt(binding.addLayout)
             setLifecycleOwner(viewLifecycleOwner)
-            setupFeaturedCallbacks2(navViewModel, viewModel) {
+            listenForClicks(::onItemClick)
+            setupFeaturedCallbacks(navViewModel, viewModel) {
                 cmlFeatured.removeView(binding.addLayout)
                 Toasty.warning(requireContext(), getString(R.string.featured_movies)).show()
             }
@@ -88,10 +98,11 @@ class ChartsFragment2 : Fragment(R.layout.fragment_charts), HomeFragment2.Callba
             setSortBy(YTSQuery.SortBy.date_added)
         }.build()
 
-        cmlRecent = CustomMovieLayout(requireActivity(), getString(R.string.recently_added)).apply {
+        cmlRecent = CustomMovieLayout(requireContext(), childFragmentManager, getString(R.string.recently_added)).apply {
             injectViewAt(binding.addLayout)
             setLifecycleOwner(viewLifecycleOwner)
-            setupCallbacks2(viewModel, navViewModel, queryMap6)
+            listenForClicks(::onItemClick)
+            setupCallbacks(viewModel, navViewModel, queryMap6)
         }
 
         /** Top Rated Layout */
@@ -100,10 +111,11 @@ class ChartsFragment2 : Fragment(R.layout.fragment_charts), HomeFragment2.Callba
             setOrderBy(YTSQuery.OrderBy.descending)
         }.build()
 
-        cmlTopRated = CustomMovieLayout(requireActivity(), getString(R.string.top_rated)).apply {
+        cmlTopRated = CustomMovieLayout(requireContext(), childFragmentManager, getString(R.string.top_rated)).apply {
             injectViewAt(binding.addLayout)
             setLifecycleOwner(viewLifecycleOwner)
-            setupCallbacks2(viewModel, navViewModel, queryMap)
+            listenForClicks(::onItemClick)
+            setupCallbacks(viewModel, navViewModel, queryMap)
         }
 
         /** Popular Layout */
@@ -112,10 +124,11 @@ class ChartsFragment2 : Fragment(R.layout.fragment_charts), HomeFragment2.Callba
             setOrderBy(YTSQuery.OrderBy.descending)
         }.build()
 
-        cmlPopular = CustomMovieLayout(requireActivity(), getString(R.string.popular)).apply {
+        cmlPopular = CustomMovieLayout(requireContext(), childFragmentManager, getString(R.string.popular)).apply {
             injectViewAt(binding.addLayout)
             setLifecycleOwner(viewLifecycleOwner)
-            setupCallbacks2(viewModel, navViewModel, queryMap3)
+            listenForClicks(::onItemClick)
+            setupCallbacks(viewModel, navViewModel, queryMap3)
         }
 
         /** Most Liked Layout */
@@ -124,10 +137,11 @@ class ChartsFragment2 : Fragment(R.layout.fragment_charts), HomeFragment2.Callba
             setOrderBy(YTSQuery.OrderBy.descending)
         }.build()
 
-        cmlMostLiked = CustomMovieLayout(requireActivity(), getString(R.string.most_liked)).apply {
+        cmlMostLiked = CustomMovieLayout(requireContext(), childFragmentManager, getString(R.string.most_liked)).apply {
             injectViewAt(binding.addLayout)
             setLifecycleOwner(viewLifecycleOwner)
-            setupCallbacks2(viewModel, navViewModel, queryMap4)
+            listenForClicks(::onItemClick)
+            setupCallbacks(viewModel, navViewModel, queryMap4)
         }
 
         /** Latest Layout */
@@ -136,10 +150,11 @@ class ChartsFragment2 : Fragment(R.layout.fragment_charts), HomeFragment2.Callba
             setOrderBy(YTSQuery.OrderBy.descending)
         }.build()
 
-        cmlLatest = CustomMovieLayout(requireActivity(), getString(R.string.latest)).apply {
+        cmlLatest = CustomMovieLayout(requireContext(), childFragmentManager, getString(R.string.latest)).apply {
             injectViewAt(binding.addLayout)
             setLifecycleOwner(viewLifecycleOwner)
-            setupCallbacks2(viewModel, navViewModel, queryMap5)
+            listenForClicks(::onItemClick)
+            setupCallbacks(viewModel, navViewModel, queryMap5)
         }
     }
 

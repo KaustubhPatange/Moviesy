@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.kpstv.after.After
 import com.kpstv.after.AfterRequests
@@ -25,7 +24,7 @@ import com.kpstv.yts.extensions.startActivityAndFinish
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.ProxyUtils
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
-import com.kpstv.yts.ui.helpers.DeepLinksHelper
+import com.kpstv.yts.ui.helpers.ActivityIntentHelper
 import com.kpstv.yts.ui.helpers.InitializationHelper
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.TimeUnit
@@ -33,6 +32,7 @@ import javax.inject.Inject
 
 /** Starting point of reading this app.
  */
+@Deprecated("Use SplashFragment")
 @AndroidEntryPoint
 class SplashActivity : AppCompatActivity(), Animation.AnimationListener by DelegatedAnimator {
 
@@ -132,12 +132,12 @@ class SplashActivity : AppCompatActivity(), Animation.AnimationListener by Deleg
     private val TAG = javaClass.simpleName
 
     override fun onAnimationEnd(animation: Animation?) {
-        if (DeepLinksHelper.handle(this, intent)) {
+       /* if (ActivityIntentHelper.handle(this, intent)) {
             finish()
         } else {
             if (appPreference.getBoolean(AgreementActivity.SHOW_AGREEMENT_PREF, false)) callMainActivity()
             else startActivityAndFinish(Intent(this@SplashActivity, AgreementActivity::class.java))
-        }
+        }*/
     }
 
     private fun callMainActivity() {

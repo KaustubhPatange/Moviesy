@@ -14,3 +14,10 @@ fun Navigator.canFinish() : Boolean {
     }
     return true
 }
+
+/**
+ * This will clear the [BaseArgs].
+ */
+fun KeyedFragment.clearArgs() {
+    arguments?.remove(KeyedFragment.ARGUMENTS)
+}

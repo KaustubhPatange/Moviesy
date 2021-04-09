@@ -1,13 +1,15 @@
 package com.kpstv.yts.ui.helpers
 
+import android.content.Context
 import androidx.core.content.edit
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceManager
 import com.kpstv.yts.R
 import com.kpstv.yts.ui.fragments.sheets.CustomBottomSheet
 import org.json.JSONObject
 
-class ChangelogHelper(private val context: FragmentActivity) {
+class ChangelogHelper(private val context: Context, private val fragmentManager: FragmentManager) {
     private val preference = PreferenceManager.getDefaultSharedPreferences(context)
 
     /**
@@ -36,7 +38,7 @@ class ChangelogHelper(private val context: FragmentActivity) {
 
     private fun showBottomSheet(text: String) = with(context) {
         CustomBottomSheet.show(
-            fragmentManager = supportFragmentManager,
+            fragmentManager = fragmentManager,
             title = getString(R.string.changelog),
             subtitle = text
         )

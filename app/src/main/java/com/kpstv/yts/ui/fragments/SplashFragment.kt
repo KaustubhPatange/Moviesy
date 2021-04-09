@@ -31,8 +31,7 @@ class SplashErrorException(val inner: Exception) : Exception()
 
 @AndroidEntryPoint
 class SplashFragment : KeyedFragment(R.layout.activity_splash)  {
-    @Inject
-    lateinit var proxyUtils: ProxyUtils
+    @Inject lateinit var proxyUtils: ProxyUtils
 
     private val binding by viewBinding(ActivitySplashBinding::bind)
     private val appNavViewModel by activityViewModels<StartViewModel>()
@@ -57,8 +56,6 @@ class SplashFragment : KeyedFragment(R.layout.activity_splash)  {
     }
 
     private fun onProxyCheckComplete() {
-        // TODO: Handle Deeplinks
-
         if (!appPreference.isFirstLaunch())
             callMainActivity()
         else {
@@ -68,27 +65,15 @@ class SplashFragment : KeyedFragment(R.layout.activity_splash)  {
                 transition = Navigator.TransitionType.CIRCULAR
             )
         }
-        /*if (DeepLinksHelper.handle(requireContext(), intent)) {
-            finish()
-        } else {
-            if (appPreference.getBoolean(AgreementActivity.SHOW_AGREEMENT_PREF, false)) callMainActivity()
-            else startActivityAndFinish(Intent(this@SplashActivity, AgreementActivity::class.java))
-        }*/
     }
 
     private fun callMainActivity() {
-        // TODO: Move to MAIN.LIBRARY, Maybe pass a baseArgs
-
         appNavViewModel.navigateTo(
             screen = StartActivity.Screen.MAIN,
             transition = Navigator.TransitionType.FADE,
+//            args = MainFragment.Args(moveToDetail = DetailFragment.Args(ytsId = 28832)),
             popUpTo = true
         )
-       /* val routeToLibrary = intent?.getBooleanExtra(SplashActivity.ARG_ROUTE_TO_LIBRARY, false)
-        val navigateIntent = Intent(this@SplashActivity, MainActivity::class.java).apply {
-            putExtra(SplashActivity.ARG_ROUTE_TO_LIBRARY, routeToLibrary)
-        }
-        startActivityAndFinish(navigateIntent)*/
     }
 
     private fun proxyCheckPreference(block: () -> Unit) {

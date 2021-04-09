@@ -1,5 +1,6 @@
 package com.kpstv.yts.ui.activities
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -14,6 +15,7 @@ import com.kpstv.yts.databinding.ActivityStartBinding
 import com.kpstv.yts.extensions.errors.SSLHandshakeException
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.ui.fragments.*
+import com.kpstv.yts.ui.helpers.ActivityIntentHelper
 import com.kpstv.yts.ui.helpers.InitializationHelper
 import com.kpstv.yts.ui.viewmodels.StartViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,6 +27,7 @@ class StartActivity : AppCompatActivity(), NavigatorTransmitter {
     // TODO: Implement deeplinks
     private val binding by viewBinding(ActivityStartBinding::inflate)
     private val navViewModel by viewModels<StartViewModel>()
+    private val intentHelper by lazy { ActivityIntentHelper(navViewModel) }
 
     private lateinit var navigator: Navigator
 
@@ -42,9 +45,14 @@ class StartActivity : AppCompatActivity(), NavigatorTransmitter {
         navViewModel.navigation.observe(this, navigationObserver)
         navViewModel.errors.observe(this, errorObserver)
 
-        if (savedInstanceState == null) {
+        if (savedInstanceState == null && !intentHelper.handle(intent)) {
             navViewModel.navigateTo(Screen.SPLASH)
         }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        intentHelper.handle(intent)
     }
 
     override fun onStart() {

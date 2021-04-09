@@ -16,7 +16,6 @@ import com.kpstv.navigation.*
 import com.kpstv.yts.R
 import com.kpstv.yts.databinding.ActivitySettingsBinding
 import com.kpstv.yts.ui.activities.StartActivity
-import com.kpstv.yts.ui.helpers.ThemeHelper
 import com.kpstv.yts.ui.helpers.ThemeHelper.registerForThemeChange
 import com.kpstv.yts.ui.settings.*
 import com.kpstv.yts.ui.viewmodels.SettingNavViewModel
@@ -33,7 +32,7 @@ class SettingFragment : KeyedFragment(R.layout.activity_settings), NavigatorTran
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        registerForThemeChange(parentFragmentManager)
+        registerForThemeChange()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

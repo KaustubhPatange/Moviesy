@@ -1,12 +1,10 @@
 package com.kpstv.yts.ui.fragments
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.kpstv.common_moviesy.extensions.applyTopInsets
@@ -14,13 +12,10 @@ import com.kpstv.common_moviesy.extensions.hide
 import com.kpstv.common_moviesy.extensions.show
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.navigation.Navigator
-import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
 import com.kpstv.yts.adapters.WatchlistAdapter
 import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.databinding.FragmentWatchlistBinding
-import com.kpstv.yts.ui.activities.FinalActivity
-import com.kpstv.yts.ui.activities.SearchActivity
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import com.kpstv.yts.ui.viewmodels.StartViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -66,9 +61,7 @@ class WatchlistFragment2 : Fragment(R.layout.fragment_watchlist), Navigator.Bott
     private fun initRecyclerView() {
         watchlistAdapter = WatchlistAdapter(
             onClickListener = { model, _ ->
-                val intent = Intent(requireContext(), FinalActivity::class.java) // TODO: Migrate Final activity
-                intent.putExtra(AppInterface.MOVIE_ID, model.movieId)
-                startActivity(intent)
+                navViewModel.goToDetail(ytsId = model.movieId)
             },
             onItemRemoveListener = { model, _ ->
                 viewModel.removeFavourite(model.movieId)

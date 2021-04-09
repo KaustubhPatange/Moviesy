@@ -13,6 +13,7 @@ import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 
+@Deprecated("Use v2")
 @AndroidEntryPoint
 class ChartsFragment : Fragment(R.layout.fragment_charts), HomeFragment.HomeFragmentCallbacks {
 
@@ -72,7 +73,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts), HomeFragment.HomeFrag
         // val context = if (activity != null) requireActivity() else if (context != null) requireContext() else return
 
         /** Featured Layout */
-        cmlFeatured = CustomMovieLayout(requireActivity(), getString(R.string.featured)).apply {
+       /* cmlFeatured = CustomMovieLayout(requireActivity(), getString(R.string.featured)).apply {
             injectViewAt(binding.addLayout)
             setLifecycleOwner(viewLifecycleOwner)
             setupFeaturedCallbacks(viewModel) {
@@ -81,7 +82,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts), HomeFragment.HomeFrag
             }
         }
 
-        /** Recently Added Layout */
+        *//** Recently Added Layout *//*
         val queryMap6 = YTSQuery.ListMoviesBuilder().apply {
             setSortBy(YTSQuery.SortBy.date_added)
         }.build()
@@ -92,7 +93,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts), HomeFragment.HomeFrag
             setupCallbacks(viewModel, queryMap6)
         }
 
-        /** Top Rated Layout */
+        *//** Top Rated Layout *//*
         val queryMap = YTSQuery.ListMoviesBuilder().apply {
             setSortBy(YTSQuery.SortBy.rating)
             setOrderBy(YTSQuery.OrderBy.descending)
@@ -104,7 +105,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts), HomeFragment.HomeFrag
             setupCallbacks(viewModel, queryMap)
         }
 
-        /** Popular Layout */
+        *//** Popular Layout *//*
         val queryMap3 = YTSQuery.ListMoviesBuilder().apply {
             setSortBy(YTSQuery.SortBy.download_count)
             setOrderBy(YTSQuery.OrderBy.descending)
@@ -116,7 +117,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts), HomeFragment.HomeFrag
             setupCallbacks(viewModel, queryMap3)
         }
 
-        /** Most Liked Layout */
+        *//** Most Liked Layout *//*
         val queryMap4 = YTSQuery.ListMoviesBuilder().apply {
             setSortBy(YTSQuery.SortBy.like_count)
             setOrderBy(YTSQuery.OrderBy.descending)
@@ -128,7 +129,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts), HomeFragment.HomeFrag
             setupCallbacks(viewModel, queryMap4)
         }
 
-        /** Latest Layout */
+        *//** Latest Layout *//*
         val queryMap5 = YTSQuery.ListMoviesBuilder().apply {
             setSortBy(YTSQuery.SortBy.year)
             setOrderBy(YTSQuery.OrderBy.descending)
@@ -138,7 +139,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts), HomeFragment.HomeFrag
             injectViewAt(binding.addLayout)
             setLifecycleOwner(viewLifecycleOwner)
             setupCallbacks(viewModel, queryMap5)
-        }
+        }*/
     }
 
     /**

@@ -40,6 +40,7 @@ import io.github.dkbai.tinyhttpd.nanohttpd.webserver.SimpleWebServer
 import javax.inject.Inject
 import kotlin.reflect.KClass
 
+@Deprecated("StartActivity")
 @AndroidEntryPoint
 class MainActivity : AbstractBottomNavActivity() {
 
@@ -94,7 +95,7 @@ class MainActivity : AbstractBottomNavActivity() {
 
         setNavigationDrawerItemClicks()
 
-        ChangelogHelper(this).show()
+       // ChangelogHelper(this).show()
 
         // TODO: Remove this logging
         /*registerFragmentLifecycleForLogging { fragment, which ->

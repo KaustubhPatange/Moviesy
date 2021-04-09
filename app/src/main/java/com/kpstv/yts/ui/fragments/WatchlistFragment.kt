@@ -24,6 +24,7 @@ import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.lang.ref.WeakReference
 
+@Deprecated("Use v2")
 @AndroidEntryPoint
 class WatchlistFragment : Fragment(R.layout.fragment_watchlist), AbstractBottomNavActivity.BottomNavFragmentSelection {
 

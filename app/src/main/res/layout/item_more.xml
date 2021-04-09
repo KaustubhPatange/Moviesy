@@ -1,38 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="7dp">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/mainCard"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="7dp"
-        android:layout_marginTop="7dp"
-        android:layout_marginEnd="7dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="?attr/selectableItemBackground"
-        app:cardCornerRadius="7dp">
-
-        <include layout="@layout/item_common_banner" />
-
-    </com.google.android.material.card.MaterialCardView>
+    <com.kpstv.imageloaderview.ImageLoaderView
+        android:id="@+id/mainImage"
+        android:layout_width="120dp"
+        android:layout_height="180dp"
+        app:corner_radius="5dp"
+        app:overlay_drawable="@drawable/ic_play_circle"
+        app:selectable="true"
+        app:shimmering="true" />
 
     <TextView
         android:id="@+id/mainText"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="7dp"
         android:layout_marginTop="7dp"
-        android:layout_marginEnd="7dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="3dp"
         android:ellipsize="end"
         android:fontFamily="@font/google_sans_regular"
         android:singleLine="true"
-        android:text="@string/af_title"
         android:textSize="13sp"
-        android:transitionName="contentTitle" />
+        android:transitionName="contentTitle"
+        tools:text="@string/af_title" />
+
+    <!-- <com.google.android.material.card.MaterialCardView
+         android:id="@+id/mainCard"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_marginStart="7dp"
+         android:layout_marginTop="7dp"
+         android:layout_marginEnd="7dp"
+         android:clickable="true"
+         android:focusable="true"
+         android:foreground="?attr/selectableItemBackground"
+         app:cardCornerRadius="7dp">
+
+         <include layout="@layout/item_common_banner" />
+
+     </com.google.android.material.card.MaterialCardView>
+
+     <TextView
+         android:id="@+id/mainText"
+         android:layout_width="120dp"
+         android:layout_height="wrap_content"
+         android:layout_marginStart="7dp"
+         android:layout_marginTop="7dp"
+         android:layout_marginEnd="7dp"
+         android:layout_marginBottom="10dp"
+         android:ellipsize="end"
+         android:fontFamily="@font/google_sans_regular"
+         android:singleLine="true"
+         android:textSize="13sp"
+         android:transitionName="contentTitle"
+         tools:text="@string/af_title" />-->
 </LinearLayout>

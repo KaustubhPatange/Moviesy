@@ -230,11 +230,11 @@ class SearchActivity : AppCompatActivity() {
                                             "Suggested"
                                         )
                                     layout.injectViewAt(binding.activitySearchSingle.addLayout)
-                                    layout.setupCallbacks(
+                                   /* layout.setupCallbacks(
                                         movies,
                                         "${imdbCode}/similar",
                                         isMoreAvailable
-                                    )
+                                    )*/
                                 }
                             ))
                         }

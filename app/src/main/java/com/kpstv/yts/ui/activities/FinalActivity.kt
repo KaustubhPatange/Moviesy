@@ -223,11 +223,11 @@ class FinalActivity : AppCompatActivity(), MovieListener {
                         setGenre(genre)
                         setOrderBy(YTSQuery.OrderBy.descending)
                     }.build()
-                    CustomMovieLayout.invokeMoreFunction(
+                   /* CustomMovieLayout.invokeMoreFunction(
                         this@FinalActivity,
                         "Based on $text",
                         queryMap
-                    )
+                    )*/
                 } else Toasty.error(applicationContext, "Genre $text does not exist").show()
             }
         })
@@ -245,7 +245,7 @@ class FinalActivity : AppCompatActivity(), MovieListener {
                         getString(R.string.recommend)
                     )
                 recommendLayout.injectViewAt(binding.afSuggestionAddLayout)
-                recommendLayout.setupCallbacks(movies, "$tag/recommendations", isMoreAvailable)
+//                recommendLayout.setupCallbacks(movies, "$tag/recommendations", isMoreAvailable)
             },
             onFailure = { e ->
                 handleRetrofitError(this@FinalActivity, e)
@@ -265,7 +265,7 @@ class FinalActivity : AppCompatActivity(), MovieListener {
                         getString(R.string.suggested)
                     )
                 similarLayout.injectViewAt(binding.afSuggestionAddLayout)
-                similarLayout.setupCallbacks(movies, "${movie.imdb_code}/similar", isMoreAvailable)
+//                similarLayout.setupCallbacks(movies, "${movie.imdb_code}/similar", isMoreAvailable)
             },
             onFailure = { e ->
                 handleRetrofitError(this@FinalActivity, e)
@@ -285,7 +285,7 @@ class FinalActivity : AppCompatActivity(), MovieListener {
                         "${getString(R.string.more_with)} ${it.name}"
                     )
                     movieLayout.injectViewAt(binding.afMoreAddLayout)
-                    movieLayout.setupCallbacks(movie.title, it.movies)
+                  //  movieLayout.setupCallbacks(movie.title, it.movies)
                 }
             },
             onFailure = { e ->

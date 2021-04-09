@@ -10,16 +10,16 @@ import android.graphics.Bitmap
 import android.os.Build.VERSION.SDK_INT
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import com.google.android.gms.common.internal.service.Common
 import com.kpstv.common_moviesy.extensions.colorFrom
 import com.kpstv.common_moviesy.extensions.utils.CommonUtils
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
-import com.kpstv.yts.data.models.AppDatabase
 import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.receivers.CommonBroadCast
 import com.kpstv.yts.ui.activities.FinalActivity
 import com.kpstv.yts.ui.activities.SplashActivity
+import com.kpstv.yts.ui.activities.StartActivity
+import com.kpstv.yts.ui.helpers.ActivityIntentHelper
 import java.io.File
 import java.util.*
 
@@ -82,11 +82,10 @@ object Notifications {
 
     fun removeUpdateProgressNotification() = mgr.cancel(UPDATE_PROGRESS_NOTIFICATION_ID)
 
-    fun sendUpdateNotification(context: Context, update: AppDatabase.Update) = with(context) {
-        val updateIntent = Intent(this, SplashActivity::class.java)
+    fun sendUpdateNotification(context: Context) = with(context) {
+        val updateIntent = Intent(this, StartActivity::class.java)
             .apply {
-                action = AppInterface.ACTION_UPDATE
-                putExtra(AppInterface.UPDATE_URL, update.url)
+                action = ActivityIntentHelper.ACTION_FORCE_CHECK_UPDATE
             }
         val pendingIntent = PendingIntent.getActivity(
             this,
@@ -109,9 +108,10 @@ object Notifications {
     }
 
     fun sendMovieNotification(context: Context, movie: MovieShort, posterImage: Bitmap? = null, bannerImage: Bitmap? = null, featured: Boolean = true) = with(context) {
-        Log.e(TAG, "Sending notification with movieId: ${movie.movieId}")
-        val movieIntent = Intent(this, FinalActivity::class.java).apply {
-            putExtra(AppInterface.MOVIE_ID, movie.movieId)
+        Log.e(TAG, "=> Sending notification with movieId: ${movie.movieId}")
+        val movieIntent = Intent(this, StartActivity::class.java).apply {
+            action = ActivityIntentHelper.ACTION_LAUNCH_MOVIE
+            putExtra(ActivityIntentHelper.PAYLOAD, movie.movieId)
         }
         val pendingIntent =
             PendingIntent.getActivity(this, getRandomNumberCode(), movieIntent, 0)
@@ -150,8 +150,8 @@ object Notifications {
     }
 
     fun sendDownloadNotification(context: Context, contentText: String) = with(context) {
-        val downloadIntent = Intent(this, SplashActivity::class.java).apply {
-            putExtra(SplashActivity.ARG_ROUTE_TO_LIBRARY, true)
+        val downloadIntent = Intent(this, StartActivity::class.java).apply {
+            action = ActivityIntentHelper.ACTION_MOVE_TO_LIBRARY
         }
 
         val pendingIntent =
@@ -185,9 +185,6 @@ object Notifications {
     }
 
     fun sendSSLHandshakeNotification(context: Context) = with(context) {
-        val openIntent = Intent(this, CommonBroadCast::class.java).apply {
-            action = CommonBroadCast.OPEN_YTS_SITE
-        }
         val notification =
             NotificationCompat.Builder(this, getString(R.string.CHANNEL_ID_2))
                 .setDefaults(Notification.DEFAULT_ALL)
@@ -196,7 +193,6 @@ object Notifications {
                 .setColor(colorFrom(R.color.colorPrimary_New_DARK))
                 .setSmallIcon(R.drawable.ic_error_outline)
                 .setAutoCancel(true)
-                .setContentIntent(PendingIntent.getBroadcast(this, getRandomNumberCode(), openIntent, 0))
                 .setPriority(Notification.PRIORITY_LOW)
                 .build()
 

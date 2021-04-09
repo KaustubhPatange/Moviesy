@@ -6,10 +6,9 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.lifecycleScope
-import androidx.savedstate.SavedStateRegistry
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.kpstv.navigation.internals.BottomNavigationImpl
+import com.kpstv.navigation.internals.getSaveInstanceState
 
 /**
  * Set up navigation for [BottomNavigationView] in [Fragment].
@@ -33,7 +32,7 @@ fun Navigator.install(fragment: Fragment, obj: Navigator.BottomNavigation) {
         bn = obj
     )
 
-    impl.onCreate(fragment.lifecycleScope, fragmentSavedState)
+    impl.onCreate(fragmentSavedState)
 
     fragment.parentFragmentManager.registerFragmentLifecycleCallbacks(
         FragmentBottomNavigationLifecycle(fragment, impl), false
@@ -60,7 +59,7 @@ fun Navigator.install(
         bottomNav = activity.findViewById(obj.bottomNavigationViewId),
         bn = obj
     )
-    impl.onCreate(activity.lifecycleScope, savedStateInstance)
+    impl.onCreate(savedStateInstance)
 
     activity.application.registerActivityLifecycleCallbacks(
         ActivityBottomNavigationLifecycle(activity, impl)

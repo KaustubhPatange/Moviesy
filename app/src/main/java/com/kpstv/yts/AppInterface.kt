@@ -66,6 +66,7 @@ class AppInterface {
         const val UNPAUSE_JOB = "com.kpstv.yts.ADD_ONLY_JOB"
         const val REMOVE_CURRENT_JOB = "com.kpstv.yts.REMOVE_CURRENT_JOB"
 
+        @Deprecated("")
         const val MOVIE_ID = "com.kpstv.yts.MOVIE_ID"
         const val UPDATE_URL = "com.kpstv.yts.UPDATE_URL"
 
@@ -78,7 +79,6 @@ class AppInterface {
         const val ABOUT_FRAG = "com.kpstv.yts.ABOUT_FRAG"
 
         const val ACTION_REPLACE_FRAG = "com.kpstv.yts.action_replace_frag"
-        const val ACTION_UPDATE = "com.kpstv.yts.action_update"
 
         const val IS_FIRST_LAUNCH_PREF = "is_first_launch_pref"
         const val PROXY_CHECK_PREF = "proxy_check_pref"
@@ -121,27 +121,28 @@ class AppInterface {
                 putBoolean(PROXY_CHECK_PREF, true)
             }.apply()
 
-            if (context is Activity) {
-                if (t is SSLHandshakeException || t?.message?.trim() == "HTTP 525") {
-                    if (!isSSLDialogActive) {
-                        isSSLDialogActive = true
-                        AppUtils.showSSLHandshakeDialog(context) {
-                            isSSLDialogActive = false
-                        }
+            if (t is SSLHandshakeException || t?.message?.trim() == "HTTP 525") {
+                if (!isSSLDialogActive) {
+                    isSSLDialogActive = true
+                    AppUtils.showSSLHandshakeDialog(context) {
+                        isSSLDialogActive = false
                     }
-                } else {
-                    CafeBar.builder(context)
-                        .content(message)
-                        .floating(true)
-                        .duration(CafeBar.Duration.INDEFINITE)
-                        .neutralText(context.getString(R.string.dismiss))
-                        .onNeutral {
-                            context.finish()
-                        }
-                        .autoDismiss(false)
-                        .showShadow(true)
-                        .show()
                 }
+                return
+            }
+
+            if (context is Activity) {
+                CafeBar.builder(context)
+                    .content(message)
+                    .floating(true)
+                    .duration(CafeBar.Duration.INDEFINITE)
+                    .neutralText(context.getString(R.string.dismiss))
+                    .onNeutral {
+                        context.finish()
+                    }
+                    .autoDismiss(false)
+                    .showShadow(true)
+                    .show()
             } else {
                 Toasty.error(context, message, Toasty.LENGTH_LONG).show()
             }

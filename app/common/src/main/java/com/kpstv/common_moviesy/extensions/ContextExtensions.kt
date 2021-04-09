@@ -34,17 +34,3 @@ fun Context.getColorAttr(@AttrRes id: Int, @ColorInt fallbackColor: Int = 0): In
     theme?.resolveAttribute(id, typedValue, true)
     return typedValue.data
 }
-
-fun Context.showKeyboard(view: View) {
-    val inputMethodManager: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-    inputMethodManager.toggleSoftInputFromWindow(view.applicationWindowToken, InputMethodManager.SHOW_IMPLICIT, 0)
-    view.requestFocus()
-    if (view is EditText) {
-        view.setSelection(view.text.length)
-    }
-}
-
-fun Context.hideKeyboard(view: View) {
-    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-    imm.hideSoftInputFromWindow(view.windowToken, 0)
-}

@@ -4,12 +4,12 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
-import android.os.Bundle
 import android.view.View
 import androidx.annotation.StyleRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import com.kpstv.common_moviesy.extensions.getColorAttr
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
@@ -34,8 +34,9 @@ object ThemeHelper {
             activity.window.statusBarColor = Color.BLACK
             activity.window.navigationBarColor = Color.BLACK
         } else if (Build.VERSION.SDK_INT >= 23) {
-            val color = activity.getColorAttr(R.attr.colorBackground)
+            val color = activity.getColorAttr(R.attr.colorForeground)
             activity.window.statusBarColor = color
+            activity.window.navigationBarColor = color
 
             if (!AppInterface.IS_DARK_THEME) {
                 decorView.systemUiVisibility = decorView.systemUiVisibility or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
@@ -52,20 +53,13 @@ object ThemeHelper {
     /**
      * Once the theme is changed the fragment will be respond to the theme changes.
      */
-    fun Fragment.registerForThemeChange(fm: FragmentManager) {
-        fm.registerFragmentLifecycleCallbacks(object :
-            FragmentManager.FragmentLifecycleCallbacks() {
-            override fun onFragmentCreated(
-                fm: FragmentManager,
-                f: Fragment,
-                savedInstanceState: Bundle?
-            ) {
-                if (this@registerForThemeChange::class == f::class) {
-                    context?.updateTheme(requireActivity())
-                    fm.unregisterFragmentLifecycleCallbacks(this)
-                }
-                super.onFragmentCreated(fm, f, savedInstanceState)
+    fun Fragment.registerForThemeChange() {
+        this.lifecycle.addObserver(object: DefaultLifecycleObserver{
+            override fun onCreate(owner: LifecycleOwner) {
+                context?.updateTheme(requireActivity())
+                lifecycle.removeObserver(this)
+                super.onCreate(owner)
             }
-        }, false)
+        })
     }
 }

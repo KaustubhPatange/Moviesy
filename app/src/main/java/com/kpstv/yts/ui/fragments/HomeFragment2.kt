@@ -47,7 +47,7 @@ class HomeFragment2 : Fragment(R.layout.fragment_home), TabLayout.OnTabSelectedL
                 val queryMap = YTSQuery.ListMoviesBuilder.getDefault().apply {
                     setQuality(YTSQuery.Quality.q2160p)
                 }.build()
-                CustomMovieLayout.invokeMoreFunction2(navViewModel, getString(R.string.search_filters), queryMap)
+                navViewModel.goToMore(getString(R.string.search_filters), queryMap)
             }
             tabLayout.addOnTabSelectedListener(this@HomeFragment2)
         }

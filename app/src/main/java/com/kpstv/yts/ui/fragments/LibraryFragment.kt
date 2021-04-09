@@ -35,6 +35,7 @@ import es.dmoral.toasty.Toasty
 import java.io.File
 import java.lang.ref.WeakReference
 
+@Deprecated("Use v2")
 @AndroidEntryPoint
 class LibraryFragment : Fragment(R.layout.fragment_library), AbstractBottomNavActivity.BottomNavFragmentSelection {
     private val TAG = "LibraryFragment"

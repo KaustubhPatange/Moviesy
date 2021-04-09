@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mainLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -9,29 +10,29 @@
     android:focusable="true"
     android:padding="15dp">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/mainCard"
+    <com.kpstv.imageloaderview.ImageLoaderView
+        android:id="@+id/mainImage"
         android:layout_width="120dp"
         android:layout_height="180dp"
+        app:corner_radius="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <include layout="@layout/item_common_banner" />
-
-    </com.google.android.material.card.MaterialCardView>
+        app:layout_constraintTop_toTopOf="parent"
+        app:overlay_drawable="@drawable/ic_play_circle"
+        app:selectable="true"
+        app:shimmering="true" />
 
     <TextView
         android:id="@+id/mainText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
-        android:text="@string/af_title"
         android:textColor="?colorText"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/mainCard"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@id/mainImage"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/af_title" />
 
     <TextView
         android:id="@+id/mainSubText"
@@ -39,10 +40,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
         android:layout_marginTop="7dp"
-        android:text="2019 &#8226; 182 mins"
         android:textSize="13sp"
-        app:layout_constraintStart_toEndOf="@id/mainCard"
-        app:layout_constraintTop_toBottomOf="@id/mainText" />
+        app:layout_constraintStart_toEndOf="@id/mainImage"
+        app:layout_constraintTop_toBottomOf="@id/mainText"
+        tools:text="2019 &#8226; 182 mins" />
 
     <Button
         android:id="@+id/mainImdbButton"
@@ -53,10 +54,10 @@
         android:backgroundTint="@color/imdb"
         android:minWidth="0dp"
         android:minHeight="0dp"
-        android:text="@string/af_imdb_text"
         android:textAllCaps="false"
         android:textSize="13sp"
-        app:layout_constraintStart_toEndOf="@id/mainCard"
-        app:layout_constraintTop_toBottomOf="@id/mainSubText" />
+        app:layout_constraintStart_toEndOf="@id/mainImage"
+        app:layout_constraintTop_toBottomOf="@id/mainSubText"
+        tools:text="@string/af_imdb_text" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

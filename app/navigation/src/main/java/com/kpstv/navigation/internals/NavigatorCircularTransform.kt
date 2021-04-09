@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.kpstv.navigation.CircularPayload
 import com.kpstv.navigation.R
-import com.kpstv.navigation.doOnLaidOut
 import kotlin.math.hypot
 
 internal class NavigatorCircularTransform(

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DrawableRes
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +19,7 @@ import com.kpstv.yts.databinding.ItemLocalGenreBinding
 import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.extensions.common.CustomMovieLayout
 import com.kpstv.yts.ui.viewmodels.MainViewModel
+import com.kpstv.yts.ui.viewmodels.StartViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -26,6 +28,7 @@ class GenreFragment2 : Fragment(R.layout.fragment_genre), HomeFragment2.Callback
     private val viewModel by viewModels<MainViewModel>(
         ownerProducer = { requireParentFragment().requireParentFragment() }
     )
+    private val navViewModel by activityViewModels<StartViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -40,9 +43,7 @@ class GenreFragment2 : Fragment(R.layout.fragment_genre), HomeFragment2.Callback
                 setGenre(model.genre)
             }.build()
 
-            CustomMovieLayout.invokeMoreFunction(
-                requireContext(), "Based on ${model.title}", queryMap
-            )
+            navViewModel.goToMore("${getString(R.string.genre_select)} ${model.title}", queryMap)
         }
 
         binding.recyclerView.adapter = adapter

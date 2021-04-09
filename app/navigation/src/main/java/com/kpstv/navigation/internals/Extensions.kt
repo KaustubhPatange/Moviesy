@@ -1,4 +1,4 @@
-package com.kpstv.navigation
+package com.kpstv.navigation.internals
 
 import android.os.Bundle
 import android.view.View
@@ -12,18 +12,26 @@ internal fun Fragment.getSaveInstanceState() : Bundle? {
     return field.get(this) as? Bundle
 }
 
-internal fun View.doOnLaidOut(block: () -> Unit) {
+internal fun View.doOnLaidOut(block: (View) -> Unit) {
     if (isLaidOut) {
-        block.invoke()
+        block.invoke(this)
     } else {
         viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener{
             override fun onPreDraw(): Boolean {
                 if (isLaidOut) {
-                    block.invoke()
+                    block.invoke(this@doOnLaidOut)
                     viewTreeObserver.removeOnPreDrawListener(this)
                 }
                 return true
             }
         })
     }
+}
+
+internal fun View.invisible() {
+    visibility = View.INVISIBLE
+}
+
+internal fun View.show() {
+    visibility = View.VISIBLE
 }

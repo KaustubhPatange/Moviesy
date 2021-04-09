@@ -1,11 +1,11 @@
 package com.kpstv.yts.ui.fragments.sheets
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
-import androidx.core.app.ShareCompat
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -19,6 +19,7 @@ import com.kpstv.yts.extensions.common.CustomBottomItem
 import com.kpstv.yts.extensions.utils.GlideApp
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.extensions.utils.AppUtils
+import com.kpstv.yts.ui.helpers.ThemeHelper.registerForThemeChange
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
@@ -30,6 +31,11 @@ class BottomSheetQuickInfo : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
     private val binding by viewBinding(BottomSheetQuickinfoBinding::bind)
 
     private lateinit var movie: MovieShort
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        registerForThemeChange()
+    }
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

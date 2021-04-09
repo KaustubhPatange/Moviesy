@@ -49,6 +49,7 @@
         <activity
             android:name=".ui.activities.StartActivity"
             android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible"
             android:theme="@style/StartTheme.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
