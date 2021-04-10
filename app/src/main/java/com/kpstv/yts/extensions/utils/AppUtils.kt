@@ -10,6 +10,8 @@ import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
+import android.provider.Settings
+import android.telephony.TelephonyManager
 import android.text.Spanned
 import android.util.Log
 import android.view.LayoutInflater
@@ -300,12 +302,35 @@ class AppUtils {
                 .setSubtitle(R.string.error_ssl_handshake_text_dialog)
                 .setCancellable(false)
                 .setLottieRes(R.raw.error)
-                .setNegativeButton(android.R.string.cancel)
                 .setPositiveButton(R.string.alright) {
                     launchUrlIntent(context, AppInterface.YTS_BASE_URL)
                     onClose.invoke()
                 }
                 .setNegativeButton(android.R.string.cancel) {
+                    onClose.invoke()
+                }
+                .show()
+        }
+
+        fun showMovieNotFoundDialog(context: Context, onClose: SimpleCallback = {}) {
+            WindowDialog.Builder(context)
+                .setTitle(R.string.error_movie_title)
+                .setSubtitle(R.string.error_movie_text)
+                .setCancellable(false)
+                .setLottieRes(R.raw.not_found)
+                .setPositiveButton(R.string.alright) {
+                    onClose.invoke()
+                }
+                .show()
+        }
+
+        fun showDataErrorDialog(context: Context, onClose: SimpleCallback = {}) {
+            WindowDialog.Builder(context)
+                .setTitle(R.string.error_mobile_data_title)
+                .setSubtitle(R.string.error_mobile_data_text)
+                .setCancellable(false)
+                .setLottieRes(R.raw.wifi_wiper)
+                .setPositiveButton(R.string.alright) {
                     onClose.invoke()
                 }
                 .show()
@@ -322,6 +347,12 @@ class AppUtils {
                     onClose.invoke()
                 }
                 .show()
+        }
+
+        fun isMobileDataEnabled(context: Context) : Boolean {
+            val telephony = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+            return (telephony.simState == TelephonyManager.SIM_STATE_READY) &&
+                    Settings.Global.getInt(context.contentResolver, "mobile_data", 1) == 1
         }
 
         fun getUniqueBackStackName() = "${this::class.simpleName}_base${Random.nextInt(0, 1000)}"

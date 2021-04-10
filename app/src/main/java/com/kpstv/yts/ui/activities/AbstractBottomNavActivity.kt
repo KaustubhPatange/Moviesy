@@ -20,6 +20,7 @@ import kotlin.reflect.KClass
  * @Usage
  * Extend any activity with [BottomNavigationView] with this one & implement its abstract methods.
  */
+@Deprecated("Use Navigator library")
 abstract class AbstractBottomNavActivity : AppCompatActivity() {
     /**
      * To get notified when current (this) fragment is selected.

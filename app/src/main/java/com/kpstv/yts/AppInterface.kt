@@ -8,8 +8,10 @@ import androidx.preference.PreferenceManager
 import com.danimahardhika.cafebar.CafeBar
 import com.kpstv.yts.data.models.AppDatabase
 import com.kpstv.yts.extensions.SearchType
+import com.kpstv.yts.extensions.SimpleCallback
 import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.extensions.add
+import com.kpstv.yts.extensions.errors.MovieNotFoundException
 import com.kpstv.yts.extensions.errors.SSLHandshakeException
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.ui.fragments.GenreFragment
@@ -104,8 +106,9 @@ class AppInterface {
         val HistoryDateFormatter = SimpleDateFormat("yyyyMMddHHmmss")
 
         private var isSSLDialogActive = false
+        private var isDataDialogActive = false
         @SuppressLint("Range") // TODO: Use something like snackbar
-        fun handleRetrofitError(context: Context, t: Exception?) {
+        fun handleRetrofitError(context: Context, t: Exception?, onCancel: SimpleCallback = {}) {
             var message = "Site is not responding. Try to change proxy from settings."
             if (t?.message == null) {
                 message = "Error: Unknown, could not be determined"
@@ -126,6 +129,25 @@ class AppInterface {
                     isSSLDialogActive = true
                     AppUtils.showSSLHandshakeDialog(context) {
                         isSSLDialogActive = false
+                        onCancel.invoke()
+                    }
+                }
+                return
+            }
+
+            if (t is MovieNotFoundException) {
+                AppUtils.showMovieNotFoundDialog(context) {
+                    onCancel.invoke()
+                }
+                return
+            }
+
+            if (t?.message?.contains("failed to connect to yts") == true && AppUtils.isMobileDataEnabled(context)) {
+                if (!isDataDialogActive) {
+                    isDataDialogActive = true
+                    AppUtils.showDataErrorDialog(context) {
+                        isDataDialogActive = false
+                        onCancel.invoke()
                     }
                 }
                 return

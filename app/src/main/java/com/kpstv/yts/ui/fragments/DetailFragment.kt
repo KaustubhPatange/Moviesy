@@ -30,6 +30,7 @@ import com.kpstv.yts.data.models.Movie
 import com.kpstv.yts.databinding.ActivityFinalBinding
 import com.kpstv.yts.extensions.*
 import com.kpstv.yts.extensions.common.CustomMovieLayout
+import com.kpstv.yts.extensions.errors.MovieNotFoundException
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.GlideApp
 import com.kpstv.yts.extensions.utils.LangCodeUtils
@@ -67,6 +68,11 @@ class DetailFragment : KeyedFragment(R.layout.activity_final), MovieListener {
 
     override val backStackName: String = AppUtils.getUniqueBackStackName()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        requireActivity().transparentNavigationBar()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setToolbar()
@@ -103,7 +109,9 @@ class DetailFragment : KeyedFragment(R.layout.activity_final), MovieListener {
     }
 
     override fun onFailure(e: Exception) {
-        AppInterface.handleRetrofitError(requireContext(), e)
+        AppInterface.handleRetrofitError(requireContext(), e) {
+            goBack()
+        }
         e.printStackTrace()
         Log.e(TAG, "Failed--> " + e.message)
     }
@@ -387,6 +395,7 @@ class DetailFragment : KeyedFragment(R.layout.activity_final), MovieListener {
 
     private fun setToolbar() {
         binding.appbarLayout.applyTopInsets()
+        binding.afMoreAddLayout.applyBottomInsets(extra = 20.dp().toInt())
         binding.toolbar.title = " "
         binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
         binding.toolbar.setNavigationOnClickListener { goBack() }

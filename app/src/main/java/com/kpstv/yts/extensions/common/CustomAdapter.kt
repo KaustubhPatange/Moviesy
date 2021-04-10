@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
 import androidx.recyclerview.widget.RecyclerView
+import com.kpstv.common_moviesy.extensions.drawableFrom
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.databinding.ItemSuggestionBinding
@@ -44,11 +45,15 @@ class CustomAdapter(
         holder.binding.shimmerImageView.setOnClickListener { view ->
             onClick.invoke(view, movie)
         }
-        holder.binding.root.doOnPreDraw {
+        holder.binding.root.doOnPreDraw { view ->
             holder.binding.shimmerImageView.load(
                 uri = imageUri,
                 onSuccess = { bitmap ->
                     holder.binding.shimmerImageView.setImageBitmap(bitmap)
+                    holder.binding.shimmerImageView.isShimmering = false
+                },
+                onError = {
+                    holder.binding.shimmerImageView.overlayDrawable = view.context.drawableFrom(R.drawable.ic_error_dark)
                     holder.binding.shimmerImageView.isShimmering = false
                 }
             )

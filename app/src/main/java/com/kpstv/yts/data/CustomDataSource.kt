@@ -103,7 +103,7 @@ class CustomDataSource(
                     MovieBase.TMDB -> {
                         val response = executeTMdbQuery(FIRST_PAGE)
                         response?.let {
-                            callback.onResult(createMovieShort(it.results), null, FIRST_PAGE + 1)
+                            callback.onResult(createMovieShort(it.results), null, if (response.total_pages < 130) FIRST_PAGE + 1 else null)
                         }
                     }
                     MovieBase.YTS -> {

@@ -12,6 +12,10 @@ fun Activity.makeFullScreen() {
     window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 }
 
+fun Activity.transparentNavigationBar() {
+    window.navigationBarColor = 0
+}
+
 fun FragmentActivity.registerFragmentLifecycleForLogging(block: (Fragment, String) -> Unit) {
     supportFragmentManager.registerFragmentLifecycleCallbacks(
         object : FragmentManager.FragmentLifecycleCallbacks() {

@@ -88,8 +88,10 @@ class ChartsFragment2 : Fragment(R.layout.fragment_charts), HomeFragment2.Callba
             setLifecycleOwner(viewLifecycleOwner)
             listenForClicks(::onItemClick)
             setupFeaturedCallbacks(navViewModel, viewModel) {
-                cmlFeatured.removeView(binding.addLayout)
-                Toasty.warning(requireContext(), getString(R.string.featured_movies)).show()
+                if (!isRemoving) {
+                    cmlFeatured.removeView(binding.addLayout)
+                    Toasty.warning(requireContext(), getString(R.string.featured_movies)).show()
+                }
             }
         }
 

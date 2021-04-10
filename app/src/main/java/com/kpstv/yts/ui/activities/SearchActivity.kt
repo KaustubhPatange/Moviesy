@@ -46,6 +46,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
 
+@Deprecated("Use SearchFragment")
 @FlowPreview
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint

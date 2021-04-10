@@ -12,6 +12,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.kpstv.common_moviesy.extensions.applyBottomInsets
 import com.kpstv.common_moviesy.extensions.applyTopInsets
+import com.kpstv.common_moviesy.extensions.utils.KeyboardUtils
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.navigation.*
 import com.kpstv.yts.AppInterface
@@ -256,7 +257,7 @@ class MainFragment : KeyedFragment(R.layout.activity_main), MainFragmentDrawerCa
         binding.bottomNav.translationY = 500f
         binding.root.doOnPreDraw {
             if (isVisible) {
-                binding.bottomNav.animate().translationY(0f).setDuration(100).start()
+                binding.bottomNav.animate().translationY(0f).setStartDelay(70).setDuration(100).start()
             }
         }
     }

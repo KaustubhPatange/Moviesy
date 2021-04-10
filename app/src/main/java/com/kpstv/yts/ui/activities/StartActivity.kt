@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.kpstv.common_moviesy.extensions.makeFullScreen
@@ -45,6 +46,8 @@ class StartActivity : AppCompatActivity(), NavigatorTransmitter {
         navViewModel.navigation.observe(this, navigationObserver)
         navViewModel.errors.observe(this, errorObserver)
 
+        setAutoZIndex()
+
         if (savedInstanceState == null && !intentHelper.handle(intent)) {
             navViewModel.navigateTo(Screen.SPLASH)
         }
@@ -72,6 +75,17 @@ class StartActivity : AppCompatActivity(), NavigatorTransmitter {
                 } else {
                     AppUtils.showUnknownErrorDialog(this, error.inner) { finish() }
                 }
+            }
+        }
+    }
+
+    /**
+     * To solve some overlapping issues with Fragment add transaction.
+     */
+    private fun setAutoZIndex() {
+        supportFragmentManager.addOnBackStackChangedListener {
+            binding.fragmentContainer.children.forEachIndexed { index, view ->
+                view.translationZ = (index + 1).toFloat()
             }
         }
     }

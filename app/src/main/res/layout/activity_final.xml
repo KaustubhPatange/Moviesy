@@ -48,6 +48,7 @@
                     android:layout_height="wrap_content"/>
                 <LinearLayout
                     android:orientation="vertical"
+                    android:layout_marginBottom="20dp"
                     android:id="@+id/af_moreAddLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>

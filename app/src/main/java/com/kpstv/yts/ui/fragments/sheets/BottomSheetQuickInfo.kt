@@ -32,11 +32,6 @@ class BottomSheetQuickInfo : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
 
     private lateinit var movie: MovieShort
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        registerForThemeChange()
-    }
-
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

@@ -12,93 +12,98 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.google.android.material.card.MaterialCardView
-            app:layout_scrollFlags="scroll|enterAlways|snap"
-            android:layout_marginBottom="5dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/tv_filter"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:id="@+id/searchCard"
-            android:foreground="?selectableItemBackground"
-            android:layout_marginStart="25dp"
-            android:layout_marginEnd="25dp"
-            android:layout_marginTop="7dp"
-            app:cardBackgroundColor="?colorSeparator"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <com.google.android.material.card.MaterialCardView
+                app:layout_scrollFlags="scroll|enterAlways|snap"
+                android:layout_marginBottom="5dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/tv_filter"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:id="@+id/searchCard"
+                android:foreground="?selectableItemBackground"
+                android:layout_marginStart="25dp"
+                android:layout_marginEnd="25dp"
+                android:layout_marginTop="7dp"
+                app:cardBackgroundColor="?colorSeparator"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <ImageView
-                    android:padding="12dp"
-                    android:id="@+id/searchImage"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/textView"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:padding="12dp"
+                        android:id="@+id/searchImage"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_menu"/>
+
+                    <TextView
+                        android:fontFamily="@font/google_sans_regular"
+                        android:textSize="16sp"
+                        android:id="@+id/textView"
+                        android:layout_marginStart="15dp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        app:layout_constraintStart_toEndOf="@id/searchImage"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/tv_filter"
+                        android:text="@string/searchmovies"/>
+
+                    <TextView
+                        android:textColor="@color/premium"
+                        android:layout_marginEnd="7dp"
+                        android:id="@+id/tv_filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:background="?selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:text="@string/_4k"
+                        android:textSize="17sp"
+                        android:padding="5dp"
+                        app:layout_constraintStart_toEndOf="@id/textView"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.tabs.TabLayout
+                app:tabTextAppearance="?android:textAppearanceSmall"
+                android:layout_marginStart="25dp"
+                app:tabMode="scrollable"
+                app:tabRippleColor="@android:color/transparent"
+                android:background="?colorForeground"
+                android:id="@+id/tabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
+                    android:text="@string/charts"/>
+                <com.google.android.material.tabs.TabItem
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_menu"/>
-
-                <TextView
-                    android:fontFamily="@font/google_sans_regular"
-                    android:textSize="16sp"
-                    android:id="@+id/textView"
-                    android:layout_marginStart="15dp"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    app:layout_constraintStart_toEndOf="@id/searchImage"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                   app:layout_constraintEnd_toStartOf="@id/tv_filter"
-                    android:text="@string/searchmovies"/>
-
-                <TextView
-                    android:textColor="@color/premium"
-                    android:layout_marginEnd="7dp"
-                    android:id="@+id/tv_filter"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:text="@string/_4k"
-                    android:textSize="17sp"
-                    android:padding="5dp"
-                    app:layout_constraintStart_toEndOf="@id/textView"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    android:text="@string/categories"/>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.tabs.TabLayout
-            app:tabTextAppearance="?android:textAppearanceSmall"
-            android:layout_marginStart="25dp"
-            app:tabMode="scrollable"
-            app:tabRippleColor="@android:color/transparent"
-            android:background="?colorForeground"
-            android:id="@+id/tabLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:text="@string/charts"/>
-            <com.google.android.material.tabs.TabItem
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:text="@string/categories"/>
-
-        </com.google.android.material.tabs.TabLayout>
+            </com.google.android.material.tabs.TabLayout>
+        </LinearLayout>
 
     </com.kpstv.yts.extensions.views.ExtendedAppBarLayout>
 

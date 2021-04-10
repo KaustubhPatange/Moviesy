@@ -244,5 +244,9 @@
     <string name="err_no_browser">No browser is installed to handle the web urls</string>
     <string name="download_tip_title">Existing downloads</string>
     <string name="download_tip_text"><![CDATA[In any case, your existing download doesn\'t show up here you can go to Settings > Storage > Scan existing downloads.]]></string>
+    <string name="error_mobile_data_title">Error: Couldn\'t connect to server</string>
+    <string name="error_mobile_data_text">It seems like we could not connect to YTS server.\n\nThis may be the issue of using mobile data as some carriers blocks the connection to the website.\n\nThe fix is to use Wifi instead of mobile data.</string>
+    <string name="error_movie_title">Error: Movie not found</string>
+    <string name="error_movie_text">The requested movie does not exist.\n\nSince all movie suggestions are basically fetched from 3rd party websites, it is possible that YTS doesn\'t have it in their database.</string>
     <string name="genre_select">Based on</string>
 </resources>

@@ -40,6 +40,7 @@ import kotlinx.android.synthetic.main.custom_alert_buttons.view.*
 import kotlinx.android.synthetic.main.custom_alert_filter.view.*
 import kotlinx.android.synthetic.main.item_chip.view.*
 
+@Deprecated("Use MoreFragment")
 @SuppressLint("SetTextI18n")
 @AndroidEntryPoint
 class MoreActivity : AppCompatActivity() {

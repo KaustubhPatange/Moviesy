@@ -20,6 +20,7 @@ import com.kpstv.yts.data.models.Movie
 import com.kpstv.yts.data.models.TmDbMovie
 import com.kpstv.yts.data.models.data.data_tmdb
 import com.kpstv.yts.extensions.*
+import com.kpstv.yts.extensions.errors.MovieNotFoundException
 import com.kpstv.yts.extensions.utils.YTSParser
 import com.kpstv.yts.interfaces.api.TMdbApi
 import com.kpstv.yts.interfaces.api.YTSApi
@@ -150,7 +151,7 @@ class FinalViewModel @ViewModelInject constructor(
                     }
 
                     movieRepository.saveMovie(movie)
-                } else movieListener.onFailure(Exception("Given movie does not exist in database"))
+                } else movieListener.onFailure(MovieNotFoundException())
             } catch (e: Exception) {
                 movieRepository.getMovieByTitleLong(queryString)?.let {
                     movieListener.onComplete(it)

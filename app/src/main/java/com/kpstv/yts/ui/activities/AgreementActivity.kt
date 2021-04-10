@@ -18,6 +18,7 @@ import com.kpstv.yts.defaultPreference
 import com.kpstv.yts.extensions.startActivityAndFinish
 import kotlin.math.hypot
 
+@Deprecated("Use WelcomeFragment")
 class AgreementActivity : AppCompatActivity() {
 
     companion object {
