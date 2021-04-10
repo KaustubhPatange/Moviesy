@@ -3,6 +3,7 @@ package com.kpstv.navigation
 import android.os.Bundle
 import android.widget.FrameLayout
 import androidx.annotation.IdRes
+import androidx.annotation.RestrictTo
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
@@ -37,6 +38,7 @@ class Navigator(private val fm: FragmentManager, private val containerView: Fram
      *
      * In short it should be the last fragment in the host so that back press will finish the activity.
      */
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
     fun setPrimaryFragment(clazz: FragClazz) {
         this.primaryFragClass = clazz
     }
@@ -120,14 +122,6 @@ class Navigator(private val fm: FragmentManager, private val containerView: Fram
             if (fragment is NavigatorTransmitter) {
                 return fragment.getNavigator().canGoBack()
             } else if (fragment is KeyedFragment && fragment.forceBackPress) {
-                // Special Bottom Navigation case.
-/*                val bottomImpl = containerView.getTag(R.id.bottom_nav_impl) as? BottomNavigationImpl
-                val defaultSelectionId = containerView.getTag(R.id.bottom_nav_default_selection_id) as? Int
-                if (bottomImpl != null && defaultSelectionId != null) {
-                    if (bottomImpl.bottomNav.selectedItemId == defaultSelectionId) {
-                        return true
-                    }
-                }*/
                 return true
             } else {
                 return false
@@ -161,20 +155,7 @@ class Navigator(private val fm: FragmentManager, private val containerView: Fram
         val currentFragment = getCurrentFragment()
 
         val shouldPopStack = if (currentFragment is KeyedFragment) {
-/*
-            // Special Bottom Navigation case
-            val bottomImpl = containerView.getTag(R.id.bottom_nav_impl) as? BottomNavigationImpl
-            val defaultSelectionId = containerView.getTag(R.id.bottom_nav_default_selection_id) as? Int
-            if (bottomImpl != null && defaultSelectionId != null) {
-                if (bottomImpl.bottomNav.selectedItemId != defaultSelectionId) {
-                    bottomImpl.bottomNav.selectedItemId = defaultSelectionId
-                    return false
-                }
-            }
-*/
-
             !currentFragment.onBackPressed()
-//            !currentFragment.onBackPressed()
            /* if (fm.backStackEntryCount == 1 && currentFragment::class.simpleName == primaryFragClass?.simpleName)
                 false // last primary fragment indicates activity to destroy
             else if (handle)
@@ -188,9 +169,6 @@ class Navigator(private val fm: FragmentManager, private val containerView: Fram
             fm.popBackStackImmediate()
 
             // Sometimes a view is retained in container view even after removing from backStack.
-            // First case was found in Moviesy while changing the theme.
-            // Main -> Setting -> LookFeel -> (Change theme) -> (Press back x2), the fragment will still be their in the containerView
-            // This below check removes it.
            /* val index = containerView.indexOfChild(currentFragment?.view)
             if (index != -1) containerView.removeViewAt(index)*/
         }
@@ -230,7 +208,6 @@ class Navigator(private val fm: FragmentManager, private val containerView: Fram
         open val bottomNavigationFragments: Map<Int, FragClazz> = mapOf()
         /**
          * Default selection will be the first Id of [bottomNavigationFragments].
-         *
          */
         open val selectedBottomNavigationId: Int = -1
         open fun onBottomNavigationSelectionChanged(@IdRes selectedId: Int) {}
@@ -243,6 +220,14 @@ class Navigator(private val fm: FragmentManager, private val containerView: Fram
             fun onSelected() {}
             fun onReselected() {}
         }
+    }
+
+    open class NavigationDrawer {
+        open val drawerNavigationViewId: Int = -1
+        open val drawerNavigationFragments: Map<Int, FragClazz> = mapOf()
+        open val selectedNavigationItemId: Int = -1
+        
+        open fun onNavigationDrawerSelectionChanged(@IdRes selectedId: Int) {}
     }
 
     companion object {

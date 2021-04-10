@@ -3,14 +3,14 @@ package com.kpstv.navigation
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationView
 import com.kpstv.navigation.internals.ActivityBottomNavigationLifecycle
 import com.kpstv.navigation.internals.CommonNavigationImpl
 import com.kpstv.navigation.internals.FragmentBottomNavigationLifecycle
 import com.kpstv.navigation.internals.getSaveInstanceState
 
 /**
- * Set up navigation for [BottomNavigationView] in [Fragment].
+ * Set up navigation for [NavigationView] in [Fragment].
  *
  * This will automatically handle navigation & its state that can also
  * survive process death as well.
@@ -18,7 +18,7 @@ import com.kpstv.navigation.internals.getSaveInstanceState
  * Child fragments can implement [Navigator.BottomNavigation.Callbacks] to get notified
  * when they are selected & re-selected again.
  */
-fun Navigator.install(fragment: Fragment, obj: Navigator.BottomNavigation) {
+fun Navigator.install(fragment: Fragment, obj: Navigator.NavigationDrawer) {
     val fragmentSavedState = fragment.getSaveInstanceState() ?:
     if (fragment is KeyedFragment) fragment.bottomNavigationState else null
 
@@ -27,10 +27,10 @@ fun Navigator.install(fragment: Fragment, obj: Navigator.BottomNavigation) {
     val impl = CommonNavigationImpl(
         fm = getFragmentManager(),
         containerView = getContainerView(),
-        navView = view.findViewById(obj.bottomNavigationViewId),
-        navFragments = obj.bottomNavigationFragments,
-        selectedNavId = obj.selectedBottomNavigationId,
-        onNavSelectionChange = obj::onBottomNavigationSelectionChanged
+        navView = view.findViewById(obj.drawerNavigationViewId),
+        navFragments = obj.drawerNavigationFragments,
+        selectedNavId = obj.selectedNavigationItemId,
+        onNavSelectionChange = obj::onNavigationDrawerSelectionChanged
     )
 
     impl.onCreate(fragmentSavedState)
@@ -41,7 +41,7 @@ fun Navigator.install(fragment: Fragment, obj: Navigator.BottomNavigation) {
 }
 
 /**
- * Set up navigation for [BottomNavigationView] in [FragmentActivity].
+ * Set up navigation for [NavigationView] in [Fragment].
  *
  * This will automatically handle navigation & its state that can also
  * survive process death as well.
@@ -52,15 +52,15 @@ fun Navigator.install(fragment: Fragment, obj: Navigator.BottomNavigation) {
 fun Navigator.install(
     activity: FragmentActivity,
     savedStateInstance: Bundle? = null,
-    obj: Navigator.BottomNavigation
+    obj: Navigator.NavigationDrawer
 ) {
     val impl = CommonNavigationImpl(
         fm = getFragmentManager(),
         containerView = getContainerView(),
-        navView = activity.findViewById(obj.bottomNavigationViewId),
-        navFragments = obj.bottomNavigationFragments,
-        selectedNavId = obj.selectedBottomNavigationId,
-        onNavSelectionChange = obj::onBottomNavigationSelectionChanged
+        navView = activity.findViewById(obj.drawerNavigationViewId),
+        navFragments = obj.drawerNavigationFragments,
+        selectedNavId = obj.selectedNavigationItemId,
+        onNavSelectionChange = obj::onNavigationDrawerSelectionChanged
     )
 
     impl.onCreate(savedStateInstance)

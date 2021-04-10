@@ -79,9 +79,7 @@ class StartActivity : AppCompatActivity(), NavigatorTransmitter {
         }
     }
 
-    /**
-     * To solve some overlapping issues with Fragment add transaction.
-     */
+    // To solve some overlapping issues with Fragment add transaction.
     private fun setAutoZIndex() {
         supportFragmentManager.addOnBackStackChangedListener {
             binding.fragmentContainer.children.forEachIndexed { index, view ->

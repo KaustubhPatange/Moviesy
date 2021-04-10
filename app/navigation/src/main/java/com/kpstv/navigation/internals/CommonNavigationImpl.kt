@@ -1,37 +1,43 @@
 package com.kpstv.navigation.internals
 
 import android.os.Bundle
-import android.view.View
 import android.widget.FrameLayout
 import androidx.annotation.IdRes
+import androidx.annotation.RestrictTo
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commitNow
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationView
 import com.kpstv.navigation.CommonLifecycleCallbacks
+import com.kpstv.navigation.FragClazz
 import com.kpstv.navigation.Navigator
+import kotlin.reflect.KFunction1
 
-internal class BottomNavigationImpl(
+@RestrictTo(RestrictTo.Scope.LIBRARY)
+internal class CommonNavigationImpl(
     private val fm: FragmentManager,
     private val containerView: FrameLayout,
-    private val bottomNav: BottomNavigationView,
-    private val bn: Navigator.BottomNavigation
+    private val navView: FrameLayout,
+    private val navFragments: Map<Int, FragClazz>,
+    private val selectedNavId: Int,
+    private val onNavSelectionChange: KFunction1<Int, Unit>
 ) : CommonLifecycleCallbacks {
 
     private var fragments = arrayListOf<Fragment>()
-    private var selectedIndex = if (bn.selectedBottomNavigationId != -1)
+    private var selectedIndex = if (selectedNavId != -1)
         getPrimarySelectionFragmentId()
     else 0
     private val selectedFragment get() = fragments[selectedIndex]
 
-    private var topSelectionId = if (bn.selectedBottomNavigationId != -1)
-        bn.selectedBottomNavigationId
-    else bn.bottomNavigationFragments.keys.first()
+    private var topSelectionId = if (selectedNavId != -1)
+        selectedNavId
+    else navFragments.keys.first()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (savedInstanceState == null) {
             fm.commitNow {
-                bn.bottomNavigationFragments.values.forEach { frag ->
+                navFragments.values.forEach { frag ->
                     val tagFragment = fm.findFragmentByTag(frag.simpleName + FRAGMENT_SUFFIX)?.also { fragments.add(it) }
                     if (tagFragment == null) {
                         val fragment = frag.java.getConstructor().newInstance().also { fragments.add(it) }
@@ -43,25 +49,29 @@ internal class BottomNavigationImpl(
                 fragments.forEach { detach(it) }
             }
         } else {
-            bn.bottomNavigationFragments.values.forEach { frag ->
+            navFragments.values.forEach { frag ->
                 val fragment = fm.findFragmentByTag(frag.simpleName + FRAGMENT_SUFFIX)!!
                 fragments.add(fragment)
             }
             selectedIndex = savedInstanceState.getInt(KEY_SELECTION_INDEX, 0)
-            topSelectionId = bn.bottomNavigationFragments.keys.elementAt(selectedIndex)
+            topSelectionId = navFragments.keys.elementAt(selectedIndex)
         }
 
-        bottomNav.selectedItemId = topSelectionId
-        bottomNav.setOnNavigationItemSelectedListener call@{ item ->
-            val fragment = getFragmentFromId(item.itemId)!!
-            if (selectedFragment === fragment) {
-                if (fragment is Navigator.BottomNavigation.Callbacks && fragment.isVisible) {
-                    fragment.onReselected()
+        if (navView is BottomNavigationView) {
+            navView.selectedItemId = topSelectionId
+            navView.setOnNavigationItemSelectedListener call@{ item ->
+                val fragment = getFragmentFromId(item.itemId)!!
+                if (selectedFragment === fragment) {
+                    if (fragment is Navigator.BottomNavigation.Callbacks && fragment.isVisible) {
+                        fragment.onReselected()
+                    }
+                } else {
+                    setFragment(fragment)
                 }
-            } else {
-                setFragment(fragment)
+                return@call true
             }
-            return@call true
+        } else if (navView is NavigationView) {
+
         }
 
         setFragment(selectedFragment)
@@ -83,22 +93,21 @@ internal class BottomNavigationImpl(
         }
         transaction.commit()
 
-        bn.onBottomNavigationSelectionChanged(getSelectedBottomNavFragmentId())
+        onNavSelectionChange.invoke(getSelectedNavFragmentId())
     }
 
-    private fun getSelectedBottomNavFragmentId(): Int {
-        return bn.bottomNavigationFragments
+    private fun getSelectedNavFragmentId(): Int {
+        return navFragments
             .filter { it.value.qualifiedName == selectedFragment.javaClass.name }
             .map { it.key }.first()
     }
 
     private fun getFragmentFromId(@IdRes id: Int): Fragment? {
-        val tag = bn.bottomNavigationFragments[id]!!.java.simpleName + FRAGMENT_SUFFIX
+        val tag = navFragments[id]!!.java.simpleName + FRAGMENT_SUFFIX
         return fm.findFragmentByTag(tag)
     }
 
-    private fun getPrimarySelectionFragmentId(): Int =
-        bn.bottomNavigationFragments.keys.indexOf(bn.selectedBottomNavigationId)
+    private fun getPrimarySelectionFragmentId(): Int = navFragments.keys.indexOf(selectedNavId)
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putInt(KEY_SELECTION_INDEX, selectedIndex)

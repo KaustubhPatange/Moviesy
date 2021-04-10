@@ -24,5 +24,9 @@ data class CircularPayload(
 ) : TransitionPayload()
 
 data class SharedPayload(
+    /**
+     * A map of "from [View]" of fragment A to "Id" of fragment B. This is required
+     * for creating shared animations.
+     */
     val elements: Map<View, Int>
 ) : TransitionPayload()

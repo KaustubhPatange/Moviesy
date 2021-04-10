@@ -395,7 +395,7 @@ class DetailFragment : KeyedFragment(R.layout.activity_final), MovieListener {
 
     private fun setToolbar() {
         binding.appbarLayout.applyTopInsets()
-        binding.afMoreAddLayout.applyBottomInsets(extra = 20.dp().toInt())
+        binding.afMoreAddLayout.applyBottomInsets(extra = 30.dp().toInt())
         binding.toolbar.title = " "
         binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
         binding.toolbar.setNavigationOnClickListener { goBack() }
