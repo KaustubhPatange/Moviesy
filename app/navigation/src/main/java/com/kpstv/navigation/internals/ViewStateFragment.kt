@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.FrameLayout
 import androidx.annotation.LayoutRes
+import androidx.annotation.RestrictTo
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -11,6 +12,7 @@ import androidx.fragment.app.FragmentManager
 /**
  * A fragment that notifies view state change through [onViewStateChanged] callback.
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 open class ViewStateFragment(@LayoutRes id: Int) : Fragment(id) {
     constructor() : this(0)
 

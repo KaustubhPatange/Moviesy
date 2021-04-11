@@ -9,17 +9,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commitNow
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.navigation.NavigationView
-import com.kpstv.navigation.CommonLifecycleCallbacks
 import com.kpstv.navigation.FragClazz
 import com.kpstv.navigation.Navigator
 import kotlin.reflect.KFunction1
 
 @RestrictTo(RestrictTo.Scope.LIBRARY)
-internal class CommonNavigationImpl(
+internal class BottomNavigationImpl(
     private val fm: FragmentManager,
     private val containerView: FrameLayout,
-    private val navView: FrameLayout,
+    private val navView: BottomNavigationView,
     private val navFragments: Map<Int, FragClazz>,
     private val selectedNavId: Int,
     private val onNavSelectionChange: KFunction1<Int, Unit>
@@ -58,18 +56,12 @@ internal class CommonNavigationImpl(
             topSelectionId = navFragments.keys.elementAt(selectedIndex)
         }
 
-        if (navView is BottomNavigationView) {
-            navView.selectedItemId = topSelectionId
-            navView.setOnNavigationItemSelectedListener call@{ item ->
-                return@call onSelectNavItem(item)
-            }
-        } else if (navView is NavigationView) {
-            navView.setNavigationItemSelectedListener call@{ item ->
-                return@call onSelectNavItem(item)
-            }
+        navView.selectedItemId = topSelectionId
+        navView.setOnNavigationItemSelectedListener call@{ item ->
+            return@call onSelectNavItem(item)
         }
 
-        setFragment(selectedFragment) // TODO: Test NavigationView
+        setFragment(selectedFragment)
     }
 
     private fun onSelectNavItem(item: MenuItem) : Boolean {

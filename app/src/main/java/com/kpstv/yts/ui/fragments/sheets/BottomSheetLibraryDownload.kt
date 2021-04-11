@@ -69,9 +69,7 @@ class BottomSheetLibraryDownload(
                 if (AppInterface.IS_PREMIUM_UNLOCKED) {
                     showSubtitle()
                 } else {
-                    PremiumHelper.insertSubtitlePremiumTip(
-                        requireActivity(), binding.addLayout
-                    ) { dismiss() }
+                    PremiumHelper.insertSubtitlePremiumTip(requireContext(), parentFragmentManager, binding.addLayout) { dismiss() }
                 }
             }
         }
@@ -132,7 +130,7 @@ class BottomSheetLibraryDownload(
     }
 
     private fun showSubtitle() {
-        subtitleHelper = SubtitleHelper.Builder(requireActivity())
+        subtitleHelper = SubtitleHelper.Builder(requireContext(), parentFragmentManager)
             .setTitle(model.title)
             .setImdbCode(model.imdbCode!!)
             .setParentView(binding.root)

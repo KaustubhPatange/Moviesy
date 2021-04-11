@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?colorBackground"
     android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
-        android:elevation="3dp"
-        android:background="?colorForeground"
-        app:title="Settings"
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        android:id="@+id/toolbar"/>
+        android:background="?colorForeground"
+        android:elevation="3dp"
+        app:title="Settings" />
 
     <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/settings_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/settings_container"/>
+        android:layout_height="match_parent" />
 
 </LinearLayout>

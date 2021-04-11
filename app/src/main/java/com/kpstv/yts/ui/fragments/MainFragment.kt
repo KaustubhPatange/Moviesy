@@ -42,7 +42,7 @@ interface MainFragmentDrawerCallbacks {
 }
 
 @AndroidEntryPoint
-class MainFragment : KeyedFragment(R.layout.fragment_main), MainFragmentDrawerCallbacks {
+class MainFragment : ValueFragment(R.layout.fragment_main), MainFragmentDrawerCallbacks {
     private val binding by viewBinding(FragmentMainBinding::bind)
     private val navViewModel by activityViewModels<StartViewModel>()
     private val viewModel by viewModels<MainViewModel>()
@@ -67,21 +67,17 @@ class MainFragment : KeyedFragment(R.layout.fragment_main), MainFragmentDrawerCa
         navigator.install(this, object : Navigator.BottomNavigation() {
             override val bottomNavigationViewId: Int = R.id.bottom_nav
             override val bottomNavigationFragments: Map<Int, FragClazz> = mapOf(
-                R.id.homeFragment to HomeFragment2::class,
-                R.id.watchFragment to WatchlistFragment2::class,
-                R.id.libraryFragment to LibraryFragment2::class
+                R.id.homeFragment to HomeFragment::class,
+                R.id.watchFragment to WatchlistFragment::class,
+                R.id.libraryFragment to LibraryFragment::class
             )
-
             override fun onBottomNavigationSelectionChanged(selectedId: Int) {
                 currentBottomNavId = selectedId
             }
-
             override val selectedBottomNavigationId: Int
                 get() {
-                    if (hasKeyArgs()) {
-                        if (getKeyArgs<Args>().moveToLibrary) {
-                            return R.id.libraryFragment
-                        }
+                    if (hasKeyArgs() && getKeyArgs<Args>().moveToLibrary) {
+                        return R.id.libraryFragment
                     }
                     return super.selectedBottomNavigationId
                 }
@@ -109,7 +105,7 @@ class MainFragment : KeyedFragment(R.layout.fragment_main), MainFragmentDrawerCa
 
     override fun onStart() {
         super.onStart()
-        if (!isUpdateChecked && isAdded) {
+        if (!isUpdateChecked && isAdded && !isRemoving) {
             isUpdateChecked = true
             updateUtils.check(
                 onUpdateAvailable = {
@@ -227,7 +223,7 @@ class MainFragment : KeyedFragment(R.layout.fragment_main), MainFragmentDrawerCa
         binding.navigationLayout.customDrawerPremium.root.setOnClickListener {
             binding.drawerLayout.closeDrawer(GravityCompat.START)
             if (!AppInterface.IS_PREMIUM_UNLOCKED) {
-                PremiumHelper.openPurchaseFragment(requireActivity()) // TODO: Update this & make for childFragmentManager
+                PremiumHelper.openPurchaseFragment(childFragmentManager)
             } else {
                 PremiumHelper.showPremiumAlreadyPurchasedDialog(requireContext())
             }
@@ -235,12 +231,12 @@ class MainFragment : KeyedFragment(R.layout.fragment_main), MainFragmentDrawerCa
     }
 
     private fun checkForAutoPurchase() {
-        PremiumHelper.scanForAutoPurchase(requireActivity(),
+        PremiumHelper.scanForAutoPurchase(requireContext(), lifecycleOwner = viewLifecycleOwner,
             onPremiumActivated = {
                 PremiumHelper.showPremiumActivatedDialog(requireContext())
             },
             onNoPremiumFound = {
-                PremiumHelper.showPurchaseInfo(requireActivity())
+                PremiumHelper.showPurchaseInfo(requireContext(), childFragmentManager)
             }
         )
     }
@@ -266,7 +262,7 @@ class MainFragment : KeyedFragment(R.layout.fragment_main), MainFragmentDrawerCa
 
     override fun onDestroy() {
         if (CastHelper.isCastingSupported(requireContext())) {
-            (requireActivity() as? LibraryFragment2.Callbacks)?.getCastHelper()?.unInit()
+            (requireActivity() as? LibraryFragment.Callbacks)?.getCastHelper()?.unInit()
         }
         super.onDestroy()
     }

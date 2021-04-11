@@ -170,7 +170,7 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
         })
 
         adapter.onPremiumItemClicked = {
-            PremiumHelper.showPremiumInfo(requireActivity(), ViewType.WATCH.name.small())
+            PremiumHelper.showPremiumInfo(requireContext(), parentFragmentManager, ViewType.WATCH.name.small())
             dismiss()
         }
 
@@ -224,7 +224,7 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
                 DownloadService::class
             ) && !AppInterface.IS_PREMIUM_UNLOCKED
         ) {
-            PremiumHelper.showPremiumInfo(requireActivity(), ViewType.DOWNLOAD.name.small())
+            PremiumHelper.showPremiumInfo(requireContext(), parentFragmentManager, ViewType.DOWNLOAD.name.small())
             return false
         } else {
             model.title = title
@@ -251,7 +251,7 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
     }
 
     private fun showSubtitle() {
-        subtitleHelper = SubtitleHelper.Builder(requireActivity())
+        subtitleHelper = SubtitleHelper.Builder(requireContext(), parentFragmentManager)
             .setTitle(title)
             .setImdbCode(imdbCode)
             .setParentView(binding.root)

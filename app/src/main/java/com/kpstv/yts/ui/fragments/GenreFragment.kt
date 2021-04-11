@@ -17,13 +17,12 @@ import com.kpstv.yts.R
 import com.kpstv.yts.databinding.FragmentGenreBinding
 import com.kpstv.yts.databinding.ItemLocalGenreBinding
 import com.kpstv.yts.extensions.YTSQuery
-import com.kpstv.yts.extensions.common.CustomMovieLayout
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import com.kpstv.yts.ui.viewmodels.StartViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class GenreFragment2 : Fragment(R.layout.fragment_genre), HomeFragment2.Callbacks {
+class GenreFragment : Fragment(R.layout.fragment_genre), HomeFragment.Callbacks {
     private val binding by viewBinding(FragmentGenreBinding::bind)
     private val viewModel by viewModels<MainViewModel>(
         ownerProducer = { requireParentFragment().requireParentFragment() }

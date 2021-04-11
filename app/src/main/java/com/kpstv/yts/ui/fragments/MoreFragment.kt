@@ -23,7 +23,7 @@ import com.kpstv.common_moviesy.extensions.applyBottomInsets
 import com.kpstv.common_moviesy.extensions.applyTopInsets
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.navigation.BaseArgs
-import com.kpstv.navigation.KeyedFragment
+import com.kpstv.navigation.ValueFragment
 import com.kpstv.yts.R
 import com.kpstv.yts.adapters.CustomPagedAdapter
 import com.kpstv.yts.data.converters.QueryConverter
@@ -43,7 +43,7 @@ import kotlinx.android.synthetic.main.item_chip.view.*
 // Some of the old implementation do exist.
 
 @AndroidEntryPoint
-class MoreFragment : KeyedFragment(R.layout.fragment_more) {
+class MoreFragment : ValueFragment(R.layout.fragment_more) {
     private val binding by viewBinding(FragmentMoreBinding::bind)
     private val viewModel by viewModels<MoreViewModel>()
     private val navViewModel by activityViewModels<StartViewModel>()

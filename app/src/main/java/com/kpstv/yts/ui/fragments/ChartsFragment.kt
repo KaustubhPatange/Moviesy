@@ -10,7 +10,6 @@ import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.databinding.FragmentChartsBinding
-import com.kpstv.yts.extensions.MovieBase
 import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.extensions.common.CustomMovieLayout
 import com.kpstv.yts.ui.viewmodels.MainViewModel
@@ -19,7 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 
 @AndroidEntryPoint
-class ChartsFragment2 : Fragment(R.layout.fragment_charts), HomeFragment2.Callbacks {
+class ChartsFragment : Fragment(R.layout.fragment_charts), HomeFragment.Callbacks {
     private val binding by viewBinding(FragmentChartsBinding::bind)
     private val viewModel by viewModels<MainViewModel>(
         ownerProducer = { requireParentFragment().requireParentFragment() }

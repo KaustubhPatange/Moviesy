@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.annotation.RawRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.work.WorkManager
@@ -30,18 +30,19 @@ class PremiumHelper {
         private const val TO_SHOW_PURCHASE_INFO_PREF = "to_show_purchase_info_pref"
 
         fun insertSubtitlePremiumTip(
-            activity: FragmentActivity,
+            context: Context,
+            fragmentManager: FragmentManager,
             root: ViewGroup,
             onPurchaseClick: SimpleCallback? = null
         ) =
-            with(activity) {
+            with(context) {
                 CommonTipHelper.Builder(this)
                     .setTitle("Buy premium to cast subtitle")
                     .setButtonText("Unlock")
                     .setParentLayout(root)
                     .setButtonClickListener {
                         onPurchaseClick?.invoke()
-                        openPurchaseFragment(activity)
+                        openPurchaseFragment(fragmentManager)
                     }
                     .build()
                     .populateView()
@@ -50,9 +51,9 @@ class PremiumHelper {
         /**
          * Displays a toast and then open the purchase bottom sheet
          */
-        fun showPremiumInfo(activity: FragmentActivity, featureName: String = "this") {
-            Toasty.warning(activity, "Buy premium to remove $featureName limit").show()
-            openPurchaseFragment(activity)
+        fun showPremiumInfo(context: Context, fragmentManager: FragmentManager, featureName: String = "this") {
+            Toasty.warning(context, "Buy premium to remove $featureName limit").show()
+            openPurchaseFragment(fragmentManager)
         }
 
         fun wasPurchased(context: Context) = with(context) {
@@ -65,13 +66,13 @@ class PremiumHelper {
             AppInterface.IS_DARK_THEME = true
         }
 
-        fun openPurchaseFragment(activity: FragmentActivity) {
+        fun openPurchaseFragment(fragmentManager: FragmentManager) {
             val sheet = BottomSheetPurchase()
-            sheet.show(activity.supportFragmentManager, "blank")
+            sheet.show(fragmentManager, "blank")
         }
 
         /** Shows a purchase dialog (if need to show) */
-        fun showPurchaseInfo(activity: FragmentActivity) = with(activity) {
+        fun showPurchaseInfo(context: Context, fragmentManager: FragmentManager) = with(context) {
             if (!AppInterface.IS_PREMIUM_UNLOCKED && defaultPreference().value.getBoolean(
                     TO_SHOW_PURCHASE_INFO_PREF,
                     true
@@ -84,7 +85,7 @@ class PremiumHelper {
                     dialog?.dismiss()
                 }
                 binding.btnDetails.setOnClickListener {
-                    openPurchaseFragment(this)
+                    openPurchaseFragment(fragmentManager)
                     dialog?.dismiss()
                 }
 
@@ -140,13 +141,14 @@ class PremiumHelper {
 
         /** If there is purchase made from GPay, we can auto activate it */
         fun scanForAutoPurchase(
-            activity: FragmentActivity,
+            context: Context,
+            lifecycleOwner: LifecycleOwner,
             onPremiumActivated: SimpleCallback? = null,
             onNoPremiumFound: SimpleCallback? = null
-        ) = with(activity) {
+        ): Unit = with(context) {
             val requestId = AutoPurchaseWorker.schedule(this)
             WorkManager.getInstance(this).getWorkInfoByIdLiveData(requestId)
-                .observe(this, Observer {
+                .observe(lifecycleOwner, Observer {
                     if (it != null && it.state.isFinished && it.outputData.getBoolean(
                             AutoPurchaseWorker.IS_PURCHASE_ACTIVATED,
                             false

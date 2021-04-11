@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.kpstv.common_moviesy.extensions.makeFullScreen
@@ -12,6 +11,7 @@ import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.navigation.Navigator
 import com.kpstv.navigation.NavigatorTransmitter
 import com.kpstv.navigation.canFinish
+import com.kpstv.navigation.autoChildElevation
 import com.kpstv.yts.BuildConfig
 import com.kpstv.yts.cast.CastHelper
 import com.kpstv.yts.databinding.ActivityStartBinding
@@ -28,7 +28,7 @@ import javax.inject.Inject
 import kotlin.reflect.KClass
 
 @AndroidEntryPoint
-class StartActivity : AppCompatActivity(), NavigatorTransmitter, LibraryFragment2.Callbacks {
+class StartActivity : AppCompatActivity(), NavigatorTransmitter, LibraryFragment.Callbacks {
     // TODO: Implement deeplinks
     private val binding by viewBinding(ActivityStartBinding::inflate)
     private val navViewModel by viewModels<StartViewModel>()
@@ -48,11 +48,10 @@ class StartActivity : AppCompatActivity(), NavigatorTransmitter, LibraryFragment
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         navigator = Navigator(supportFragmentManager, binding.fragmentContainer)
+        navigator.autoChildElevation()
 
         navViewModel.navigation.observe(this, navigationObserver)
         navViewModel.errors.observe(this, errorObserver)
-
-        setAutoZIndex()
 
         if (savedInstanceState == null && !intentHelper.handle(intent)) {
             navViewModel.navigateTo(Screen.SPLASH)
@@ -93,15 +92,6 @@ class StartActivity : AppCompatActivity(), NavigatorTransmitter, LibraryFragment
                 } else {
                     AppUtils.showUnknownErrorDialog(this, error.inner) { finish() }
                 }
-            }
-        }
-    }
-
-    // To solve some overlapping issues with Fragment add transaction.
-    private fun setAutoZIndex() {
-        supportFragmentManager.addOnBackStackChangedListener {
-            binding.fragmentContainer.children.forEachIndexed { index, view ->
-                view.translationZ = (index + 1).toFloat()
             }
         }
     }

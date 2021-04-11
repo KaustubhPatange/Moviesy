@@ -1,6 +1,5 @@
 package com.kpstv.yts.ui.helpers
 
-import android.app.Activity
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -9,13 +8,13 @@ import com.kpstv.yts.R
 import kotlinx.android.synthetic.main.custom_small_tip.view.*
 
 class CommonTipHelper {
-    private lateinit var activity: Activity
+    private lateinit var context: Context
     private var title = ""
     private var buttonText = ""
     private var root: ViewGroup? = null
     private var onClick: ((View) -> Unit)? = null
 
-    fun populateView() = with(activity) {
+    fun populateView() = with(context) {
         if (root == null) throw Exception("Root parameter is not defined")
         val insertView =
             LayoutInflater.from(this).inflate(R.layout.custom_small_tip, root)
@@ -24,11 +23,11 @@ class CommonTipHelper {
         insertView.tip_button.setOnClickListener(onClick)
     }
 
-    data class Builder(private val activity: Activity) {
+    data class Builder(private val context: Context) {
         private val helper = CommonTipHelper()
 
         init {
-            helper.activity = activity
+            helper.context = context
         }
 
         fun setTitle(value: String): Builder {

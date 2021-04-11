@@ -19,7 +19,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.kpstv.common_moviesy.extensions.*
 import com.kpstv.common_moviesy.extensions.utils.CommonUtils
 import com.kpstv.navigation.BaseArgs
-import com.kpstv.navigation.KeyedFragment
+import com.kpstv.navigation.ValueFragment
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
 import com.kpstv.yts.adapters.GenreAdapter
@@ -49,7 +49,7 @@ import es.dmoral.toasty.Toasty
 import kotlinx.android.parcel.Parcelize
 
 @AndroidEntryPoint
-class DetailFragment : KeyedFragment(R.layout.fragment_detail), MovieListener {
+class DetailFragment : ValueFragment(R.layout.fragment_detail), MovieListener {
     companion object {
         const val YOUTUBE_PLAYER_VIEW_REQUEST_CODE = 189
     }

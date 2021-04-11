@@ -9,10 +9,10 @@ import androidx.fragment.app.viewModels
 import com.kpstv.yts.R
 import com.kpstv.yts.extensions.common.CustomBottomItem
 import com.kpstv.yts.ui.fragments.SettingFragment
-import com.kpstv.navigation.KeyedFragment
+import com.kpstv.navigation.ValueFragment
 import com.kpstv.yts.ui.viewmodels.SettingNavViewModel
 
-class MainSettingFragment : KeyedFragment() {
+class MainSettingFragment : ValueFragment() {
     private val navViewModel by viewModels<SettingNavViewModel>(
         ownerProducer = ::requireParentFragment
     )

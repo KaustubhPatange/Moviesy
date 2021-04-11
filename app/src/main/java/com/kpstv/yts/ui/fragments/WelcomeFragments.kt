@@ -19,7 +19,7 @@ import com.kpstv.yts.defaultPreference
 import com.kpstv.yts.ui.activities.StartActivity
 import com.kpstv.navigation.BaseArgs
 import com.kpstv.navigation.CircularPayload
-import com.kpstv.navigation.KeyedFragment
+import com.kpstv.navigation.ValueFragment
 import com.kpstv.navigation.Navigator
 import com.kpstv.yts.ui.viewmodels.StartViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,7 +33,7 @@ data class WelcomeArgs(
     @ColorRes val backgroundColor: Int
 ) : BaseArgs(), Parcelable
 
-abstract class AbstractWelcomeFragment : KeyedFragment(R.layout.fragment_agreement) {
+abstract class AbstractWelcomeFragment : ValueFragment(R.layout.fragment_agreement) {
     val binding by viewBinding(FragmentAgreementBinding::bind)
 
     abstract fun onNextClick()

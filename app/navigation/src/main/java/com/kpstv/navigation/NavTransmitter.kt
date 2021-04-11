@@ -2,7 +2,8 @@ package com.kpstv.navigation
 
 /**
  * The host must implement this interface to propagate Navigator
- * to child fragments.
+ * to the child fragments. This ensures the correct behavior of
+ * back press.
  */
 interface NavigatorTransmitter {
     fun getNavigator(): Navigator

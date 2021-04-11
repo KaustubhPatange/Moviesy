@@ -3,19 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragments.ChartsFragment2">
+    tools:context=".ui.fragments.ChartsFragment">
 
     <com.kpstv.yts.extensions.views.ExtendedNestedScrollView
         android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:overScrollMode="never">
 
         <LinearLayout
-            android:layout_marginBottom="15dp"
-            android:orientation="vertical"
             android:id="@+id/addLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
 
     </com.kpstv.yts.extensions.views.ExtendedNestedScrollView>
 

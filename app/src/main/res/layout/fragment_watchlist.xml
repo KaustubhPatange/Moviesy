@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragments.WatchlistFragment2">
+    tools:context=".ui.fragments.WatchlistFragment">
 
     <com.kpstv.yts.extensions.views.ExtendedAppBarLayout
         android:id="@+id/app_bar_layout"

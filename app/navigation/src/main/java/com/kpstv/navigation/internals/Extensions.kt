@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.widget.FrameLayout
 import androidx.core.view.size
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentContainerView
 
 internal fun Fragment.getSaveInstanceState() : Bundle? {
     val field = Fragment::class.java.getDeclaredField("mSavedFragmentState").apply {

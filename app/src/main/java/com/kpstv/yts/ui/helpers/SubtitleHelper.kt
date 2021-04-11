@@ -1,9 +1,11 @@
 package com.kpstv.yts.ui.helpers
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -18,7 +20,8 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class SubtitleHelper {
-    private lateinit var activity: FragmentActivity
+    private lateinit var context: Context
+    private lateinit var fragmentManager: FragmentManager
     private lateinit var parentView: View
     private lateinit var addLayout: LinearLayout
     private lateinit var title: String
@@ -62,7 +65,7 @@ class SubtitleHelper {
                     ?.filter { f -> applySubtitleFilter(title.removeSpecialCharacters(), f) }
                     ?.map { it.name }
             if (onlySuchFiles?.isNotEmpty() == true) {
-                val cssView = LayoutInflater.from(activity)
+                val cssView = LayoutInflater.from(context)
                     .inflate(R.layout.custom_select_subtitle, addLayout)
                 val recyclerView = cssView.findViewById<RecyclerView>(R.id.recyclerView)
 
@@ -86,7 +89,7 @@ class SubtitleHelper {
                         showAlertAndDeleteSubtitles(selectSubtitle.text, i)
                     }
                 )
-                recyclerView.layoutManager = LinearLayoutManager(activity.applicationContext)
+                recyclerView.layoutManager = LinearLayoutManager(context.applicationContext)
                 recyclerView.adapter = singleAdapter
             } else commonNoSubtitle()
         } else commonNoSubtitle()
@@ -100,7 +103,7 @@ class SubtitleHelper {
                 f.extension.toLowerCase(Locale.ROOT) == "srt"
     }
 
-    private fun showAlertAndDeleteSubtitles(fileName: String, pos: Int) = with(activity) {
+    private fun showAlertAndDeleteSubtitles(fileName: String, pos: Int) = with(context) {
         AlertNoIconDialog.Companion.Builder(this)
             .setTitle(fileName)
             .setMessage(getString(R.string.remove_subtitle))
@@ -114,7 +117,7 @@ class SubtitleHelper {
             .show()
     }
 
-    private fun commonNoSubtitle() = with(activity) {
+    private fun commonNoSubtitle() = with(context) {
         CommonTipHelper.Builder(this)
             .setTitle(getString(R.string.noSubs))
             .setButtonText(getString(R.string.download))
@@ -122,7 +125,7 @@ class SubtitleHelper {
             .setButtonClickListener {
                 val bottomSheetSubtitles =
                     BottomSheetSubtitles()
-                bottomSheetSubtitles.show(supportFragmentManager, imdbCode)
+                bottomSheetSubtitles.show(fragmentManager, imdbCode)
                 bottomSheet?.dismiss()
             }
             .build()
@@ -130,12 +133,14 @@ class SubtitleHelper {
     }
 
     data class Builder(
-        private val activity: FragmentActivity
+        private val context: Context,
+        private val fragmentManager: FragmentManager
     ) {
         private val helper = SubtitleHelper()
 
         init {
-            helper.activity = activity
+            helper.context = context
+            helper.fragmentManager = fragmentManager
         }
 
         fun setTitle(title: String): Builder {

@@ -31,7 +31,7 @@ class Navigator(private val fm: FragmentManager, private val containerView: Fram
 
     /**
      * Sets the default fragment as the host. The [FragmentManager.popBackStack] will be called recursively
-     * with proper [KeyedFragment.onBackPressed] till it finds the primary fragment.
+     * with proper [ValueFragment.onBackPressed] till it finds the primary fragment.
      *
      * It will first check if the fragment exists in the backStack otherwise it will create a new one.
      *
@@ -49,7 +49,7 @@ class Navigator(private val fm: FragmentManager, private val containerView: Fram
      */
     fun navigateTo(navOptions: NavOptions) = with(navOptions) options@ {
         val newFragment = clazz.java.getConstructor().newInstance()
-        val tagName = if (newFragment is KeyedFragment && newFragment.backStackName != null) {
+        val tagName = if (newFragment is ValueFragment && newFragment.backStackName != null) {
             newFragment.backStackName
         } else getFragmentTagName(clazz)
 
@@ -63,7 +63,7 @@ class Navigator(private val fm: FragmentManager, private val containerView: Fram
         }
         val bundle = Bundle().apply {
             if (args != null)
-                putParcelable(KeyedFragment.ARGUMENTS, args)
+                putParcelable(ValueFragment.ARGUMENTS, args)
         }
         if (popUpToThis && getBackStackCount() > 0) {
             fm.popBackStack(getCurrentFragment()?.tag, FragmentManager.POP_BACK_STACK_INCLUSIVE)
@@ -120,7 +120,7 @@ class Navigator(private val fm: FragmentManager, private val containerView: Fram
             val fragment = getCurrentFragment() ?: return false
             if (fragment is NavigatorTransmitter) {
                 return fragment.getNavigator().canGoBack()
-            } else if (fragment is KeyedFragment && fragment.forceBackPress) {
+            } else if (fragment is ValueFragment && fragment.forceBackPress) {
                 return true
             } else {
                 return false
@@ -134,7 +134,7 @@ class Navigator(private val fm: FragmentManager, private val containerView: Fram
      * Remove the latest entry from [FragmentManager]'s backStack.
      *
      * The call is recursive to child [Fragment]s, in this way their
-     * [KeyedFragment.onBackPressed] are also called which returns if the backPress
+     * [ValueFragment.onBackPressed] are also called which returns if the backPress
      * is consumed or not. If consumed then it means child [Fragment] don't want the
      * parent [Navigator] to go back, hence [goBack] will return false
      * & no entry will be removed from the current [FragmentManager].
@@ -153,7 +153,7 @@ class Navigator(private val fm: FragmentManager, private val containerView: Fram
         }
         val currentFragment = getCurrentFragment()
 
-        val shouldPopStack = if (currentFragment is KeyedFragment) {
+        val shouldPopStack = if (currentFragment is ValueFragment) {
             !currentFragment.onBackPressed()
            /* if (fm.backStackEntryCount == 1 && currentFragment::class.simpleName == primaryFragClass?.simpleName)
                 false // last primary fragment indicates activity to destroy
@@ -179,9 +179,11 @@ class Navigator(private val fm: FragmentManager, private val containerView: Fram
      */
     fun getCurrentFragmentClass() : FragClazz? = fm.findFragmentById(containerView.id)?.let { it::class }
 
-    internal fun getFragmentManager() : FragmentManager = fm
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
+    fun getFragmentManager() : FragmentManager = fm
 
-    internal fun getContainerView() : FrameLayout = containerView
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP_PREFIX)
+    fun getContainerView() : FrameLayout = containerView
 
     private fun getBackStackCount() : Int = fm.backStackEntryCount
 
@@ -219,14 +221,6 @@ class Navigator(private val fm: FragmentManager, private val containerView: Fram
             fun onSelected() {}
             fun onReselected() {}
         }
-    }
-
-    open class NavigationMenu { // TODO: Rename it
-        open val drawerNavigationViewId: Int = -1
-        open val drawerNavigationFragments: Map<Int, FragClazz> = mapOf()
-        open val selectedNavigationItemId: Int = -1
-        
-        open fun onNavigationDrawerSelectionChanged(@IdRes selectedId: Int) {}
     }
 
     companion object {

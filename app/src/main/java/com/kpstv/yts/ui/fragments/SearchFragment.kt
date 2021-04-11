@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kpstv.common_moviesy.extensions.*
 import com.kpstv.common_moviesy.extensions.utils.KeyboardUtils
-import com.kpstv.navigation.KeyedFragment
+import com.kpstv.navigation.ValueFragment
 import com.kpstv.navigation.SharedPayload
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
@@ -50,7 +50,7 @@ import javax.inject.Inject
 @FlowPreview
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class SearchFragment : KeyedFragment(R.layout.fragment_search) {
+class SearchFragment : ValueFragment(R.layout.fragment_search) {
     private val binding by viewBinding(FragmentSearchBinding::bind)
     private val moreViewModel by viewModels<MoreViewModel>()
     private val finalViewModel by viewModels<FinalViewModel>()
@@ -128,7 +128,7 @@ class SearchFragment : KeyedFragment(R.layout.fragment_search) {
 
         /** This focus will show the keyboard whenever this activity will be started
          */
-        binding.searchEditText.requestFocus()
+        binding.searchEditText.showKeyboard()
 
         /** Hiding the close button at start
          */

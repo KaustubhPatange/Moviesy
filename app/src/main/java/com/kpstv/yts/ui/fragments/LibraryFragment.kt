@@ -32,7 +32,7 @@ import es.dmoral.toasty.Toasty
 import java.io.File
 
 @AndroidEntryPoint
-class LibraryFragment2 : Fragment(R.layout.fragment_library), Navigator.BottomNavigation.Callbacks {
+class LibraryFragment : Fragment(R.layout.fragment_library), Navigator.BottomNavigation.Callbacks {
     interface Callbacks {
         fun getCastHelper() : CastHelper
     }

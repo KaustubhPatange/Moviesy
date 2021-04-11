@@ -22,7 +22,7 @@ import com.kpstv.yts.ui.viewmodels.SettingNavViewModel
 import com.kpstv.yts.ui.viewmodels.StartViewModel
 import kotlinx.android.parcel.Parcelize
 
-class SettingFragment : KeyedFragment(R.layout.fragment_settings), NavigatorTransmitter, LookSettingsFragment.ThemeChangeCallbacks {
+class SettingFragment : ValueFragment(R.layout.fragment_settings), NavigatorTransmitter, LookSettingsFragment.ThemeChangeCallbacks {
     private val binding by viewBinding(FragmentSettingsBinding::bind)
     private val navViewModel by activityViewModels<StartViewModel>()
     private val viewModel by viewModels<SettingNavViewModel>()

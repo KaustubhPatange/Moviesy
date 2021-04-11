@@ -1,4 +1,4 @@
-package com.kpstv.navigation
+package com.kpstv.navigation.internals
 
 import android.os.Bundle
 import android.view.View

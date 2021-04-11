@@ -5,7 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.kpstv.navigation.internals.ActivityBottomNavigationLifecycle
-import com.kpstv.navigation.internals.CommonNavigationImpl
+import com.kpstv.navigation.internals.BottomNavigationImpl
 import com.kpstv.navigation.internals.FragmentBottomNavigationLifecycle
 import com.kpstv.navigation.internals.getSaveInstanceState
 
@@ -20,11 +20,11 @@ import com.kpstv.navigation.internals.getSaveInstanceState
  */
 fun Navigator.install(fragment: Fragment, obj: Navigator.BottomNavigation) {
     val fragmentSavedState = fragment.getSaveInstanceState() ?:
-    if (fragment is KeyedFragment) fragment.bottomNavigationState else null
+    if (fragment is ValueFragment) fragment.bottomNavigationState else null
 
     val view = fragment.requireView()
 
-    val impl = CommonNavigationImpl(
+    val impl = BottomNavigationImpl(
         fm = getFragmentManager(),
         containerView = getContainerView(),
         navView = view.findViewById(obj.bottomNavigationViewId),
@@ -54,7 +54,7 @@ fun Navigator.install(
     savedStateInstance: Bundle? = null,
     obj: Navigator.BottomNavigation
 ) {
-    val impl = CommonNavigationImpl(
+    val impl = BottomNavigationImpl(
         fm = getFragmentManager(),
         containerView = getContainerView(),
         navView = activity.findViewById(obj.bottomNavigationViewId),

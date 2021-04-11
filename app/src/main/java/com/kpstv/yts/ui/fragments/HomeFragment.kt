@@ -6,19 +6,19 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.google.android.material.tabs.TabLayout
+import com.kpstv.common_moviesy.extensions.applyBottomInsets
 import com.kpstv.common_moviesy.extensions.applyTopInsets
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.navigation.Navigator
 import com.kpstv.yts.R
 import com.kpstv.yts.databinding.FragmentHomeBinding
 import com.kpstv.yts.extensions.YTSQuery
-import com.kpstv.yts.extensions.common.CustomMovieLayout
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import com.kpstv.yts.ui.viewmodels.StartViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class HomeFragment2 : Fragment(R.layout.fragment_home), TabLayout.OnTabSelectedListener, Navigator.BottomNavigation.Callbacks {
+class HomeFragment : Fragment(R.layout.fragment_home), TabLayout.OnTabSelectedListener, Navigator.BottomNavigation.Callbacks {
 
     private val binding by viewBinding(FragmentHomeBinding::bind)
     private val viewModel by viewModels<MainViewModel>(
@@ -49,7 +49,7 @@ class HomeFragment2 : Fragment(R.layout.fragment_home), TabLayout.OnTabSelectedL
                 }.build()
                 navViewModel.goToMore(getString(R.string.search_filters), queryMap)
             }
-            tabLayout.addOnTabSelectedListener(this@HomeFragment2)
+            tabLayout.addOnTabSelectedListener(this@HomeFragment)
         }
 
         // Restore UI state
@@ -79,10 +79,10 @@ class HomeFragment2 : Fragment(R.layout.fragment_home), TabLayout.OnTabSelectedL
     private fun setCurrentTab(position: Int?) {
         if (position == 0 || position == null) {
             binding.tabLayout.getTabAt(0)?.select()
-            setFragment(ChartsFragment2())
+            setFragment(ChartsFragment())
         } else if (position == 1) {
             binding.tabLayout.getTabAt(1)?.select()
-            setFragment(GenreFragment2())
+            setFragment(GenreFragment())
         }
     }
 

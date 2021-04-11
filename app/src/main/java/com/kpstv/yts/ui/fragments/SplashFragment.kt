@@ -17,7 +17,7 @@ import com.kpstv.yts.extensions.SimpleCallback
 import com.kpstv.yts.extensions.errors.SSLHandshakeException
 import com.kpstv.yts.extensions.utils.ProxyUtils
 import com.kpstv.yts.ui.activities.StartActivity
-import com.kpstv.navigation.KeyedFragment
+import com.kpstv.navigation.ValueFragment
 import com.kpstv.navigation.Navigator
 import com.kpstv.yts.ui.viewmodels.StartViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,7 +30,7 @@ import javax.inject.Inject
 class SplashErrorException(val inner: Exception) : Exception()
 
 @AndroidEntryPoint
-class SplashFragment : KeyedFragment(R.layout.fragment_splash)  {
+class SplashFragment : ValueFragment(R.layout.fragment_splash)  {
     @Inject lateinit var proxyUtils: ProxyUtils
 
     private val binding by viewBinding(FragmentSplashBinding::bind)

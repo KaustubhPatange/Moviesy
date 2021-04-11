@@ -3,9 +3,25 @@ package com.kpstv.navigation
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.fragment.app.Fragment
 import com.kpstv.navigation.internals.ViewStateFragment
 
-open class KeyedFragment(@LayoutRes id: Int) : ViewStateFragment(id) {
+/**
+ * A [Fragment] that adds "value" to the [Navigator].
+ *
+ * A base fragment to extend from in order to use [Navigator] effectively.
+ * Child fragments of the host should extend from this class, this way
+ * the fragment backStack can be effectively managed & going back is as
+ * easy as calling [goBack].
+ *
+ * In order to pass arguments extend any class from [BaseArgs] & pass it as
+ * parameter to [Navigator.navigateTo] call. Use [getKeyArgs] to retrieve
+ * them.
+ *
+ * @see onBackPressed
+ * @see BaseArgs
+ */
+open class ValueFragment(@LayoutRes id: Int) : ViewStateFragment(id) {
     constructor() : this(0)
 
     companion object {
@@ -31,6 +47,9 @@ open class KeyedFragment(@LayoutRes id: Int) : ViewStateFragment(id) {
      */
     open val backStackName: String? = null
 
+    /**
+     * Checks if the fragment has any arguments passed during [Navigator.navigateTo] call.
+     */
     fun hasKeyArgs(): Boolean {
         return arguments?.containsKey(ARGUMENTS) ?: false
     }
@@ -45,12 +64,24 @@ open class KeyedFragment(@LayoutRes id: Int) : ViewStateFragment(id) {
         return arguments?.getParcelable<T>(ARGUMENTS) as T
     }
 
+    /**
+     * @see Navigator.goBack
+     */
     fun goBack() {
         safeNavigator().goBack()
     }
 
     /**
-     * If True the event has been consumed by the [KeyedFragment].
+     * Override this to receive back press.
+     *
+     * The back press is propagated from the host to all of the child fragments. During back
+     * press if [Navigator] decides to remove this fragment from the stack it will first call
+     * this method to know the result. Upon True, the event has been consumed by the
+     * [ValueFragment] & [Navigator] will not pop this fragment.
+     *
+     * It is necessary that at one point (in future) you should return False from this method
+     * so that it can safely be popped out from the backStack.
+     *
      */
     open fun onBackPressed(): Boolean {
         return false

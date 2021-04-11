@@ -7,12 +7,12 @@ import androidx.annotation.RestrictTo
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
-import com.kpstv.navigation.KeyedFragment
+import com.kpstv.navigation.ValueFragment
 
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 internal class FragmentBottomNavigationLifecycle(
     private val fragment: Fragment,
-    private val impl: CommonNavigationImpl
+    private val impl: BottomNavigationImpl
 ) : FragmentManager.FragmentLifecycleCallbacks() {
 
     override fun onFragmentSaveInstanceState(fm: FragmentManager, f: Fragment, outState: Bundle) {
@@ -27,7 +27,7 @@ internal class FragmentBottomNavigationLifecycle(
             fm.unregisterFragmentLifecycleCallbacks(this)
             // If the view is destroyed but fragment did not then it's likely that we do not get
             // callback on SaveInstanceState in such case we will save it in the fragment bundle.
-            if (f is KeyedFragment) {
+            if (f is ValueFragment) {
                 val bundle = Bundle()
                 impl.onSaveInstanceState(bundle)
                 f.bottomNavigationState = bundle
@@ -40,7 +40,7 @@ internal class FragmentBottomNavigationLifecycle(
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 internal class ActivityBottomNavigationLifecycle(
     private val activity: FragmentActivity,
-    private val impl: CommonNavigationImpl
+    private val impl: BottomNavigationImpl
 ) : Application.ActivityLifecycleCallbacks {
     override fun onActivitySaveInstanceState(a: Activity, outState: Bundle) {
         if (activity::class == a::class) {
