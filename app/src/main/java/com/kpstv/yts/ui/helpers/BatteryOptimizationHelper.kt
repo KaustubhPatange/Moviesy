@@ -10,12 +10,17 @@ import android.provider.Settings
 import androidx.work.WorkManager
 import com.kpstv.yts.R
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
+import com.kpstv.yts.ui.dialogs.WindowDialog
+import java.util.*
 
-object MainHelper {
+object BatteryOptimizationHelper {
     /**
      * Moviesy uses [WorkManager] to schedules some periodic task when the app
      * is not active, but due to lot's of battery optimization restrictions it
      * does not guarantee that task will schedule at appropriate interval.
+     *
+     * There is also similar problem with interrupted torrent downloads &
+     * unexpected chromecast session stopping.
      *
      * One of the main problem is many device OEMs have this implementation where
      * they force-stops app whenever user exits an app or clear it from recents.
@@ -33,14 +38,17 @@ object MainHelper {
      * @see <a href="https://www.reddit.com/r/androiddev/comments/i4wkxq/best_way_for_dispatching_periodic_background_tasks/">Ideal way of dispatching periodic background task?</a>
      */
     fun askNoBatteryOptimization(context: Context) = with(context) {
-        return@with // TODO: See if really asking no battery optimization will fix this behaviour.
         @Suppress("UNREACHABLE_CODE")
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (!(getSystemService(POWER_SERVICE) as PowerManager).isIgnoringBatteryOptimizations(packageName)) {
-                AlertNoIconDialog.Companion.Builder(this)
-                    .setTitle(getString(R.string.doze_title))
-                    .setMessage(getString(R.string.doze_text))
-                    .setPositiveButton(getString(R.string.alright)) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            val enabled = (getSystemService(POWER_SERVICE) as PowerManager).isIgnoringBatteryOptimizations(packageName)
+            if (!enabled && isSupportedVendor()) {
+                WindowDialog.Builder(this)
+                    .setTitle(R.string.doze_title)
+                    .setSubtitle(R.string.doze_text)
+                    .setLottieRes(R.raw.battery_opt)
+                    .setCancellable(false)
+                    .setNegativeButton(android.R.string.cancel)
+                    .setPositiveButton(R.string.alright) {
                         val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
                             data = Uri.parse("package:$packageName")
                         }
@@ -49,5 +57,10 @@ object MainHelper {
                     .show()
             }
         }
+    }
+
+    private fun isSupportedVendor() : Boolean {
+        val manufactures = listOf("samsung","xiaomi","oneplus","huawei")
+        return manufactures.contains(Build.MANUFACTURER.toLowerCase(Locale.ROOT))
     }
 }

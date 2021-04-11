@@ -43,7 +43,7 @@ class LibraryFragment2 : Fragment(R.layout.fragment_library), Navigator.BottomNa
     )
     private val navViewModel by activityViewModels<StartViewModel>()
     private val isCastingSupported by lazy { CastHelper.isCastingSupported(requireContext()) }
-    private val castHelper by lazy { (requireParentFragment() as Callbacks).getCastHelper() }
+    private val castHelper by lazy { (requireActivity() as Callbacks).getCastHelper() }
     private lateinit var downloadAdapter: LibraryDownloadAdapter
     private var mediaRouteMenuItem: MenuItem? = null
 
@@ -93,11 +93,6 @@ class LibraryFragment2 : Fragment(R.layout.fragment_library), Navigator.BottomNa
 
     override fun onReselected() {
         binding.recyclerViewDownload.smoothScrollToPosition(0)
-    }
-
-    override fun onDestroyView() {
-        //if (isCastingSupported) mainActivity.castHelper.unInit() // TODO:
-        super.onDestroyView()
     }
 
     private fun setRecyclerView() {

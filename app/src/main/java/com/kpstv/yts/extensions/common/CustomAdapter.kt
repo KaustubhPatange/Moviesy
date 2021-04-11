@@ -1,11 +1,14 @@
 package com.kpstv.yts.extensions.common
 
+import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
 import androidx.recyclerview.widget.RecyclerView
+import com.kpstv.common_moviesy.extensions.colorFrom
 import com.kpstv.common_moviesy.extensions.drawableFrom
+import com.kpstv.common_moviesy.extensions.utils.CommonUtils
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.databinding.ItemSuggestionBinding
@@ -53,6 +56,10 @@ class CustomAdapter(
                     holder.binding.shimmerImageView.isShimmering = false
                 },
                 onError = {
+                    // TODO: Fix Shimmer Image background when no imageview is present
+                    holder.binding.shimmerImageView.background = ColorDrawable(
+                        CommonUtils.getColorFromAttr(holder.binding.shimmerImageView.context, R.attr.colorForeground)
+                    )
                     holder.binding.shimmerImageView.overlayDrawable = view.context.drawableFrom(R.drawable.ic_error_dark)
                     holder.binding.shimmerImageView.isShimmering = false
                 }

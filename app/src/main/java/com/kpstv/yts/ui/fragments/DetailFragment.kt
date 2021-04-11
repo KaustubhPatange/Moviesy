@@ -30,7 +30,6 @@ import com.kpstv.yts.data.models.Movie
 import com.kpstv.yts.databinding.ActivityFinalBinding
 import com.kpstv.yts.extensions.*
 import com.kpstv.yts.extensions.common.CustomMovieLayout
-import com.kpstv.yts.extensions.errors.MovieNotFoundException
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.GlideApp
 import com.kpstv.yts.extensions.utils.LangCodeUtils
@@ -481,6 +480,13 @@ class DetailFragment : KeyedFragment(R.layout.activity_final), MovieListener {
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun onViewStateChanged(viewState: ViewState) {
+        super.onViewStateChanged(viewState)
+        if (viewState == ViewState.BACKGROUND) {
+            if (::player.isInitialized) player.pause()
+        }
     }
 
     override fun onDestroyView() {

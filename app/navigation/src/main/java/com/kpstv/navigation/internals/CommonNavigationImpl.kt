@@ -1,6 +1,7 @@
 package com.kpstv.navigation.internals
 
 import android.os.Bundle
+import android.view.MenuItem
 import android.widget.FrameLayout
 import androidx.annotation.IdRes
 import androidx.annotation.RestrictTo
@@ -60,21 +61,27 @@ internal class CommonNavigationImpl(
         if (navView is BottomNavigationView) {
             navView.selectedItemId = topSelectionId
             navView.setOnNavigationItemSelectedListener call@{ item ->
-                val fragment = getFragmentFromId(item.itemId)!!
-                if (selectedFragment === fragment) {
-                    if (fragment is Navigator.BottomNavigation.Callbacks && fragment.isVisible) {
-                        fragment.onReselected()
-                    }
-                } else {
-                    setFragment(fragment)
-                }
-                return@call true
+                return@call onSelectNavItem(item)
             }
         } else if (navView is NavigationView) {
-
+            navView.setNavigationItemSelectedListener call@{ item ->
+                return@call onSelectNavItem(item)
+            }
         }
 
-        setFragment(selectedFragment)
+        setFragment(selectedFragment) // TODO: Test NavigationView
+    }
+
+    private fun onSelectNavItem(item: MenuItem) : Boolean {
+        val fragment = getFragmentFromId(item.itemId)!!
+        if (selectedFragment === fragment) {
+            if (fragment is Navigator.BottomNavigation.Callbacks && fragment.isVisible) {
+                fragment.onReselected()
+            }
+        } else {
+            setFragment(fragment)
+        }
+        return true
     }
 
     private fun setFragment(whichFragment: Fragment) {

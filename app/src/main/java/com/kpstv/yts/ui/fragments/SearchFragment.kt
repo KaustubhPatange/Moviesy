@@ -379,8 +379,10 @@ class SearchFragment : KeyedFragment(R.layout.activity_search) {
             binding.suggestionLayout.hide()
             binding.searchEditText.hideKeyboard()
             true
-        } else
+        } else {
+            binding.searchEditText.hideKeyboard()
             super.onBackPressed()
+        }
     }
 
     override fun onDestroyView() {

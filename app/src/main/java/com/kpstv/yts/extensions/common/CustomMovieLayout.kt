@@ -297,7 +297,6 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
 
         recyclerView.adapter = adapter
         recyclerView.setHasFixedSize(true)
-        Log.e(TAG, "${getTag()} -> ItemSize: ${adapter.itemCount}")
 
         if (list.isEmpty()) {
             view.visibility = View.GONE

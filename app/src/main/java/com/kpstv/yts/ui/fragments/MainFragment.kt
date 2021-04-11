@@ -27,6 +27,7 @@ import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.UpdateUtils
 import com.kpstv.yts.ui.activities.DownloadActivity
 import com.kpstv.yts.ui.activities.StartActivity
+import com.kpstv.yts.ui.helpers.BatteryOptimizationHelper
 import com.kpstv.yts.ui.helpers.ChangelogHelper
 import com.kpstv.yts.ui.helpers.MainCastHelper2
 import com.kpstv.yts.ui.helpers.PremiumHelper
@@ -45,7 +46,7 @@ interface MainFragmentDrawerCallbacks {
 }
 
 @AndroidEntryPoint
-class MainFragment : KeyedFragment(R.layout.activity_main), MainFragmentDrawerCallbacks, LibraryFragment2.Callbacks {
+class MainFragment : KeyedFragment(R.layout.activity_main), MainFragmentDrawerCallbacks {
     private val binding by viewBinding(ActivityMainBinding::bind)
     private val navViewModel by activityViewModels<StartViewModel>()
     private val viewModel by viewModels<MainViewModel>()
@@ -53,12 +54,11 @@ class MainFragment : KeyedFragment(R.layout.activity_main), MainFragmentDrawerCa
         Navigations(requireContext())
     }
     private lateinit var navigator: Navigator
-    private val castHelper = CastHelper()
-    private val mainCastHelper by lazy { MainCastHelper2(requireActivity(), lifecycle, castHelper) }
     @Inject lateinit var updateUtils: UpdateUtils
 
     private var currentBottomNavId: Int = 0
     private var isUpdateChecked = false
+    private var isDozeChecked = false
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -101,12 +101,6 @@ class MainFragment : KeyedFragment(R.layout.activity_main), MainFragmentDrawerCa
         setNavigationDrawerItemClicks()
         setPremiumButtonClicked()
 
-        if (CastHelper.isCastingSupported(requireContext())) { // TODO: Move to Activity Level
-            SimpleWebServer.init(requireContext(), BuildConfig.DEBUG)
-            castHelper.initCastSession(requireActivity())
-            mainCastHelper.setUpCastRelatedStuff()
-        }
-
         ChangelogHelper(requireContext(), childFragmentManager).show()
 
         if (savedInstanceState == null) {
@@ -119,7 +113,7 @@ class MainFragment : KeyedFragment(R.layout.activity_main), MainFragmentDrawerCa
 
     override fun onStart() {
         super.onStart()
-        if (!isUpdateChecked) {
+        if (!isUpdateChecked && isAdded) {
             isUpdateChecked = true
             updateUtils.check(
                 onUpdateAvailable = {
@@ -139,6 +133,10 @@ class MainFragment : KeyedFragment(R.layout.activity_main), MainFragmentDrawerCa
                 }
             )
         }
+        if (!isDozeChecked && isAdded) {
+            isDozeChecked = true
+            BatteryOptimizationHelper.askNoBatteryOptimization(requireContext())
+        }
     }
 
     override fun openDrawer() {
@@ -150,8 +148,6 @@ class MainFragment : KeyedFragment(R.layout.activity_main), MainFragmentDrawerCa
     }
 
     override fun isDrawerOpen(): Boolean = binding.drawerLayout.isDrawerOpen(GravityCompat.START)
-
-    override fun getCastHelper(): CastHelper = castHelper
 
     override val forceBackPress: Boolean
         get() = (currentBottomNavId != R.id.homeFragment) or isDrawerOpen()
@@ -270,6 +266,13 @@ class MainFragment : KeyedFragment(R.layout.activity_main), MainFragmentDrawerCa
         super.onSaveInstanceState(outState)
         viewModel.uiState.mainFragmentState.isDrawerOpen =
             view?.findViewById<DrawerLayout>(R.id.drawer_layout)?.isDrawerOpen(GravityCompat.START)
+    }
+
+    override fun onDestroy() {
+        if (CastHelper.isCastingSupported(requireContext())) {
+            (requireActivity() as? LibraryFragment2.Callbacks)?.getCastHelper()?.unInit()
+        }
+        super.onDestroy()
     }
 
     @Parcelize

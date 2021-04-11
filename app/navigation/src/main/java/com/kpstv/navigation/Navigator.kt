@@ -222,7 +222,7 @@ class Navigator(private val fm: FragmentManager, private val containerView: Fram
         }
     }
 
-    open class NavigationDrawer {
+    open class NavigationDrawer { // TODO: Rename it
         open val drawerNavigationViewId: Int = -1
         open val drawerNavigationFragments: Map<Int, FragClazz> = mapOf()
         open val selectedNavigationItemId: Int = -1

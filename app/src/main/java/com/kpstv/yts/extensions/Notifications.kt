@@ -36,18 +36,16 @@ object Notifications {
     fun setup(context: Context) = with(context) {
         mgr = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (SDK_INT >= 26) {
-            val channel = NotificationChannel(
-                getString(R.string.CHANNEL_ID_2),
-                context.getString(R.string.download),
-                NotificationManager.IMPORTANCE_DEFAULT
+            mgr.createNotificationChannel(
+                NotificationChannel(getString(R.string.CHANNEL_ID_2), context.getString(R.string.download), NotificationManager.IMPORTANCE_DEFAULT)
             )
-            mgr.createNotificationChannel(channel)
 
             mgr.createNotificationChannel(
-                NotificationChannel(
-                    getString(R.string.CHANNEL_ID_3),
-                    getString(R.string.update),
-                    NotificationManager.IMPORTANCE_LOW)
+                NotificationChannel(getString(R.string.CHANNEL_ID_3), getString(R.string.update), NotificationManager.IMPORTANCE_LOW)
+            )
+
+            mgr.createNotificationChannel(
+                NotificationChannel(getString(R.string.CHANNEL_ID_4), getString(R.string.stream), NotificationManager.IMPORTANCE_LOW)
             )
         }
     }
@@ -205,14 +203,14 @@ object Notifications {
         progress: Int = 0,
         closePendingIntent: PendingIntent? = null
     ): Notification = with(context) {
-        val builder = NotificationCompat.Builder(this, getString(R.string.CHANNEL_ID_2)).apply {
+        val builder = NotificationCompat.Builder(this, getString(R.string.CHANNEL_ID_4)).apply {
             setDefaults(Notification.DEFAULT_ALL)
             setContentTitle(movieName)
             setOngoing(true)
             setShowWhen(false)
             color = colorFrom(R.color.colorPrimary_New_DARK)
             setSmallIcon(R.drawable.ic_support)
-            priority = Notification.PRIORITY_HIGH
+            priority = Notification.PRIORITY_LOW
         }
 
         if (progress == 0)

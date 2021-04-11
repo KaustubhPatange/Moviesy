@@ -200,7 +200,6 @@ class FinalViewModel @ViewModelInject constructor(
                         response.movieId.toString()
                     )
                 } else {
-                    Log.e(TAG, "=> Getting data from repository")
 
                     recommendDao.getMoviesByImDb(imdbId)?.also {
                         suggestionCallback.onComplete(it.movies, it.tag, it.isMore)
@@ -229,8 +228,6 @@ class FinalViewModel @ViewModelInject constructor(
                         MovieType.Suggestion
                     )
                 } else {
-                    Log.e(TAG, "=> Getting data from repository")
-
                     suggestionDao.getMoviesByImDb(imdbId)?.also {
                         suggestionCallback.onComplete(it.movies, it.tag, it.isMore)
                     }

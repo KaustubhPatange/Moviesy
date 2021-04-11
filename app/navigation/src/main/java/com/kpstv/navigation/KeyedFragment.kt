@@ -3,9 +3,9 @@ package com.kpstv.navigation
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.fragment.app.Fragment
+import com.kpstv.navigation.internals.ViewStateFragment
 
-open class KeyedFragment(@LayoutRes id: Int) : Fragment(id) {
+open class KeyedFragment(@LayoutRes id: Int) : ViewStateFragment(id) {
     constructor() : this(0)
 
     companion object {
@@ -41,12 +41,19 @@ open class KeyedFragment(@LayoutRes id: Int) : Fragment(id) {
      *
      * @throws NullPointerException When it does not exist.
      */
-    fun<T : BaseArgs> getKeyArgs(): T {
+    fun <T : BaseArgs> getKeyArgs(): T {
         return arguments?.getParcelable<T>(ARGUMENTS) as T
     }
 
     fun goBack() {
         safeNavigator().goBack()
+    }
+
+    /**
+     * If True the event has been consumed by the [KeyedFragment].
+     */
+    open fun onBackPressed(): Boolean {
+        return false
     }
 
     private fun safeNavigator(): Navigator {
@@ -58,11 +65,4 @@ open class KeyedFragment(@LayoutRes id: Int) : Fragment(id) {
     }
 
     internal var bottomNavigationState: Bundle? = null
-
-    /**
-     * If True the event has been consumed by the [KeyedFragment].
-     */
-    open fun onBackPressed(): Boolean {
-        return false
-    }
 }

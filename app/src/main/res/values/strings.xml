@@ -21,6 +21,7 @@
     <string name="CHANNEL_ID_1">yts_01</string>
     <string name="CHANNEL_ID_2">yts_02</string>
     <string name="CHANNEL_ID_3">yts_03</string>
+    <string name="CHANNEL_ID_4">yts_04</string>
     <string name="current">Current</string>
     <string name="pending">Pending Jobs</string>
     <string name="ask_delete">Delete files in storage?</string>
@@ -142,7 +143,7 @@
     <string name="update_message">An update is available to download</string>
     <string name="update_text">Do you want to install this update?</string>
     <string name="doze_title">Battery Optimization</string>
-    <string name="doze_text">You need to disable battery optimization in order to prevent unexpected app shutdowns from background.</string>
+    <string name="doze_text">You need to disable battery optimization in order to prevent unexpected app shutdowns from background which interrupts services that causes malfunctioning of the app.</string>
     <string name="scanning">Scanning…</string>
     <string name="scan_complete">downloads found</string>
     <string name="less">Less</string>
@@ -229,6 +230,7 @@
     <string name="warning">Warning</string>
     <string name="okay">OK</string>
     <string name="update">Update</string>
+    <string name="stream">Streaming</string>
     <string name="update_download">Update downloaded</string>
     <string name="update_install">Tap to install the update</string>
     <string name="update_error">Error while updating the app</string>

@@ -2,7 +2,9 @@ package com.kpstv.navigation.internals
 
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import androidx.core.view.size
 import androidx.fragment.app.Fragment
 
 internal fun Fragment.getSaveInstanceState() : Bundle? {
@@ -34,4 +36,12 @@ internal fun View.invisible() {
 
 internal fun View.show() {
     visibility = View.VISIBLE
+}
+
+internal fun<T> Iterable<T>.secondLast(): T? {
+    val c = count()
+    if (c > 1) {
+        return this.elementAt(c - 2)
+    }
+    return null
 }

@@ -89,7 +89,6 @@ class MainViewModel @ViewModelInject constructor(
                     Log.e(TAG, "=> Fetching New data, $queryString")
                     fetchNewData(movieCallback, queryMap)
                 } else {
-                    Log.e(TAG, "=> Getting data from repository, $queryString")
                     repository.getMoviesByQuery(
                         queryString
                     )?.let {
@@ -116,7 +115,6 @@ class MainViewModel @ViewModelInject constructor(
                     Log.e(TAG, "=> Featured: Fetching new data")
                     fetchFeaturedData(moviesCallback)
                 } else {
-                    Log.e(TAG, "=> Featured: Getting data from repository")
                     repository.getMoviesByQuery(
                         FEATURED_QUERY
                     )?.let {

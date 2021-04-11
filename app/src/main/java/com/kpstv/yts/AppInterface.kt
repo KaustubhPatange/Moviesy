@@ -6,6 +6,7 @@ import android.content.Context
 import android.os.Environment
 import androidx.preference.PreferenceManager
 import com.danimahardhika.cafebar.CafeBar
+import com.kpstv.common_moviesy.extensions.utils.CommonUtils
 import com.kpstv.yts.data.models.AppDatabase
 import com.kpstv.yts.extensions.SearchType
 import com.kpstv.yts.extensions.SimpleCallback
@@ -90,6 +91,7 @@ class AppInterface {
         fun setAppThemeNoAction(activity: Activity) {
             if (!IS_DARK_THEME) {
                 activity.setTheme(R.style.AppTheme_Light_NoAction)
+                activity.window.statusBarColor = CommonUtils.getColorFromAttr(activity, R.attr.colorBackground)
             }
         }
 
