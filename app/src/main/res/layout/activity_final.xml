@@ -27,7 +27,8 @@
         android:layout_height="wrap_content"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-        <androidx.core.widget.NestedScrollView
+        <com.kpstv.yts.extensions.views.ExtendedNestedScrollView
+            android:id="@+id/nestedScrollView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -53,7 +54,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
             </LinearLayout>
-        </androidx.core.widget.NestedScrollView>
+        </com.kpstv.yts.extensions.views.ExtendedNestedScrollView>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

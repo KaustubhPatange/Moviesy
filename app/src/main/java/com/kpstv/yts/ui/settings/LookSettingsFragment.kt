@@ -12,23 +12,7 @@ import com.kpstv.yts.AppSettings.IS_DARK_THEME_PREF
 import com.kpstv.yts.ui.fragments.SettingFragment
 import com.kpstv.yts.ui.helpers.ThemeHelper
 
-@Deprecated(message = "Use LookSettingsFragment2")
-class LookSettingsFragment(
-    private val onThemeChange : (Boolean) -> Unit
-): PreferenceFragmentCompat() {
-
-    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        setPreferencesFromResource(R.xml.look_preference, rootKey)
-
-        findPreference<SwitchPreferenceCompat>(IS_DARK_THEME_PREF)?.setOnPreferenceChangeListener { _, newValue ->
-            AppInterface.IS_DARK_THEME = newValue as Boolean
-            onThemeChange.invoke(newValue)
-            true
-        }
-    }
-}
-
-class LookSettingsFragment2 : PreferenceFragmentCompat() {
+class LookSettingsFragment : PreferenceFragmentCompat() {
     interface ThemeChangeCallbacks {
         fun onThemeChanged(viewRect: Rect)
     }

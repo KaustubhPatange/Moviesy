@@ -29,7 +29,7 @@ import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.extensions.SessionCallback
 import com.kpstv.yts.extensions.SimpleCallback
 import com.kpstv.yts.extensions.toFile
-import com.kpstv.yts.ui.fragments.LibraryFragment
+import com.kpstv.yts.ui.fragments.LibraryFragment2
 import es.dmoral.toasty.Toasty
 import io.github.dkbai.tinyhttpd.nanohttpd.webserver.SimpleWebServer
 import java.io.File
@@ -157,7 +157,7 @@ class CastHelper {
 
 
     /**
-     * Should be used only in [LibraryFragment]
+     * Should be used only in [LibraryFragment2]
      */
     fun loadMedia(
         downloadModel: Model.response_download,

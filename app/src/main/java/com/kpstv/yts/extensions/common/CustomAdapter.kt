@@ -56,7 +56,6 @@ class CustomAdapter(
                     holder.binding.shimmerImageView.isShimmering = false
                 },
                 onError = {
-                    // TODO: Fix Shimmer Image background when no imageview is present
                     holder.binding.shimmerImageView.background = ColorDrawable(
                         CommonUtils.getColorFromAttr(holder.binding.shimmerImageView.context, R.attr.colorForeground)
                     )

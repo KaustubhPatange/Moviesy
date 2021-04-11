@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusable="true"
-    android:focusableInTouchMode="true"
-    tools:context=".ui.activities.SearchActivity">
+    android:focusableInTouchMode="true">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbarLayout"

@@ -12,12 +12,9 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.kpstv.common_moviesy.extensions.colorFrom
 import com.kpstv.common_moviesy.extensions.utils.CommonUtils
-import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.receivers.CommonBroadCast
-import com.kpstv.yts.ui.activities.FinalActivity
-import com.kpstv.yts.ui.activities.SplashActivity
 import com.kpstv.yts.ui.activities.StartActivity
 import com.kpstv.yts.ui.helpers.ActivityIntentHelper
 import java.io.File

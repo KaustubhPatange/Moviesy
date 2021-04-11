@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_agree"
-    tools:context=".ui.activities.AgreementActivity">
+    android:background="@color/background_agree">
 
     <TextView
         android:id="@+id/tv_summary"

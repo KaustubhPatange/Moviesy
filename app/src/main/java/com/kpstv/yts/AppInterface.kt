@@ -10,12 +10,9 @@ import com.kpstv.common_moviesy.extensions.utils.CommonUtils
 import com.kpstv.yts.data.models.AppDatabase
 import com.kpstv.yts.extensions.SearchType
 import com.kpstv.yts.extensions.SimpleCallback
-import com.kpstv.yts.extensions.YTSQuery
-import com.kpstv.yts.extensions.add
 import com.kpstv.yts.extensions.errors.MovieNotFoundException
 import com.kpstv.yts.extensions.errors.SSLHandshakeException
 import com.kpstv.yts.extensions.utils.AppUtils
-import com.kpstv.yts.ui.fragments.GenreFragment
 import es.dmoral.toasty.Toasty
 import java.io.File
 import java.text.DecimalFormat
@@ -69,8 +66,6 @@ class AppInterface {
         const val UNPAUSE_JOB = "com.kpstv.yts.ADD_ONLY_JOB"
         const val REMOVE_CURRENT_JOB = "com.kpstv.yts.REMOVE_CURRENT_JOB"
 
-        @Deprecated("")
-        const val MOVIE_ID = "com.kpstv.yts.MOVIE_ID"
         const val UPDATE_URL = "com.kpstv.yts.UPDATE_URL"
 
         const val GENERAL_FRAG = "com.kpstv.yts.GENERAL_FRAG"

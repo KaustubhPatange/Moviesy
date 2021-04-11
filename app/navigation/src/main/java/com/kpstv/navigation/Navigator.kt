@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
 import com.kpstv.navigation.internals.NavigatorCircularTransform
-import com.kpstv.navigation.internals.doOnLaidOut
 import com.kpstv.navigation.internals.prepareForSharedTransition
 import kotlin.reflect.KClass
 
@@ -85,9 +84,9 @@ class Navigator(private val fm: FragmentManager, private val containerView: Fram
                 fm.fragments.forEach { remove(it) }
             }
             if (transition == TransitionType.FADE)
-                setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out)
+                setCustomAnimations(R.anim.navigator_fade_in, R.anim.navigator_fade_out, R.anim.navigator_fade_in, R.anim.navigator_fade_out)
             if (transition == TransitionType.SLIDE)
-                setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
+                setCustomAnimations(R.anim.navigator_slide_in, R.anim.navigator_fade_out, R.anim.navigator_fade_in, R.anim.navigator_slide_out)
             if (transition == TransitionType.SHARED)
                 prepareForSharedTransition(fm, this@options)
 
@@ -222,7 +221,7 @@ class Navigator(private val fm: FragmentManager, private val containerView: Fram
         }
     }
 
-    open class NavigationDrawer { // TODO: Rename it
+    open class NavigationMenu { // TODO: Rename it
         open val drawerNavigationViewId: Int = -1
         open val drawerNavigationFragments: Map<Int, FragClazz> = mapOf()
         open val selectedNavigationItemId: Int = -1

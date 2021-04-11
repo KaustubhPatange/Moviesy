@@ -65,26 +65,3 @@ class GenreState(private val savedStateHandle: SavedStateHandle) {
         get() = savedStateHandle.get(RECYCLERVIEW_STATE)
         set(value) = savedStateHandle.set(RECYCLERVIEW_STATE, value)
 }
-
-/** TODO: You can remove the below code. */
-class OldWatchState {
-    var recyclerViewState: Parcelable? = null
-    var isAppBarExpanded: Boolean? = null
-}
-
-class OldLibraryState {
-    var recyclerViewState: Parcelable? = null
-}
-
-class OldHomeState {
-    var tabPosition: Int? = null
-    var isAppBarExpanded: Boolean? = null
-}
-
-class OldChartState {
-    var nestedScrollState: Parcelable? = null
-}
-
-class OldGenreState {
-    var recyclerViewState: Parcelable? = null
-}

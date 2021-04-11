@@ -36,7 +36,7 @@ internal class SharedElementCallback(
     override fun onFragmentCreated(fm: FragmentManager, f: Fragment, savedInstanceState: Bundle?) {
         super.onFragmentCreated(fm, f, savedInstanceState)
         f.sharedElementEnterTransition = TransitionInflater.from(f.requireContext())
-            .inflateTransition(R.transition.change_transform)
+            .inflateTransition(R.transition.navigator_change_transform)
     }
     override fun onFragmentViewCreated(
         fm: FragmentManager,

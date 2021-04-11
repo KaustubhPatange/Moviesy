@@ -10,6 +10,7 @@ import android.os.Parcelable
 import android.util.Log
 import android.view.View
 import androidx.core.view.doOnPreDraw
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -33,12 +34,14 @@ import com.kpstv.yts.extensions.common.CustomMovieLayout
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.GlideApp
 import com.kpstv.yts.extensions.utils.LangCodeUtils
+import com.kpstv.yts.extensions.views.ExtendedNestedScrollView
 import com.kpstv.yts.interfaces.listener.MovieListener
 import com.kpstv.yts.ui.activities.ImageViewActivity
 import com.kpstv.yts.ui.activities.PlayerActivity
 import com.kpstv.yts.ui.fragments.sheets.BottomSheetDownload
 import com.kpstv.yts.ui.fragments.sheets.BottomSheetSubtitles
 import com.kpstv.yts.ui.viewmodels.FinalViewModel
+import com.kpstv.yts.ui.viewmodels.MainViewModel
 import com.kpstv.yts.ui.viewmodels.StartViewModel
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
@@ -50,7 +53,6 @@ import kotlinx.android.parcel.Parcelize
 
 @AndroidEntryPoint
 class DetailFragment : KeyedFragment(R.layout.activity_final), MovieListener {
-    // TODO: When backpress from here if there is no MainFragment then it should create one.
     companion object {
         const val YOUTUBE_PLAYER_VIEW_REQUEST_CODE = 189
     }

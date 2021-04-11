@@ -22,7 +22,7 @@ import com.kpstv.yts.ui.viewmodels.SettingNavViewModel
 import com.kpstv.yts.ui.viewmodels.StartViewModel
 import kotlinx.android.parcel.Parcelize
 
-class SettingFragment : KeyedFragment(R.layout.activity_settings), NavigatorTransmitter, LookSettingsFragment2.ThemeChangeCallbacks {
+class SettingFragment : KeyedFragment(R.layout.activity_settings), NavigatorTransmitter, LookSettingsFragment.ThemeChangeCallbacks {
     private val binding by viewBinding(ActivitySettingsBinding::bind)
     private val navViewModel by activityViewModels<StartViewModel>()
     private val viewModel by viewModels<SettingNavViewModel>()
@@ -79,7 +79,7 @@ class SettingFragment : KeyedFragment(R.layout.activity_settings), NavigatorTran
             args = Args(openLookFeel = true),
             transition = Navigator.TransitionType.CIRCULAR,
             transitionPayload = CircularPayload(
-                forFragment = LookSettingsFragment2::class,
+                forFragment = LookSettingsFragment::class,
                 fromTarget = viewRect
             )
         )
@@ -97,7 +97,7 @@ class SettingFragment : KeyedFragment(R.layout.activity_settings), NavigatorTran
         MAIN(MainSettingFragment::class, R.string.settings),
         GENERAL(GeneralSettingsFragment::class, R.string.general),
         STORAGE(StorageSettingFragment::class, R.string.storage),
-        LOOK_FEEL(LookSettingsFragment2::class, R.string.look_feel),
+        LOOK_FEEL(LookSettingsFragment::class, R.string.look_feel),
         ACCOUNT(AccountSettingFragment::class, R.string.account),
         BACKUP(BackupSettingPreference::class, R.string.backup_restore),
         DEVELOPER(DevSettingsFragment::class, R.string.developer_untouched),

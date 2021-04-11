@@ -12,11 +12,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.kpstv.common_moviesy.extensions.applyBottomInsets
 import com.kpstv.common_moviesy.extensions.applyTopInsets
-import com.kpstv.common_moviesy.extensions.utils.KeyboardUtils
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.navigation.*
 import com.kpstv.yts.AppInterface
-import com.kpstv.yts.BuildConfig
 import com.kpstv.yts.R
 import com.kpstv.yts.cast.CastHelper
 import com.kpstv.yts.databinding.ActivityMainBinding
@@ -29,14 +27,12 @@ import com.kpstv.yts.ui.activities.DownloadActivity
 import com.kpstv.yts.ui.activities.StartActivity
 import com.kpstv.yts.ui.helpers.BatteryOptimizationHelper
 import com.kpstv.yts.ui.helpers.ChangelogHelper
-import com.kpstv.yts.ui.helpers.MainCastHelper2
 import com.kpstv.yts.ui.helpers.PremiumHelper
 import com.kpstv.yts.ui.helpers.ThemeHelper.registerForThemeChange
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import com.kpstv.yts.ui.viewmodels.StartViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
-import io.github.dkbai.tinyhttpd.nanohttpd.webserver.SimpleWebServer
 import kotlinx.android.parcel.Parcelize
 import javax.inject.Inject
 

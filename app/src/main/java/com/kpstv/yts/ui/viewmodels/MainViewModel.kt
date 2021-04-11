@@ -21,7 +21,6 @@ import com.kpstv.yts.extensions.MoviesCallback
 import com.kpstv.yts.extensions.utils.YTSParser
 import com.kpstv.yts.interfaces.api.YTSApi
 import com.kpstv.yts.ui.viewmodels.state.UIState
-import com.kpstv.yts.ui.viewmodels.state.UIState2
 import kotlinx.coroutines.launch
 import retrofit2.await
 import java.util.*
@@ -34,8 +33,6 @@ class MainViewModel @ViewModelInject constructor(
     private val favouriteRepository: FavouriteRepository,
     private val pauseRepository: PauseRepository,
     private val downloadRepository: DownloadRepository,
-    @Deprecated("Use uiState instead")
-    val uiState_old: UIState2, // TODO: Remove this property
     private val ytsParser: YTSParser
 ) : ViewModel() {
     private val TAG = "MainViewModel"

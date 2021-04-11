@@ -39,14 +39,6 @@
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-1164424526503510~6985155768" />
-
-        <activity
-            android:name=".ui.activities.AgreementActivity"
-            android:theme="@style/AppTheme.Transparent" />
-        <activity
-            android:name=".ui.settings.SettingsActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Dark.NoAction" />
         <activity
             android:name=".ui.activities.StartActivity"
             android:screenOrientation="portrait"
@@ -69,13 +61,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.activities.SearchActivity"
-            android:theme="@style/AppTheme.Dark.NoAction"
-            android:windowSoftInputMode="stateVisible" />
-        <activity
-            android:name=".ui.activities.MoreActivity"
-            android:theme="@style/AppTheme.Dark.NoAction" />
-        <activity
             android:name=".ui.activities.TorrentPlayerActivity"
             android:screenOrientation="landscape"
             android:theme="@style/TorrentPlayerTheme" />
@@ -95,12 +80,6 @@
             android:name=".ui.activities.ImageViewActivity"
             android:theme="@style/AppTheme.Dark.NoAction" />
         <activity
-            android:name=".ui.activities.MainActivity"
-            android:theme="@style/AppTheme.Dark.Main" />
-        <activity
-            android:name=".ui.activities.FinalActivity"
-            android:theme="@style/AppTheme.Dark.NoAction" />
-        <activity
             android:name=".cast.ui.ExpandedControlsActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
@@ -109,10 +88,9 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
-
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.kpstv.yts.ui.activities.MainActivity" />
+                android:value="com.kpstv.yts.ui.activities.StartActivity" />
         </activity>
         <activity android:name=".ui.activities.CrashOnActivity"/>
 
