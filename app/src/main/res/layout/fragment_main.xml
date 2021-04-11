@@ -39,6 +39,6 @@
 
     <include
         android:id="@+id/navigationLayout"
-        layout="@layout/activity_main_navigation" />
+        layout="@layout/fragment_main_navigation" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -11,7 +11,7 @@ import com.kpstv.common_moviesy.extensions.show
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.AppSettings
 import com.kpstv.yts.R
-import com.kpstv.yts.databinding.ActivitySplashBinding
+import com.kpstv.yts.databinding.FragmentSplashBinding
 import com.kpstv.yts.defaultPreference
 import com.kpstv.yts.extensions.SimpleCallback
 import com.kpstv.yts.extensions.errors.SSLHandshakeException
@@ -30,10 +30,10 @@ import javax.inject.Inject
 class SplashErrorException(val inner: Exception) : Exception()
 
 @AndroidEntryPoint
-class SplashFragment : KeyedFragment(R.layout.activity_splash)  {
+class SplashFragment : KeyedFragment(R.layout.fragment_splash)  {
     @Inject lateinit var proxyUtils: ProxyUtils
 
-    private val binding by viewBinding(ActivitySplashBinding::bind)
+    private val binding by viewBinding(FragmentSplashBinding::bind)
     private val appNavViewModel by activityViewModels<StartViewModel>()
     private val appPreference by defaultPreference()
 

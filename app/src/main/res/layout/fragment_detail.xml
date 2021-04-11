@@ -38,10 +38,10 @@
                 android:layout_height="wrap_content">
                 <include
                     android:id="@+id/activity_final_content"
-                    layout="@layout/activity_final_content" />
+                    layout="@layout/fragment_detail_content" />
                 <include
                     android:id="@+id/activity_final_previews"
-                    layout="@layout/activity_final_previews" />
+                    layout="@layout/fragment_detail_previews" />
                 <LinearLayout
                     android:orientation="vertical"
                     android:id="@+id/af_suggestionAddLayout"

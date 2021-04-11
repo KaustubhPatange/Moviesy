@@ -14,7 +14,7 @@ import com.kpstv.common_moviesy.extensions.colorFrom
 import com.kpstv.common_moviesy.extensions.globalVisibleRect
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.R
-import com.kpstv.yts.databinding.ActivityAgreementBinding
+import com.kpstv.yts.databinding.FragmentAgreementBinding
 import com.kpstv.yts.defaultPreference
 import com.kpstv.yts.ui.activities.StartActivity
 import com.kpstv.navigation.BaseArgs
@@ -33,8 +33,8 @@ data class WelcomeArgs(
     @ColorRes val backgroundColor: Int
 ) : BaseArgs(), Parcelable
 
-abstract class AbstractWelcomeFragment : KeyedFragment(R.layout.activity_agreement) {
-    val binding by viewBinding(ActivityAgreementBinding::bind)
+abstract class AbstractWelcomeFragment : KeyedFragment(R.layout.fragment_agreement) {
+    val binding by viewBinding(FragmentAgreementBinding::bind)
 
     abstract fun onNextClick()
 

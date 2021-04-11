@@ -14,7 +14,7 @@ import com.kpstv.common_moviesy.extensions.drawableFrom
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.navigation.*
 import com.kpstv.yts.R
-import com.kpstv.yts.databinding.ActivitySettingsBinding
+import com.kpstv.yts.databinding.FragmentSettingsBinding
 import com.kpstv.yts.ui.activities.StartActivity
 import com.kpstv.yts.ui.helpers.ThemeHelper.registerForThemeChange
 import com.kpstv.yts.ui.settings.*
@@ -22,8 +22,8 @@ import com.kpstv.yts.ui.viewmodels.SettingNavViewModel
 import com.kpstv.yts.ui.viewmodels.StartViewModel
 import kotlinx.android.parcel.Parcelize
 
-class SettingFragment : KeyedFragment(R.layout.activity_settings), NavigatorTransmitter, LookSettingsFragment.ThemeChangeCallbacks {
-    private val binding by viewBinding(ActivitySettingsBinding::bind)
+class SettingFragment : KeyedFragment(R.layout.fragment_settings), NavigatorTransmitter, LookSettingsFragment.ThemeChangeCallbacks {
+    private val binding by viewBinding(FragmentSettingsBinding::bind)
     private val navViewModel by activityViewModels<StartViewModel>()
     private val viewModel by viewModels<SettingNavViewModel>()
     private lateinit var navigator: Navigator

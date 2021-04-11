@@ -64,7 +64,7 @@
 
         <include
             android:id="@+id/activity_search_single"
-            layout="@layout/activity_search_single" />
+            layout="@layout/fragment_search_single" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

@@ -17,7 +17,7 @@ import com.kpstv.navigation.*
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
 import com.kpstv.yts.cast.CastHelper
-import com.kpstv.yts.databinding.ActivityMainBinding
+import com.kpstv.yts.databinding.FragmentMainBinding
 import com.kpstv.yts.extensions.NavigationModel
 import com.kpstv.yts.extensions.NavigationModels
 import com.kpstv.yts.extensions.Navigations
@@ -42,8 +42,8 @@ interface MainFragmentDrawerCallbacks {
 }
 
 @AndroidEntryPoint
-class MainFragment : KeyedFragment(R.layout.activity_main), MainFragmentDrawerCallbacks {
-    private val binding by viewBinding(ActivityMainBinding::bind)
+class MainFragment : KeyedFragment(R.layout.fragment_main), MainFragmentDrawerCallbacks {
+    private val binding by viewBinding(FragmentMainBinding::bind)
     private val navViewModel by activityViewModels<StartViewModel>()
     private val viewModel by viewModels<MainViewModel>()
     private val navigations by lazy {

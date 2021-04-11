@@ -27,7 +27,7 @@ import com.kpstv.navigation.KeyedFragment
 import com.kpstv.yts.R
 import com.kpstv.yts.adapters.CustomPagedAdapter
 import com.kpstv.yts.data.converters.QueryConverter
-import com.kpstv.yts.databinding.ActivityMoreBinding
+import com.kpstv.yts.databinding.FragmentMoreBinding
 import com.kpstv.yts.extensions.MovieBase
 import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.extensions.utils.AppUtils
@@ -39,13 +39,12 @@ import kotlinx.android.parcel.Parcelize
 import kotlinx.android.synthetic.main.custom_alert_buttons.view.*
 import kotlinx.android.synthetic.main.custom_alert_filter.view.*
 import kotlinx.android.synthetic.main.item_chip.view.*
-import kotlin.random.Random
 
 // Some of the old implementation do exist.
 
 @AndroidEntryPoint
-class MoreFragment : KeyedFragment(R.layout.activity_more) {
-    private val binding by viewBinding(ActivityMoreBinding::bind)
+class MoreFragment : KeyedFragment(R.layout.fragment_more) {
+    private val binding by viewBinding(FragmentMoreBinding::bind)
     private val viewModel by viewModels<MoreViewModel>()
     private val navViewModel by activityViewModels<StartViewModel>()
 

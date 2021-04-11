@@ -27,7 +27,7 @@ import com.kpstv.yts.adapters.SearchAdapter
 import com.kpstv.yts.data.CustomDataSource
 import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.data.models.Result
-import com.kpstv.yts.databinding.ActivitySearchBinding
+import com.kpstv.yts.databinding.FragmentSearchBinding
 import com.kpstv.yts.extensions.MovieBase
 import com.kpstv.yts.extensions.SuggestionCallback
 import com.kpstv.yts.extensions.YTSQuery
@@ -50,8 +50,8 @@ import javax.inject.Inject
 @FlowPreview
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class SearchFragment : KeyedFragment(R.layout.activity_search) {
-    private val binding by viewBinding(ActivitySearchBinding::bind)
+class SearchFragment : KeyedFragment(R.layout.fragment_search) {
+    private val binding by viewBinding(FragmentSearchBinding::bind)
     private val moreViewModel by viewModels<MoreViewModel>()
     private val finalViewModel by viewModels<FinalViewModel>()
     private val searchViewModel by viewModels<SearchViewModel>()
