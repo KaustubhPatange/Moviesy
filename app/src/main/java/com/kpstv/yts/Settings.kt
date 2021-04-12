@@ -16,6 +16,10 @@ class AppPreference(context: Context) {
 
     fun shouldCheckProxy(): Boolean = getBoolean(SHOULD_CHECK_PROXY, false)
 
+    fun setShouldCheckProxy(value: Boolean) {
+        writeBoolean(SHOULD_CHECK_PROXY, value)
+    }
+
     fun isFirstLaunch(): Boolean = getBoolean(IS_FIRST_LAUNCH, true)
 
     fun isFirstLaunch(value: Boolean) = writeBoolean(IS_FIRST_LAUNCH, value)

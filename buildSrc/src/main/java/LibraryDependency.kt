@@ -53,6 +53,9 @@ private object LibraryVersion {
     const val AUTOBINDINGS = "1.1-alpha16"
     const val APP_STARTUP = "1.0.0"
     const val IMAGELOADERVIEW = "0.7-beta04"
+    const val NAVIGATOR = "0.1-alpha02"
+    const val NAVIGATOR_BOTTOM_NAVIGATION = "0.1-alpha03"
+    const val NAVIGATOR_EXTENSIONS = "0.1"
 }
 
 object LibraryDependency {
@@ -128,4 +131,7 @@ object LibraryDependency {
     const val AUTOBINDINGS = "io.github.kaustubhpatange:autobindings:${LibraryVersion.AUTOBINDINGS}"
     const val AUTOBINDINGS_COMPILER = "io.github.kaustubhpatange:autobindings-compiler:${LibraryVersion.AUTOBINDINGS}"
     const val IMAGELOADERVIEW = "io.github.kaustubhpatange:imageloaderview:${LibraryVersion.IMAGELOADERVIEW}"
+    const val NAVIGATOR = "io.github.kaustubhpatange:navigator:${LibraryVersion.NAVIGATOR}"
+    const val NAVIGATOR_EXTENSIONS = "io.github.kaustubhpatange:navigator-extensions:${LibraryVersion.NAVIGATOR_EXTENSIONS}"
+    const val NAVIGATOR_BOTTOM_NAVIGATION = "io.github.kaustubhpatange:navigator-bottom-navigation:${LibraryVersion.NAVIGATOR_BOTTOM_NAVIGATION}"
 }

@@ -151,6 +151,10 @@ dependencies {
     implementation(LibraryDependency.AUTOBINDINGS)
     implementation(LibraryDependency.IMAGELOADERVIEW)
 
+    implementation(LibraryDependency.NAVIGATOR)
+    implementation(LibraryDependency.NAVIGATOR_EXTENSIONS)
+    implementation(LibraryDependency.NAVIGATOR_BOTTOM_NAVIGATION)
+
     implementation(LibraryDependency.GOOGLE_HTTPCLIENT_API) {
         exclude(group = GradlePluginId.APACHE_HTTP)
     }

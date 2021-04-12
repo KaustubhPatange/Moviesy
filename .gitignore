@@ -13,6 +13,7 @@
 /app/build
 /app/release
 /app/purchase
+/app/navigation
 .DS_Store
 google-services.json
 /build

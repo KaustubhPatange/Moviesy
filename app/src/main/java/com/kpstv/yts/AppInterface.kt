@@ -116,10 +116,7 @@ class AppInterface {
             /** We will also set a preference lookup to check for proxy
              *  when app is launched again. */
 
-            val preference = PreferenceManager.getDefaultSharedPreferences(context)
-            preference.edit().apply {
-                putBoolean(PROXY_CHECK_PREF, true)
-            }.apply()
+            AppPreference(context).setShouldCheckProxy(true)
 
             if (t is SSLHandshakeException || t?.message?.trim() == "HTTP 525") {
                 if (!isSSLDialogActive) {

@@ -7,7 +7,7 @@ object ModuleDependency {
     const val COMMON = ":app:common"
     const val AFTER = ":app:after"
     const val SHEETS = ":app:sheets"
-    const val NAVIGATION = ":app:navigation"
+//    const val NAVIGATION = ":app:navigation"
 
     fun getAllModules() = ModuleDependency::class.memberProperties
         .filter { it.isConst }

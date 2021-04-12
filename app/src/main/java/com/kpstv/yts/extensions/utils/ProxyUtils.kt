@@ -6,6 +6,7 @@ import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.yts.AppInterface
+import com.kpstv.yts.AppPreference
 import com.kpstv.yts.AppSettings
 import com.kpstv.yts.data.converters.AppDatabaseConverter
 import com.kpstv.yts.extensions.errors.SSLHandshakeException
@@ -66,11 +67,6 @@ class ProxyUtils @Inject constructor(
                 AppInterface.SUGGESTION_URL = misc.suggestionApi
             }
 
-            PreferenceManager.getDefaultSharedPreferences(context).edit {
-                putBoolean(AppInterface.PROXY_CHECK_PREF, false)
-                putBoolean(AppInterface.IS_FIRST_LAUNCH_PREF, false)
-            }
-
             AppSettings.writeSettings(context)
 
             Log.e(TAG, "Checking for YTS proxy again!")
@@ -78,6 +74,8 @@ class ProxyUtils @Inject constructor(
             if (testResponse.code == 525) throw SSLHandshakeException("The app couldn't connect to server")
             if (!testResponse.isSuccessful) throw Exception("Updated proxy is invalid. If you see this message, contact developer to update proxies manually!")
             testResponse.close() // Close response for memory leaks
+
+            AppPreference(context).setShouldCheckProxy(false)
         } else
             throw Exception("Failed to retrieve app database")
     }
