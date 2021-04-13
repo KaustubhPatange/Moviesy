@@ -19,11 +19,11 @@ All responsive css rule
   }
 
   .screenshot-wrap {
-    margin: 52px -20px 0;
+    margin: 25px -20px 0;
   }
 
   .screen-mock {
-    height: 379px;
+    height: 365px;
     width: 202px;
     margin: 0;
   }
@@ -225,14 +225,14 @@ All responsive css rule
   }
 
   .screen-mock {
-    height: 509px;
+    height: 490px;
     width: 340px;
   }
 
   .screenshot-wrap {
     margin-left: -15px;
     margin-right: -15px;
-    margin-top: 69px;
+    margin-top: 35px;
   }
 
   .pricing-table {
@@ -370,7 +370,7 @@ All responsive css rule
   }
 
   .screen-mock {
-    height: 650px;
+    height: 625px;
     width: 590px;
   }
 
@@ -378,7 +378,7 @@ All responsive css rule
     max-width: 308px;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 88px;
+    margin-top: 45px;
   }
 
   .support-tabs .nav-tabs {
@@ -475,12 +475,12 @@ All responsive css rule
 
   .screen-mock {
     height: 480px;
-    width: 260px;
+    width: 245px;
   }
 
   .screenshot-wrap {
     width: 238px;
-    margin-top: 68px;
+    margin-top: 42px;
   }
 
   .client-logo {

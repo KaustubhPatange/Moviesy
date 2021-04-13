@@ -3,92 +3,92 @@ Banner Styles
 ----------------------------------------*/
 
 .banner-item {
-  height: 768px;
-  background-position: center top;
-  background-attachment: fixed;
-  background-size: cover;
-  position: relative;
-  color: #ffffff;
-  overflow: hidden;
-  &:before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    background-color: rgba(#111111, 0.8);
-    z-index: 1;
-  }
+    height: 768px;
+    background-position: center top;
+    background-attachment: fixed;
+    background-size: cover;
+    position: relative;
+    color: #ffffff;
+    overflow: hidden;
+    &:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background-color: rgba(#111111, 0.8);
+        z-index: 1;
+    }
 }
 
 .banner-1 {
-  background-image: url(../web/images/banner/1.jpg);
+    background-image: url(../images/banner/1.jpg);
 }
 
 .banner-content {
-  position: absolute;
-  z-index: 2;
-  top: 50%;
-  left: 0;
-  right: 0;
-  transform: translateY(-50%);
-  margin-top: 50px;
-  .banner-text-content {
-    margin-top: 100px;
-  }
-  .banner-title {
-    font-size: 4.8rem;
-    font-weight: 300;
-    margin-top: 0;
-    margin-bottom: 0;
-    line-height: 1.5;
-  }
-  .banner-text {
-    font-size: 2.2rem;
-    margin-top: 22px;
-    margin-bottom: 0;
-  }
-  .button-group {
-    margin-top: 34px;
-  }
-  .btn-border {
-    color: #ffffff;
-  }
-  .banner-registration {
-    background-color: rgba(#111111, 0.55);
-    max-width: 400px;
-    float: right;
-    width: 100%;
-    padding: 40px;
-    input:not([type="radio"]):not([type="checkbox"]):not([type="range"]),
-    textarea {
-      line-height: 30px !important;
-      background-color: rgba($primaryColor, 0.22);
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    margin-top: 50px;
+    .banner-text-content {
+        margin-top: 100px;
     }
-    .btn {
-      width: 100%;
+    .banner-title {
+        font-size: 4.8rem;
+        font-weight: 300;
+        margin-top: 0;
+        margin-bottom: 0;
+        line-height: 1.5;
     }
-  }
+    .banner-text {
+        font-size: 2.2rem;
+        margin-top: 22px;
+        margin-bottom: 0;
+    }
+    .button-group {
+        margin-top: 34px;
+    }
+    .btn-border {
+        color: #ffffff;
+    }
+    .banner-registration {
+        background-color: rgba(#111111, 0.55);
+        max-width: 400px;
+        float: right;
+        width: 100%;
+        padding: 40px;
+        input:not([type=radio]):not([type=checkbox]):not([type=range]),
+        textarea {
+            line-height: 30px !important;
+            background-color: rgba($primaryColor, 0.22);
+        }
+        .btn {
+            width: 100%;
+        }
+    }
 }
 
 .banner {
-  &.style-2 {
-    .banner-content {
-      top: 0;
-      transform: translateY(0);
+    &.style-2 {
+        .banner-content {
+            top: 0;
+            transform: translateY(0);
+        }
+        .banner-hero-image {
+            margin-top: 50px;
+        }
     }
-    .banner-hero-image {
-      margin-top: 50px;
+    &.style-3 {
+        .banner-text-content {
+            margin-top: 0;
+        }
     }
-  }
-  &.style-3 {
-    .banner-text-content {
-      margin-top: 0;
-    }
-  }
 }
 
 .right-part {
-  text-align: right;
+    text-align: right;
 }

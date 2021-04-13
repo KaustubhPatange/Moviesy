@@ -8,7 +8,7 @@ $(document).ready(function () {
     currentClass: "active",
   });
 
-  //   $.localScroll();
+  // $.localScroll();
 
   $(".fucking-scroll").click(function () {
     var clickedId = $(this).attr("href");
