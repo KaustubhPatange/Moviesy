@@ -1,0 +1,385 @@
+/*--------------------------------------------------
+Blog Page Styles
+--------------------------------------------------*/
+.blog-listing{
+    float: left;
+    width: 100%;
+    clear: both;
+    .post:nth-child(2n + 1){
+        clear: left;
+    }
+    .post-inner{
+        float: left;
+        width: 100%;
+        margin-bottom: 60px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        padding: 30px;
+        border-radius: 5px;
+        .btn{
+            margin-top: 25px;
+        }
+    }
+    .post-metas{
+        margin-top: 20px;
+        margin-bottom: 0;
+        color: #777777;
+        .post-meta{
+            + .post-meta{
+                margin-left: 20px;
+            }
+        }
+    }
+    .post-title{
+        margin-top: 15px;
+        margin-bottom: 0;
+        font-size: 2.4rem;
+        color: $baseColor;
+        a{
+            color: inherit;
+            &:hover{
+                color: $primaryColor;
+            }
+        }
+    }
+    .post-excerpt{
+        margin-top: 15px;
+        margin-bottom: 0;
+    }
+}
+.post-pagination {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.post-pagination,
+.nav-links {
+    >a, .current {
+        height: 32px;
+        width: 32px;
+        line-height: 30px;
+        border: 1px solid $primaryColor;
+        color: $baseColor;
+        border-radius: 50% !important;
+        display: inline-block;
+        padding: 0;
+        text-align: center;
+        + a{
+            margin-left: 10px;
+        }
+        &:hover {
+            background-color: $primaryColor;
+            color: #ffffff;
+            text-decoration: none;
+        }
+        &:first-child,
+        &:last-child {
+            border-radius: 50% !important;
+        }
+    }
+    .current {
+            background-color: $primaryColor;
+            color: #ffffff;
+        margin-left: 10px;
+        }
+    >li {
+        >a {
+            height: 32px;
+            width: 32px;
+            line-height: 30px;
+            border: 1px solid $primaryColor;
+            color: $baseColor;
+            border-radius: 50% !important;
+            display: inline-block;
+            padding: 0;
+            text-align: center;
+            &:hover {
+                background-color: $primaryColor;
+                color: #ffffff;
+            }
+        }
+        +li {
+            >a {
+                margin-left: 10px;
+            }
+        }
+        &:first-child,
+        &:last-child {
+            >a {
+                border-radius: 50% !important;
+            }
+        }
+        &.current {
+            a {
+                background-color: $primaryColor;
+                color: #ffffff;
+            }
+        }
+    }
+}
+
+/*--------------------------------------------------
+Blog Single Page Styles
+--------------------------------------------------*/
+.blog-single{
+    float: left;
+    width: 100%;
+    clear: both;
+    .post{
+        float: left;
+        width: 100%;
+        clear: both;
+    }
+    .post-bar{
+        float: left;
+        width: 100%;
+    }
+    .post-inner{
+        float: left;
+        width: 100%;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        padding: 30px;
+        border-radius: 5px;
+    }
+    .post-metas{
+        margin-top: 20px;
+        margin-bottom: 0;
+        color: #777777;
+        .post-meta{
+            + .post-meta{
+                margin-left: 20px;
+            }
+        }
+    }
+    .post-title{
+        margin-top: 15px;
+        margin-bottom: 0;
+        font-size: 3rem;
+    }
+    .post-entry{
+        margin-top: 20px;
+        blockquote{
+            font-size: 1.4rem;
+            font-weight: 600;
+            line-height: $baseLineHeight;
+        }
+    }
+    .share-on{
+        margin-top: 30px;
+    }
+}
+
+.given-comment {
+    float: left;
+    width: 100%;
+    margin-top: 50px;
+    margin-bottom: -50px;
+    .given-comment-title {
+        margin-top: 0;
+        margin-bottom: 34px;
+        font-family: $baseFont;
+        font-size: 1.8rem;
+        float: left;
+        width: 100%;
+    }
+    .comments {
+        float: left;
+        width: 100%;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        &.child-comments {
+            padding-left: 100px;
+        }
+    }
+    .comment {
+        float: left;
+        width: 100%;
+    }
+    .comment-wrap {
+        width: 100%;
+        float: left;
+        margin-bottom: 50px;
+    }
+    .commenter-thumb {
+        float: left;
+        display: block;
+        width: 80px;
+        height: 80px;
+        margin-right: 20px;
+        border-radius: 50%;
+        overflow: hidden;
+        img{
+            max-width: 100%;
+            height: auto;
+        }
+    }
+    .comment-body {
+        float: left;
+        width: calc(100% - 100px);
+    }
+    .comment-title {
+        margin-top: 0;
+        margin-bottom: 5px;
+        font-weight: 600;
+        font-size: 1.8rem;
+        .comment-date {
+            font-weight: 400;
+            font-size: 1.4rem;
+        }
+    }
+    .comment-content p {
+        margin-bottom: 7px;
+    }
+    .comment-reply {
+        font-weight: 600;
+        font-size: 1.4rem;
+    }
+}
+
+.commenting-wrap {
+    float: left;
+    width: 100%;
+    margin-top: 50px;
+    .comment-form-title {
+        margin-top: 0;
+        margin-bottom: 34px;
+        font-family: $baseFont;
+        font-size: 1.8rem;
+        float: left;
+        width: 100%;
+    }
+    input{
+        margin-bottom: 20px;
+    }
+}
+
+/*** Sidebar ***/
+.widget {
+    float: left;
+    width: 100%;
+    border: 1px solid rgba($primaryColor, 0.22);
+    &+& {
+        margin-top: 40px;
+    }
+    .widget-title {
+        position: relative;
+        padding: 8px 0;
+        margin: 20px 30px 15px;
+        &:before {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            height: 3px;
+            width: 25px;
+            background-color: rgba($primaryColor, 0.22);
+        }
+    }
+    .widget-inner {
+        padding: 0 30px 20px;
+        float: left;
+        width: 100%;
+        p:last-child {
+            margin-bottom: 0;
+        }
+    }
+    ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        li {
+            color: $baseColor;
+            line-height: $baseLineHeight;
+            a {
+                color: inherit;
+                &:hover {
+                    color: $primaryColor;
+                    text-decoration: none;
+                }
+                &:before {
+                    content: "\f105";
+                    font-family: "FontAwesome";
+                    margin-right: 7px;
+                    display: inline-block;
+                }
+            }
+        }
+    }
+    &.post-widget ul li {
+        + li{
+            margin-top: 10px;
+        }
+        a {
+            text-decoration: underline;
+            &:before {
+                text-decoration: none;
+            }
+        }
+    }
+    .widget-posts{
+        float: left;
+        width: 100%;
+        margin-bottom: -15px;
+    }
+    .widget-post{
+        float: left;
+        width: 100%;
+        margin-bottom: 15px;
+    }
+    .widget-post-thumb {
+        float: left;
+        width: 60px;
+        display: inline-block;
+        margin-right: 15px;
+        img{
+            width: 100%;
+            height: auto;
+        }
+    }
+    .widget-post-body {
+        width: calc(100% - 75px);
+        float: left;
+    }
+    .widget-post-title{
+        font-family: $headingFont;
+        font-size: 1.4rem;
+    }
+    .widget-post-date {
+        font-size: 1.2rem;
+        display: block;
+        margin-top: 5px;
+    }
+    .widget-tag {
+        margin-left: -10px;
+        margin-right: -10px;
+        float: left;
+        a {
+            color: $baseColor;
+            text-decoration: underline;
+            margin-left: 10px;
+            margin-right: 10px;
+            float: left;
+            line-height: $baseLineHeight;
+            &:hover {
+                color: $primaryColor;
+            }
+        }
+    }
+    .social-media {
+        float: left;
+        width: 100%;
+        a {
+            color: $baseColor;
+            clear: both;
+            float: left;
+            font-weight: 700;
+            line-height: $baseLineHeight;
+            &:hover {
+                color: $primaryColor;
+                text-decoration: none;
+            }
+        }
+    }
+}
+
+

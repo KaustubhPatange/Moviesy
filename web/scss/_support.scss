@@ -1,0 +1,84 @@
+/*----------------------------------------
+Support Styles
+----------------------------------------*/
+
+.support-tabs {
+    .nav-tabs {
+        border: none;
+        >li {
+            margin-bottom: 0;
+            width: 16.666666%;
+            padding: 0 15px;
+            >a {
+                border: 1px solid $primaryColor;
+                border-radius: 0;
+                margin: 0;
+                text-align: center;
+                color: #000000;
+                display: block;
+                line-height: 1.75;
+                padding: 37px 10px 28px;
+                position: relative;
+                span {
+                    font-size: 4rem;
+                    line-height: 1;
+                    display: block;
+                    margin-bottom: 7px;
+                }
+                &:hover {
+                    background-color: transparent;
+                    color: $primaryColor;
+                }
+                &:after {
+                    content: "";
+                    position: absolute;
+                    width: 0;
+                    height: 0;
+                    border-top: 13px solid $primaryColor;
+                    border-left: 13px solid transparent;
+                    border-right: 13px solid transparent;
+                    top: 100%;
+                    left: 50%;
+                    margin-left: -13px;
+                    transition-duration: 0.3s;
+                    opacity: 0;
+                    visibility: hidden;
+                }
+            }
+            &.active a {
+                background-color: $primaryColor;
+                color: #ffffff;
+                &:after {
+                    opacity: 1;
+                    visibility: visible;
+                }
+            }
+        }
+    }
+    .pane-content {
+        padding: 65px 15px 0;
+        width: 100%;
+        float: left;
+    }
+    .installation-steps {
+        float: left;
+        width: 100%;
+        margin-bottom: -45px;
+    }
+    .installation-step {
+        width: 50%;
+        display: inline-block;
+        float: left;
+        padding-right: 15px;
+        margin-bottom: 45px;
+        &:nth-child(2n) {
+            padding-right: 0;
+            padding-left: 15px;
+        }
+        .step-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+    }
+}

@@ -1,0 +1,48 @@
+/*------------------------
+Video Description Styles
+------------------------*/
+
+.plyr .plyr__play-large {
+    height: 60px;
+    width: 60px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    border: none;
+    text-align: center;
+    svg {
+        color: $primaryColor;
+        left: 11px;
+    }
+}
+
+.plyr--video .plyr__controls {
+    padding: 20px 5px 20px;
+}
+
+.plyr__controls button svg {
+    width: 12px;
+    height: 13px;
+}
+
+.plyr__progress--buffer,
+.plyr__progress--played,
+.plyr__volume--display {
+    height: 5px;
+}
+
+.plyr__progress--buffer::-webkit-progress-value,
+.plyr__progress--played::-webkit-progress-value,
+.plyr__volume--display::-webkit-progress-value {
+    background-color: $primaryColor;
+}
+
+.plyr input[type=range]::-webkit-slider-thumb {
+    width: 12px;
+    height: 12px;
+    margin-top: -2.5px;
+}
+
+.plyr--video .plyr__controls button.tab-focus:focus,
+.plyr--video .plyr__controls button:hover {
+    background-color: $primaryColor;
+}

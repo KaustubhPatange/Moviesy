@@ -1,0 +1,74 @@
+/*------------------------
+Features Styles
+------------------------*/
+
+.feature {
+    float: left;
+    width: 100%;
+    margin-top: 65px;
+}
+
+.feature-icon {
+    font-size: 2.5rem;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: 1px solid $primaryColor;
+    line-height: 68px;
+    text-align: center;
+    color: $primaryColor;
+    margin-right: 30px;
+    float: left;
+    transition: all 0.3s ease;
+    .feature:hover & {
+        background-color: $primaryColor;
+        color: #ffffff;
+    }
+    .col-sm-4:first-child & {
+        float: right;
+        margin-right: 0;
+        margin-left: 30px;
+    }
+}
+
+.feature-content {
+    float: left;
+    width: calc(100% - 100px);
+    .col-sm-4:first-child & {
+        float: right;
+        text-align: right;
+    }
+}
+
+.feature-title {
+    font-size: 2.2rem;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    color: $primaryColor;
+}
+
+
+/*** More Features ***/
+
+.more-feature-section {
+    .mock {
+        margin-left: 25px;
+    }
+    .section-header {
+        margin-top: 50px;
+    }
+}
+
+.icon-list {
+    line-height: 2.3;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    li {
+        span {
+            font-size: 1.7rem;
+            color: $primaryColor;
+            margin-right: 10px;
+        }
+    }
+}

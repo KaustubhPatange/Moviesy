@@ -1,0 +1,61 @@
+/*----------------------------------------
+Buttons Styles
+----------------------------------------*/
+
+.btn {
+  font-size: 1.4rem;
+  font-family: $baseFont;
+  text-transform: uppercase;
+  font-weight: 400;
+  background-color: $primaryColor;
+  color: #ffffff;
+  border: 1px solid $primaryColor;
+  line-height: 39px;
+  padding: 0 39px;
+  letter-spacing: 1.3px;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+  i {
+    margin-right: 10px;
+  }
+  &:focus,
+  &:visited,
+  &:active {
+    outline: none;
+    color: #ffffff;
+    background-color: $primaryColor;
+  }
+  &:hover {
+    background-color: #5c187e;
+    color: #ffffff;
+  }
+  &.btn-sm {
+    font-weight: 600;
+    font-size: 1.6rem;
+    line-height: 30px;
+    padding: 0 30px;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  &.btn-lg {
+    padding: 0 45px;
+    line-height: 50px;
+    border-radius: 26px;
+  }
+  &.btn-border {
+    background-color: transparent;
+    color: #111111;
+    &:focus,
+    &:visitedm &:active {
+      color: #111111;
+      background-color: transparent;
+    }
+    &:hover {
+      background-color: $primaryColor;
+      color: #ffffff;
+    }
+  }
+  + .btn {
+    margin-left: 26px;
+  }
+}

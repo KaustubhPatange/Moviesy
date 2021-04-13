@@ -1,0 +1,100 @@
+/*-----------------------------------
+Navbar Styles
+-----------------------------------*/
+
+.navbar-default {
+    min-height: 100px;
+    border-radius: 0;
+    border: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: transparent;
+    margin-bottom: 0;
+    z-index: 995;
+    transition: all 0.3s ease;
+    .navbar-brand {
+        margin-top: 25px;
+        margin-bottom: 25px;
+    }
+    .navbar-nav {
+        margin-top: 25px;
+        margin-bottom: 25px;
+        >li {
+            >a {
+                font-size: 1.4rem;
+                font-weight: 700;
+                color: #ffffff;
+                text-transform: uppercase;
+                &:focus, a:visited{
+                    color: #ffffff;
+                }
+                &:hover{
+                    color: $primaryColor;
+                }
+            }
+            &.active{
+                a{
+                    background-color: transparent;
+                    color: $primaryColor;
+                    &:focus, &:hover, &:visited{
+                        color: $primaryColor;
+                        background-color: transparent;
+                    }
+                }
+            }
+        }
+    }
+    &.affix {
+        background-color: #111111;
+        min-height: 60px;
+        .navbar-brand {
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+        .navbar-nav {
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+    }
+}
+.navbar-right{
+    .dropdown-menu{
+        right: auto;
+        left: 0;
+    }
+    >.dropdown:last-child, >.dropdown:nth-last-child(2){
+        >.dropdown-menu{
+            right: 0;
+            left: auto;
+        }
+    }
+}
+.dropdown-menu{
+    display: block;
+    padding: 20px 10px;
+    z-index: 996;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    .dropdown-menu{
+        left: 100%;
+        top: 0;
+    }
+    >li{
+        >a{
+            font-size: 1.4rem;
+            font-weight: 700;
+            line-height: 2;
+            &:hover{
+                color: #ffffff;
+                background-color: $primaryColor;
+            }
+        }
+    }
+    .dropdown:hover > &{
+        opacity: 1;
+        visibility: visible;
+    }
+}

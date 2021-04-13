@@ -1,0 +1,88 @@
+/*------------------------
+Preloader Styles
+------------------------*/
+.loader-wrap{
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ffffff;
+}
+.cssload-loader{
+	position: relative;
+	width: 12px;
+	height: 12px;
+	left: 46%;
+	left: calc(50% - 6px);
+		left: -o-calc(50% - 6px);
+		left: -ms-calc(50% - 6px);
+		left: -webkit-calc(50% - 6px);
+		left: -moz-calc(50% - 6px);
+    top: 50%;	
+	border-radius: 12px;
+	background-color: $primaryColor;
+	transform-origin:	50% 50%;
+		-o-transform-origin:	50% 50%;
+		-ms-transform-origin:	50% 50%;
+		-webkit-transform-origin:	50% 50%;
+		-moz-transform-origin:	50% 50%;
+	animation: cssload-loader 0.5s ease-in-out infinite;
+		-o-animation: cssload-loader 0.5s ease-in-out infinite;
+		-ms-animation: cssload-loader 0.5s ease-in-out infinite;
+		-webkit-animation: cssload-loader 0.5s ease-in-out infinite;
+		-moz-animation: cssload-loader 0.5s ease-in-out infinite;
+}
+
+.cssload-loader:before{
+	content: "";
+	position: absolute;
+	background-color: $primaryColor;
+	top: 0px;
+	left: -25px;
+	height: 12px;
+	width: 12px;
+	border-radius: 12px;
+}
+
+.cssload-loader:after{
+	content: "";
+	position: absolute;
+	background-color: $primaryColor;
+	top: 0px;
+	left: 25px;
+	height: 12px;
+	width: 12px;
+	border-radius: 12px;
+}
+
+@keyframes cssload-loader{
+		0%{transform:rotate(0deg);}
+		50%{transform:rotate(180deg);}
+		100%{transform:rotate(180deg);}
+}
+
+@-o-keyframes cssload-loader{
+		0%{-o-transform:rotate(0deg);}
+		50%{-o-transform:rotate(180deg);}
+		100%{-o-transform:rotate(180deg);}
+}
+
+@-ms-keyframes cssload-loader{
+		0%{-ms-transform:rotate(0deg);}
+		50%{-ms-transform:rotate(180deg);}
+		100%{-ms-transform:rotate(180deg);}
+}
+
+@-webkit-keyframes cssload-loader{
+		0%{-webkit-transform:rotate(0deg);}
+		50%{-webkit-transform:rotate(180deg);}
+		100%{-webkit-transform:rotate(180deg);}
+}
+
+@-moz-keyframes cssload-loader{
+		0%{-moz-transform:rotate(0deg);}
+		50%{-moz-transform:rotate(180deg);}
+		100%{-moz-transform:rotate(180deg);}
+}

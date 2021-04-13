@@ -1,0 +1,26 @@
+/*------------------------
+Intro Styles
+------------------------*/
+
+.intro-item {
+    text-align: center;
+    padding: 30px 35px;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+    &:hover {
+        border-color: $primaryColor;
+    }
+}
+
+.intro-icon {
+    font-size: 4rem;
+    line-height: 1;
+    color: $primaryColor;
+}
+
+.intro-title {
+    color: $primaryColor;
+    font-size: 2.2rem;
+    margin-top: 25px;
+    margin-bottom: 15px;
+}

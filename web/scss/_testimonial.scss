@@ -1,0 +1,58 @@
+/*-----------------------------------
+Testimonial Boxed Styles
+-----------------------------------*/
+
+.testimonial-carousel {
+    .testimonial {
+        padding: 0 280px;
+        text-align: center;
+        .commenter-thumb {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto 15px;
+            display: inline-block;
+        }
+        .commenter-name {
+            font-size: 1.8rem;
+        }
+        .commenter-designation {
+            font-size: 1.4rem;
+        }
+    }
+    blockquote {
+        font-size: 1.6rem;
+        font-weight: 400;
+        padding: 0;
+        margin: 0;
+        border: none;
+    }
+    .owl-prev,
+    .owl-next {
+        position: absolute;
+        font-size: 3.4rem;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    .owl-prev {
+        left: 0;
+    }
+    .owl-next {
+        right: 0;
+    }
+    .client-info {
+        margin-top: 50px;
+    }
+    .client-name {
+        font-size: 2.2rem;
+        font-family: $baseFont;
+        font-weight: 600;
+        margin: 0;
+    }
+    .client-profession {
+        font-size: 1.2rem;
+        margin-top: 4px;
+        margin-bottom: 0;
+    }
+}

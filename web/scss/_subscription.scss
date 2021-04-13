@@ -1,0 +1,62 @@
+/*------------------------
+Subscription Styles
+------------------------*/
+
+.subscription-area {
+    h3 {
+        font-size: 4.8rem;
+        font-weight: 300;
+        margin: 0;
+        line-height: 1.5;
+    }
+}
+
+.subscription {
+    width: 100%;
+    text-align: right;
+    float: right;
+    margin-top: 44px;
+     ::-webkit-input-placeholder {
+        color: #ffffff;
+        opacity: 0.55;
+    }
+     ::-moz-placeholder {
+        color: #ffffff;
+        opacity: 0.55;
+    }
+     :-ms-input-placeholder {
+        color: #ffffff;
+        opacity: 0.55;
+    }
+     :-moz-placeholder {
+        color: #ffffff;
+        opacity: 0.55;
+    }
+    input[type=email] {
+        background-color: transparent !important;
+        border-bottom: 1px solid #ffffff !important;
+        float: left;
+        font-size: 1.4rem !important;
+        width: calc(100% - 220px) !important;
+        margin-bottom: 0;
+        margin-top: 7px;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+    *[type=submit] {
+        font-size: 1.4rem;
+        letter-spacing: 1.3px;
+        text-transform: uppercase;
+        color: $primaryColor;
+        background-color: #ffffff;
+        border: none;
+        line-height: 52px;
+        width: 200px;
+        padding: 0;
+        text-align: center;
+        border-radius: 26px;
+        float: right;
+        margin-left: 20px;
+        margin-top: 0;
+    }
+}

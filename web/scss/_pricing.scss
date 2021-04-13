@@ -1,0 +1,54 @@
+/*----------------------------------------
+Pricing Styles
+----------------------------------------*/
+
+.pricing-table {
+    border: 1px solid rgba($primaryColor, 0.22);
+    text-align: center;
+    transition: all 0.3s ease;
+    .pricing-header {
+        border-top: 10px solid rgba($primaryColor, 0.22);
+        border-bottom: 1px solid rgba($primaryColor, 0.22);
+        transition-duration: 0.3s;
+        .pack-name {
+            padding: 25px 20px 25px;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #000000;
+            margin: 0;
+        }
+    }
+    .pack-price {
+        font-size: 4.2rem;
+        margin: 0;
+        padding: 34px 20px 28px;
+        font-weight: 700;
+        font-family: $headingFont;
+        .currency,
+        .pack-duration {
+            font-weight: 400;
+            font-size: 2.2rem;
+            vertical-align: baseline;
+        }
+    }
+    .pack-features {
+        list-style: none;
+        line-height: $baseLineHeight;
+        margin: 0 0 42px;
+        padding: 0;
+    }
+    .btn {
+        margin-bottom: 52px;
+    }
+    &:hover,
+    &.active {
+        border-color: $primaryColor;
+        .pricing-header {
+            border-color: $primaryColor;
+        }
+        .btn {
+            background-color: $primaryColor;
+            color: #ffffff;
+        }
+    }
+}

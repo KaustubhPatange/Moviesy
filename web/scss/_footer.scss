@@ -1,0 +1,62 @@
+/*------------------------
+Footer Styles
+------------------------*/
+
+.logo-footer {
+    display: inline-block;
+    margin: 0 auto;
+}
+
+.socials {
+    margin-top: 30px;
+    a {
+        display: inline-block;
+        height: 40px;
+        width: 40px;
+        border-radius: 50%;
+        line-height: 38px;
+        border: 1px solid $primaryColor;
+        font-size: 1.4rem;
+        color: $primaryColor;
+        +a {
+            margin-left: 16px;
+        }
+        &:hover {
+            background-color: $primaryColor;
+            color: #ffffff;
+        }
+    }
+}
+
+.copyright-footer {
+    background-color: $primaryColor;
+    color: #ffffff;
+    padding: 21px 0;
+    .copyright {
+        font-size: 1.5rem;
+        a {
+            color: #ffffff;
+            &:hover {
+                color: #111111;
+            }
+        }
+    }
+}
+
+.footer-nav {
+    text-align: right;
+    width: 100%;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    li {
+        display: inline;
+        margin-left: 36px;
+        a {
+            color: #ffffff;
+            font-size: 1.5rem;
+            font-weight: 400;
+            font-family: $baseFont;
+        }
+    }
+}
