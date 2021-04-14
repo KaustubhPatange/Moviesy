@@ -129,7 +129,6 @@ class WelcomeCarrierFragment : AbstractWelcomeFragment() {
         navViewModel.navigateTo(
             screen = StartActivity.Screen.MAIN,
             popUpTo = true,
-            transition = Navigator.TransitionType.FADE
         )
     }
 

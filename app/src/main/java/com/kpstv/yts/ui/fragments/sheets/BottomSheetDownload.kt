@@ -131,7 +131,9 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
                 interstitialAdHelper.showAd(viewLifecycleOwner) {
                     when (viewType) {
                         ViewType.WATCH -> { // When watch button is clicked
-                            singleClickForWatch(torrent)
+                            AppUtils.showTorrentStreamDialog(requireContext()) {
+                                singleClickForWatch(torrent)
+                            }
                         }
                         ViewType.DOWNLOAD -> { // When download button is clicked
                             if (startService(torrent))

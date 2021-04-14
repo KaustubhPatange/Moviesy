@@ -8,6 +8,7 @@ import android.view.View
 import androidx.core.view.GravityCompat
 import androidx.core.view.doOnPreDraw
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.kpstv.common_moviesy.extensions.applyBottomInsets
@@ -35,6 +36,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import kotlinx.android.parcel.Parcelize
 import javax.inject.Inject
+import kotlin.reflect.KClass
 
 interface MainFragmentDrawerCallbacks {
     fun openDrawer()
@@ -66,7 +68,7 @@ class MainFragment : ValueFragment(R.layout.fragment_main), MainFragmentDrawerCa
         navigator = Navigator(childFragmentManager, binding.fragmentContainer)
         navigator.install(this, object : Navigator.BottomNavigation() {
             override val bottomNavigationViewId: Int = R.id.bottom_nav
-            override val bottomNavigationFragments: Map<Int, FragClazz> = mapOf(
+            override val bottomNavigationFragments: Map<Int, KClass<out Fragment>> = mapOf(
                 R.id.homeFragment to HomeFragment::class,
                 R.id.watchFragment to WatchlistFragment::class,
                 R.id.libraryFragment to LibraryFragment::class

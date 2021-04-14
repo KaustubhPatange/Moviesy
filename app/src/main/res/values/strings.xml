@@ -251,4 +251,6 @@
     <string name="error_movie_title">Error: Movie not found</string>
     <string name="error_movie_text">The requested movie does not exist.\n\nSince all movie suggestions are basically fetched from 3rd party websites, it is possible that YTS doesn\'t have it in their database.</string>
     <string name="genre_select">Based on</string>
+    <string name="torrent_stream_title">Torrent streaming</string>
+    <string name="torrent_stream_text">Streaming media from torrent is different unlike normal.\n\nYou cannot control the seekbar position &amp; move it forwards or backwards, this is how torrent works. You just watch as it loads piece by piece.</string>
 </resources>

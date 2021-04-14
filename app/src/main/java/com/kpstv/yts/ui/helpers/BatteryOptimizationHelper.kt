@@ -9,7 +9,6 @@ import android.os.PowerManager
 import android.provider.Settings
 import androidx.work.WorkManager
 import com.kpstv.yts.R
-import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import com.kpstv.yts.ui.dialogs.WindowDialog
 import java.util.*
 
@@ -44,7 +43,7 @@ object BatteryOptimizationHelper {
             if (!enabled && isSupportedVendor()) {
                 WindowDialog.Builder(this)
                     .setTitle(R.string.doze_title)
-                    .setSubtitle(R.string.doze_text)
+                    .setMessage(R.string.doze_text)
                     .setLottieRes(R.raw.battery_opt)
                     .setCancellable(false)
                     .setNegativeButton(android.R.string.cancel)

@@ -299,7 +299,7 @@ class AppUtils {
         fun showSSLHandshakeDialog(context: Context, onClose: SimpleCallback = {}) {
             WindowDialog.Builder(context)
                 .setTitle(R.string.error_ssl_handshake_title)
-                .setSubtitle(R.string.error_ssl_handshake_text_dialog)
+                .setMessage(R.string.error_ssl_handshake_text_dialog)
                 .setCancellable(false)
                 .setLottieRes(R.raw.error)
                 .setPositiveButton(R.string.alright) {
@@ -315,7 +315,7 @@ class AppUtils {
         fun showMovieNotFoundDialog(context: Context, onClose: SimpleCallback = {}) {
             WindowDialog.Builder(context)
                 .setTitle(R.string.error_movie_title)
-                .setSubtitle(R.string.error_movie_text)
+                .setMessage(R.string.error_movie_text)
                 .setCancellable(false)
                 .setLottieRes(R.raw.not_found)
                 .setPositiveButton(R.string.alright) {
@@ -327,7 +327,7 @@ class AppUtils {
         fun showDataErrorDialog(context: Context, onClose: SimpleCallback = {}) {
             WindowDialog.Builder(context)
                 .setTitle(R.string.error_mobile_data_title)
-                .setSubtitle(R.string.error_mobile_data_text)
+                .setMessage(R.string.error_mobile_data_text)
                 .setCancellable(false)
                 .setLottieRes(R.raw.wifi_wiper)
                 .setPositiveButton(R.string.alright) {
@@ -345,6 +345,18 @@ class AppUtils {
                 .setNegativeButton(getString(R.string.need_help)) {
                     launchUrlIntent(context, getString(R.string.app_help))
                     onClose.invoke()
+                }
+                .show()
+        }
+
+        fun showTorrentStreamDialog(context: Context, onPositive: SimpleCallback = {}) {
+            WindowDialog.Builder(context)
+                .setTitle(R.string.torrent_stream_title)
+                .setMessage(R.string.torrent_stream_text)
+                .setNegativeButton(android.R.string.cancel)
+                .setLottieRes(R.raw.video)
+                .setPositiveButton(R.string.alright) {
+                    onPositive.invoke()
                 }
                 .show()
         }

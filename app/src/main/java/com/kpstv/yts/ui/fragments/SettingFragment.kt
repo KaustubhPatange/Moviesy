@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
 import androidx.annotation.StringRes
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -21,6 +22,7 @@ import com.kpstv.yts.ui.settings.*
 import com.kpstv.yts.ui.viewmodels.SettingNavViewModel
 import com.kpstv.yts.ui.viewmodels.StartViewModel
 import kotlinx.android.parcel.Parcelize
+import kotlin.reflect.KClass
 
 class SettingFragment : ValueFragment(R.layout.fragment_settings), NavigatorTransmitter, LookSettingsFragment.ThemeChangeCallbacks {
     private val binding by viewBinding(FragmentSettingsBinding::bind)
@@ -93,7 +95,7 @@ class SettingFragment : ValueFragment(R.layout.fragment_settings), NavigatorTran
         return true
     }
 
-    enum class Screen(val clazz: FragClazz, @StringRes val title: Int) {
+    enum class Screen(val clazz: KClass<out Fragment>, @StringRes val title: Int) {
         MAIN(MainSettingFragment::class, R.string.settings),
         GENERAL(GeneralSettingsFragment::class, R.string.general),
         STORAGE(StorageSettingFragment::class, R.string.storage),
@@ -104,7 +106,7 @@ class SettingFragment : ValueFragment(R.layout.fragment_settings), NavigatorTran
         ABOUT(AboutSettingFragment::class, R.string.about);
 
         companion object {
-            fun getTitle(clazz: FragClazz): Int {
+            fun getTitle(clazz: KClass<out Fragment>): Int {
                 return values().firstOrNull { it.clazz == clazz }?.title ?: MAIN.title
             }
         }

@@ -49,7 +49,7 @@ class WindowDialog(context: Context) : AlertDialog(context) {
             return this
         }
 
-        fun setSubtitle(@StringRes text: Int): Builder {
+        fun setMessage(@StringRes text: Int): Builder {
             view.subtitle.text = context.getString(text)
             return this
         }
