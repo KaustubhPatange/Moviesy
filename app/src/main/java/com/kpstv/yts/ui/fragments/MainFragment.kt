@@ -191,7 +191,7 @@ class MainFragment : ValueFragment(R.layout.fragment_main), MainFragmentDrawerCa
             navigateTo(navigationModel.tag)
         }
         viewModel.pauseMovieJob.observe(viewLifecycleOwner, {
-            navigations.updateNotification(NAV_DOWNLOAD_QUEUE, it.size) // TODO: Update this & make it for childFragmentManager
+            navigations.updateNotification(NAV_DOWNLOAD_QUEUE, it.size)
         })
     }
 

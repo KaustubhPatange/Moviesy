@@ -14,7 +14,6 @@ import kotlin.collections.ArrayList
 class RecommendUtils {
     companion object {
         fun writeGenreUtils(context: Context, genre: String, movieTitle: String) {
-            val gson = Gson()
             var genres = getGenreUtils(context)
             if (genres?.list?.isNotEmpty() == true) {
                 for (c in genres.list) {

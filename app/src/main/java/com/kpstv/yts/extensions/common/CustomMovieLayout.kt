@@ -113,12 +113,16 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
 
         val listener = MoviesCallback(
             onFailure = { e ->
-                e.printStackTrace()
-                onFailure?.invoke(e)
+                lifecycleOwner?.lifecycleScope?.launchWhenStarted {
+                    e.printStackTrace()
+                    onFailure?.invoke(e)
+                }
             },
             onComplete = { movies, queryMap, isMoreAvailable ->
-                this@CustomMovieLayout.isMoreAvailable = isMoreAvailable
-                setupCallbacksNoMore(movies, queryMap, viewModel)
+                lifecycleOwner?.lifecycleScope?.launchWhenStarted {
+                    this@CustomMovieLayout.isMoreAvailable = isMoreAvailable
+                    setupCallbacksNoMore(movies, queryMap, viewModel)
+                }
             }
         )
 
@@ -153,16 +157,20 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
 
         val listener = MoviesCallback(
             onFailure = { e ->
-                handleRetrofitError(context, e)
-                e.printStackTrace()
+                lifecycleOwner?.lifecycleScope?.launchWhenStarted {
+                    handleRetrofitError(context, e)
+                    e.printStackTrace()
+                }
             },
             onComplete = { movies, map, isMoreAvailable ->
-                this@CustomMovieLayout.isMoreAvailable = isMoreAvailable
-                models = movies
-                setupRecyclerView(models, viewModel)
-                if (isMoreAvailable)
-                    setupMoreButton(map)
-                else hideMoreCallbacks()
+                lifecycleOwner?.lifecycleScope?.launchWhenStarted {
+                    this@CustomMovieLayout.isMoreAvailable = isMoreAvailable
+                    models = movies
+                    setupRecyclerView(models, viewModel)
+                    if (isMoreAvailable)
+                        setupMoreButton(map)
+                    else hideMoreCallbacks()
+                }
             }
         )
 
@@ -193,6 +201,8 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
         val map = queryMap
         if (map != null)
             mainViewModel?.removeYtsQuery(map)
+        mainViewModel = null
+        navViewModel = null
     }
 
     private fun setupMoreButton(queryMap: Map<String, String>) {
@@ -263,7 +273,6 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
         clickableLayout.setOnClickListener(listener)
     }
 
-    // TODO: Set the bottom sheet that depends on activity.
     private fun setupRecyclerView(list: ArrayList<MovieShort>, viewModel: MainViewModel? = null) {
         view.shimmerEffect.hideShimmer()
         view.shimmerEffect.visibility = View.GONE

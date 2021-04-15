@@ -123,17 +123,15 @@ class SearchFragment : ValueFragment(R.layout.fragment_search) {
         setSuggestionObservable()
     }
 
-    override fun onStart() {
-        super.onStart()
-
-        /** This focus will show the keyboard whenever this activity will be started
-         */
-        binding.searchEditText.showKeyboard()
-
-        /** Hiding the close button at start
-         */
-        binding.itemClose.hide()
+    override fun onViewStateChanged(viewState: ViewState) {
+        if (viewState == ViewState.FOREGROUND) {
+            binding.searchEditText.showKeyboard()
+            binding.itemClose.hide()
+        } else {
+            binding.searchEditText.clearFocus()
+        }
     }
+
 
     private fun setToolbar() {
         binding.appbarLayout.applyTopInsets()

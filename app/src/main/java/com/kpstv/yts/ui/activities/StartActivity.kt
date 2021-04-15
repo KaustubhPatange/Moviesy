@@ -29,7 +29,6 @@ import kotlin.reflect.KClass
 
 @AndroidEntryPoint
 class StartActivity : AppCompatActivity(), NavigatorTransmitter, LibraryFragment.Callbacks {
-    // TODO: Implement deeplinks
     private val binding by viewBinding(ActivityStartBinding::inflate)
     private val navViewModel by viewModels<StartViewModel>()
     private val intentHelper by lazy { ActivityIntentHelper(navViewModel) }
@@ -57,7 +56,7 @@ class StartActivity : AppCompatActivity(), NavigatorTransmitter, LibraryFragment
             navViewModel.navigateTo(Screen.SPLASH)
         }
 
-        if (CastHelper.isCastingSupported(this)) { // TODO: Move to Activity Level
+        if (CastHelper.isCastingSupported(this)) {
             SimpleWebServer.init(this, BuildConfig.DEBUG)
             castHelper.initCastSession(this)
             mainCastHelper.setUpCastRelatedStuff()
