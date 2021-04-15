@@ -33,6 +33,7 @@ Since this project involves a private payment system 📃 some of the source fil
 - [After](app/after) - A library that helps you to dispatch events "after" some time one of which is displaying prompts.
 - [ImageLoaderView](https://github.com/KaustubhPatange/ImageLoaderView) - An ImageView with cool loading effects eg: shimmer, overlay tinting.
 - [Auto Bindings](https://github.com/KaustubhPatange/AutoBindings) - Set of annotations that aims to eliminate biolerplate code.
+- [Navigator](https://github.com/KaustubhPatange/navigator) - A small navigation library to ease fragment transactions & handling backstack.
 
 ## Built with 🛠
 
