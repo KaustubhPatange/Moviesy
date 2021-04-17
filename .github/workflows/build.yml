@@ -5,11 +5,15 @@ on:
       - "README.md"
       - "UPDATE"
       - "art/**"
+      - "web/**"
+      - "index.html"
   pull_request:
     paths-ignore:
       - "README.md"
       - "UPDATE"
       - "art/**"
+      - "web/**"
+      - "index.html"
 jobs:
   buildJob:
     runs-on: windows-latest

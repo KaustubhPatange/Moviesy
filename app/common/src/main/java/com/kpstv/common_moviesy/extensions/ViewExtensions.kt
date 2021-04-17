@@ -7,10 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import androidx.core.view.marginBottom
-import androidx.core.view.updateLayoutParams
-import androidx.core.view.updateMargins
-import androidx.core.view.updatePadding
+import androidx.core.view.*
 
 fun View.invisible() {
     visibility = View.INVISIBLE
@@ -27,12 +24,14 @@ fun View.show() {
 fun View.enableDelayedTransition() = TransitionManager.beginDelayedTransition(this as ViewGroup)
 
 fun View.applyBottomInsets(to: View = this, merge: Boolean = false, pad: Boolean = false, extra: Int = 0) {
+    val marginBottom = to.marginBottom
+    val paddingBottom = to.paddingBottom
     setOnApplyWindowInsetsListener { v, insets ->
         if (pad) {
-            v.updatePadding(bottom = insets.systemWindowInsetBottom + extra + if (merge) v.paddingBottom else 0)
+            v.updatePadding(bottom = insets.systemWindowInsetBottom + extra + if (merge) paddingBottom else 0)
         } else {
             to.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                updateMargins(bottom = insets.systemWindowInsetBottom + extra + if (merge) v.marginBottom else 0)
+                updateMargins(bottom = insets.systemWindowInsetBottom + extra + if (merge) marginBottom else 0)
             }
         }
         insets
@@ -40,12 +39,14 @@ fun View.applyBottomInsets(to: View = this, merge: Boolean = false, pad: Boolean
 }
 
 fun View.applyTopInsets(to: View = this, merge: Boolean = false, pad: Boolean = false, extra: Int = 0) {
+    val marginTop = to.marginTop
+    val paddingTop = to.paddingTop
     setOnApplyWindowInsetsListener { v, insets ->
         if (pad) {
-            v.updatePadding(top = insets.systemWindowInsetTop + extra + if (merge) v.paddingBottom else 0)
+            v.updatePadding(top = insets.systemWindowInsetTop + extra + if (merge) paddingTop else 0)
         } else {
             to.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                updateMargins(top = insets.systemWindowInsetTop + extra + if (merge) v.marginBottom else 0)
+                updateMargins(top = insets.systemWindowInsetTop + extra + if (merge) marginTop else 0)
             }
         }
         insets

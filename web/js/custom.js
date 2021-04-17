@@ -198,3 +198,61 @@ Preloader
 $(window).on("load", function () {
   $("#loader-wrap").delay(200).fadeOut();
 });
+
+/*--------------------------------------
+Auto set download link
+--------------------------------------*/
+
+$(document).ready(function () {
+  loadInformation();
+});
+
+async function loadInformation() {
+  const options = {
+    url: "https://api.github.com/repos/KaustubhPatange/Moviesy/releases",
+    method: "GET",
+  };
+
+  const response = await promisifiedRequest(options);
+  const jObject = JSON.parse(response);
+  jObject[0].assets.map((e) => {
+    if (String(e.name).endsWith(".apk")) {
+      document.getElementById("anchor-download").href = e.browser_download_url;
+    }
+  });
+}
+
+const promisifiedRequest = (options, data = null) => {
+  return new Promise((resolve, reject) => {
+    const xmlHttp = new XMLHttpRequest();
+    // xmlHttp.withCredentials = true;
+    xmlHttp.onreadystatechange = function () {
+      if (xmlHttp.readyState == 4) {
+        switch (xmlHttp.status) {
+          case 200:
+          case 400:
+          case 401:
+          case 403:
+          case 404:
+            resolve(xmlHttp.responseText);
+            break;
+        }
+      }
+    };
+    xmlHttp.open(options.method, options.url, true);
+    // xmlHttp.setRequestHeader("Access-Control-Allow-Origin", "*");
+    // xmlHttp.setRequestHeader(
+    //   "Access-Control-Allow-Methods",
+    //   "GET POST OPTIONS UPDATE PATCH"
+    // );
+    // xmlHttp.setRequestHeader(
+    //   "Access-Control-Allow-Headers",
+    //   "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"
+    // );
+    if (options.hasOwnProperty("content_type"))
+      xmlHttp.setRequestHeader("content-type", options.content_type);
+    if (options.hasOwnProperty("Authorization"))
+      xmlHttp.setRequestHeader("Authorization", options.Authorization);
+    xmlHttp.send(data);
+  });
+};

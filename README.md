@@ -1,4 +1,4 @@
-![](art/header.png)
+[![](art/header.png)](https://kaustubhpatange.github.io/Moviesy)
 
 # Moviesy
 
@@ -9,7 +9,7 @@ A **_beautiful_** client for [YTS](https://www.google.com/search?q=yts) website 
 
 > Disclaimer: The app let's you download and stream HD movies on the go, if this is something you don't approve then you should stop using it. This is indeed a hobby project :)
 
-[![Moviesy App](https://img.shields.io/badge/Download-APK-red.svg?style=for-the-badge&logo=android)](https://github.com/KaustubhPatange/Moviesy/releases/download/v1.4/app-release_v1.4.apk)
+[![Moviesy App](https://img.shields.io/badge/Download-APK-red.svg?style=for-the-badge&logo=android)](https://github.com/KaustubhPatange/Moviesy/releases/)
 
 ## Features
 
