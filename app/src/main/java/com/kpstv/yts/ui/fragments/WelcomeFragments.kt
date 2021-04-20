@@ -13,12 +13,12 @@ import com.kpstv.common_moviesy.extensions.applyBottomInsets
 import com.kpstv.common_moviesy.extensions.colorFrom
 import com.kpstv.common_moviesy.extensions.globalVisibleRect
 import com.kpstv.common_moviesy.extensions.viewBinding
+import com.kpstv.navigation.AnimationDefinition
 import com.kpstv.yts.R
 import com.kpstv.yts.databinding.FragmentAgreementBinding
 import com.kpstv.yts.defaultPreference
 import com.kpstv.yts.ui.activities.StartActivity
 import com.kpstv.navigation.BaseArgs
-import com.kpstv.navigation.CircularPayload
 import com.kpstv.navigation.ValueFragment
 import com.kpstv.navigation.Navigator
 import com.kpstv.yts.ui.viewmodels.StartViewModel
@@ -101,9 +101,8 @@ class WelcomeDisclaimerFragment : AbstractWelcomeFragment() {
         navViewModel.navigateTo(
             screen = StartActivity.Screen.WELCOME_CARRIER_DISCLAIMER,
             args = WelcomeCarrierFragment.args,
-            addToBackStack = true,
-            transition = Navigator.TransitionType.CIRCULAR,
-            transitionPayload = CircularPayload(
+            remember = true,
+            animation = AnimationDefinition.CircularReveal(
                 fromTarget = binding.btnAgree.globalVisibleRect()
             )
         )
@@ -128,7 +127,7 @@ class WelcomeCarrierFragment : AbstractWelcomeFragment() {
         appPreference.isFirstLaunch(false)
         navViewModel.navigateTo(
             screen = StartActivity.Screen.MAIN,
-            popUpTo = true,
+            clearAllHistory = true,
         )
     }
 

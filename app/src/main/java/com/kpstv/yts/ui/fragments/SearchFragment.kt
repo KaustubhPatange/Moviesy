@@ -17,8 +17,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kpstv.common_moviesy.extensions.*
 import com.kpstv.common_moviesy.extensions.utils.KeyboardUtils
+import com.kpstv.navigation.AnimationDefinition
 import com.kpstv.navigation.ValueFragment
-import com.kpstv.navigation.SharedPayload
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
 import com.kpstv.yts.adapters.CustomPagedAdapter
@@ -44,8 +44,6 @@ import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
-
-// As it is implementation from the old model.
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -74,8 +72,11 @@ class SearchFragment : ValueFragment(R.layout.fragment_search) {
     }
 
     companion object {
-        fun createSharedPayload(fromView: View) = SharedPayload(
-            mapOf(fromView to R.id.appbarLayout)
+        fun createSharedPayload(fromView: View, searchText: View) = AnimationDefinition.Shared(
+            mapOf(
+                fromView to "searchAppBarLayout",
+                searchText to "searchText"
+            ),
         )
     }
 

@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.kpstv.navigation.AnimationDefinition
 import com.kpstv.navigation.Navigator
 import com.kpstv.yts.AppInterface.Companion.handleRetrofitError
 import com.kpstv.yts.R
@@ -258,14 +259,14 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
         val listener = View.OnClickListener {
             navViewModel?.navigateTo(
                 screen = StartActivity.Screen.MORE,
-                addToBackStack = true,
+                remember = true,
                 transactionType = Navigator.TransactionType.ADD,
                 args = MoreFragment.Args(
                     title = view.cm_text.text.toString(),
                     endPoint = endPointUrl,
                     movieBaseString = base.toString()
                 ),
-                transition = Navigator.TransitionType.FADE
+                animation = AnimationDefinition.Fade,
             )
         }
 

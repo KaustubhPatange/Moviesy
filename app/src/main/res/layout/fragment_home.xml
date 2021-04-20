@@ -20,6 +20,7 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_marginBottom="5dp"
+                android:transitionName="fromCard"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/tv_filter"
                 app:layout_constraintTop_toTopOf="parent"
@@ -49,6 +50,7 @@
                         android:src="@drawable/ic_menu"/>
 
                     <TextView
+                        android:transitionName="homeSearchText"
                         android:fontFamily="@font/google_sans_regular"
                         android:textSize="16sp"
                         android:id="@+id/textView"

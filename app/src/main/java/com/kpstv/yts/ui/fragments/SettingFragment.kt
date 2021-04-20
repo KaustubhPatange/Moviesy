@@ -45,9 +45,7 @@ class SettingFragment : ValueFragment(R.layout.fragment_settings), NavigatorTran
         viewModel.navigation.observe(viewLifecycleOwner, navigationObserver)
 
         if (savedInstanceState == null) {
-            navigator.navigateTo(Navigator.NavOptions(
-                clazz = Screen.MAIN.clazz
-            ))
+            navigator.navigateTo(Screen.MAIN.clazz)
         }
 
         if (hasKeyArgs()) {
@@ -55,9 +53,9 @@ class SettingFragment : ValueFragment(R.layout.fragment_settings), NavigatorTran
         }
     }
 
-    private val navigationObserver = Observer { options: Navigator.NavOptions? ->
+    private val navigationObserver = Observer { options: SettingNavViewModel.NavigationOption? ->
         options?.let { opt ->
-            navigator.navigateTo(opt)
+            navigator.navigateTo(opt.clazz, opt.options)
             binding.toolbar.title = getString(Screen.getTitle(opt.clazz))
         }
     }
@@ -71,7 +69,7 @@ class SettingFragment : ValueFragment(R.layout.fragment_settings), NavigatorTran
     private fun manageArguments() {
         val keys = getKeyArgs<Args>()
         if (keys.openLookFeel) {
-            viewModel.navigateTo(Screen.LOOK_FEEL, transitionType = Navigator.TransitionType.NONE)
+            viewModel.navigateTo(Screen.LOOK_FEEL, animation = AnimationDefinition.None)
         }
     }
 
@@ -79,8 +77,7 @@ class SettingFragment : ValueFragment(R.layout.fragment_settings), NavigatorTran
         navViewModel.navigateTo(
             screen = StartActivity.Screen.SETTING,
             args = Args(openLookFeel = true),
-            transition = Navigator.TransitionType.CIRCULAR,
-            transitionPayload = CircularPayload(
+            animation = AnimationDefinition.CircularReveal(
                 forFragment = LookSettingsFragment::class,
                 fromTarget = viewRect
             )

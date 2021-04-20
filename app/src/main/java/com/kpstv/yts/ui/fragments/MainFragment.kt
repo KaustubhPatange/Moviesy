@@ -107,6 +107,7 @@ class MainFragment : ValueFragment(R.layout.fragment_main), MainFragmentDrawerCa
 
     override fun onStart() {
         super.onStart()
+        // TODO: This is fucking up when Moviesy's notification are clicked after the process death (precisely viewLifecycleOwner access in checkForAutoPurchase method).
         if (!isUpdateChecked && isAdded && !isRemoving) {
             isUpdateChecked = true
             updateUtils.check(
@@ -214,8 +215,8 @@ class MainFragment : ValueFragment(R.layout.fragment_main), MainFragmentDrawerCa
             NAV_SETTINGS -> {
                 navViewModel.navigateTo(
                     StartActivity.Screen.SETTING,
-                    transition = Navigator.TransitionType.FADE,
-                    addToBackStack = true
+                    animation = AnimationDefinition.Fade,
+                    remember = true
                 )
             }
         }

@@ -9,6 +9,7 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbarLayout"
+        android:transitionName="searchAppBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorForeground">
@@ -38,6 +39,7 @@
 
                 <EditText
                     android:id="@+id/searchEditText"
+                    android:transitionName="searchText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="15dp"

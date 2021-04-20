@@ -9,6 +9,7 @@ import com.kpstv.after.AfterRequests
 import com.kpstv.common_moviesy.extensions.hide
 import com.kpstv.common_moviesy.extensions.show
 import com.kpstv.common_moviesy.extensions.viewBinding
+import com.kpstv.navigation.AnimationDefinition
 import com.kpstv.yts.AppSettings
 import com.kpstv.yts.R
 import com.kpstv.yts.databinding.FragmentSplashBinding
@@ -62,7 +63,7 @@ class SplashFragment : ValueFragment(R.layout.fragment_splash)  {
             appNavViewModel.navigateTo(
                 screen = StartActivity.Screen.WELCOME_DISCLAIMER,
                 args = WelcomeDisclaimerFragment.args,
-                transition = Navigator.TransitionType.CIRCULAR
+                animation = AnimationDefinition.CircularReveal()
             )
         }
     }
@@ -70,9 +71,9 @@ class SplashFragment : ValueFragment(R.layout.fragment_splash)  {
     private fun callMainActivity() {
         appNavViewModel.navigateTo(
             screen = StartActivity.Screen.MAIN,
-            transition = Navigator.TransitionType.FADE,
+            animation = AnimationDefinition.Fade,
 //            args = MainFragment.Args(moveToDetail = DetailFragment.Args(ytsId = 28832)),
-            popUpTo = true
+            clearAllHistory = true
         )
     }
 

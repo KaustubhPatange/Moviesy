@@ -41,7 +41,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), TabLayout.OnTabSelectedLi
                 caller.openDrawer()
             }
             searchCard.setOnClickListener {
-                navViewModel.goToSearch(SearchFragment.createSharedPayload(it))
+                navViewModel.goToSearch(SearchFragment.createSharedPayload(it, binding.textView))
             }
             tvFilter.setOnClickListener {
                 val queryMap = YTSQuery.ListMoviesBuilder.getDefault().apply {

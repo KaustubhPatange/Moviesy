@@ -79,8 +79,8 @@ class StartActivity : AppCompatActivity(), NavigatorTransmitter, LibraryFragment
 
     override fun getCastHelper(): CastHelper = castHelper
 
-    private val navigationObserver = Observer { navOptions: Navigator.NavOptions? ->
-        navOptions?.let { navigator.navigateTo(it) }
+    private val navigationObserver = Observer { navOptions: StartViewModel.NavigationOption? ->
+        navOptions?.let { navigator.navigateTo(navOptions.clazz, navOptions.options) }
     }
 
     private val errorObserver = Observer { error: Exception? ->
