@@ -91,14 +91,17 @@ class FinalViewModel @ViewModelInject constructor(
     }
 
     private suspend fun getMovieDetailYTS(movieId: Int): MovieResult {
+        Log.e("FinalViewModel", "Querying")
         val query = YTSQuery.MovieBuilder()
             .setMovieId(movieId)
             .build()
 
         try {
             val response = ytsApi.getMovie(query)
+            Log.e("FinalViewModel", "Got response")
             val movie = response?.data?.movie ?: return MovieResult.Error(Exception("Couldn't find the required movie."))
 
+            Log.e("FinalViewModel", "Saving Movie")
             /** Fetching crew details filtering only director */
             val crews = movieRepository.getCrewById(movieId)
             val casts = movieRepository.getCastById(movieId)
@@ -108,9 +111,11 @@ class FinalViewModel @ViewModelInject constructor(
                 movie.crew = crews
                 movie.cast = casts
             }
+            Log.e("FinalViewModel", "Saving Movie")
             movieRepository.saveMovie(movie)
             return MovieResult.Success(movie)
         } catch (e: Exception) {
+            Log.e("FinalViewModel", "Got error: $e")
             e.printStackTrace()
             return movieRepository.getMovieById(movieId)?.let { movie ->
                 MovieResult.Success(movie)

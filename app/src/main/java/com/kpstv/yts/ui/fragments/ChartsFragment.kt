@@ -78,8 +78,6 @@ class ChartsFragment : Fragment(R.layout.fragment_charts), HomeFragment.Callback
 
     private fun setViewAndLayout() {
         if (isRemoving) return
-        // FIXME: (Needs Investigation) Sometimes getActivity() returns null & thus it crashes, Edit: This might not be valid for this
-        // val context = if (activity != null) requireActivity() else if (context != null) requireContext() else return
 
         /** Featured Layout */
         cmlFeatured = CustomMovieLayout(requireContext(), childFragmentManager, getString(R.string.featured)).apply {

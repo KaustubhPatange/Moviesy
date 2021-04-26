@@ -115,6 +115,7 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
         val listener = MoviesCallback(
             onFailure = { e ->
                 lifecycleOwner?.lifecycleScope?.launchWhenStarted {
+                    handleRetrofitError(context, e)
                     e.printStackTrace()
                     onFailure?.invoke(e)
                 }

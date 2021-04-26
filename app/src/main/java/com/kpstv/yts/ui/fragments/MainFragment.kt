@@ -107,8 +107,8 @@ class MainFragment : ValueFragment(R.layout.fragment_main), MainFragmentDrawerCa
 
     override fun onStart() {
         super.onStart()
-        // TODO: This is fucking up when Moviesy's notification are clicked after the process death (precisely viewLifecycleOwner access in checkForAutoPurchase method).
-        if (!isUpdateChecked && isAdded && !isRemoving) {
+        // TODO: Attempted to fix: This is fucking up when Moviesy's notification are clicked after the process death (precisely viewLifecycleOwner access in checkForAutoPurchase method).
+        if (!isUpdateChecked) {
             isUpdateChecked = true
             updateUtils.check(
                 onUpdateAvailable = {
@@ -118,7 +118,9 @@ class MainFragment : ValueFragment(R.layout.fragment_main), MainFragmentDrawerCa
                     }
                 },
                 onUpdateNotFound = {
-                    checkForAutoPurchase()
+                    if (isAdded && !isRemoving) {
+                        checkForAutoPurchase()
+                    }
                 },
                 onVersionDeprecated = {
                     AppUtils.doOnVersionDeprecated(requireContext())
@@ -128,7 +130,7 @@ class MainFragment : ValueFragment(R.layout.fragment_main), MainFragmentDrawerCa
                 }
             )
         }
-        if (!isDozeChecked && isAdded) {
+        if (!isDozeChecked) {
             isDozeChecked = true
             BatteryOptimizationHelper.askNoBatteryOptimization(requireContext())
         }
