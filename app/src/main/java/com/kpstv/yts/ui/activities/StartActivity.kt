@@ -2,16 +2,15 @@ package com.kpstv.yts.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.kpstv.common_moviesy.extensions.makeFullScreen
+import com.kpstv.common_moviesy.extensions.registerFragmentLifecycleForLogging
 import com.kpstv.common_moviesy.extensions.viewBinding
-import com.kpstv.navigation.Navigator
-import com.kpstv.navigation.NavigatorTransmitter
-import com.kpstv.navigation.canFinish
-import com.kpstv.navigation.autoChildElevation
+import com.kpstv.navigation.*
 import com.kpstv.yts.BuildConfig
 import com.kpstv.yts.cast.CastHelper
 import com.kpstv.yts.databinding.ActivityStartBinding
@@ -62,9 +61,9 @@ class StartActivity : AppCompatActivity(), NavigatorTransmitter, LibraryFragment
             mainCastHelper.setUpCastRelatedStuff()
         }
 
-        /*registerFragmentLifecycleForLogging { fragment, state ->
-            Log.e(fragment::class.simpleName, "=> $state")
-        }*/
+        registerFragmentLifecycleForLogging { fragment, state ->
+            if (BuildConfig.DEBUG) Log.e(fragment::class.simpleName, "=> $state")
+        }
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -84,14 +83,8 @@ class StartActivity : AppCompatActivity(), NavigatorTransmitter, LibraryFragment
     }
 
     private val errorObserver = Observer { error: Exception? ->
-        when(error) {
-            is SplashErrorException -> {
-                if (error.inner is SSLHandshakeException) {
-                    AppUtils.showSSLHandshakeDialog(this) { finish() }
-                } else {
-                    AppUtils.showUnknownErrorDialog(this, error.inner) { finish() }
-                }
-            }
+        error?.let {
+            AppUtils.showUnknownErrorDialog(this, error) { finish() }
         }
     }
 

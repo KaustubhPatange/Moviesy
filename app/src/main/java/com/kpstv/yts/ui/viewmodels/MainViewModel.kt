@@ -18,6 +18,7 @@ import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.data.models.data.data_main
 import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.extensions.MoviesCallback
+import com.kpstv.yts.extensions.errors.SSLHandshakeException
 import com.kpstv.yts.extensions.utils.YTSParser
 import com.kpstv.yts.interfaces.api.YTSApi
 import com.kpstv.yts.ui.viewmodels.state.UIState
@@ -45,7 +46,7 @@ class MainViewModel @ViewModelInject constructor(
 
     fun removeDownload(hash: String) = downloadRepository.deleteDownload(hash)
 
-    fun updateDownload(hash: String, recentlyPlayed: Boolean, lastPosition: Int) = Coroutines.io {
+    fun updateDownload(hash: String, recentlyPlayed: Boolean, lastPosition: Int) = viewModelScope.launch {
         downloadRepository.updateAllNormalDownloads()
         downloadRepository.updateDownload(hash, recentlyPlayed, lastPosition)
     }
@@ -106,24 +107,24 @@ class MainViewModel @ViewModelInject constructor(
         moviesCallback.onStarted?.invoke()
 
         viewModelScope.launch {
+            val queryMap = QueryConverter.toMapfromString(FEATURED_QUERY)
             try {
-                val queryMap = QueryConverter.toMapfromString(FEATURED_QUERY)
                 if (isFetchNeeded(FEATURED_QUERY)) {
                     Log.e(TAG, "=> Featured: Fetching new data")
                     fetchFeaturedData(moviesCallback)
                 } else {
-                    repository.getMoviesByQuery(
-                        FEATURED_QUERY
-                    )?.let {
-                        moviesCallback.onComplete(
-                            it.movies,
-                            queryMap,
-                            it.isMore
-                        )
+                    repository.getMoviesByQuery(FEATURED_QUERY)?.let {
+                        moviesCallback.onComplete(it.movies, queryMap, it.isMore)
                     }
                 }
             } catch (e: Exception) {
-                moviesCallback.onFailure?.invoke(e)
+                if (e is SSLHandshakeException) {
+                    repository.getMoviesByQuery(FEATURED_QUERY)?.let {
+                        moviesCallback.onComplete(it.movies, queryMap, it.isMore)
+                    }
+                } else {
+                    moviesCallback.onFailure?.invoke(e)
+                }
             }
         }
     }
@@ -140,14 +141,12 @@ class MainViewModel @ViewModelInject constructor(
 
             repository.saveMovies(mainModel)
 
-            Coroutines.main {
-                movieCallback.onComplete.invoke(
-                    list,
-                    QueryConverter.toMapfromString(FEATURED_QUERY),
-                    false
-                )
-            }
-        } else Coroutines.main { movieCallback.onFailure?.invoke(Exception("Empty movie list")) }
+            movieCallback.onComplete.invoke(
+                list,
+                QueryConverter.toMapfromString(FEATURED_QUERY),
+                false
+            )
+        } else movieCallback.onFailure?.invoke(Exception("Empty movie list"))
     }
 
     private suspend fun fetchNewData(
@@ -174,15 +173,13 @@ class MainViewModel @ViewModelInject constructor(
 
             repository.saveMovies(mainModel)
 
-            Coroutines.main {
-                movieCallback.onComplete.invoke(
-                    movieList,
-                    queryMap,
-                    isMoreAvailable
-                )
-            }
+            movieCallback.onComplete.invoke(
+                movieList,
+                queryMap,
+                isMoreAvailable
+            )
 
-        } else Coroutines.main { movieCallback.onFailure?.invoke(Exception("Empty movie list")) }
+        } else movieCallback.onFailure?.invoke(Exception("Empty movie list"))
     }
 
     private suspend fun isFetchNeeded(queryString: String): Boolean {

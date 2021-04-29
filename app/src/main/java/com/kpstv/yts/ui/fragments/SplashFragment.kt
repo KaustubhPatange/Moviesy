@@ -20,6 +20,7 @@ import com.kpstv.yts.extensions.utils.ProxyUtils
 import com.kpstv.yts.ui.activities.StartActivity
 import com.kpstv.navigation.ValueFragment
 import com.kpstv.navigation.Navigator
+import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.ui.viewmodels.StartViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.TimeUnit
@@ -91,7 +92,9 @@ class SplashFragment : ValueFragment(R.layout.fragment_splash)  {
                 },
                 onError = { e ->
                     if (::afterRequests.isInitialized) afterRequests.stop()
-                    appNavViewModel.propagateError(SplashErrorException(e))
+                    if (e is SSLHandshakeException) {
+                        AppUtils.showSSLHandshakeDialog(requireContext()) { onProxyCheckComplete() }
+                    } else appNavViewModel.propagateError(SplashErrorException(e))
                 }
             )
         } else {
