@@ -253,4 +253,7 @@
     <string name="genre_select">Based on</string>
     <string name="torrent_stream_title">Torrent streaming</string>
     <string name="torrent_stream_text">Streaming media from torrent is different unlike normal.\n\nYou cannot control the seekbar position &amp; move it forwards or backwards, this is how torrent works. You just watch as it loads piece by piece.</string>
+    <string name="continue_watch_save">Saving</string>
+    <string name="continue_watching">Continue watching?</string>
+    <string name="cw_left_at">left at: </string>
 </resources>

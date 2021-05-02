@@ -43,8 +43,12 @@ interface MainFragmentDrawerCallbacks {
     fun isDrawerOpen(): Boolean
 }
 
+interface MainFragmentContinueWatchCallbacks {
+    fun selectMovie(movieId: Int)
+}
+
 @AndroidEntryPoint
-class MainFragment : ValueFragment(R.layout.fragment_main), MainFragmentDrawerCallbacks {
+class MainFragment : ValueFragment(R.layout.fragment_main), MainFragmentDrawerCallbacks, MainFragmentContinueWatchCallbacks {
     private val binding by viewBinding(FragmentMainBinding::bind)
     private val navViewModel by activityViewModels<StartViewModel>()
     private val viewModel by viewModels<MainViewModel>()
@@ -58,6 +62,8 @@ class MainFragment : ValueFragment(R.layout.fragment_main), MainFragmentDrawerCa
     private var isUpdateChecked = false
     private var isDozeChecked = false
 
+    private lateinit var bottomNavigationController: BottomNavigationController
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         registerForThemeChange()
@@ -66,7 +72,7 @@ class MainFragment : ValueFragment(R.layout.fragment_main), MainFragmentDrawerCa
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navigator = Navigator(childFragmentManager, binding.fragmentContainer)
-        navigator.install(this, object : Navigator.BottomNavigation() {
+        bottomNavigationController = navigator.install(this, object : Navigator.BottomNavigation() {
             override val bottomNavigationViewId: Int = R.id.bottom_nav
             override val bottomNavigationFragments: Map<Int, KClass<out Fragment>> = mapOf(
                 R.id.homeFragment to HomeFragment::class,
@@ -146,13 +152,17 @@ class MainFragment : ValueFragment(R.layout.fragment_main), MainFragmentDrawerCa
 
     override fun isDrawerOpen(): Boolean = binding.drawerLayout.isDrawerOpen(GravityCompat.START)
 
+    override fun selectMovie(movieId: Int) {
+        bottomNavigationController.select(R.id.libraryFragment, LibraryFragment.Args(movieId = movieId))
+    }
+
     override val forceBackPress: Boolean
         get() = (currentBottomNavId != R.id.homeFragment) or isDrawerOpen()
 
     override fun onBackPressed(): Boolean {
         when {
             binding.drawerLayout.isDrawerOpen(GravityCompat.START) -> closeDrawer()
-            currentBottomNavId != R.id.homeFragment -> binding.bottomNav.selectedItemId = R.id.homeFragment
+            currentBottomNavId != R.id.homeFragment -> bottomNavigationController.select(R.id.homeFragment)
             else -> return super.onBackPressed()
         }
         return true
@@ -278,6 +288,10 @@ class MainFragment : ValueFragment(R.layout.fragment_main), MainFragmentDrawerCa
         val moveToDetail: DetailFragment.Args? = null,
         val forceUpdateCheck: Boolean = false
     ) : BaseArgs(), Parcelable
+
+    interface LibraryInterface {
+        fun openDownload(movieId: Int)
+    }
 
     companion object {
         const val NAV_DOWNLOAD_QUEUE = "nav_download_queue"

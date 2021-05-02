@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:foreground="?selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:orientation="vertical">
+
+        <com.kpstv.imageloaderview.ImageLoaderView
+            android:id="@+id/iv_main"
+            android:layout_width="match_parent"
+            android:layout_height="210dp"
+            android:scaleType="centerCrop"
+            app:backgroundColor="@android:color/transparent"
+            app:corner_radius="7dp"
+            app:layout_constraintBottom_toTopOf="@id/_tv_continue"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="210dp"
+            android:background="#86000000"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@id/_tv_continue"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="#86000000"
+            android:ellipsize="end"
+            android:padding="5dp"
+            android:singleLine="true"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@id/iv_main"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="The Dark Knight (2020)" />
+
+        <TextView
+            android:id="@+id/_tv_continue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/continue_watching"
+            android:textColor="?colorTextLight"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btn_play"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_main" />
+
+        <TextView
+            android:id="@+id/tv_left_at"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toStartOf="@id/btn_play"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/_tv_continue"
+            tools:text="left at: 100 mins" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="5dp"
+            android:text="@string/play"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="5dp"
+        android:background="?colorSeparator" />
+</LinearLayout>

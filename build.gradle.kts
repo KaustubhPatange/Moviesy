@@ -20,6 +20,7 @@ allprojects {
         jcenter()
         maven { url = uri("https://jitpack.io") }
         maven { url = uri("https://oss.jfrog.org/libs-snapshot") }
+        mavenLocal()
         mavenCentral()
     }
 }

@@ -17,8 +17,8 @@ class ExtendedAppBarLayout : AppBarLayout, OnOffsetChangedListener {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
+    override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
+        super.onLayout(changed, l, t, r, b)
         check(
             !(layoutParams !is CoordinatorLayout.LayoutParams
                     || parent !is CoordinatorLayout)

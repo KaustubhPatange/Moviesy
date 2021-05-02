@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/paypal"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <TextView
+        android:fontFamily="@font/google_sans_regular"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/continue_watch_save"
+        android:textAlignment="center"
+        android:textSize="18sp" />
+
+    <ProgressBar
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:indeterminateTint="@color/light_white"
+        android:indeterminate="true"/>
+
+</LinearLayout>

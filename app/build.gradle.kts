@@ -155,6 +155,8 @@ dependencies {
     implementation(LibraryDependency.NAVIGATOR_EXTENSIONS)
     implementation(LibraryDependency.NAVIGATOR_BOTTOM_NAVIGATION)
 
+    implementation(LibraryDependency.DATASTORE_PREFERENCES)
+
     implementation(LibraryDependency.GOOGLE_HTTPCLIENT_API) {
         exclude(group = GradlePluginId.APACHE_HTTP)
     }

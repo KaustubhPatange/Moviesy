@@ -1,10 +1,15 @@
 package com.kpstv.yts.adapters
 
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ViewAnimator
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -21,6 +26,8 @@ class LibraryDownloadAdapter(
     private val onClickListener: (Model.response_download, Int) -> Unit,
     private val onMoreClickListener: (View, Model.response_download, Int) -> Unit
 ) : ListAdapter<Model.response_download, LibraryDownloadAdapter.LDHolder>(diffCallback) {
+
+    private var highlightItemMovieId: Int = -1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         LDHolder(
@@ -59,6 +66,43 @@ class LibraryDownloadAdapter(
                 i
             )
         }
+
+        // blink effect
+        if (model.movieId == highlightItemMovieId) {
+            highlightItemMovieId = -1
+            blink(holder.itemView)
+        }
+    }
+
+    fun highlightItem(movieId: Int) {
+        val location = currentList.indexOfFirst { it.movieId == movieId }
+        if (location != -1) {
+            recyclerView?.smoothScrollToPosition(location)
+            recyclerView?.findViewHolderForAdapterPosition(location)?.let { holder ->
+                blink(holder.itemView)
+            }
+        } else {
+            highlightItemMovieId = movieId
+        }
+    }
+
+    private fun blink(view: View) {
+        val drawable = view.background
+        val fromColor = if (drawable is ColorDrawable) drawable.color else Color.TRANSPARENT
+        ValueAnimator.ofArgb(fromColor, Color.WHITE, fromColor).apply {
+            addUpdateListener {
+                view.setBackgroundColor(it.animatedValue as Int)
+            }
+            repeatCount = 2
+            repeatMode = ValueAnimator.REVERSE
+            start()
+        }
+    }
+
+    private var recyclerView: RecyclerView? = null
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        this.recyclerView = recyclerView
     }
 
     companion object {

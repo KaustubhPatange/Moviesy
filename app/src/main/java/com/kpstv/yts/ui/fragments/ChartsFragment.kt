@@ -5,6 +5,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import com.kpstv.common_moviesy.extensions.rootParentFragment
 import com.kpstv.common_moviesy.extensions.scaleInOut
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.yts.R
@@ -12,6 +13,7 @@ import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.databinding.FragmentChartsBinding
 import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.extensions.common.CustomMovieLayout
+import com.kpstv.yts.ui.helpers.ContinueWatcherHelper
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import com.kpstv.yts.ui.viewmodels.StartViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,9 +23,11 @@ import es.dmoral.toasty.Toasty
 class ChartsFragment : Fragment(R.layout.fragment_charts), HomeFragment.Callbacks {
     private val binding by viewBinding(FragmentChartsBinding::bind)
     private val viewModel by viewModels<MainViewModel>(
-        ownerProducer = { requireParentFragment().requireParentFragment() }
+        ownerProducer = { rootParentFragment() }
     )
     private val navViewModel by activityViewModels<StartViewModel>()
+
+    private val continueWatcherHelper by lazy { ContinueWatcherHelper(requireContext(), viewLifecycleOwner) }
 
     private lateinit var cmlFeatured: CustomMovieLayout
     private lateinit var cmlRecent: CustomMovieLayout
@@ -78,6 +82,11 @@ class ChartsFragment : Fragment(R.layout.fragment_charts), HomeFragment.Callback
 
     private fun setViewAndLayout() {
         if (isRemoving) return
+
+        // Continue watcher (automatically handles everything)
+        continueWatcherHelper.inflate(binding.addLayout) { movieId ->
+            (rootParentFragment() as? MainFragmentContinueWatchCallbacks)?.selectMovie(movieId)
+        }
 
         /** Featured Layout */
         cmlFeatured = CustomMovieLayout(requireContext(), childFragmentManager, getString(R.string.featured)).apply {

@@ -53,6 +53,9 @@
     <color name="gpay">#FFFFFF</color>
     <color name="gpay_DARK">#B8B4B4</color>
 
+    <color name="text_dark">#403F3F</color>
+    <color name="text_light">#C5C1C1</color>
+
     <color name="background_agree">#F25CA2</color>
 
 </resources>

@@ -1,19 +1,26 @@
 package com.kpstv.yts.ui.fragments
 
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
+import androidx.core.view.doOnNextLayout
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.ListAdapter
 import com.kpstv.common_moviesy.extensions.applyTopInsets
 import com.kpstv.common_moviesy.extensions.hide
 import com.kpstv.common_moviesy.extensions.show
 import com.kpstv.common_moviesy.extensions.viewBinding
+import com.kpstv.navigation.BaseArgs
 import com.kpstv.navigation.Navigator
+import com.kpstv.navigation.ValueFragment
+import com.kpstv.navigation.clearArgs
 import com.kpstv.yts.AppSettings
 import com.kpstv.yts.R
 import com.kpstv.yts.adapters.LibraryDownloadAdapter
@@ -25,14 +32,18 @@ import com.kpstv.yts.extensions.deleteRecursive
 import com.kpstv.yts.ui.dialogs.AlertNoIconDialog
 import com.kpstv.yts.ui.fragments.sheets.BottomSheetLibraryDownload
 import com.kpstv.yts.ui.fragments.sheets.PlaybackType
+import com.kpstv.yts.ui.viewmodels.LibraryViewModel
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import com.kpstv.yts.ui.viewmodels.StartViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
+import kotlinx.android.parcel.Parcelize
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import java.io.File
 
 @AndroidEntryPoint
-class LibraryFragment : Fragment(R.layout.fragment_library), Navigator.BottomNavigation.Callbacks {
+class LibraryFragment : ValueFragment(R.layout.fragment_library), Navigator.BottomNavigation.Callbacks {
     interface Callbacks {
         fun getCastHelper() : CastHelper
     }
@@ -42,6 +53,7 @@ class LibraryFragment : Fragment(R.layout.fragment_library), Navigator.BottomNav
         ownerProducer = ::requireParentFragment
     )
     private val navViewModel by activityViewModels<StartViewModel>()
+    private val libraryViewModel by viewModels<LibraryViewModel>()
     private val isCastingSupported by lazy { CastHelper.isCastingSupported(requireContext()) }
     private val castHelper by lazy { (requireActivity() as Callbacks).getCastHelper() }
     private lateinit var downloadAdapter: LibraryDownloadAdapter
@@ -68,6 +80,18 @@ class LibraryFragment : Fragment(R.layout.fragment_library), Navigator.BottomNav
             )
             mediaRouteMenuItem = castHelper.setMediaRouteMenu(requireContext(), binding.toolbar.menu)
         }
+
+        if (hasKeyArgs()) {
+            val args = getKeyArgs<Args>()
+            clearArgs()
+            binding.root.doOnNextLayout {
+                binding.recyclerViewDownload.apply {
+                    val adapter = adapter as? LibraryDownloadAdapter
+                    adapter?.highlightItem(args.movieId)
+                }
+                libraryViewModel.selectMovie(args.movieId)
+            }
+        }
     }
 
     private fun bindUI() {
@@ -89,6 +113,15 @@ class LibraryFragment : Fragment(R.layout.fragment_library), Navigator.BottomNav
                 viewModel.uiState.libraryFragmentState.recyclerViewState = null
             }
         }
+        libraryViewModel.selectedMovieId.observe(viewLifecycleOwner) { model ->
+            if (model == null) {
+                childFragmentManager.findFragmentByTag(BOTTOM_SHEET_DOWNLOAD_TAG)?.let { frag ->
+                    if (frag is BottomSheetLibraryDownload) frag.dismiss()
+                }
+            } else {
+                adapterOnClickListener(model)
+            }
+        }
     }
 
     override fun onReselected() {
@@ -98,7 +131,7 @@ class LibraryFragment : Fragment(R.layout.fragment_library), Navigator.BottomNav
     private fun setRecyclerView() {
         downloadAdapter = LibraryDownloadAdapter(
             onClickListener = { model, _ ->
-                adapterOnClickListener(model)
+                libraryViewModel.selectMovie(model.movieId!!)
             },
             onMoreClickListener = { innerView, model, _ ->
                 adapterOnMoreListener(innerView, model)
@@ -121,7 +154,7 @@ class LibraryFragment : Fragment(R.layout.fragment_library), Navigator.BottomNav
         val bundle = Bundle()
         bundle.putSerializable("model", model)
         sheet.arguments = bundle
-        sheet.show(childFragmentManager, "")
+        sheet.show(childFragmentManager, BOTTOM_SHEET_DOWNLOAD_TAG)
     }
 
     private fun adapterOnMoreListener(innerView: View, model: Model.response_download) {
@@ -192,5 +225,12 @@ class LibraryFragment : Fragment(R.layout.fragment_library), Navigator.BottomNav
     override fun onStop() {
         super.onStop()
         viewModel.uiState.libraryFragmentState.recyclerViewState = binding.recyclerViewDownload.layoutManager?.onSaveInstanceState()
+    }
+
+    @Parcelize
+    data class Args(val movieId: Int) : BaseArgs(), Parcelable
+
+    companion object {
+        private const val BOTTOM_SHEET_DOWNLOAD_TAG = "bottom_sheet_download_tag"
     }
 }

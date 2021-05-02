@@ -6,9 +6,14 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.View
+import android.widget.FrameLayout
+import android.widget.ImageView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.HtmlCompat
+import androidx.core.view.doOnLayout
+import androidx.core.view.drawToBitmap
+import androidx.lifecycle.lifecycleScope
 import com.github.se_bastiaan.torrentstream.StreamStatus
 import com.github.se_bastiaan.torrentstream.Torrent
 import com.github.se_bastiaan.torrentstream.TorrentOptions
@@ -23,6 +28,7 @@ import com.kpstv.yts.R
 import com.kpstv.yts.data.models.SubHolder
 import com.kpstv.yts.databinding.ActivityTorrentPlayerBinding
 import com.kpstv.yts.extensions.utils.SubtitleUtils
+import com.kpstv.yts.ui.helpers.ContinueWatcherHelper
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
@@ -45,6 +51,8 @@ class TorrentPlayerActivity : AppCompatActivity() {
     companion object {
         const val ARG_TORRENT_LINK = "com.kpstv.yts.arg_torrent_link"
         const val ARG_NORMAL_LINK = "com.kpstv.yts.arg_normal_link"
+        const val ARG_MOVIE_ID = "com.kpstv.yts.arg_movie_id"
+        const val ARG_MOVIE_TITLE = "com.kpstv.yts.arg_movie_title"
         const val ARG_TORRENT_HASH = "com.kpstv.yts.arg_torrent_hash"
         const val ARG_LAST_SAVE_POS = "com.kpstv.yts.arg_last_save_pos"
         const val ARG_SUBTITLE_NAME = "com.kpstv.yts.arg_subtitle_name"
@@ -73,8 +81,16 @@ class TorrentPlayerActivity : AppCompatActivity() {
 
     private var filePath: String? = null
 
+    private var isLocal = false
+    private var movieTitle: String = ""
+    private var movieId: Int = 0
+
+    private lateinit var continueWatcherHelper: ContinueWatcherHelper
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        continueWatcherHelper = ContinueWatcherHelper(this, this)
 
         setContentView(binding.root)
 
@@ -98,9 +114,12 @@ class TorrentPlayerActivity : AppCompatActivity() {
         /** Check if the callback is for normalLink i.e playing from local storage.
          */
         intent.getStringExtra(ARG_NORMAL_LINK)?.let { filePath ->
+            isLocal = true
             this.filePath = filePath
             binding.progressText.hide()
             hash = intent.getStringExtra(ARG_TORRENT_HASH)!!
+            movieTitle = intent.getStringExtra(ARG_MOVIE_TITLE)!!
+            movieId = intent.getIntExtra(ARG_MOVIE_ID, movieId)
 
             val file = File(filePath)
             startPlayer(
@@ -124,12 +143,18 @@ class TorrentPlayerActivity : AppCompatActivity() {
             handlerHandler()
             subtitleHandler.postDelayed(updateTask, 500)
         }
+
+
+        binding.giraffePlayer.findViewById<ImageView>(R.id.app_video_finish).setOnClickListener {
+            if (!binding.giraffePlayer.player.onBackPressed()) {
+                onBackPressed()
+            }
+        }
     }
 
     override fun onPause() {
         Log.e(TAG, "=> onPause() called")
         try {
-
             if (filePath == null) return super.onPause()
             sleep = true
 
@@ -144,8 +169,8 @@ class TorrentPlayerActivity : AppCompatActivity() {
             )
 
             if (hasSubtitle) subtitleHandler.removeCallbacks(updateTask)
-            binding.giraffePlayer.player.stop()
         } catch (e: Exception) {
+            e.printStackTrace()
         }
         super.onPause()
     }
@@ -327,8 +352,21 @@ class TorrentPlayerActivity : AppCompatActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        if (isLocal) {
+            val bitmap = binding.giraffePlayer.player.currentDisplay.bitmap
+            continueWatcherHelper.save(bitmap, binding.root.rootView as FrameLayout, getWatcher()) {
+                super.onBackPressed()
+            }
+        } else super.onBackPressed()
+    }
+
     override fun onDestroy() {
         try {
+            if (isLocal && !continueWatcherHelper.isSaved) {
+                val bitmap = binding.giraffePlayer.player.currentDisplay.bitmap
+                continueWatcherHelper.saveSilent(bitmap, getWatcher())
+            }
             binding.giraffePlayer.player.release()
         } catch (e: Exception) {
             Log.e(TAG, "=> Error: ${e.message}")
@@ -420,4 +458,6 @@ class TorrentPlayerActivity : AppCompatActivity() {
         outState.putInt(LAST_POSITION, lastPausePosition)
         super.onSaveInstanceState(outState)
     }
+
+    private fun getWatcher() = ContinueWatcherHelper.Watcher(movieId, movieTitle, lastPausePosition)
 }

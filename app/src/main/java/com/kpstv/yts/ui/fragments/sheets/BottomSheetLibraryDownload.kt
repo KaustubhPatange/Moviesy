@@ -116,6 +116,8 @@ class BottomSheetLibraryDownload(
         val i = Intent(context, TorrentPlayerActivity::class.java)
         i.putExtra(TorrentPlayerActivity.ARG_NORMAL_LINK, model.videoPath)
         i.putExtra(TorrentPlayerActivity.ARG_TORRENT_HASH, model.hash)
+        i.putExtra(TorrentPlayerActivity.ARG_MOVIE_ID, model.movieId)
+        i.putExtra(TorrentPlayerActivity.ARG_MOVIE_TITLE, model.title)
 
         if (binding.checkBoxPlayFrom.isVisible && binding.checkBoxPlayFrom.isChecked) {
             i.putExtra(TorrentPlayerActivity.ARG_LAST_SAVE_POS, model.lastSavedPosition)
