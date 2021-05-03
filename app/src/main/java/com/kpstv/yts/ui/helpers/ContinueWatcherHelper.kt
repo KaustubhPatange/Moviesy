@@ -45,10 +45,21 @@ class ContinueWatcherHelper(private val context: Context, private val lifecycleO
     }
 
     @SuppressLint("SetTextI18n")
-    fun inflate(parent: ViewGroup, addToTop: Boolean = true, onPlayButtonClicked: (Int) -> Unit): View {//TODO: Do view animations
+    fun inflate(parent: ViewGroup, addToTop: Boolean = true, onPlayButtonClicked: (Int) -> Unit): View {
         val view = LayoutInflater.from(context).inflate(R.layout.custom_continue_watcher_main, parent, false)
         val binding = CustomContinueWatcherMainBinding.bind(view).apply {
-            root.setOnLongClickListener { parent.removeView(root); true }
+            root.alpha = 0f
+            root.setOnLongClickListener {
+                root.pivotY = 0f
+                root.animate().alpha(0f)
+                    .setDuration(200)
+                    .withEndAction {
+                        parent.removeView(root)
+                        lifecycleOwner.lifecycleScope.launch { dataStoreHelper.clear() }
+                    }.start()
+
+                true
+            }
         }
         lifecycleOwner.lifecycleScope.launch {
             dataStoreHelper.watcher.collect { watcher ->
@@ -63,16 +74,19 @@ class ContinueWatcherHelper(private val context: Context, private val lifecycleO
                     } else {
                         binding.tvTitle.setTextColor(context.colorFrom(R.color.text_dark))
                     }
-                    binding.tvTitle.text = it.title
-                    binding.tvLeftAt.text = "${context.getString(R.string.cw_left_at)} ${it.lastPosition / (1000 * 60)} mins"
+                    binding.tvTitle.text = watcher.title
+                    binding.tvLeftAt.text = "${context.getString(R.string.cw_left_at)} ${watcher.lastPosition / (1000 * 60)} mins"
                     binding.ivMain.setImageBitmap(bitmap)
                     binding.btnPlay.setOnClickListener {
                         lifecycleOwner.lifecycleScope.launch {
+                            dataStoreHelper.clear()
                             onPlayButtonClicked.invoke(watcher.movieId)
-                          //  dataStoreHelper.clear()
                         }
                     }
                     parent.addView(binding.root, if (addToTop) 0 else -1)
+                    if (binding.root.alpha == 0f) {
+                        binding.root.animate().alpha(1f).start()
+                    }
                 }
             }
         }

@@ -83,7 +83,6 @@ class LibraryFragment : ValueFragment(R.layout.fragment_library), Navigator.Bott
 
         if (hasKeyArgs()) {
             val args = getKeyArgs<Args>()
-            clearArgs()
             binding.root.doOnNextLayout {
                 binding.recyclerViewDownload.apply {
                     val adapter = adapter as? LibraryDownloadAdapter

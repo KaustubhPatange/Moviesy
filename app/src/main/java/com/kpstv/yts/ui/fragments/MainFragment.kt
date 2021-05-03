@@ -62,7 +62,8 @@ class MainFragment : ValueFragment(R.layout.fragment_main), MainFragmentDrawerCa
     private var isUpdateChecked = false
     private var isDozeChecked = false
 
-    private lateinit var bottomNavigationController: BottomNavigationController
+    private lateinit var bottomController: BottomNavigationController
+    private var fragArgs: Args? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -72,7 +73,9 @@ class MainFragment : ValueFragment(R.layout.fragment_main), MainFragmentDrawerCa
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navigator = Navigator(childFragmentManager, binding.fragmentContainer)
-        bottomNavigationController = navigator.install(this, object : Navigator.BottomNavigation() {
+        if (hasKeyArgs()) fragArgs = getKeyArgs()
+
+        bottomController = navigator.install(this, object : Navigator.BottomNavigation() {
             override val bottomNavigationViewId: Int = R.id.bottom_nav
             override val bottomNavigationFragments: Map<Int, KClass<out Fragment>> = mapOf(
                 R.id.homeFragment to HomeFragment::class,
@@ -84,7 +87,7 @@ class MainFragment : ValueFragment(R.layout.fragment_main), MainFragmentDrawerCa
             }
             override val selectedBottomNavigationId: Int
                 get() {
-                    if (hasKeyArgs() && getKeyArgs<Args>().moveToLibrary) {
+                    if (fragArgs?.moveToLibrary == true) {
                         return R.id.libraryFragment
                     }
                     return super.selectedBottomNavigationId
@@ -104,7 +107,7 @@ class MainFragment : ValueFragment(R.layout.fragment_main), MainFragmentDrawerCa
         ChangelogHelper(requireContext(), childFragmentManager).show()
 
         if (savedInstanceState == null) {
-            if (hasKeyArgs()) {
+            if (fragArgs != null) {
                 manageArgumentsAndConsume()
             }
             if (viewModel.uiState.mainFragmentState.isDrawerOpen == true) openDrawer()
@@ -153,7 +156,7 @@ class MainFragment : ValueFragment(R.layout.fragment_main), MainFragmentDrawerCa
     override fun isDrawerOpen(): Boolean = binding.drawerLayout.isDrawerOpen(GravityCompat.START)
 
     override fun selectMovie(movieId: Int) {
-        bottomNavigationController.select(R.id.libraryFragment, LibraryFragment.Args(movieId = movieId))
+        bottomController.select(R.id.libraryFragment, LibraryFragment.Args(movieId = movieId))
     }
 
     override val forceBackPress: Boolean
@@ -162,14 +165,14 @@ class MainFragment : ValueFragment(R.layout.fragment_main), MainFragmentDrawerCa
     override fun onBackPressed(): Boolean {
         when {
             binding.drawerLayout.isDrawerOpen(GravityCompat.START) -> closeDrawer()
-            currentBottomNavId != R.id.homeFragment -> bottomNavigationController.select(R.id.homeFragment)
+            currentBottomNavId != R.id.homeFragment -> bottomController.select(R.id.homeFragment)
             else -> return super.onBackPressed()
         }
         return true
     }
 
     private fun manageArgumentsAndConsume() {
-        val args = getKeyArgs<Args>()
+        val args = fragArgs ?: return
         if (args.forceUpdateCheck) {
             isUpdateChecked = false
         }
@@ -179,8 +182,6 @@ class MainFragment : ValueFragment(R.layout.fragment_main), MainFragmentDrawerCa
                 navViewModel.goToDetail(a.ytsId, a.tmDbId, a.movieUrl)
             }
         }
-
-        clearArgs()
     }
 
     private fun setNavigationDrawer() {
