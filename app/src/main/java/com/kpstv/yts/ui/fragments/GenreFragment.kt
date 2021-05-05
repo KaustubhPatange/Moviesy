@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.common_moviesy.extensions.drawableFrom
 import com.kpstv.common_moviesy.extensions.viewBinding
+import com.kpstv.navigation.ValueFragment
 import com.kpstv.yts.R
 import com.kpstv.yts.databinding.FragmentGenreBinding
 import com.kpstv.yts.databinding.ItemLocalGenreBinding
@@ -22,7 +23,7 @@ import com.kpstv.yts.ui.viewmodels.StartViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class GenreFragment : Fragment(R.layout.fragment_genre), HomeFragment.Callbacks {
+class GenreFragment : ValueFragment(R.layout.fragment_genre), HomeFragment.Callbacks {
     private val binding by viewBinding(FragmentGenreBinding::bind)
     private val viewModel by viewModels<MainViewModel>(
         ownerProducer = { requireParentFragment().requireParentFragment() }

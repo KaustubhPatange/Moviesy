@@ -43,7 +43,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 @AndroidEntryPoint
-class LibraryFragment : ValueFragment(R.layout.fragment_library), Navigator.BottomNavigation.Callbacks {
+class LibraryFragment : ValueFragment(R.layout.fragment_library), Navigator.Navigation.Callbacks {
     interface Callbacks {
         fun getCastHelper() : CastHelper
     }

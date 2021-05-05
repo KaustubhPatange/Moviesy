@@ -9,4 +9,7 @@
     <attr name="colorForeground" format="reference|color"/>
     <attr name="colorNavSeparator" format="reference|color"/>
 
+    <item name="chartFragment" type="id"/>
+    <item name="genreFragment" type="id"/>
+
 </resources>

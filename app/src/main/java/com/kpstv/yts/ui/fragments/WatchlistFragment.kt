@@ -21,7 +21,7 @@ import com.kpstv.yts.ui.viewmodels.StartViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class WatchlistFragment : Fragment(R.layout.fragment_watchlist), Navigator.BottomNavigation.Callbacks {
+class WatchlistFragment : Fragment(R.layout.fragment_watchlist), Navigator.Navigation.Callbacks {
     private val binding by viewBinding(FragmentWatchlistBinding::bind)
     private val viewModel by viewModels<MainViewModel>(
         ownerProducer = ::requireParentFragment

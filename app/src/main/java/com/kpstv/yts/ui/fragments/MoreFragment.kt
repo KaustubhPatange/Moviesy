@@ -60,28 +60,31 @@ class MoreFragment : ValueFragment(R.layout.fragment_more) {
     private lateinit var adapter: CustomPagedAdapter
     private lateinit var dialogView: View
 
+    private lateinit var fragArgs: Args
+
     private val TAG = javaClass.simpleName
 
     override val backStackName: String = AppUtils.getUniqueBackStackName()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        fragArgs = getKeyArgs()
+
         setToolbar()
         binding.amChipLayout.applyBottomInsets(pad = true)
         binding.swipeRefreshLayout.isEnabled = false
         binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 3) // Can you make this dynamic
 
-        val args = getKeyArgs<Args>()
-        movieBase = MovieBase.valueOf(args.movieBaseString)
-        endPoint = args.endPoint
+        movieBase = MovieBase.valueOf(fragArgs.movieBaseString)
+        endPoint = fragArgs.endPoint
 
         viewModel.buildNewConfig(endPoint, movieBase)
 
         /** If the base is YTS we will show we will set query coming from intent
          */
         if (movieBase == MovieBase.YTS) {
-            val keys = args.keyArrayList
-            val values = args.valueArrayList
+            val keys = fragArgs.keyArrayList
+            val values = fragArgs.valueArrayList
 
             val map = HashMap<String, String>()
             (0 until keys.size).forEach { i ->
@@ -98,9 +101,8 @@ class MoreFragment : ValueFragment(R.layout.fragment_more) {
     }
 
     private fun setToolbar() {
-        val args = getKeyArgs<Args>()
         binding.toolbar.applyTopInsets()
-        binding.toolbar.title = args.title
+        binding.toolbar.title = fragArgs.title
         binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
         binding.toolbar.setNavigationOnClickListener { goBack() }
     }

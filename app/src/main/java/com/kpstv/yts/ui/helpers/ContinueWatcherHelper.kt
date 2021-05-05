@@ -50,21 +50,18 @@ class ContinueWatcherHelper(private val context: Context, private val lifecycleO
         val binding = CustomContinueWatcherMainBinding.bind(view).apply {
             root.alpha = 0f
             root.setOnLongClickListener {
-                root.pivotY = 0f
-                root.animate().alpha(0f)
-                    .setDuration(200)
-                    .withEndAction {
-                        parent.removeView(root)
-                        lifecycleOwner.lifecycleScope.launch { dataStoreHelper.clear() }
-                    }.start()
-
+                lifecycleOwner.lifecycleScope.launch { dataStoreHelper.clear() }
                 true
             }
         }
         lifecycleOwner.lifecycleScope.launch {
             dataStoreHelper.watcher.collect { watcher ->
                 if (watcher == null) {
-                    parent.removeView(binding.root)
+                    binding.root.animate().alpha(0f)
+                        .setDuration(200)
+                        .withEndAction {
+                            parent.removeView(binding.root)
+                        }.start()
                 }
                 watcher?.let {
                     val bitmap = BitmapFactory.decodeStream(imageCacheFile.inputStream())
@@ -97,13 +94,13 @@ class ContinueWatcherHelper(private val context: Context, private val lifecycleO
         val saveView = LayoutInflater.from(context).inflate(R.layout.custom_continue_watcher_save, null).apply {
             alpha = 0f
         }
-       rootView.addView(saveView)
+        rootView.addView(saveView)
         this.saveView = saveView
 
         saveView.doOnLayout {
             saveView.animate().alpha(0.8f).setDuration(100).withEndAction {
                 saveSilent(bitmap, watcher)
-                Handler(Looper.getMainLooper()).postDelayed(onComplete, 100)
+                Handler(Looper.getMainLooper()).post(onComplete)
             }.start()
         }
     }

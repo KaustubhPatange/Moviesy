@@ -48,7 +48,7 @@ interface MainFragmentContinueWatchCallbacks {
 }
 
 @AndroidEntryPoint
-class MainFragment : ValueFragment(R.layout.fragment_main), MainFragmentDrawerCallbacks, MainFragmentContinueWatchCallbacks {
+class MainFragment : ValueFragment(R.layout.fragment_main), NavigatorTransmitter, MainFragmentDrawerCallbacks, MainFragmentContinueWatchCallbacks {
     private val binding by viewBinding(FragmentMainBinding::bind)
     private val navViewModel by activityViewModels<StartViewModel>()
     private val viewModel by viewModels<MainViewModel>()
@@ -64,6 +64,8 @@ class MainFragment : ValueFragment(R.layout.fragment_main), MainFragmentDrawerCa
 
     private lateinit var bottomController: BottomNavigationController
     private var fragArgs: Args? = null
+
+    override fun getNavigator(): Navigator = navigator
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -85,12 +87,13 @@ class MainFragment : ValueFragment(R.layout.fragment_main), MainFragmentDrawerCa
             override fun onBottomNavigationSelectionChanged(selectedId: Int) {
                 currentBottomNavId = selectedId
             }
-            override val selectedBottomNavigationId: Int
+
+            override val selectedFragmentId: Int
                 get() {
                     if (fragArgs?.moveToLibrary == true) {
                         return R.id.libraryFragment
                     }
-                    return super.selectedBottomNavigationId
+                    return super.selectedFragmentId
                 }
         })
 
@@ -182,6 +185,7 @@ class MainFragment : ValueFragment(R.layout.fragment_main), MainFragmentDrawerCa
                 navViewModel.goToDetail(a.ytsId, a.tmDbId, a.movieUrl)
             }
         }
+        fragArgs = null
     }
 
     private fun setNavigationDrawer() {

@@ -1,14 +1,13 @@
 package com.kpstv.yts.ui.fragments
 
-import android.animation.LayoutTransition
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.kpstv.common_moviesy.extensions.rootParentFragment
 import com.kpstv.common_moviesy.extensions.scaleInOut
 import com.kpstv.common_moviesy.extensions.viewBinding
+import com.kpstv.navigation.ValueFragment
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.databinding.FragmentChartsBinding
@@ -21,7 +20,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 
 @AndroidEntryPoint
-class ChartsFragment : Fragment(R.layout.fragment_charts), HomeFragment.Callbacks {
+class ChartsFragment : ValueFragment(R.layout.fragment_charts), HomeFragment.Callbacks {
     private val binding by viewBinding(FragmentChartsBinding::bind)
     private val viewModel by viewModels<MainViewModel>(
         ownerProducer = { rootParentFragment() }

@@ -110,12 +110,11 @@
 
     </com.kpstv.yts.extensions.views.ExtendedAppBarLayout>
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:id="@+id/container"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_container"
         android:paddingBottom="35dp"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"/>
+        android:layout_height="match_parent"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

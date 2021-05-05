@@ -5,20 +5,21 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import com.google.android.material.tabs.TabLayout
-import com.kpstv.common_moviesy.extensions.applyBottomInsets
 import com.kpstv.common_moviesy.extensions.applyTopInsets
 import com.kpstv.common_moviesy.extensions.viewBinding
-import com.kpstv.navigation.Navigator
+import com.kpstv.navigation.*
 import com.kpstv.yts.R
 import com.kpstv.yts.databinding.FragmentHomeBinding
 import com.kpstv.yts.extensions.YTSQuery
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import com.kpstv.yts.ui.viewmodels.StartViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.reflect.KClass
 
 @AndroidEntryPoint
-class HomeFragment : Fragment(R.layout.fragment_home), TabLayout.OnTabSelectedListener, Navigator.BottomNavigation.Callbacks {
+class HomeFragment : ValueFragment(R.layout.fragment_home), Navigator.Navigation.Callbacks, NavigatorTransmitter {
+    private lateinit var navigator: Navigator
+    private lateinit var tabController: TabNavigationController
 
     private val binding by viewBinding(FragmentHomeBinding::bind)
     private val viewModel by viewModels<MainViewModel>(
@@ -30,10 +31,24 @@ class HomeFragment : Fragment(R.layout.fragment_home), TabLayout.OnTabSelectedLi
         fun doOnReselection() { }
     }
 
+    override fun getNavigator(): Navigator = navigator
+
+    override val forceBackPress: Boolean
+        get() = binding.tabLayout.selectedTabPosition != 0
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         val caller = parentFragment as MainFragmentDrawerCallbacks
+        navigator = Navigator(childFragmentManager, binding.fragmentContainer)
+        tabController = navigator.install(this, object: Navigator.TabNavigation() {
+            override val tabLayoutId: Int = R.id.tabLayout
+            override val tabNavigationFragments: List<KClass<out Fragment>> = listOf(
+                ChartsFragment::class,
+                GenreFragment::class
+            )
+            override val fragmentNavigationTransition: Animation = Animation.Slide
+            override val fragmentViewRetentionType: ViewRetention = ViewRetention.RETAIN
+        })
 
         binding.apply {
             appBarLayout.applyTopInsets()
@@ -49,23 +64,10 @@ class HomeFragment : Fragment(R.layout.fragment_home), TabLayout.OnTabSelectedLi
                 }.build()
                 navViewModel.goToMore(getString(R.string.search_filters), queryMap)
             }
-            tabLayout.addOnTabSelectedListener(this@HomeFragment)
         }
 
-        // Restore UI state
-        if (savedInstanceState == null) {
-            setCurrentTab(viewModel.uiState.homeFragmentState.tabPosition)
-        }
         if (viewModel.uiState.homeFragmentState.isAppBarExpanded == false)
             binding.appBarLayout.collapse()
-    }
-
-    override fun onTabReselected(tab: TabLayout.Tab?) {}
-
-    override fun onTabUnselected(tab: TabLayout.Tab?) {}
-
-    override fun onTabSelected(tab: TabLayout.Tab?) {
-        setCurrentTab(tab?.position)
     }
 
     override fun onReselected() {
@@ -76,28 +78,19 @@ class HomeFragment : Fragment(R.layout.fragment_home), TabLayout.OnTabSelectedLi
         }
     }
 
-    private fun setCurrentTab(position: Int?) {
-        if (position == 0 || position == null) {
-            binding.tabLayout.getTabAt(0)?.select()
-            setFragment(ChartsFragment())
-        } else if (position == 1) {
-            binding.tabLayout.getTabAt(1)?.select()
-            setFragment(GenreFragment())
-        }
-    }
-
-    private fun setFragment(fragment: Fragment) {
-        childFragmentManager
-            .beginTransaction()
-            .replace(R.id.container, fragment, CURRENT_FRAGMENT)
-            .commit()
-    }
-
     override fun onStop() {
         super.onStop()
         // Save UI state
         viewModel.uiState.homeFragmentState.isAppBarExpanded = binding.appBarLayout.isAppBarExpanded
         viewModel.uiState.homeFragmentState.tabPosition = binding.tabLayout.selectedTabPosition
+    }
+
+    override fun onBackPressed(): Boolean {
+        if (binding.tabLayout.selectedTabPosition != 0) {
+            tabController.select(0)
+            return true
+        }
+        return super.onBackPressed()
     }
 
     companion object {
