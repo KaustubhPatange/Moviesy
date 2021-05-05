@@ -72,7 +72,7 @@ class HomeFragment : ValueFragment(R.layout.fragment_home), Navigator.Navigation
 
     override fun onReselected() {
         binding.appBarLayout.setExpanded(true)
-        val fragment = childFragmentManager.findFragmentByTag(CURRENT_FRAGMENT) ?: return
+        val fragment = Navigator.getCurrentVisibleFragment(childFragmentManager, binding.fragmentContainer) // TODO: replace with navigator.getCurrentFragment() once released.
         if (fragment is Callbacks) {
             fragment.doOnReselection()
         }
@@ -91,9 +91,5 @@ class HomeFragment : ValueFragment(R.layout.fragment_home), Navigator.Navigation
             return true
         }
         return super.onBackPressed()
-    }
-
-    companion object {
-        private const val CURRENT_FRAGMENT = "currentFragment"
     }
 }
