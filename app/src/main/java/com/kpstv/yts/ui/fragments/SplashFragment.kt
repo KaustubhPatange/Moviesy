@@ -10,6 +10,7 @@ import com.kpstv.common_moviesy.extensions.hide
 import com.kpstv.common_moviesy.extensions.show
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.navigation.AnimationDefinition
+import com.kpstv.navigation.HistoryOptions
 import com.kpstv.yts.AppSettings
 import com.kpstv.yts.R
 import com.kpstv.yts.databinding.FragmentSplashBinding
@@ -74,7 +75,7 @@ class SplashFragment : ValueFragment(R.layout.fragment_splash)  {
             screen = StartActivity.Screen.MAIN,
             animation = AnimationDefinition.Fade,
 //            args = MainFragment.Args(moveToDetail = DetailFragment.Args(ytsId = 28832)),
-            clearAllHistory = true
+            historyOptions = HistoryOptions.ClearHistory
         )
     }
 

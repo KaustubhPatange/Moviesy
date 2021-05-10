@@ -64,8 +64,6 @@ class MoreFragment : ValueFragment(R.layout.fragment_more) {
 
     private val TAG = javaClass.simpleName
 
-    override val backStackName: String = AppUtils.getUniqueBackStackName()
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         fragArgs = getKeyArgs()

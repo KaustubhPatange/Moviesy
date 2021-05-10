@@ -63,7 +63,6 @@ class MainFragment : ValueFragment(R.layout.fragment_main), NavigatorTransmitter
     private var isDozeChecked = false
 
     private lateinit var bottomController: BottomNavigationController
-    private var fragArgs: Args? = null
 
     override fun getNavigator(): Navigator = navigator
 
@@ -74,10 +73,9 @@ class MainFragment : ValueFragment(R.layout.fragment_main), NavigatorTransmitter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        navigator = Navigator(childFragmentManager, binding.fragmentContainer)
-        if (hasKeyArgs()) fragArgs = getKeyArgs()
+        navigator = Navigator.with(this, savedInstanceState).initialize(binding.fragmentContainer)
 
-        bottomController = navigator.install(this, object : Navigator.BottomNavigation() {
+        bottomController = navigator.install(object : Navigator.BottomNavigation() {
             override val bottomNavigationViewId: Int = R.id.bottom_nav
             override val bottomNavigationFragments: Map<Int, KClass<out Fragment>> = mapOf(
                 R.id.homeFragment to HomeFragment::class,
@@ -90,7 +88,7 @@ class MainFragment : ValueFragment(R.layout.fragment_main), NavigatorTransmitter
 
             override val selectedFragmentId: Int
                 get() {
-                    if (fragArgs?.moveToLibrary == true) {
+                    if (hasKeyArgs() && getKeyArgs<Args>().moveToLibrary) {
                         return R.id.libraryFragment
                     }
                     return super.selectedFragmentId
@@ -110,7 +108,7 @@ class MainFragment : ValueFragment(R.layout.fragment_main), NavigatorTransmitter
         ChangelogHelper(requireContext(), childFragmentManager).show()
 
         if (savedInstanceState == null) {
-            if (fragArgs != null) {
+            if (hasKeyArgs()) {
                 manageArgumentsAndConsume()
             }
             if (viewModel.uiState.mainFragmentState.isDrawerOpen == true) openDrawer()
@@ -175,7 +173,7 @@ class MainFragment : ValueFragment(R.layout.fragment_main), NavigatorTransmitter
     }
 
     private fun manageArgumentsAndConsume() {
-        val args = fragArgs ?: return
+        val args = getKeyArgs<Args>()
         if (args.forceUpdateCheck) {
             isUpdateChecked = false
         }
@@ -185,7 +183,7 @@ class MainFragment : ValueFragment(R.layout.fragment_main), NavigatorTransmitter
                 navViewModel.goToDetail(a.ytsId, a.tmDbId, a.movieUrl)
             }
         }
-        fragArgs = null
+        clearArgs()
     }
 
     private fun setNavigationDrawer() {

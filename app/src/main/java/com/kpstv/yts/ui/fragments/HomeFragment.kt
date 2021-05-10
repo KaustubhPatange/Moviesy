@@ -39,8 +39,8 @@ class HomeFragment : ValueFragment(R.layout.fragment_home), Navigator.Navigation
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val caller = parentFragment as MainFragmentDrawerCallbacks
-        navigator = Navigator(childFragmentManager, binding.fragmentContainer)
-        tabController = navigator.install(this, object: Navigator.TabNavigation() {
+        navigator = Navigator.with(this, savedInstanceState).initialize(binding.fragmentContainer)
+        tabController = navigator.install(object: Navigator.TabNavigation() {
             override val tabLayoutId: Int = R.id.tabLayout
             override val tabNavigationFragments: List<KClass<out Fragment>> = listOf(
                 ChartsFragment::class,
@@ -72,7 +72,7 @@ class HomeFragment : ValueFragment(R.layout.fragment_home), Navigator.Navigation
 
     override fun onReselected() {
         binding.appBarLayout.setExpanded(true)
-        val fragment = Navigator.getCurrentVisibleFragment(childFragmentManager, binding.fragmentContainer) // TODO: replace with navigator.getCurrentFragment() once released.
+        val fragment = navigator.getCurrentFragment()
         if (fragment is Callbacks) {
             fragment.doOnReselection()
         }

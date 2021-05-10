@@ -1,6 +1,7 @@
 package com.kpstv.yts.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -26,8 +27,6 @@ class ChartsFragment : ValueFragment(R.layout.fragment_charts), HomeFragment.Cal
         ownerProducer = { rootParentFragment() }
     )
     private val navViewModel by activityViewModels<StartViewModel>()
-
-    private val continueWatcherHelper by lazy { ContinueWatcherHelper(requireContext(), viewLifecycleOwner) }
 
     private lateinit var cmlFeatured: CustomMovieLayout
     private lateinit var cmlRecent: CustomMovieLayout
@@ -84,7 +83,7 @@ class ChartsFragment : ValueFragment(R.layout.fragment_charts), HomeFragment.Cal
         if (isRemoving) return
 
         // Continue watcher (automatically handles everything)
-        continueWatcherHelper.inflate(binding.addLayout) { movieId ->
+        ContinueWatcherHelper(requireContext(), viewLifecycleOwner).inflate(binding.addLayout) { movieId ->
             (rootParentFragment() as? MainFragmentContinueWatchCallbacks)?.selectMovie(movieId)
         }
 

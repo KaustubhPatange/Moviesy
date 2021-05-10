@@ -64,8 +64,6 @@ class DetailFragment : ValueFragment(R.layout.fragment_detail), MovieListener {
 
     private val TAG = javaClass.simpleName
 
-    override val backStackName: String = AppUtils.getUniqueBackStackName()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requireActivity().transparentNavigationBar()
@@ -370,15 +368,15 @@ class DetailFragment : ValueFragment(R.layout.fragment_detail), MovieListener {
 
     private fun loadBottomSheetDownload(type: BottomSheetDownload.ViewType) {
         Permissions.verifyStoragePermission(this) {
-            val sheet = BottomSheetDownload()
-            val bundle = Bundle()
-            bundle.putSerializable(BottomSheetDownload.TORRENTS, movieDetail.torrents)
-            bundle.putString(BottomSheetDownload.TITLE, movieDetail.title)
-            bundle.putString(BottomSheetDownload.IMDB_CODE, movieDetail.imdb_code)
-            bundle.putString(BottomSheetDownload.IMAGE_URI, movieDetail.medium_cover_image)
-            bundle.putInt(BottomSheetDownload.MOVIE_ID, movieDetail.id)
-            sheet.arguments = bundle
-            sheet.show(childFragmentManager, type.name)
+            val args = BottomSheetDownload.Args(
+                type = type.name,
+                torrents = movieDetail.torrents,
+                title = movieDetail.title,
+                imdbCode = movieDetail.imdb_code,
+                mediumImageCover = movieDetail.medium_cover_image,
+                movieId = movieDetail.id
+            )
+            getSimpleNavigator().show(BottomSheetDownload::class, args)
         }
     }
 

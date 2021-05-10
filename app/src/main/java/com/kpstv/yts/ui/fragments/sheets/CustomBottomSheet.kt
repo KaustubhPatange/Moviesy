@@ -7,6 +7,7 @@ import androidx.core.text.HtmlCompat
 import androidx.fragment.app.FragmentManager
 import com.kpstv.common_moviesy.extensions.hide
 import com.kpstv.common_moviesy.extensions.viewBinding
+import com.kpstv.navigation.SimpleNavigator
 import com.kpstv.yts.R
 import com.kpstv.yts.databinding.CustomDialogLayoutBinding
 import com.kpstv.yts.extensions.views.ExtendedRoundBottomSheetDialogFragment

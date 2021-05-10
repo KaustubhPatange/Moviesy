@@ -14,14 +14,12 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/app/after" />
             <option value="$PROJECT_DIR$/app/common" />
-            <option value="$PROJECT_DIR$/app/navigation" />
             <option value="$PROJECT_DIR$/app/purchase" />
             <option value="$PROJECT_DIR$/app/sheets" />
             <option value="$PROJECT_DIR$/buildSrc" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
-        <option name="useQualifiedModuleNames" value="true" />
       </GradleProjectSettings>
     </option>
   </component>

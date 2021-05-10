@@ -36,6 +36,7 @@ class ContinueWatcherHelper(private val context: Context, private val lifecycleO
     private val lifecycleObserver = object: DefaultLifecycleObserver {
         override fun onDestroy(owner: LifecycleOwner) {
             dataStoreHelper.cancel()
+            lifecycleOwner.lifecycle.removeObserver(this)
             super.onDestroy(owner)
         }
     }
@@ -143,7 +144,7 @@ class ContinueWatcherHelper(private val context: Context, private val lifecycleO
             }
         }
 
-        fun cancel(): Unit = scope.cancel()
+        fun cancel() = scope.cancel()
 
         private val movieIdKey = intPreferencesKey("movie_id")
         private val movieTitleKey = stringPreferencesKey("movie_title")

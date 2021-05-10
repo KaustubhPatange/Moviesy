@@ -24,14 +24,14 @@ class StartViewModel : ViewModel() {
         transactionType: Navigator.TransactionType = Navigator.TransactionType.REPLACE,
         animation: NavAnimation = AnimationDefinition.None,
         remember: Boolean = false,
-        clearAllHistory: Boolean = false
+        historyOptions: HistoryOptions = HistoryOptions.None
     ) {
         val options = Navigator.NavOptions(
             args = args,
             transaction = transactionType,
             animation = animation,
             remember = remember,
-            clearAllHistory = clearAllHistory
+            historyOptions = historyOptions
         )
 
         _navigation.value = NavigationOption(screen.clazz, options)

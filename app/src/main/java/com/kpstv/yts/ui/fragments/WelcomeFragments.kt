@@ -13,14 +13,11 @@ import com.kpstv.common_moviesy.extensions.applyBottomInsets
 import com.kpstv.common_moviesy.extensions.colorFrom
 import com.kpstv.common_moviesy.extensions.globalVisibleRect
 import com.kpstv.common_moviesy.extensions.viewBinding
-import com.kpstv.navigation.AnimationDefinition
+import com.kpstv.navigation.*
 import com.kpstv.yts.R
 import com.kpstv.yts.databinding.FragmentAgreementBinding
 import com.kpstv.yts.defaultPreference
 import com.kpstv.yts.ui.activities.StartActivity
-import com.kpstv.navigation.BaseArgs
-import com.kpstv.navigation.ValueFragment
-import com.kpstv.navigation.Navigator
 import com.kpstv.yts.ui.viewmodels.StartViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.parcel.Parcelize
@@ -42,6 +39,8 @@ abstract class AbstractWelcomeFragment : ValueFragment(R.layout.fragment_agreeme
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if (!hasKeyArgs()) return // TODO: Make navigator not consume it.
 
         val args = getKeyArgs<WelcomeArgs>()
 
@@ -127,7 +126,7 @@ class WelcomeCarrierFragment : AbstractWelcomeFragment() {
         appPreference.isFirstLaunch(false)
         navViewModel.navigateTo(
             screen = StartActivity.Screen.MAIN,
-            clearAllHistory = true,
+            historyOptions = HistoryOptions.ClearHistory
         )
     }
 

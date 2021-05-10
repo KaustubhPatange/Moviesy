@@ -45,7 +45,7 @@ class StartActivity : AppCompatActivity(), NavigatorTransmitter, LibraryFragment
         makeFullScreen()
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        navigator = Navigator(supportFragmentManager, binding.fragmentContainer)
+        navigator = Navigator.with(this, savedInstanceState).initialize(binding.fragmentContainer)
         navigator.autoChildElevation()
 
         navViewModel.navigation.observe(this, navigationObserver)

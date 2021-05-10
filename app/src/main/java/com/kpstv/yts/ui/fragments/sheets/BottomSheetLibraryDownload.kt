@@ -3,11 +3,11 @@ package com.kpstv.yts.ui.fragments.sheets
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.View
 import androidx.core.view.isVisible
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
-import com.kpstv.yts.cast.CastHelper
 import com.kpstv.yts.data.models.response.Model
 import com.kpstv.yts.databinding.BottomSheetLibraryDownloadBinding
 import com.kpstv.yts.databinding.ButtonCastPlayBinding
@@ -19,17 +19,23 @@ import com.kpstv.yts.ui.activities.TorrentPlayerActivity
 import com.kpstv.yts.ui.helpers.PremiumHelper
 import com.kpstv.yts.ui.helpers.SubtitleHelper
 import com.kpstv.common_moviesy.extensions.hide
+import com.kpstv.navigation.BaseArgs
+import com.kpstv.navigation.getKeyArgs
 import es.dmoral.toasty.Toasty
+import kotlinx.android.parcel.Parcelize
+import java.io.File
+import java.io.Serializable
 
-enum class PlaybackType {
+enum class PlaybackType : Serializable {
     LOCAL,
     REMOTE
 }
 
-class BottomSheetLibraryDownload(
-    private val castHelper: CastHelper? = null,
-    private val playbackType: PlaybackType
-) : ExtendedBottomSheetDialogFragment(R.layout.bottom_sheet_library_download) {
+class BottomSheetLibraryDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sheet_library_download) {
+
+    interface Callbacks {
+        fun loadCastMedia(model: Model.response_download, platFromLast: Boolean, srtFile: File?, loadComplete: (Exception?) -> Unit?)
+    }
 
     private val binding by viewBinding(BottomSheetLibraryDownloadBinding::bind)
 
@@ -39,8 +45,9 @@ class BottomSheetLibraryDownload(
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val args = getKeyArgs<Args>()
         /** Get the model from the arguments */
-        model = arguments?.getSerializable("model")!! as Model.response_download
+        model = args.model
 
         /** Show the last played position */
         if (model.lastSavedPosition != 0) {
@@ -49,7 +56,7 @@ class BottomSheetLibraryDownload(
         } else binding.checkBoxPlayFrom.hide()
 
         /** Set view according to playback type */
-        when (playbackType) {
+        when (args.playbackType) {
             PlaybackType.LOCAL -> { // Local mode
 
                 ButtonLocalPlayBinding.inflate(layoutInflater, binding.root, true).apply {
@@ -89,22 +96,24 @@ class BottomSheetLibraryDownload(
             binding.root.removeAllViews()
             CustomProgressBinding.inflate(layoutInflater, binding.root, true)
 
-            castHelper?.loadMedia(
-                downloadModel = model,
-                playFromLastPosition = playFromLastPosition,
-                srtFile = subtitleFile,
-                onLoadComplete = { error ->
-                    if (error != null) {
-                        Toasty.error(
-                            requireContext(),
-                            error.message ?: requireContext().getString(
-                                R.string.error_unknown
-                            )
-                        ).show()
+            if (context is Callbacks) {
+                (context as Callbacks).loadCastMedia(
+                    model = model,
+                    platFromLast = playFromLastPosition,
+                    srtFile = subtitleFile,
+                    loadComplete = { error ->
+                        if (error != null) {
+                            Toasty.error(
+                                requireContext(),
+                                error.message ?: requireContext().getString(
+                                    R.string.error_unknown
+                                )
+                            ).show()
+                        }
+                        dismiss()
                     }
-                    dismiss()
-                }
-            )
+                )
+            }
         } else
             Toasty.error(
                 requireContext(),
@@ -142,4 +151,7 @@ class BottomSheetLibraryDownload(
                 populateSubtitleView()
             }
     }
+
+    @Parcelize
+    data class Args(val playbackType: PlaybackType, val model: Model.response_download): BaseArgs(), Parcelable
 }

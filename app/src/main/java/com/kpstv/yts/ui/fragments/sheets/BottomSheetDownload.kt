@@ -4,11 +4,14 @@ import android.content.Intent
 import android.content.Intent.ACTION_VIEW
 import android.net.Uri
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.View
 import android.widget.CompoundButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kpstv.common_moviesy.extensions.hide
 import com.kpstv.common_moviesy.extensions.viewBinding
+import com.kpstv.navigation.BaseArgs
+import com.kpstv.navigation.getKeyArgs
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
 import com.kpstv.yts.adapters.DownloadAdapter
@@ -28,6 +31,7 @@ import com.kpstv.yts.ui.helpers.PremiumHelper
 import com.kpstv.yts.ui.helpers.SubtitleHelper
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
+import kotlinx.android.parcel.Parcelize
 import javax.inject.Inject
 
 /**
@@ -66,22 +70,23 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
     private lateinit var title: String
     private lateinit var imdbCode: String
     private lateinit var imageUri: String
-    private lateinit var movieId: Integer
+    private var movieId: Int = -1
 
     private lateinit var viewType: ViewType
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val list = arguments?.getSerializable(TORRENTS) as ArrayList<Torrent>
-        title = arguments?.getString(TITLE) as String
-        imageUri = arguments?.getString(IMAGE_URI) as String
-        imdbCode = arguments?.getString(IMDB_CODE) as String
-        movieId = arguments?.getInt(MOVIE_ID) as Integer
+        val args = getKeyArgs<Args>()
+        val list = args.torrents
+        title = args.title
+        imageUri = args.mediumImageCover
+        imdbCode = args.imdbCode
+        movieId = args.movieId
         binding.recyclerViewDownload.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
-        viewType = ViewType.valueOf(tag ?: ViewType.DOWNLOAD.name)
+        viewType = ViewType.valueOf(args.type ?: ViewType.DOWNLOAD.name)
 
         for (t in list) {
             if (t.type == "bluray") bluray.add(t)
@@ -311,4 +316,14 @@ class BottomSheetDownload : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
         interstitialAdHelper.dispose()
         super.onDestroyView()
     }
+
+    @Parcelize
+    data class Args(
+        val torrents: ArrayList<Torrent>,
+        val title: String,
+        val imdbCode: String,
+        val mediumImageCover: String,
+        val movieId: Int,
+        val type: String
+    ) : BaseArgs(), Parcelable
 }

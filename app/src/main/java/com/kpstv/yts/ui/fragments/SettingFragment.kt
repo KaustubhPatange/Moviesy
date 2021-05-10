@@ -39,7 +39,7 @@ class SettingFragment : ValueFragment(R.layout.fragment_settings), NavigatorTran
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        navigator = Navigator(childFragmentManager, binding.settingsContainer)
+        navigator = Navigator.with(this, savedInstanceState).initialize(binding.settingsContainer)
 
         setToolbar()
         viewModel.navigation.observe(viewLifecycleOwner, navigationObserver)
@@ -80,7 +80,8 @@ class SettingFragment : ValueFragment(R.layout.fragment_settings), NavigatorTran
             animation = AnimationDefinition.CircularReveal(
                 forFragment = LookSettingsFragment::class,
                 fromTarget = viewRect
-            )
+            ),
+            historyOptions = HistoryOptions.SingleTopInstance
         )
     }
 

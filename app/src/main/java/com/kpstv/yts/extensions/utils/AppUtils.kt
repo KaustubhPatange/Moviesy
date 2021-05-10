@@ -367,8 +367,6 @@ class AppUtils {
                     Settings.Global.getInt(context.contentResolver, "mobile_data", 1) == 1
         }
 
-        fun getUniqueBackStackName() = "${this::class.simpleName}_base${Random.nextInt(0, 1000)}"
-
         private val TAG = "Utils"
     }
 }

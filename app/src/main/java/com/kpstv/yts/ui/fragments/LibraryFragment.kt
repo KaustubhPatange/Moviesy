@@ -2,6 +2,7 @@ package com.kpstv.yts.ui.fragments
 
 import android.os.Bundle
 import android.os.Parcelable
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
@@ -43,7 +44,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 @AndroidEntryPoint
-class LibraryFragment : ValueFragment(R.layout.fragment_library), Navigator.Navigation.Callbacks {
+class LibraryFragment : ValueFragment(R.layout.fragment_library), Navigator.Navigation.Callbacks, BottomSheetLibraryDownload.Callbacks {
     interface Callbacks {
         fun getCastHelper() : CastHelper
     }
@@ -93,6 +94,20 @@ class LibraryFragment : ValueFragment(R.layout.fragment_library), Navigator.Navi
         }
     }
 
+    override fun loadCastMedia(
+        model: Model.response_download,
+        platFromLast: Boolean,
+        srtFile: File?,
+        loadComplete: (Exception?) -> Unit?
+    ) {
+        castHelper.loadMedia(
+            downloadModel = model,
+            playFromLastPosition = platFromLast,
+            srtFile = srtFile,
+            onLoadComplete = loadComplete
+        )
+    }
+
     private fun bindUI() {
         viewModel.downloadMovieIds.observe(viewLifecycleOwner) { downloads: List<Model.response_download> ->
             downloadAdapter.submitList(downloads)
@@ -114,9 +129,10 @@ class LibraryFragment : ValueFragment(R.layout.fragment_library), Navigator.Navi
         }
         libraryViewModel.selectedMovieId.observe(viewLifecycleOwner) { model ->
             if (model == null) {
-                childFragmentManager.findFragmentByTag(BOTTOM_SHEET_DOWNLOAD_TAG)?.let { frag ->
+                getSimpleNavigator().pop()
+               /* childFragmentManager.findFragmentByTag(BOTTOM_SHEET_DOWNLOAD_TAG)?.let { frag ->
                     if (frag is BottomSheetLibraryDownload) frag.dismiss()
-                }
+                }*/
             } else {
                 adapterOnClickListener(model)
             }
@@ -143,17 +159,13 @@ class LibraryFragment : ValueFragment(R.layout.fragment_library), Navigator.Navi
     }
 
     private fun adapterOnClickListener(model: Model.response_download) {
-        val sheet = if (isCastingSupported && castHelper.isCastActive()) {
-            /** Show cast to device button */
-            BottomSheetLibraryDownload(castHelper, PlaybackType.REMOTE)
+        val args = if (isCastingSupported && castHelper.isCastActive()) {
+            BottomSheetLibraryDownload.Args(PlaybackType.REMOTE, model)
         } else {
-            /** Show local play button */
-            BottomSheetLibraryDownload(playbackType = PlaybackType.LOCAL)
+            BottomSheetLibraryDownload.Args(PlaybackType.LOCAL, model)
         }
-        val bundle = Bundle()
-        bundle.putSerializable("model", model)
-        sheet.arguments = bundle
-        sheet.show(childFragmentManager, BOTTOM_SHEET_DOWNLOAD_TAG)
+
+        getSimpleNavigator().show(BottomSheetLibraryDownload::class, args)
     }
 
     private fun adapterOnMoreListener(innerView: View, model: Model.response_download) {
