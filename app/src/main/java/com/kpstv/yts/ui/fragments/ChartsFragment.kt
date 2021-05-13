@@ -35,8 +35,11 @@ class ChartsFragment : ValueFragment(R.layout.fragment_charts), HomeFragment.Cal
     private lateinit var cmlMostLiked: CustomMovieLayout
     private lateinit var cmlLatest: CustomMovieLayout
 
+    private lateinit var continueWatcherHelper: ContinueWatcherHelper
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        continueWatcherHelper = ContinueWatcherHelper(requireContext(), viewLifecycleOwner)
 
         setViewAndLayout()
         setSwipeRefreshCallback()
@@ -83,7 +86,7 @@ class ChartsFragment : ValueFragment(R.layout.fragment_charts), HomeFragment.Cal
         if (isRemoving) return
 
         // Continue watcher (automatically handles everything)
-        ContinueWatcherHelper(requireContext(), viewLifecycleOwner).inflate(binding.addLayout) { movieId ->
+        continueWatcherHelper.inflate(binding.addLayout) { movieId ->
             (rootParentFragment() as? MainFragmentContinueWatchCallbacks)?.selectMovie(movieId)
         }
 

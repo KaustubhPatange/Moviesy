@@ -21,7 +21,6 @@ import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.navigation.BaseArgs
 import com.kpstv.navigation.Navigator
 import com.kpstv.navigation.ValueFragment
-import com.kpstv.navigation.clearArgs
 import com.kpstv.yts.AppSettings
 import com.kpstv.yts.R
 import com.kpstv.yts.adapters.LibraryDownloadAdapter
@@ -82,7 +81,7 @@ class LibraryFragment : ValueFragment(R.layout.fragment_library), Navigator.Navi
             mediaRouteMenuItem = castHelper.setMediaRouteMenu(requireContext(), binding.toolbar.menu)
         }
 
-        if (hasKeyArgs()) {
+        if (hasKeyArgs<Args>()) {
             val args = getKeyArgs<Args>()
             binding.root.doOnNextLayout {
                 binding.recyclerViewDownload.apply {

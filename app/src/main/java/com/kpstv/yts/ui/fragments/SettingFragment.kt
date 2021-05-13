@@ -48,7 +48,7 @@ class SettingFragment : ValueFragment(R.layout.fragment_settings), NavigatorTran
             navigator.navigateTo(Screen.MAIN.clazz)
         }
 
-        if (hasKeyArgs()) {
+        if (hasKeyArgs<Args>()) {
             manageArguments()
         }
     }

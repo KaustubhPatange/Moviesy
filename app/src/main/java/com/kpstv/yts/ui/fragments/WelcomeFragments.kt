@@ -40,7 +40,7 @@ abstract class AbstractWelcomeFragment : ValueFragment(R.layout.fragment_agreeme
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (!hasKeyArgs()) return // TODO: Make navigator not consume it.
+        if (!hasKeyArgs<WelcomeArgs>()) return
 
         val args = getKeyArgs<WelcomeArgs>()
 

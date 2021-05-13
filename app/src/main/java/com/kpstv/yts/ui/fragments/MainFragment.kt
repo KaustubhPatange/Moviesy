@@ -88,7 +88,7 @@ class MainFragment : ValueFragment(R.layout.fragment_main), NavigatorTransmitter
 
             override val selectedFragmentId: Int
                 get() {
-                    if (hasKeyArgs() && getKeyArgs<Args>().moveToLibrary) {
+                    if (hasKeyArgs<Args>() && getKeyArgs<Args>().moveToLibrary) {
                         return R.id.libraryFragment
                     }
                     return super.selectedFragmentId
@@ -108,7 +108,7 @@ class MainFragment : ValueFragment(R.layout.fragment_main), NavigatorTransmitter
         ChangelogHelper(requireContext(), childFragmentManager).show()
 
         if (savedInstanceState == null) {
-            if (hasKeyArgs()) {
+            if (hasKeyArgs<Args>()) {
                 manageArgumentsAndConsume()
             }
             if (viewModel.uiState.mainFragmentState.isDrawerOpen == true) openDrawer()
@@ -183,7 +183,7 @@ class MainFragment : ValueFragment(R.layout.fragment_main), NavigatorTransmitter
                 navViewModel.goToDetail(a.ytsId, a.tmDbId, a.movieUrl)
             }
         }
-        clearArgs()
+        clearArgs<Args>()
     }
 
     private fun setNavigationDrawer() {
