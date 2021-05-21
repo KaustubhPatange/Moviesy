@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:text="@string/cancel"
-        android:textColor="@color/premium"
+        android:textColor="?colorTextPremium"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:rippleColor="@color/white" />
@@ -37,7 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:backgroundTint="@color/premium"
+        android:backgroundTint="?colorTextPremium"
         android:text="@string/next"
         android:textAllCaps="false"
         android:textColor="@color/background_agree"

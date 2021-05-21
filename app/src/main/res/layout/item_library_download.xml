@@ -53,7 +53,7 @@
         android:background="@color/colorAccent"
         android:padding="3dp"
         android:text="Recently played\u0020"
-        android:textColor="?colorTextLight"
+        android:textColor="@color/light_white"
         android:textSize="12sp"
         android:textStyle="italic"
         app:layout_constraintBottom_toBottomOf="parent"

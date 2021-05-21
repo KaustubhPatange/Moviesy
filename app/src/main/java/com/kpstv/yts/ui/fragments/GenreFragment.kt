@@ -98,7 +98,6 @@ class GenreFragment : ValueFragment(R.layout.fragment_genre), HomeFragment.Callb
     companion object {
         val GENRE_CATEGORY_LIST: List<LocalGenreModel> = listOf(
             LocalGenreModel("Action", R.drawable.ic_action_genre, YTSQuery.Genre.action),
-            LocalGenreModel("Action", R.drawable.ic_action_genre, YTSQuery.Genre.action),
             LocalGenreModel("Adventure", R.drawable.ic_adventure_genre, YTSQuery.Genre.adventure),
             LocalGenreModel("Animation", R.drawable.ic_animation_genre, YTSQuery.Genre.animation),
             LocalGenreModel("Comedy", R.drawable.ic_comedy_genre, YTSQuery.Genre.comedy),

@@ -60,14 +60,14 @@
                 android:layout_width="27dp"
                 android:layout_height="27dp"
                 android:src="@drawable/ic_diamond"
-                app:tint="@color/premium" />
+                app:tint="?colorTextPremium" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:text="@string/buy_premium"
-                android:textColor="@color/premium"
+                android:textColor="?colorTextPremium"
                 android:textSize="17sp" />
 
         </androidx.appcompat.widget.Toolbar>

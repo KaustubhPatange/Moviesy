@@ -7,7 +7,7 @@
     android:gravity="center"
     android:paddingTop="10dp"
     android:paddingBottom="10dp"
-    app:drawableTint="@color/premium"
+    app:drawableTint="?colorTextPremium"
     app:drawableStartCompat="@drawable/ic_diamond"
     android:layout_marginStart="10dp"
     android:layout_marginEnd="10dp"
@@ -18,6 +18,6 @@
     android:paddingEnd="10dp"
     android:textSize="16sp"
     android:text="@string/premium"
-    android:textColor="@color/premium"
+    android:textColor="?colorTextPremium"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content" />

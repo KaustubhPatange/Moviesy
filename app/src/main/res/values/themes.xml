@@ -18,6 +18,7 @@
         <item name="colorTextLight">@color/light_black</item>
         <item name="colorSeparator">@color/separator_light</item>
         <item name="colorNavSeparator">@color/separator_light</item>
+        <item name="colorTextPremium">@color/premium</item>
         <item name="castMiniControllerStyle">@style/CastMiniController.Light</item>
     </style>
 
@@ -35,6 +36,7 @@
         <item name="colorTextLight">@color/light_white</item>
         <item name="colorSeparator">@color/separator_dark</item>
         <item name="colorNavSeparator">@color/separator_dark</item>
+        <item name="colorTextPremium">@color/premium</item>
         <item name="castMiniControllerStyle">@style/CastMiniController.Dark</item>
     </style>
 

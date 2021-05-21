@@ -20,7 +20,7 @@
             android:src="@drawable/ic_diamond"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/premium" />
+            app:tint="?colorTextPremium" />
 
         <LinearLayout
             android:layout_width="wrap_content"

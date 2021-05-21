@@ -8,6 +8,7 @@
     <attr name="colorBackground" format="reference|color"/>
     <attr name="colorForeground" format="reference|color"/>
     <attr name="colorNavSeparator" format="reference|color"/>
+    <attr name="colorTextPremium" format="reference|color"/>
 
     <item name="chartFragment" type="id"/>
     <item name="genreFragment" type="id"/>

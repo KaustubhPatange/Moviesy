@@ -16,7 +16,7 @@
 
         <TextView
             android:textSize="17sp"
-            android:textColor="@color/premium"
+            android:textColor="?colorTextPremium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/payment_gateway"/>

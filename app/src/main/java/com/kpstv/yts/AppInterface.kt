@@ -3,7 +3,9 @@ package com.kpstv.yts
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.os.Build
 import android.os.Environment
+import android.view.View
 import androidx.preference.PreferenceManager
 import com.danimahardhika.cafebar.CafeBar
 import com.kpstv.common_moviesy.extensions.utils.CommonUtils
@@ -87,6 +89,8 @@ class AppInterface {
             if (!IS_DARK_THEME) {
                 activity.setTheme(R.style.AppTheme_Light_NoAction)
                 activity.window.statusBarColor = CommonUtils.getColorFromAttr(activity, R.attr.colorBackground)
+                if (Build.VERSION.SDK_INT >= 23)
+                    activity.window.decorView.systemUiVisibility = activity.window.decorView.systemUiVisibility or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             }
         }
 

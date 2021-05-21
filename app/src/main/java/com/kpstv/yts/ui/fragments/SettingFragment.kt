@@ -7,6 +7,7 @@ import android.os.Parcelable
 import android.view.View
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -51,12 +52,16 @@ class SettingFragment : ValueFragment(R.layout.fragment_settings), NavigatorTran
         if (hasKeyArgs<Args>()) {
             manageArguments()
         }
+
+        childFragmentManager.addOnBackStackChangedListener call@{
+            val current = navigator.getCurrentFragment() ?: return@call
+            binding.toolbar.title = getString(Screen.getTitle(current::class))
+        }
     }
 
     private val navigationObserver = Observer { options: SettingNavViewModel.NavigationOption? ->
         options?.let { opt ->
             navigator.navigateTo(opt.clazz, opt.options)
-            binding.toolbar.title = getString(Screen.getTitle(opt.clazz))
         }
     }
 
@@ -83,14 +88,6 @@ class SettingFragment : ValueFragment(R.layout.fragment_settings), NavigatorTran
             ),
             historyOptions = HistoryOptions.SingleTopInstance
         )
-    }
-
-    override fun onBackPressed(): Boolean {
-        binding.toolbar.title = getString(Screen.MAIN.title)
-        if (navigator.canFinish()) {
-            return super.onBackPressed()
-        }
-        return true
     }
 
     enum class Screen(val clazz: KClass<out Fragment>, @StringRes val title: Int) {

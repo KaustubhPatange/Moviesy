@@ -30,6 +30,7 @@
                 android:layout_marginStart="25dp"
                 android:layout_marginEnd="25dp"
                 android:layout_marginTop="7dp"
+                app:cardElevation="3dp"
                 app:cardBackgroundColor="?colorSeparator"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -65,7 +66,7 @@
                         android:text="@string/searchmovies"/>
 
                     <TextView
-                        android:textColor="@color/premium"
+                        android:textColor="?colorTextPremium"
                         android:layout_marginEnd="7dp"
                         android:id="@+id/tv_filter"
                         android:layout_width="wrap_content"
