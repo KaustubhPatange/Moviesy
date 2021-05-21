@@ -65,3 +65,12 @@ class GenreState(private val savedStateHandle: SavedStateHandle) {
         get() = savedStateHandle.get(RECYCLERVIEW_STATE)
         set(value) = savedStateHandle.set(RECYCLERVIEW_STATE, value)
 }
+
+class DetailState(private val savedStateHandle: SavedStateHandle) {
+    companion object {
+        private const val NESTED_SCROLL_STATE = "detail_recyclerview_state"
+    }
+    var nestedScrollState: Parcelable?
+        get() = savedStateHandle.get(NESTED_SCROLL_STATE)
+        set(value) = savedStateHandle.set(NESTED_SCROLL_STATE, value)
+}

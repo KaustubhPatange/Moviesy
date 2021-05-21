@@ -2,7 +2,9 @@ package com.kpstv.yts.ui.viewmodels
 
 import android.annotation.SuppressLint
 import android.util.Log
+import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kpstv.yts.AppInterface
@@ -25,6 +27,7 @@ import com.kpstv.yts.extensions.utils.YTSParser
 import com.kpstv.yts.interfaces.api.TMdbApi
 import com.kpstv.yts.interfaces.api.YTSApi
 import com.kpstv.yts.interfaces.listener.MovieListener
+import com.kpstv.yts.ui.viewmodels.state.UIState
 import kotlinx.coroutines.launch
 import retrofit2.await
 import java.text.SimpleDateFormat
@@ -33,6 +36,7 @@ import kotlin.collections.ArrayList
 
 @SuppressLint("SimpleDateFormat")
 class FinalViewModel @ViewModelInject constructor(
+    @Assisted savedStateHandle: SavedStateHandle,
     private val movieRepository: MovieDao,
     private val suggestionDao: SuggestionDao,
     private val recommendDao: RecommendDao,
@@ -44,6 +48,8 @@ class FinalViewModel @ViewModelInject constructor(
 ) : ViewModel() {
 
     private val TAG = "FinalViewModel"
+
+    val detailState = UIState(savedStateHandle).detailFragmentState
 
     fun isMovieFavourite(movieId: Int) = favouriteRepository.isMovieFavouriteLive(movieId)
 

@@ -118,7 +118,7 @@ class MainViewModel @ViewModelInject constructor(
                     }
                 }
             } catch (e: Exception) {
-                if (e is SSLHandshakeException) {
+                if (e is SSLHandshakeException || e is javax.net.ssl.SSLHandshakeException) {
                     repository.getMoviesByQuery(FEATURED_QUERY)?.let {
                         moviesCallback.onComplete(it.movies, queryMap, it.isMore)
                     }

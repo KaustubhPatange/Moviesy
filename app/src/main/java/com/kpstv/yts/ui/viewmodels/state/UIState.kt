@@ -12,4 +12,5 @@ class UIState(savedStateHandle: SavedStateHandle) {
     val homeFragmentState = HomeState(savedStateHandle)
     val chartFragmentState = ChartState(savedStateHandle)
     val genreFragmentState = GenreState(savedStateHandle)
+    val detailFragmentState = DetailState(savedStateHandle)
 }

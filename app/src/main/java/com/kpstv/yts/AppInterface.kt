@@ -122,7 +122,7 @@ class AppInterface {
 
             AppPreference(context).setShouldCheckProxy(true)
 
-            if (t is SSLHandshakeException || t?.message?.trim() == "HTTP 525") {
+            if (t is SSLHandshakeException || t is javax.net.ssl.SSLHandshakeException || t?.message?.trim() == "HTTP 525") {
                 if (!isSSLDialogActive) {
                     isSSLDialogActive = true
                     AppUtils.showSSLHandshakeDialog(context) {

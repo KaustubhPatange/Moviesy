@@ -93,7 +93,7 @@ class SplashFragment : ValueFragment(R.layout.fragment_splash)  {
                 },
                 onError = { e ->
                     if (::afterRequests.isInitialized) afterRequests.stop()
-                    if (e is SSLHandshakeException) {
+                    if (e is SSLHandshakeException || e is javax.net.ssl.SSLHandshakeException) {
                         AppUtils.showSSLHandshakeDialog(requireContext()) { onProxyCheckComplete() }
                     } else appNavViewModel.propagateError(SplashErrorException(e))
                 }

@@ -33,6 +33,7 @@ import com.kpstv.yts.extensions.common.CustomMovieLayout
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.GlideApp
 import com.kpstv.yts.extensions.utils.LangCodeUtils
+import com.kpstv.yts.extensions.views.ExtendedNestedScrollView
 import com.kpstv.yts.interfaces.listener.MovieListener
 import com.kpstv.yts.ui.activities.ImageViewActivity
 import com.kpstv.yts.ui.activities.PlayerActivity
@@ -52,6 +53,7 @@ import kotlinx.android.parcel.Parcelize
 class DetailFragment : ValueFragment(R.layout.fragment_detail), MovieListener {
     companion object {
         const val YOUTUBE_PLAYER_VIEW_REQUEST_CODE = 189
+        private const val SCROLL_STATE = "com.kpstv.yts:detailfragment:scroll_state"
     }
 
     private val binding by viewBinding(FragmentDetailBinding::bind)
@@ -484,6 +486,12 @@ class DetailFragment : ValueFragment(R.layout.fragment_detail), MovieListener {
         if (viewState == ViewState.BACKGROUND) {
             if (::player.isInitialized) player.pause()
         }
+    }
+
+    override fun onStop() {
+        // TODO: Find a way to somehow restore it.
+        viewModel.detailState.nestedScrollState = binding.nestedScrollView.onSaveInstanceState()
+        super.onStop()
     }
 
     override fun onDestroyView() {
