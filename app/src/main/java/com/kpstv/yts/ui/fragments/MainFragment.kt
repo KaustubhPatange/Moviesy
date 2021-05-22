@@ -29,6 +29,7 @@ import com.kpstv.yts.ui.activities.StartActivity
 import com.kpstv.yts.ui.helpers.BatteryOptimizationHelper
 import com.kpstv.yts.ui.helpers.ChangelogHelper
 import com.kpstv.yts.ui.helpers.PremiumHelper
+import com.kpstv.yts.ui.helpers.ThemeHelper
 import com.kpstv.yts.ui.helpers.ThemeHelper.registerForThemeChange
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import com.kpstv.yts.ui.viewmodels.StartViewModel
@@ -213,7 +214,7 @@ class MainFragment : ValueFragment(R.layout.fragment_main), NavigatorTransmitter
 
     private fun setNavigationDrawerItemClicks() {
         binding.navigationLayout.ivReport.setOnClickListener {
-            AppUtils.launchUrl(requireContext(), "${getString(R.string.app_github)}/issues", AppInterface.IS_DARK_THEME)
+            AppUtils.launchUrl(requireContext(), "${getString(R.string.app_github)}/issues", ThemeHelper.isDarkVariantTheme())
         }
         binding.navigationLayout.ivShare.setOnClickListener {
             AppUtils.shareApp(requireActivity())

@@ -84,13 +84,6 @@ class AppUtils {
             }
         }
 
-        fun CafebarToast(context: Activity, message: String) {
-            handleRetrofitError(
-                context,
-                Exception(message)
-            )
-        }
-
         fun getImdbUrl(id: String): String {
             return "https://www.imdb.com/title/${id}"
         }

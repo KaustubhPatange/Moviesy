@@ -7,13 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.imageloaderview.ImageLoaderView
-import com.kpstv.yts.AppInterface.Companion.IS_DARK_THEME
 import com.kpstv.yts.R
 import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.extensions.MovieBase
@@ -21,6 +19,7 @@ import com.kpstv.yts.extensions.utils.AppUtils.Companion.getBulletSymbol
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.getImdbUrl
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.launchUrl
 import com.kpstv.yts.extensions.load
+import com.kpstv.yts.ui.helpers.ThemeHelper
 import com.kpstv.yts.ui.viewmodels.StartViewModel
 
 /** An adapter class to manage the pagination library
@@ -65,7 +64,7 @@ class CustomPagedAdapter(
                     "${movie.year} ${getBulletSymbol()} ${movie.runtime} mins"
                 holder.mainImdbButton.text = "imdb ${movie.rating}"
                 holder.mainImdbButton.setOnClickListener { view ->
-                    movie.imdbCode?.let { launchUrl(view.context, getImdbUrl(it), IS_DARK_THEME) }
+                    movie.imdbCode?.let { launchUrl(view.context, getImdbUrl(it), ThemeHelper.isDarkVariantTheme()) }
                 }
                 holder.mainLayout.setOnClickListener {
                     navViewModel.goToDetail(

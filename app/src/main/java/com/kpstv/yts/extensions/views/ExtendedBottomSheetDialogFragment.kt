@@ -5,14 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
-import androidx.appcompat.widget.AppCompatSeekBar
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.kpstv.common_moviesy.extensions.transparentNavigationBar
 import com.kpstv.common_moviesy.extensions.utils.CommonUtils
 import com.kpstv.sheets.RoundedBottomSheetDialogFragment
 import com.kpstv.yts.AppInterface
-import com.kpstv.yts.AppSettings
 import com.kpstv.yts.R
+import com.kpstv.yts.ui.helpers.ThemeHelper
 
 /** I was bored of inflating view in BottomSheet by overriding
  *  [onCreateView] as I was amazed by the fact how fragment has a
@@ -26,7 +25,7 @@ open class ExtendedBottomSheetDialogFragment(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requireActivity().window.navigationBarColor = CommonUtils.getColorFromAttr(
-            requireActivity(), if (AppInterface.IS_DARK_THEME) R.attr.colorForeground else R.attr.colorSeparator
+            requireActivity(), R.attr.colorForeground
         )
     }
     override fun onDestroyView() {

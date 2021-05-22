@@ -8,9 +8,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import com.kpstv.yts.AppInterface.Companion.IS_DARK_THEME
 import com.kpstv.yts.R
 import com.kpstv.yts.extensions.SimpleCallback
+import com.kpstv.yts.ui.helpers.ThemeHelper
 import kotlinx.android.synthetic.main.custom_alert_buttons.view.*
 import kotlinx.android.synthetic.main.custom_alert_dialog.view.*
 
@@ -19,7 +19,7 @@ class AlertNoIconDialog : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (!IS_DARK_THEME) setTheme(R.style.DialogTheme_Light)
+        if (ThemeHelper.isLightVariantTheme()) setTheme(R.style.DialogTheme_Light)
         processAlert()
     }
 

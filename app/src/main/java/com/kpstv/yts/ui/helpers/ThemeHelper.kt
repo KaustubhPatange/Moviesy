@@ -12,9 +12,26 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.kpstv.common_moviesy.extensions.getColorAttr
 import com.kpstv.yts.AppInterface
+import com.kpstv.yts.AppPreference
 import com.kpstv.yts.R
 
 object ThemeHelper {
+    private var currentTheme = AppTheme.DARK
+
+    fun getTheme() = currentTheme
+
+    fun isLightVariantTheme() : Boolean {
+        return currentTheme == AppTheme.LIGHT
+    }
+
+    fun isDarkVariantTheme() : Boolean {
+        return currentTheme == AppTheme.DARK
+    }
+
+    fun updateValues(appPreference: AppPreference) {
+        currentTheme = appPreference.getTheme()
+    }
+
     enum class AppTheme(@StyleRes val style: Int) {
         DARK(R.style.StartTheme_Dark),
         LIGHT(R.style.StartTheme_Light)
@@ -23,10 +40,10 @@ object ThemeHelper {
     fun Context.updateTheme(activity: FragmentActivity) {
         val decorView = activity.window.decorView
 
-        val style = if (AppInterface.IS_DARK_THEME) {
-            AppTheme.DARK.style
-        } else
-            AppTheme.LIGHT.style
+        val style = when (currentTheme) {
+            AppTheme.DARK -> AppTheme.DARK.style
+            AppTheme.LIGHT -> AppTheme.LIGHT.style
+        }
 
         theme.applyStyle(style, true)
 
@@ -38,10 +55,9 @@ object ThemeHelper {
             activity.window.statusBarColor = color
             activity.window.navigationBarColor = color
 
-            if (!AppInterface.IS_DARK_THEME) {
-                decorView.systemUiVisibility = decorView.systemUiVisibility or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            } else {
-                decorView.systemUiVisibility = decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
+            when(currentTheme) {
+                AppTheme.DARK -> decorView.systemUiVisibility = decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
+                AppTheme.LIGHT -> decorView.systemUiVisibility = decorView.systemUiVisibility or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             }
         }
 

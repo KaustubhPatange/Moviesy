@@ -63,7 +63,6 @@ class PremiumHelper {
         fun activatePurchase(context: Context) = with(context) {
             defaultPreference().value.writeBoolean(AppSettings.PREMIUM_PURCHASE_PREF, true)
             AppInterface.IS_PREMIUM_UNLOCKED = true
-            AppInterface.IS_DARK_THEME = true
         }
 
         fun openPurchaseFragment(fragmentManager: FragmentManager) {

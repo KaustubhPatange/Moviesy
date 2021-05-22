@@ -4,12 +4,14 @@ import android.content.Context
 import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
+import com.kpstv.yts.ui.helpers.ThemeHelper
 import java.io.File
 
 class AppPreference(context: Context) {
     companion object {
         private const val SHOULD_CHECK_PROXY = "should_check_proxy"
         private const val IS_FIRST_LAUNCH = "is_first_launch"
+        private const val THEME_SETTING = "theme_setting"
     }
 
     private val pm = PreferenceManager.getDefaultSharedPreferences(context)
@@ -24,13 +26,19 @@ class AppPreference(context: Context) {
 
     fun isFirstLaunch(value: Boolean) = writeBoolean(IS_FIRST_LAUNCH, value)
 
-    fun getBoolean(key: String, default: Boolean) =
-        pm.getBoolean(key, default)
+    fun getBoolean(key: String, default: Boolean) = pm.getBoolean(key, default)
 
-    fun writeBoolean(key: String, value: Boolean) =
-        pm.edit {
-            putBoolean(key, value)
-        }
+    fun writeBoolean(key: String, value: Boolean) = pm.edit {
+        putBoolean(key, value)
+    }
+
+    fun setTheme(theme: ThemeHelper.AppTheme) {
+        pm.edit { putString(THEME_SETTING, theme.name) }
+        ThemeHelper.updateValues(this)
+    }
+
+    fun getTheme() : ThemeHelper.AppTheme =
+        ThemeHelper.AppTheme.valueOf(pm.getString(THEME_SETTING, ThemeHelper.AppTheme.DARK.toString())!!)
 }
 
 fun Context.defaultPreference() =
@@ -42,10 +50,6 @@ fun Fragment.defaultPreference() =
 object AppSettings {
     fun parseSettings(context: Context) {
         val settingsPref = PreferenceManager.getDefaultSharedPreferences(context)
-        AppInterface.IS_DARK_THEME = settingsPref.getBoolean(
-            IS_DARK_THEME_PREF,
-            AppInterface.IS_DARK_THEME
-        )
 
         AppInterface.IS_PREMIUM_UNLOCKED = settingsPref.getBoolean(
             PREMIUM_PURCHASE_PREF,
@@ -125,7 +129,6 @@ object AppSettings {
     fun writeSettings(context: Context) {
         val settingsPref = PreferenceManager.getDefaultSharedPreferences(context)
         settingsPref.edit().apply {
-            putBoolean(IS_DARK_THEME_PREF, AppInterface.IS_DARK_THEME)
             putBoolean(PREMIUM_PURCHASE_PREF, AppInterface.IS_PREMIUM_UNLOCKED)
             putString(TMDB_IMAGE_PREFIX_PREF, AppInterface.TMDB_IMAGE_PREFIX)
             putString(STORAGE_LOCATION_PREF, AppInterface.STORAGE_LOCATION.path)

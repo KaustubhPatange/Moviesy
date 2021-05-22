@@ -3,11 +3,11 @@ package com.kpstv.yts.ui.settings
 import android.os.Bundle
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import com.kpstv.yts.AppInterface.Companion.IS_DARK_THEME
 import com.kpstv.yts.AppSettings
 import com.kpstv.yts.BuildConfig
 import com.kpstv.yts.R
 import com.kpstv.yts.extensions.utils.AppUtils
+import com.kpstv.yts.ui.helpers.ThemeHelper
 
 class AboutSettingFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -35,6 +35,6 @@ class AboutSettingFragment : PreferenceFragmentCompat() {
     }
 
     private fun launch(url: String) {
-        AppUtils.launchUrl(requireContext(), url, IS_DARK_THEME)
+        AppUtils.launchUrl(requireContext(), url, ThemeHelper.isDarkVariantTheme())
     }
 }

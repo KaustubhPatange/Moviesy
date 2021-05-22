@@ -26,7 +26,7 @@ A **_beautiful_** client for [YTS](https://www.google.com/search?q=yts) website 
 
 ## Compilation Guide
 
-Since this project involves a private payment system 📃 some of the source files has been ignored. Read this [guide](https://github.com/KaustubhPatange/Moviesy/wiki/Compilation-guide) in order to compile 🗃 the project.
+Since this project involves a private payment system some of the source files has been ignored. Read this [guide](https://github.com/KaustubhPatange/Moviesy/wiki/Compilation-guide) in order to compile the project.
 
 ## Project Libraries
 
@@ -35,7 +35,7 @@ Since this project involves a private payment system 📃 some of the source fil
 - [Auto Bindings](https://github.com/KaustubhPatange/AutoBindings) - Set of annotations that aims to eliminate biolerplate code.
 - [Navigator](https://github.com/KaustubhPatange/navigator) - A small navigation library to ease fragment transactions & handling backstack.
 
-## Built with 🛠
+## Built with
 
 - [Kotlin](https://kotlinlang.org/) - First class and official programming language for Android development.
 - [Coroutines](https://kotlinlang.org/docs/reference/coroutines-overview.html) - For asynchronous and more..

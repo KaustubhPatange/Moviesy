@@ -13,6 +13,7 @@ import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -80,22 +81,24 @@ class DetailFragment : ValueFragment(R.layout.fragment_detail), MovieListener {
 
         val args = getKeyArgs<Args>()
 
-        /** Getting movie details for movieId */
-        when {
-            args.tmDbId != null -> {
-                /** Route TMDB movie id */
-                viewModel.getMovieDetailTMdb(this, args.tmDbId)
-            }
-            args.ytsId != null -> {
-                /** Route YTS movie id */
-                viewModel.getMovieDetailYTS(this, args.ytsId)
-            }
-            args.movieUrl != null -> {
-                /** Parse YTS movie url (usually from a deep link) */
-                viewModel.fetchMovieUrl(this, args.movieUrl)
-            }
-            else -> {
-                Toasty.error(requireContext(), getString(R.string.invalid_movieId)).show()
+        lifecycleScope.launchWhenStarted {
+            /** Getting movie details for movieId */
+            when {
+                args.tmDbId != null -> {
+                    /** Route TMDB movie id */
+                    viewModel.getMovieDetailTMdb(this@DetailFragment, args.tmDbId)
+                }
+                args.ytsId != null -> {
+                    /** Route YTS movie id */
+                    viewModel.getMovieDetailYTS(this@DetailFragment, args.ytsId)
+                }
+                args.movieUrl != null -> {
+                    /** Parse YTS movie url (usually from a deep link) */
+                    viewModel.fetchMovieUrl(this@DetailFragment, args.movieUrl)
+                }
+                else -> {
+                    Toasty.error(requireContext(), getString(R.string.invalid_movieId)).show()
+                }
             }
         }
     }

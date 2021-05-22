@@ -20,6 +20,7 @@ import com.kpstv.common_moviesy.extensions.show
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.ui.helpers.PremiumHelper
 import com.kpstv.yts.ui.helpers.SignInHelper
+import com.kpstv.yts.ui.helpers.ThemeHelper
 import es.dmoral.toasty.Toasty
 
 class BottomSheetPurchase : ExtendedBottomSheetDialogFragment(R.layout.bottom_sheet_purchase) {
@@ -58,7 +59,7 @@ class BottomSheetPurchase : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
             AppUtils.launchUrl(
                 requireContext(),
                 getString(R.string.gpay_payment_url),
-                AppInterface.IS_DARK_THEME
+                ThemeHelper.isDarkVariantTheme()
             )
             dismiss()
         }

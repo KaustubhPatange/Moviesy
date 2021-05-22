@@ -27,6 +27,7 @@ object Notifications {
     private const val UPDATE_REQUEST_CODE = 129
     private const val UPDATE_NOTIFICATION_ID = 7
     private const val UPDATE_PROGRESS_NOTIFICATION_ID = 21
+    private const val MINOR_OUTAGE_NOTIFICATION_ID = 23
 
     private lateinit var mgr: NotificationManager
 
@@ -187,11 +188,12 @@ object Notifications {
                 .setContentText(getString(R.string.error_ssl_handshake_text))
                 .setColor(colorFrom(R.color.colorPrimary_New_DARK))
                 .setSmallIcon(R.drawable.ic_error_outline)
+                .setStyle(NotificationCompat.BigTextStyle().bigText(getString(R.string.error_ssl_handshake_text)))
                 .setAutoCancel(true)
                 .setPriority(Notification.PRIORITY_LOW)
                 .build()
 
-        mgr.notify(getRandomNumberCode(), notification)
+        mgr.notify(MINOR_OUTAGE_NOTIFICATION_ID, notification)
     }
 
     fun createCastNotification(

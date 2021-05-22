@@ -15,6 +15,7 @@ import com.kpstv.yts.extensions.SimpleCallback
 import com.kpstv.yts.extensions.errors.MovieNotFoundException
 import com.kpstv.yts.extensions.errors.SSLHandshakeException
 import com.kpstv.yts.extensions.utils.AppUtils
+import com.kpstv.yts.ui.helpers.ThemeHelper
 import es.dmoral.toasty.Toasty
 import java.io.File
 import java.text.DecimalFormat
@@ -49,7 +50,8 @@ class AppInterface {
         var QUERY_SPAN_DIFFERENCE = 6
         var CUSTOM_LAYOUT_YTS_SPAN = 8
         const val MOVIE_FETCH_SIZE = 10
-        var IS_DARK_THEME = true
+   /*     @Deprecated("Start using AppPreference.getTheme()")
+        var IS_DARK_THEME = true*/
         var IS_PREMIUM_UNLOCKED = false
         var IS_ADAPTIVE_SEARCH = true
         var SUGGESTION_SEARCH_TYPE = SearchType.TMDB
@@ -86,16 +88,15 @@ class AppInterface {
         const val PURCHASE_REGEX_PATTERN = "moviesy_premium_[\\d]+.json"
 
         fun setAppThemeNoAction(activity: Activity) {
-            if (!IS_DARK_THEME) {
+            if (AppPreference(activity).getTheme() == ThemeHelper.AppTheme.LIGHT)
                 activity.setTheme(R.style.AppTheme_Light_NoAction)
-                activity.window.statusBarColor = CommonUtils.getColorFromAttr(activity, R.attr.colorBackground)
-                if (Build.VERSION.SDK_INT >= 23)
-                    activity.window.decorView.systemUiVisibility = activity.window.decorView.systemUiVisibility or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            }
+            activity.window.statusBarColor = CommonUtils.getColorFromAttr(activity, R.attr.colorBackground)
+            if (Build.VERSION.SDK_INT >= 23)
+                activity.window.decorView.systemUiVisibility = activity.window.decorView.systemUiVisibility or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         }
 
         fun setAppThemeMain(activity: Activity) {
-            if (!IS_DARK_THEME) {
+            if (AppPreference(activity).getTheme() == ThemeHelper.AppTheme.LIGHT) {
                 activity.setTheme(R.style.AppTheme_Light_Main)
             }
         }
