@@ -14,7 +14,6 @@ import com.kpstv.navigation.*
 import com.kpstv.yts.BuildConfig
 import com.kpstv.yts.cast.CastHelper
 import com.kpstv.yts.databinding.ActivityStartBinding
-import com.kpstv.yts.extensions.errors.SSLHandshakeException
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.ui.fragments.*
 import com.kpstv.yts.ui.helpers.ActivityIntentHelper
@@ -27,25 +26,27 @@ import javax.inject.Inject
 import kotlin.reflect.KClass
 
 @AndroidEntryPoint
-class StartActivity : AppCompatActivity(), NavigatorTransmitter, LibraryFragment.Callbacks {
+class StartActivity : AppCompatActivity(), FragmentNavigator.Transmitter, LibraryFragment.Callbacks {
     private val binding by viewBinding(ActivityStartBinding::inflate)
     private val navViewModel by viewModels<StartViewModel>()
     private val intentHelper by lazy { ActivityIntentHelper(navViewModel) }
     private val castHelper = CastHelper()
     private val mainCastHelper by lazy { MainCastHelper(this, lifecycle, castHelper) }
 
-    private lateinit var navigator: Navigator
+    private lateinit var navigator: FragmentNavigator
 
     @Inject
     lateinit var initializationHelper: InitializationHelper
 
-    override fun getNavigator(): Navigator = navigator
+    override fun getNavigator(): FragmentNavigator = navigator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         makeFullScreen()
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        navigator = Navigator.with(this, savedInstanceState).initialize(binding.fragmentContainer)
+        navigator = Navigator.with(this, savedInstanceState)
+            .set(FragmentNavigator::class)
+            .initialize(binding.fragmentContainer)
         navigator.autoChildElevation()
 
         navViewModel.navigation.observe(this, navigationObserver)

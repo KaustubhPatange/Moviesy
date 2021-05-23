@@ -49,14 +49,14 @@ interface MainFragmentContinueWatchCallbacks {
 }
 
 @AndroidEntryPoint
-class MainFragment : ValueFragment(R.layout.fragment_main), NavigatorTransmitter, MainFragmentDrawerCallbacks, MainFragmentContinueWatchCallbacks {
+class MainFragment : ValueFragment(R.layout.fragment_main), FragmentNavigator.Transmitter, MainFragmentDrawerCallbacks, MainFragmentContinueWatchCallbacks {
     private val binding by viewBinding(FragmentMainBinding::bind)
     private val navViewModel by activityViewModels<StartViewModel>()
     private val viewModel by viewModels<MainViewModel>()
     private val navigations by lazy {
         Navigations(requireContext())
     }
-    private lateinit var navigator: Navigator
+    private lateinit var navigator: FragmentNavigator
     @Inject lateinit var updateUtils: UpdateUtils
 
     private var currentBottomNavId: Int = 0
@@ -65,7 +65,7 @@ class MainFragment : ValueFragment(R.layout.fragment_main), NavigatorTransmitter
 
     private lateinit var bottomController: BottomNavigationController
 
-    override fun getNavigator(): Navigator = navigator
+    override fun getNavigator(): FragmentNavigator = navigator
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -74,9 +74,11 @@ class MainFragment : ValueFragment(R.layout.fragment_main), NavigatorTransmitter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        navigator = Navigator.with(this, savedInstanceState).initialize(binding.fragmentContainer)
+        navigator = Navigator.with(this, savedInstanceState)
+            .set(FragmentNavigator::class)
+            .initialize(binding.fragmentContainer)
 
-        bottomController = navigator.install(object : Navigator.BottomNavigation() {
+        bottomController = navigator.install(object : FragmentNavigator.BottomNavigation() {
             override val bottomNavigationViewId: Int = R.id.bottom_nav
             override val bottomNavigationFragments: Map<Int, KClass<out Fragment>> = mapOf(
                 R.id.homeFragment to HomeFragment::class,

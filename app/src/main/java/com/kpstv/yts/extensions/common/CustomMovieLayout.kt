@@ -14,6 +14,7 @@ import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.navigation.AnimationDefinition
+import com.kpstv.navigation.FragmentNavigator
 import com.kpstv.navigation.Navigator
 import com.kpstv.yts.AppInterface.Companion.handleRetrofitError
 import com.kpstv.yts.R
@@ -261,7 +262,7 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
             navViewModel?.navigateTo(
                 screen = StartActivity.Screen.MORE,
                 remember = true,
-                transactionType = Navigator.TransactionType.ADD,
+                transactionType = FragmentNavigator.TransactionType.ADD,
                 args = MoreFragment.Args(
                     title = view.cm_text.text.toString(),
                     endPoint = endPointUrl,

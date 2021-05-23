@@ -17,8 +17,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlin.reflect.KClass
 
 @AndroidEntryPoint
-class HomeFragment : ValueFragment(R.layout.fragment_home), Navigator.Navigation.Callbacks, NavigatorTransmitter {
-    private lateinit var navigator: Navigator
+class HomeFragment : ValueFragment(R.layout.fragment_home), FragmentNavigator.Navigation.Callbacks, FragmentNavigator.Transmitter {
+    private lateinit var navigator: FragmentNavigator
     private lateinit var tabController: TabNavigationController
 
     private val binding by viewBinding(FragmentHomeBinding::bind)
@@ -31,7 +31,7 @@ class HomeFragment : ValueFragment(R.layout.fragment_home), Navigator.Navigation
         fun doOnReselection() { }
     }
 
-    override fun getNavigator(): Navigator = navigator
+    override fun getNavigator(): FragmentNavigator = navigator
 
     override val forceBackPress: Boolean
         get() = binding.tabLayout.selectedTabPosition != 0
@@ -39,8 +39,10 @@ class HomeFragment : ValueFragment(R.layout.fragment_home), Navigator.Navigation
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val caller = parentFragment as MainFragmentDrawerCallbacks
-        navigator = Navigator.with(this, savedInstanceState).initialize(binding.fragmentContainer)
-        tabController = navigator.install(object: Navigator.TabNavigation() {
+        navigator = Navigator.with(this, savedInstanceState)
+            .set(FragmentNavigator::class)
+            .initialize(binding.fragmentContainer)
+        tabController = navigator.install(object: FragmentNavigator.TabNavigation() {
             override val tabLayoutId: Int = R.id.tabLayout
             override val tabNavigationFragments: List<KClass<out Fragment>> = listOf(
                 ChartsFragment::class,

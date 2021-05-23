@@ -11,7 +11,7 @@ import com.kpstv.common_moviesy.extensions.applyTopInsets
 import com.kpstv.common_moviesy.extensions.hide
 import com.kpstv.common_moviesy.extensions.show
 import com.kpstv.common_moviesy.extensions.viewBinding
-import com.kpstv.navigation.Navigator
+import com.kpstv.navigation.FragmentNavigator
 import com.kpstv.yts.R
 import com.kpstv.yts.adapters.WatchlistAdapter
 import com.kpstv.yts.data.models.response.Model
@@ -21,7 +21,7 @@ import com.kpstv.yts.ui.viewmodels.StartViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class WatchlistFragment : Fragment(R.layout.fragment_watchlist), Navigator.Navigation.Callbacks {
+class WatchlistFragment : Fragment(R.layout.fragment_watchlist), FragmentNavigator.Navigation.Callbacks {
     private val binding by viewBinding(FragmentWatchlistBinding::bind)
     private val viewModel by viewModels<MainViewModel>(
         ownerProducer = ::requireParentFragment

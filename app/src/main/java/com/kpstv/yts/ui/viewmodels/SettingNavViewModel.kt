@@ -4,11 +4,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.kpstv.navigation.AnimationDefinition
+import com.kpstv.navigation.*
 import com.kpstv.yts.ui.fragments.SettingFragment
-import com.kpstv.navigation.BaseArgs
-import com.kpstv.navigation.NavAnimation
-import com.kpstv.navigation.Navigator
 import kotlin.reflect.KClass
 
 class SettingNavViewModel : ViewModel() {
@@ -18,11 +15,11 @@ class SettingNavViewModel : ViewModel() {
     fun navigateTo(
         screen: SettingFragment.Screen,
         args: BaseArgs? = null,
-        transactionType: Navigator.TransactionType = Navigator.TransactionType.REPLACE,
+        transactionType: FragmentNavigator.TransactionType = FragmentNavigator.TransactionType.REPLACE,
         animation: NavAnimation = AnimationDefinition.SlideInRight,
         remember: Boolean = true
     ) {
-        val options = Navigator.NavOptions(
+        val options = FragmentNavigator.NavOptions(
             args = args,
             animation = animation,
             transaction = transactionType,
@@ -33,6 +30,6 @@ class SettingNavViewModel : ViewModel() {
 
     data class NavigationOption(
         val clazz: KClass<out Fragment>,
-        val options: Navigator.NavOptions
+        val options: FragmentNavigator.NavOptions
     )
 }

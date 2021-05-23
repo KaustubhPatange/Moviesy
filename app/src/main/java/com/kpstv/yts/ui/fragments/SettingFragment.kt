@@ -25,13 +25,13 @@ import com.kpstv.yts.ui.viewmodels.StartViewModel
 import kotlinx.android.parcel.Parcelize
 import kotlin.reflect.KClass
 
-class SettingFragment : ValueFragment(R.layout.fragment_settings), NavigatorTransmitter, LookSettingsFragment.ThemeChangeCallbacks {
+class SettingFragment : ValueFragment(R.layout.fragment_settings), FragmentNavigator.Transmitter, LookSettingsFragment.ThemeChangeCallbacks {
     private val binding by viewBinding(FragmentSettingsBinding::bind)
     private val navViewModel by activityViewModels<StartViewModel>()
     private val viewModel by viewModels<SettingNavViewModel>()
-    private lateinit var navigator: Navigator
+    private lateinit var navigator: FragmentNavigator
 
-    override fun getNavigator(): Navigator = navigator
+    override fun getNavigator(): FragmentNavigator = navigator
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -40,7 +40,9 @@ class SettingFragment : ValueFragment(R.layout.fragment_settings), NavigatorTran
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        navigator = Navigator.with(this, savedInstanceState).initialize(binding.settingsContainer)
+        navigator = Navigator.with(this, savedInstanceState)
+            .set(FragmentNavigator::class)
+            .initialize(binding.settingsContainer)
 
         setToolbar()
         viewModel.navigation.observe(viewLifecycleOwner, navigationObserver)

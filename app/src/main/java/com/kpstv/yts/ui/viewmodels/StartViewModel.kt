@@ -21,12 +21,12 @@ class StartViewModel : ViewModel() {
     fun navigateTo(
         screen: StartActivity.Screen,
         args: BaseArgs? = null,
-        transactionType: Navigator.TransactionType = Navigator.TransactionType.REPLACE,
+        transactionType: FragmentNavigator.TransactionType = FragmentNavigator.TransactionType.REPLACE,
         animation: NavAnimation = AnimationDefinition.None,
         remember: Boolean = false,
         historyOptions: HistoryOptions = HistoryOptions.None
     ) {
-        val options = Navigator.NavOptions(
+        val options = FragmentNavigator.NavOptions(
             args = args,
             transaction = transactionType,
             animation = animation,
@@ -50,7 +50,7 @@ class StartViewModel : ViewModel() {
             screen = StartActivity.Screen.DETAIL,
             args = DetailFragment.Args(tmDbId = tmDbId, ytsId = ytsId, movieUrl = movieUrl),
             remember = true,
-            transactionType = if (add) Navigator.TransactionType.ADD else Navigator.TransactionType.REPLACE,
+            transactionType = if (add) FragmentNavigator.TransactionType.ADD else FragmentNavigator.TransactionType.REPLACE,
             animation = AnimationDefinition.Fade,
         )
     }
@@ -64,7 +64,7 @@ class StartViewModel : ViewModel() {
         navigateTo(
             screen = StartActivity.Screen.MORE,
             animation = AnimationDefinition.Fade,
-            transactionType = if (add) Navigator.TransactionType.ADD else Navigator.TransactionType.REPLACE,
+            transactionType = if (add) FragmentNavigator.TransactionType.ADD else FragmentNavigator.TransactionType.REPLACE,
             remember = true,
             args = MoreFragment.Args(
                 title = titleText,
@@ -81,6 +81,6 @@ class StartViewModel : ViewModel() {
 
     data class NavigationOption(
         val clazz: KClass<out Fragment>,
-        val options: Navigator.NavOptions
+        val options: FragmentNavigator.NavOptions
     )
 }

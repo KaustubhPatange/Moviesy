@@ -19,6 +19,7 @@ import com.kpstv.common_moviesy.extensions.hide
 import com.kpstv.common_moviesy.extensions.show
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.navigation.BaseArgs
+import com.kpstv.navigation.FragmentNavigator
 import com.kpstv.navigation.Navigator
 import com.kpstv.navigation.ValueFragment
 import com.kpstv.yts.AppSettings
@@ -43,7 +44,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 @AndroidEntryPoint
-class LibraryFragment : ValueFragment(R.layout.fragment_library), Navigator.Navigation.Callbacks, BottomSheetLibraryDownload.Callbacks {
+class LibraryFragment : ValueFragment(R.layout.fragment_library), FragmentNavigator.Navigation.Callbacks, BottomSheetLibraryDownload.Callbacks {
     interface Callbacks {
         fun getCastHelper() : CastHelper
     }
