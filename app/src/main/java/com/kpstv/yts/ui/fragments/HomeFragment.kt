@@ -40,7 +40,7 @@ class HomeFragment : ValueFragment(R.layout.fragment_home), FragmentNavigator.Na
         super.onViewCreated(view, savedInstanceState)
         val caller = parentFragment as MainFragmentDrawerCallbacks
         navigator = Navigator.with(this, savedInstanceState)
-            .set(FragmentNavigator::class)
+            .setNavigator(FragmentNavigator::class)
             .initialize(binding.fragmentContainer)
         tabController = navigator.install(object: FragmentNavigator.TabNavigation() {
             override val tabLayoutId: Int = R.id.tabLayout

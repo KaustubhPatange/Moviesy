@@ -41,7 +41,7 @@ class SettingFragment : ValueFragment(R.layout.fragment_settings), FragmentNavig
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navigator = Navigator.with(this, savedInstanceState)
-            .set(FragmentNavigator::class)
+            .setNavigator(FragmentNavigator::class)
             .initialize(binding.settingsContainer)
 
         setToolbar()

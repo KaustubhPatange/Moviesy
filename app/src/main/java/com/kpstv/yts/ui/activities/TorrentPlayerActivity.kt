@@ -459,5 +459,5 @@ class TorrentPlayerActivity : AppCompatActivity() {
         super.onSaveInstanceState(outState)
     }
 
-    private fun getWatcher() = ContinueWatcherHelper.Watcher(movieId, movieTitle, lastPausePosition)
+    private fun getWatcher() = ContinueWatcherHelper.Watcher(movieId, movieTitle, binding.giraffePlayer.player.currentPosition)
 }

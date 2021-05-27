@@ -10,9 +10,13 @@ import androidx.lifecycle.Observer
 import com.kpstv.common_moviesy.extensions.makeFullScreen
 import com.kpstv.common_moviesy.extensions.registerFragmentLifecycleForLogging
 import com.kpstv.common_moviesy.extensions.viewBinding
-import com.kpstv.navigation.*
+import com.kpstv.navigation.FragmentNavigator
+import com.kpstv.navigation.Navigator
+import com.kpstv.navigation.autoChildElevation
+import com.kpstv.navigation.canFinish
 import com.kpstv.yts.BuildConfig
 import com.kpstv.yts.cast.CastHelper
+import com.kpstv.yts.data.db.localized.MainDao
 import com.kpstv.yts.databinding.ActivityStartBinding
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.ui.fragments.*
@@ -29,7 +33,7 @@ import kotlin.reflect.KClass
 class StartActivity : AppCompatActivity(), FragmentNavigator.Transmitter, LibraryFragment.Callbacks {
     private val binding by viewBinding(ActivityStartBinding::inflate)
     private val navViewModel by viewModels<StartViewModel>()
-    private val intentHelper by lazy { ActivityIntentHelper(navViewModel) }
+    private val intentHelper by lazy { ActivityIntentHelper(navViewModel) { navigator.getCurrentFragment() } }
     private val castHelper = CastHelper()
     private val mainCastHelper by lazy { MainCastHelper(this, lifecycle, castHelper) }
 
@@ -38,6 +42,9 @@ class StartActivity : AppCompatActivity(), FragmentNavigator.Transmitter, Librar
     @Inject
     lateinit var initializationHelper: InitializationHelper
 
+    @Inject
+    lateinit var repository: MainDao
+
     override fun getNavigator(): FragmentNavigator = navigator
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,7 +52,7 @@ class StartActivity : AppCompatActivity(), FragmentNavigator.Transmitter, Librar
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         navigator = Navigator.with(this, savedInstanceState)
-            .set(FragmentNavigator::class)
+            .setNavigator(FragmentNavigator::class)
             .initialize(binding.fragmentContainer)
         navigator.autoChildElevation()
 

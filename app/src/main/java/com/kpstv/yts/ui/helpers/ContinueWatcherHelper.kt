@@ -77,7 +77,6 @@ class ContinueWatcherHelper(private val context: Context, private val lifecycleO
                     binding.ivMain.setImageBitmap(bitmap)
                     binding.btnPlay.setOnClickListener {
                         lifecycleOwner.lifecycleScope.launch {
-                            dataStoreHelper.clear()
                             onPlayButtonClicked.invoke(watcher.movieId)
                         }
                     }
