@@ -22,7 +22,6 @@ class UpdateUtils @Inject constructor(
     @ApplicationContext private val context: Context,
     private val retrofitUtils: RetrofitUtils
 ) {
-
     /**
      * To make this suspend worker run on non suspendable method
      * we use a callback function.
@@ -62,9 +61,6 @@ class UpdateUtils @Inject constructor(
         if (response.isSuccessful) {
             val appDatabase = AppDatabaseConverter
                 .toAppDatabaseFromString(response.body?.string())
-
-            /** Set global message */
-            AppInterface.appMessage = appDatabase?.message
 
             response.close() // Always close the stream
             if (appDatabase == null) throw Exception("Failed to obtain details from the response")

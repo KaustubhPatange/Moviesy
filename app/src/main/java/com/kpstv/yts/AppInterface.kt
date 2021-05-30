@@ -50,14 +50,9 @@ class AppInterface {
         var QUERY_SPAN_DIFFERENCE = 6
         var CUSTOM_LAYOUT_YTS_SPAN = 8
         const val MOVIE_FETCH_SIZE = 10
-   /*     @Deprecated("Start using AppPreference.getTheme()")
-        var IS_DARK_THEME = true*/
         var IS_PREMIUM_UNLOCKED = false
         var IS_ADAPTIVE_SEARCH = true
         var SUGGESTION_SEARCH_TYPE = SearchType.TMDB
-
-        // Do we really need it
-        var appMessage: AppDatabase.Message? = null
 
         const val FEATURED_QUERY = "movies=featured&client=yts"
 
@@ -91,7 +86,7 @@ class AppInterface {
             if (AppPreference(activity).getTheme() == ThemeHelper.AppTheme.LIGHT)
                 activity.setTheme(R.style.AppTheme_Light_NoAction)
             activity.window.statusBarColor = CommonUtils.getColorFromAttr(activity, R.attr.colorBackground)
-            if (Build.VERSION.SDK_INT >= 23)
+            if (Build.VERSION.SDK_INT >= 23 && ThemeHelper.isLightVariantTheme())
                 activity.window.decorView.systemUiVisibility = activity.window.decorView.systemUiVisibility or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         }
 

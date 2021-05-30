@@ -42,14 +42,10 @@ class SettingFragment : ValueFragment(R.layout.fragment_settings), FragmentNavig
         super.onViewCreated(view, savedInstanceState)
         navigator = Navigator.with(this, savedInstanceState)
             .setNavigator(FragmentNavigator::class)
-            .initialize(binding.settingsContainer)
+            .initialize(binding.settingsContainer, Destination.of(Screen.MAIN.clazz))
 
         setToolbar()
         viewModel.navigation.observe(viewLifecycleOwner, navigationObserver)
-
-        if (savedInstanceState == null) {
-            navigator.navigateTo(Screen.MAIN.clazz)
-        }
 
         if (hasKeyArgs<Args>()) {
             manageArguments()
