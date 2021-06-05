@@ -6,8 +6,7 @@ data class AppDatabase(
     val misc: Misc,
     val tmdb: Tmdb,
     val yts: Yts,
-    val update: Update,
-    val message: Message
+    val update: Update
 ) {
     data class Update(
         val deprecatedVersionCode: Int,
@@ -28,15 +27,5 @@ data class AppDatabase(
     data class Yts(
         val base: String,
         val yify: String
-    )
-
-    // All message are html text
-    data class Message(
-        @SerializedName("Final-onStart")
-        val finalOnStart: String,
-        @SerializedName("Search-onStart")
-        val searchOnStart: String,
-        @SerializedName("Splash-onStart")
-        val splashOnStart: String
     )
 }

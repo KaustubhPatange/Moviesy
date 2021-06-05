@@ -59,11 +59,12 @@ class StartViewModel : ViewModel() {
         titleText: String,
         queryMap: Map<String, String>,
         base: MovieBase = MovieBase.YTS,
+        animation: NavAnimation = AnimationDefinition.Fade,
         add: Boolean = false
     ) {
         navigateTo(
             screen = StartActivity.Screen.MORE,
-            animation = AnimationDefinition.Fade,
+            animation = animation,
             transactionType = if (add) FragmentNavigator.TransactionType.ADD else FragmentNavigator.TransactionType.REPLACE,
             remember = true,
             args = MoreFragment.Args(

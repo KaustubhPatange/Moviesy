@@ -218,7 +218,7 @@ class CustomMovieLayout(private val context: Context, private val titleText: Str
          */
 
         val listener = View.OnClickListener {
-            navViewModel?.goToMore(view.cm_text.text.toString(), queryMap)
+            navViewModel?.goToMore(view.cm_text.text.toString(), queryMap, animation = AnimationDefinition.SlideInRight)
         }
 
         moreButton.setOnClickListener(listener)

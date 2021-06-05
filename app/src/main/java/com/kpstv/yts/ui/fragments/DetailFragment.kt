@@ -290,15 +290,12 @@ class DetailFragment : ValueFragment(R.layout.fragment_detail), MovieListener {
                     binding.activityFinalPreviews.afYtBannerImage.setImageBitmap(resource)
                     binding.activityFinalPreviews.afYtBannerImage.visibility = View.VISIBLE
                     binding.activityFinalPreviews.afYtBannerImage.setOnClickListener {
-                        val intent = Intent(requireContext(), ImageViewActivity::class.java) // TODO: Migrate to ImageFragment
-                        intent.putExtra(ImageViewActivity.IMAGE_URL, movieDetail.large_cover_image)
-                        val options = ActivityOptions
-                            .makeSceneTransitionAnimation(
-                                requireActivity(),
-                                binding.activityFinalPreviews.afYtBannerImage,
-                                "banner_photo"
-                            )
-                        startActivity(intent, options.toBundle())
+                        val options = ActivityOptions.makeSceneTransitionAnimation(
+                            requireActivity(),
+                            binding.activityFinalPreviews.afYtBannerImage,
+                            "banner_photo"
+                        )
+                        ImageViewActivity.launch(requireContext(), movieDetail.medium_cover_image, movieDetail.large_cover_image, options.toBundle())
                     }
                 }
             })

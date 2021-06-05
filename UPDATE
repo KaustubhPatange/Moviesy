@@ -16,9 +16,7 @@
     "misc": {
         "suggestionApi": "https://suggestqueries.google.com/complete/search?ds=yt&client=firefox&q="
     },
-    "message": {
-        "Splash-onStart": "",
-        "Search-onStart": "",
-        "Final-onStart": ""
-    }
+    "vpn_affected_countries": [
+        "India"
+    ]
 }
