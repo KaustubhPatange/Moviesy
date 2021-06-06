@@ -81,8 +81,8 @@ class SettingFragment : ValueFragment(R.layout.fragment_settings), FragmentNavig
             screen = StartActivity.Screen.SETTING,
             args = Args(openLookFeel = true),
             animation = AnimationDefinition.CircularReveal(
-                forFragment = LookSettingsFragment::class,
-                fromTarget = viewRect
+                fromTarget = viewRect,
+                delayMillis = 100
             ),
             historyOptions = HistoryOptions.SingleTopInstance
         )

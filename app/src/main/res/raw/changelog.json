@@ -1,24 +1,14 @@
 {
-  "version": "1.6",
+  "version": "1.7",
   "summary": [
     "<br/><h4>Added:</h4><br/>",
-    "• Support for sharing movie links.<br/>",
-    "• Downloaded subtitles will now be highlighted.<br/>",
-    "• App can now handle SSL handshake error & notify user about the same.<br/>",
-    "• Ability to let user know that this app doesn't work with some carriers.<br/>",
-    "• Changelog viewer to let user know about the release notes.<br/>",
+    "• Continue watching feed to start an existing playback.<br/>",
     "<br/><h4>Improved:</h4><br/>",
-    "• Huge UI performance improvement & better error handling.<br/>",
-    "• Torrent streaming service.<br/>",
-    "• After library for font & text size loading.<br/>",
-    "• Logic for fetching subtitles.<br/>",
-    "• Logic for notifying \"Featured\" & \"Latest\" movies.<br/>",
+    "• SSL error handling popups to minimal.<br/>",
+    "• Better handling of deeplinks within the app.<br/>",
+    "• Some animations and launch intents.<br/>",
     "<br/><h4>Fixed:</h4><br/>",
-    "• Issues with loading movie cast/crew.<br/>",
-    "• Font resource loading at startup.<br/>",
-    "• Some unsupported cast device issues.<br/>",
-    "• Subtitle helper issue.<br/>",
-    "• Issues when downloading update in background.<br/>",
-    "• Refactoring & lot's of internal fixes."
+    "• Some random crashes when app launches on specific devices.<br/>",
+    "• Light theme issues."
   ]
 }

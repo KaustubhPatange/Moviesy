@@ -48,13 +48,18 @@ jobs:
           filePath: ${{ github.workspace }}/app/google-services.json
           encodedString: ${{ secrets.GOOGLE_JSON }}
       
-      # Extarcting signing key.
-      
       - name: Providing signing key
         uses: RollyPeres/base64-to-path@v1
         with:
           filePath: ${{ github.workspace }}/key.jks
           encodedString: ${{ secrets.KEY_JKS }}
+
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-${{ github.job }}-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/buildSrc/**/*.kt') }}
       
       - name: Assemble & Sign
         run: |
@@ -98,16 +103,16 @@ jobs:
             | xargs -I '{}' \
           curl -X DELETE -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/$GITHUB_REPOSITORY/releases/{}
 
-  notification:
-    needs: [buildJob]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set outputs
-        id: vars
-        run: echo "::set-output name=sha_short::$(echo ${{ github.sha }} | cut -c -7)"
-      - name: Sending complete notifications
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.WEBHOOK }}
-        uses: Ilshidur/action-discord@master
-        with:
-          args: "${{ github.event.repository.full_name }} with commit ${{ steps.vars.outputs.sha_short }} had a successful build!"
+#  notification:
+#    needs: [buildJob]
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Set outputs
+#        id: vars
+#        run: echo "::set-output name=sha_short::$(echo ${{ github.sha }} | cut -c -7)"
+#      - name: Sending complete notifications
+#        env:
+#          DISCORD_WEBHOOK: ${{ secrets.WEBHOOK }}
+#        uses: Ilshidur/action-discord@master
+#        with:
+#          args: "${{ github.event.repository.full_name }} with commit ${{ steps.vars.outputs.sha_short }} had a successful build!"

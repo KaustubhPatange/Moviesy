@@ -53,7 +53,7 @@ private object LibraryVersion {
     const val AUTOBINDINGS = "1.1-alpha16"
     const val APP_STARTUP = "1.0.0"
     const val IMAGELOADERVIEW = "0.7-beta04"
-    const val NAVIGATOR = "0.1-alpha22"
+    const val NAVIGATOR = "0.1-alpha24"
     const val NAVIGATOR_BOTTOM_NAVIGATION = "0.1-alpha16"
     const val NAVIGATOR_TAB_NAVIGATION = "0.1-alpha10"
     const val NAVIGATOR_EXTENSIONS = "0.4"

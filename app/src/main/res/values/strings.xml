@@ -67,7 +67,7 @@
     <string name="categories">Categories</string>
     <string name="remove_watchlist">Removed from your watchlist</string>
     <string name="undo">Undo</string>
-    <string name="fragment_watchlist_track">To keep track of the things that you want to watch, just add to it favourites.</string>
+    <string name="fragment_watchlist_track">To keep track of the things you want to watch, just add to it the favourites.</string>
     <string name="pause">Pause</string>
     <string name="copy_magnet">Copy Magnet Url</string>
     <string name="unpause">Unpause</string>
@@ -161,7 +161,7 @@
     <string name="agree">Agree</string>
     <string name="back">Back</string>
     <string name="disclaimer_text"><b>Disclaimer</b>,\n\n\nApp let\'s you download &#38; stream HD movies from YTS website on the go (illegally).\n\nIt is basically an API + web-scrapping interface built on top of the website.\n\nIf this is something you don\'t want, you must stop using it.\n\nThis is indeed a hobby project!</string>
-    <string name="disclaimer_text2"><b>Also</b>, \n\n\nSome carriers like Airtel (India) does not allow to access any contents from the YTS website which will make the app unable to use.\n\nIt is recommended to use WiFi over mobile data for accessing movies &amp; to solve this issue.</string>
+    <string name="disclaimer_text2"><b>Also</b>,\n\n\nSome carriers like Airtel (India) does not allow to access any contents from the YTS website which will make the app unable to use.\n\nIt is recommended to use WiFi over mobile data for accessing movies &amp; to solve this issue.\n\nIf it\'s still failing to work, then the last option is to use VPN!</string>
     <string name="unlock_premium">Unlock premium</string>
     <string name="unlock_premium_text">Unlock complete features of the app by paying one-time payment for a reasonable price.</string>
     <string name="no_action">No supported action found</string>
@@ -242,7 +242,7 @@
     <string name="no_subtitles">No subtitles found</string>
     <string name="error_ssl_handshake_title">Error: Minor outage</string>
     <string name="error_ssl_handshake_text">There is an ongoing maintenance on YTS website due to which you won\'t be able to use the app. It should resolve in few hours!</string>
-    <string name="error_ssl_handshake_text_dialog">The app couldn\'t connect to YTS server due to SSL error. This means that the YTS website is offline for some reason &amp; not the incorrect functioning of app.\n\nIn most cases it should resolve within few hours. Till then we will try to display cached data :)</string>
+    <string name="error_ssl_handshake_text_dialog">The app couldn\'t connect to YTS server due to SSL error. This means that the YTS website is offline for some reason &amp; not the incorrect functioning of app.\n\nIn most cases it should resolve within few hours. Till then we will try to display cached data or can use VPN :)</string>
     <string name="err_no_browser">No browser is installed to handle the web urls</string>
     <string name="download_tip_title">Existing downloads</string>
     <string name="download_tip_text"><![CDATA[In any case, your existing download doesn\'t show up here you can go to Settings > Storage > Scan existing downloads.]]></string>
