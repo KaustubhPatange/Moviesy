@@ -39,8 +39,7 @@ class HomeFragment : ValueFragment(R.layout.fragment_home), FragmentNavigator.Na
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val caller = parentFragment as MainFragmentDrawerCallbacks
-        navigator = Navigator.with(this, savedInstanceState)
-            .setNavigator(FragmentNavigator::class)
+        navigator = FragmentNavigator.with(this, savedInstanceState)
             .initialize(binding.fragmentContainer)
         tabController = navigator.install(object: FragmentNavigator.TabNavigation() {
             override val tabLayoutId: Int = R.id.tabLayout
@@ -48,7 +47,7 @@ class HomeFragment : ValueFragment(R.layout.fragment_home), FragmentNavigator.Na
                 ChartsFragment::class,
                 GenreFragment::class
             )
-            override val fragmentNavigationTransition: Animation = Animation.Slide
+            override val fragmentNavigationTransition: Animation = Animation.SlideHorizontally
             override val fragmentViewRetentionType: ViewRetention = ViewRetention.RETAIN
         })
 

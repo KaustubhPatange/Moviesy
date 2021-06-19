@@ -11,7 +11,6 @@ import com.kpstv.common_moviesy.extensions.makeFullScreen
 import com.kpstv.common_moviesy.extensions.registerFragmentLifecycleForLogging
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.navigation.FragmentNavigator
-import com.kpstv.navigation.Navigator
 import com.kpstv.navigation.autoChildElevation
 import com.kpstv.navigation.canFinish
 import com.kpstv.yts.BuildConfig
@@ -51,8 +50,7 @@ class StartActivity : AppCompatActivity(), FragmentNavigator.Transmitter, Librar
         makeFullScreen()
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        navigator = Navigator.with(this, savedInstanceState)
-            .setNavigator(FragmentNavigator::class)
+        navigator = FragmentNavigator.with(this, savedInstanceState)
             .initialize(binding.fragmentContainer)
         navigator.autoChildElevation()
 

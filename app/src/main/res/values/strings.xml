@@ -231,8 +231,8 @@
     <string name="okay">OK</string>
     <string name="update">Update</string>
     <string name="stream">Streaming</string>
-    <string name="update_download">Update downloaded</string>
-    <string name="update_install">Tap to install the update</string>
+    <string name="update_download">Moviesy Update downloaded</string>
+    <string name="update_install">Tap to install the it</string>
     <string name="update_error">Error while updating the app</string>
     <string name="share">Share</string>
     <string name="add_to_watch">Add to watchlist</string>

@@ -74,8 +74,7 @@ class MainFragment : ValueFragment(R.layout.fragment_main), FragmentNavigator.Tr
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        navigator = Navigator.with(this, savedInstanceState)
-            .setNavigator(FragmentNavigator::class)
+        navigator = FragmentNavigator.with(this, savedInstanceState)
             .initialize(binding.fragmentContainer)
 
         bottomController = navigator.install(object : FragmentNavigator.BottomNavigation() {
