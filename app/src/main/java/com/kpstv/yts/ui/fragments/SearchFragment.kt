@@ -223,9 +223,11 @@ class SearchFragment : ValueFragment(R.layout.fragment_search) {
         /** Setting layout manager as grid layout at first we will update it
          *  to linear layout manager if there is only single match.
          */
-        binding.activitySearchSingle.recyclerView.layoutManager = gridLayoutManager
-
-        binding.activitySearchSingle.recyclerView.adapter = adapter
+        with(binding.activitySearchSingle) {
+            if (recyclerView.layoutManager !== gridLayoutManager)
+                recyclerView.layoutManager = gridLayoutManager
+            recyclerView.adapter = adapter
+        }
 
         updateHandler.postDelayed(updateTask, 1000)
     }
