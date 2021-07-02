@@ -175,4 +175,9 @@
         <item name="android:backgroundTint">?colorPrimarySurface</item>
     </style>
 
+    <style name="DialogFragmentStyle" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowMinWidthMajor">97%</item>
+        <item name="android:windowMinWidthMinor">97%</item>
+    </style>
+
 </resources>

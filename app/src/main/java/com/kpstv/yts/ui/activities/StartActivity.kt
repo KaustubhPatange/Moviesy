@@ -23,6 +23,9 @@ import com.kpstv.yts.ui.helpers.ActivityIntentHelper
 import com.kpstv.yts.ui.helpers.InitializationHelper
 import com.kpstv.yts.ui.helpers.MainCastHelper
 import com.kpstv.yts.ui.viewmodels.StartViewModel
+import com.kpstv.yts.vpn.VPNDialogFragment
+import com.kpstv.yts.vpn.VPNHelper
+import com.kpstv.yts.vpn.VPNViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.dkbai.tinyhttpd.nanohttpd.webserver.SimpleWebServer
 import javax.inject.Inject
@@ -35,6 +38,7 @@ class StartActivity : AppCompatActivity(), FragmentNavigator.Transmitter, Librar
     private val intentHelper by lazy { ActivityIntentHelper(navViewModel) { navigator.getCurrentFragment() } }
     private val castHelper = CastHelper()
     private val mainCastHelper by lazy { MainCastHelper(this, lifecycle, castHelper) }
+    private val vpnHelper by lazy { VPNHelper(this) { navigator.show(it) } }
 
     private lateinit var navigator: FragmentNavigator
 
@@ -67,9 +71,10 @@ class StartActivity : AppCompatActivity(), FragmentNavigator.Transmitter, Librar
             mainCastHelper.setUpCastRelatedStuff()
         }
 
-        registerFragmentLifecycleForLogging { fragment, state ->
+        vpnHelper.initializeAndObserve()
+       /* registerFragmentLifecycleForLogging { fragment, state ->
             if (BuildConfig.DEBUG) Log.e(fragment::class.simpleName, "=> $state")
-        }
+        }*/
     }
 
     override fun onNewIntent(intent: Intent?) {

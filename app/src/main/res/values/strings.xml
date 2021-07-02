@@ -256,4 +256,27 @@
     <string name="continue_watch_save">Saving</string>
     <string name="continue_watching">Continue watching?</string>
     <string name="cw_left_at">left at: </string>
+    <string name="disconnect">Disconnect</string>
+    <string name="status">Status</string>
+    <string name="status_unknown">Unknown</string>
+    <string name="status_auth">Authenticating server</string>
+    <string name="status_connected">Connected</string>
+    <string name="status_disconnected">Disconnected</string>
+    <string name="status_download">Downloading config</string>
+    <string name="status_try_connect">Trying to connect</string>
+    <string name="status_nonetwork">No internet connection</string>
+    <string name="status_reconnect">Reconnecting</string>
+    <string name="status_wait">Waiting for server</string>
+    <string name="status_invalid">Invalid configuration</string>
+    <string name="status_get_config">Getting configuration</string>
+    <string name="vpn_duration">Duration: %1$s</string>
+    <string name="vpn_packet">Packet Received: %1$s second(s) ago</string>
+    <string name="vpn_bytes_in">Bytes In: %1$s</string>
+    <string name="vpn_bytes_out">Bytes Out: %1$s</string>
+    <string name="vpn_ip">IP: %1$s</string>
+    <string name="attempt_connect_vpn">Attempting to connect server</string>
+    <string name="toggle_vpn">Toggle VPN</string>
+    <string name="vpn_disconnect">Disconnected successfully</string>
+    <string name="vpn_error">Could not connect to the server</string>
+    <string name="vpn_connection_text">This might take a while to connect depending upon the server speed as well as the port</string>
 </resources>

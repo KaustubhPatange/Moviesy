@@ -2,6 +2,7 @@ package com.kpstv.yts.ui.fragments
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
@@ -11,8 +12,10 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.kpstv.common_moviesy.extensions.applyBottomInsets
 import com.kpstv.common_moviesy.extensions.applyTopInsets
+import com.kpstv.common_moviesy.extensions.colorFrom
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.navigation.*
 import com.kpstv.yts.AppInterface
@@ -33,9 +36,11 @@ import com.kpstv.yts.ui.helpers.ThemeHelper
 import com.kpstv.yts.ui.helpers.ThemeHelper.registerForThemeChange
 import com.kpstv.yts.ui.viewmodels.MainViewModel
 import com.kpstv.yts.ui.viewmodels.StartViewModel
+import com.kpstv.yts.vpn.VPNViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import kotlinx.android.parcel.Parcelize
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 import kotlin.reflect.KClass
 
@@ -52,6 +57,7 @@ interface MainFragmentContinueWatchCallbacks {
 class MainFragment : ValueFragment(R.layout.fragment_main), FragmentNavigator.Transmitter, MainFragmentDrawerCallbacks, MainFragmentContinueWatchCallbacks {
     private val binding by viewBinding(FragmentMainBinding::bind)
     private val navViewModel by activityViewModels<StartViewModel>()
+    private val vpnViewModel by activityViewModels<VPNViewModel>()
     private val viewModel by viewModels<MainViewModel>()
     private val navigations by lazy {
         Navigations(requireContext())
@@ -106,6 +112,8 @@ class MainFragment : ValueFragment(R.layout.fragment_main), FragmentNavigator.Tr
         setNavigationDrawer()
         setNavigationDrawerItemClicks()
         setPremiumButtonClicked()
+
+        observeVPNColorChange()
 
         ChangelogHelper(requireContext(), childFragmentManager).show()
 
@@ -213,9 +221,24 @@ class MainFragment : ValueFragment(R.layout.fragment_main), FragmentNavigator.Tr
         })
     }
 
+    private fun observeVPNColorChange() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            vpnViewModel.showHover.collect { state ->
+                with(binding.navigationLayout.ivVpn) {
+                    if (state) {
+                        setColorFilter(colorFrom(R.color.google_cast))
+                    } else {
+                        clearColorFilter()
+                    }
+                }
+            }
+        }
+    }
+
     private fun setNavigationDrawerItemClicks() {
-        binding.navigationLayout.ivReport.setOnClickListener {
-            AppUtils.launchUrl(requireContext(), "${getString(R.string.app_github)}/issues", ThemeHelper.isDarkVariantTheme())
+        binding.navigationLayout.ivVpn.setOnClickListener {
+            vpnViewModel.toggleHover()
+            closeDrawer()
         }
         binding.navigationLayout.ivShare.setOnClickListener {
             AppUtils.shareApp(requireActivity())

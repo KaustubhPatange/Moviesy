@@ -16,6 +16,7 @@
             <option value="$PROJECT_DIR$/app/common" />
             <option value="$PROJECT_DIR$/app/purchase" />
             <option value="$PROJECT_DIR$/app/sheets" />
+            <option value="$PROJECT_DIR$/app/vpn" />
             <option value="$PROJECT_DIR$/buildSrc" />
           </set>
         </option>

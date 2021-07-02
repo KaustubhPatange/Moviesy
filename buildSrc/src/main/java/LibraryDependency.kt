@@ -59,6 +59,7 @@ private object LibraryVersion {
     const val NAVIGATOR_EXTENSIONS = "0.5"
     const val DATASTORE_PREFERENCES = "1.0.0-beta01"
     const val VIEWPAGER2 = "1.0.0"
+    const val DYNAMIC_ANIMATION = "1.0.0-alpha03"
 }
 
 object LibraryDependency {
@@ -140,4 +141,5 @@ object LibraryDependency {
     const val NAVIGATOR_TAB_NAVIGATION = "io.github.kaustubhpatange:navigator-tab-navigation:${LibraryVersion.NAVIGATOR_TAB_NAVIGATION}"
     const val DATASTORE_PREFERENCES = "androidx.datastore:datastore-preferences:${LibraryVersion.DATASTORE_PREFERENCES}"
     const val VIEWPAGER2 = "androidx.viewpager2:viewpager2:${LibraryVersion.VIEWPAGER2}"
+    const val DYNAMIC_ANIMATION = "androidx.dynamicanimation:dynamicanimation-ktx:${LibraryVersion.DYNAMIC_ANIMATION}"
 }

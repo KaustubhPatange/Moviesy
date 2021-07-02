@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/colorForeground">
+
+    <include
+        android:id="@+id/loading_layout"
+        layout="@layout/custom_dialog_vpn_loading"/>
+
+    <include
+        android:id="@+id/detail_layout"
+        layout="@layout/custom_dialog_vpn_detail"/>
+
+    <include
+        android:id="@+id/connected_layout"
+        layout="@layout/custom_dialog_vpn_connect"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

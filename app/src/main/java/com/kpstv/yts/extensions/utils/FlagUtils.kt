@@ -33,6 +33,19 @@ class FlagUtils @Inject constructor(
         }
     }
 
+    fun getMatchingFlagUrl(country: String): String? {
+        return try {
+            val obj = JSONObject(DATA_JSON)
+            val key = obj.keys().asSequence().find { it.startsWith(country) }
+            if (key != null) {
+                obj.getString(key)
+            } else null
+        } catch (e: JSONException) {
+            Log.e(TAG,e.message,e)
+            null
+        }
+    }
+
     private var DATA_JSON: String = """
             {
                 "Albanian": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Flag_of_Albania.svg/320px-Flag_of_Albania.svg.png",
@@ -70,6 +83,7 @@ class FlagUtils @Inject constructor(
                 "Spanish": "https://upload.wikimedia.org/wikipedia/en/thumb/9/9a/Flag_of_Spain.svg/640px-Flag_of_Spain.svg.png",
                 "Swedish": "https://upload.wikimedia.org/wikipedia/en/thumb/4/4c/Flag_of_Sweden.svg/640px-Flag_of_Sweden.svg.png",
                 "Thai": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Flag_of_Thailand.svg/640px-Flag_of_Thailand.svg.png",
+                "Taiwanese": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Flag_of_the_Republic_of_China.svg/188px-Flag_of_the_Republic_of_China.svg.png",
                 "Turkish": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Flag_of_Turkey.svg/640px-Flag_of_Turkey.svg.png",
                 "Urdu": "https://upload.wikimedia.org/wikipedia/en/thumb/4/41/Flag_of_India.svg/640px-Flag_of_India.svg.png",
                 "Vietnamese": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Flag_of_Vietnam.svg/320px-Flag_of_Vietnam.svg.png"

@@ -143,6 +143,7 @@ dependencies {
     implementation(LibraryDependency.PHOTOVIEW)
     implementation(LibraryDependency.TORRENT_STREAM_ANDROID)
     implementation(LibraryDependency.CAFEBAR)
+    implementation(LibraryDependency.DYNAMIC_ANIMATION)
     implementation(LibraryDependency.WORK_MANAGER)
 
     implementation(LibraryDependency.HILT_ANDROID)
