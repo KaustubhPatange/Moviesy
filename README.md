@@ -18,6 +18,7 @@ A **_beautiful_** client for [YTS](https://www.google.com/search?q=yts) website 
 - Supports torrent **streaming**.
 - **Watch** movie using in-built player.
 - **Cast** to chromecast devices.
+- **VPN** to access torrents safely.
 - Lot more...
 
 ## Discussions

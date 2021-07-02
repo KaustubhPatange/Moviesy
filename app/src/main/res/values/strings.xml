@@ -279,4 +279,6 @@
     <string name="vpn_disconnect">Disconnected successfully</string>
     <string name="vpn_error">Could not connect to the server</string>
     <string name="vpn_connection_text">This might take a while to connect depending upon the server speed as well as the port</string>
+    <string name="vpn">VPN</string>
+    <string name="vpn_text">Select server for a VPN connection. This will temporarily solve your issue when connecting to YTS server.</string>
 </resources>

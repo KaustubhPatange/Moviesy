@@ -17,6 +17,7 @@ import androidx.interpolator.view.animation.FastOutLinearInInterpolator
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.shape.ShapeAppearanceModel
+import com.kpstv.yts.R
 
 class HoverHead @JvmOverloads constructor(
     context: Context,
@@ -31,30 +32,29 @@ class HoverHead @JvmOverloads constructor(
             .build()
 
         if (isInEditMode) {
-            setImageDrawable(ColorDrawable(Color.BLACK))
+            setImageResource(R.mipmap.ic_launcher)
         }
     }
 
     companion object {
-        private const val VIEW_SIZE = 50
+        private const val VIEW_SIZE = 45
         private const val HIDE_ANIMATION_OFFSET: Long = 1000
         private const val ANIMATION_DURATION: Long = 100
-        private const val BORDER_SIZE_DP: Int = 2
+        private const val BORDER_SIZE_DP: Int = 3
     }
 
-    @ColorInt
-    var borderColor: Int = if (isInEditMode) Color.RED else Color.TRANSPARENT
+    var borderColor: Int
+        get() = strokePaint.color
         set(value) {
-            if (value != field) {
-                field = value
-                invalidate()
-            }
+            strokePaint.color = value
+            invalidate()
         }
 
     private val strokePaint = Paint().apply {
         style = Paint.Style.STROKE
+        isAntiAlias = true
         strokeWidth = BORDER_SIZE_DP.dp
-        color = borderColor
+        color = if (isInEditMode) Color.RED else Color.TRANSPARENT
     }
     private val strokePath = Path()
 

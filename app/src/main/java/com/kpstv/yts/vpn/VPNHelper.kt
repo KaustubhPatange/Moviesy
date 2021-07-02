@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
 import android.net.VpnService
-import android.util.Log
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
@@ -60,8 +59,9 @@ class VPNHelper(
             setOnHoverDismissed {
                 vpnViewModel.toggleHover()
             }
-            setDrawable(R.mipmap.ic_launcher)
+            setDrawable(R.drawable.open_vpn)
             setHoverBorderColor(vpnViewModel.connectionStatus.value.color)
+            setHoverBackgroundColor(Color.WHITE)
             removeHover()
         }
     }
@@ -81,7 +81,8 @@ class VPNHelper(
         // observe connection status
         lifecycleScope.launchWhenCreated {
             vpnViewModel.connectionStatus.collect { state ->
-                hoverController.setHoverBorderColor(state.color)
+                if (state !is VpnConnectionStatus.Unknown)
+                    hoverController.setHoverBorderColor(state.color)
                 if (state is VpnConnectionStatus.StopVpn) {
                     activity.startActivity(Intent(activity, DisconnectVPNActivity::class.java))
                 }
@@ -139,8 +140,6 @@ class VPNHelper(
         override fun onReceive(context: Context?, intent: Intent?) {
             if (context == null || intent == null) return
             vpnViewModel.dispatchConnectionState(intent.getStringExtra("state") ?: "")
-
-            Log.e("VPNBroadcast", "Status: ${intent.getStringExtra("state")}")
 
             val duration = intent.getStringExtra("duration") ?: "00:00:00"
             val lastPacketReceive = intent.getStringExtra("lastPacketReceive") ?: "0"

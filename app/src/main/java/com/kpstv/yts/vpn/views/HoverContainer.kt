@@ -3,7 +3,9 @@ package com.kpstv.yts.vpn.views
 import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Point
+import android.graphics.drawable.ColorDrawable
 import android.util.AttributeSet
 import android.view.*
 import android.widget.FrameLayout
@@ -20,6 +22,7 @@ typealias SimpleHoverListener = () -> Unit
 interface HoverContainerController {
     fun setDrawable(@DrawableRes res: Int)
     fun setHoverBorderColor(@ColorInt color: Int)
+    fun setHoverBackgroundColor(@ColorInt color: Int)
     fun addOnHoverClickListener(block: SimpleHoverListener)
     fun setOnHoverDismissed(block: SimpleHoverListener)
     fun isHoverClosed(): Boolean
@@ -73,6 +76,10 @@ class HoverContainer @JvmOverloads constructor(
 
     override fun setHoverBorderColor(color: Int) {
         hoverHead.borderColor = color
+    }
+
+    override fun setHoverBackgroundColor(color: Int) {
+        hoverHead.background = ColorDrawable(Color.WHITE)
     }
 
     override fun isHoverClosed(): Boolean = !contains(hoverHead)

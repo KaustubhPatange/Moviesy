@@ -19,14 +19,14 @@
        <TextView
            android:textSize="20sp"
            android:textColor="?attr/colorText"
-           android:text="VPN"
+           android:text="@string/vpn"
            android:layout_width="match_parent"
            android:layout_height="wrap_content"/>
 
        <TextView
            android:layout_marginTop="3dp"
            android:textSize="13sp"
-           android:text="Select server to enable VPN. This will temporarily solve your issue when connecting to YTS server."
+           android:text="@string/vpn_text"
            android:layout_width="match_parent"
            android:layout_height="wrap_content"/>
    </LinearLayout>
