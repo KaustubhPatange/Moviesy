@@ -8,6 +8,7 @@ import android.content.IntentFilter
 import android.graphics.Color
 import android.net.VpnService
 import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -16,7 +17,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.kpstv.yts.R
-import com.kpstv.yts.data.models.AppDatabase
 import com.kpstv.yts.vpn.views.HoverContainer
 import com.kpstv.yts.vpn.views.HoverContainerController
 import de.blinkt.openvpn.DisconnectVPNActivity
@@ -35,7 +35,7 @@ class VPNHelper(
     private val hoverController: HoverContainerController
 
     private var isVpnStarted: Boolean = false
-    private var currentServer: AppDatabase.VpnConfiguration? = null
+    private var currentServer: VpnConfiguration? = null
     private var currentConfig: String? = null
 
     private val lifecycleObserver = object : DefaultLifecycleObserver {
@@ -84,6 +84,7 @@ class VPNHelper(
                 if (state !is VpnConnectionStatus.Unknown)
                     hoverController.setHoverBorderColor(state.color)
                 if (state is VpnConnectionStatus.StopVpn) {
+
                     activity.startActivity(Intent(activity, DisconnectVPNActivity::class.java))
                 }
                 if (state is VpnConnectionStatus.Disconnected) {
@@ -111,7 +112,7 @@ class VPNHelper(
         return false
     }
 
-    private fun prepareVpn(server: AppDatabase.VpnConfiguration, config: String) {
+    private fun prepareVpn(server: VpnConfiguration, config: String) {
         this.currentServer = server
         this.currentConfig = config
         if (!isVpnStarted) {
@@ -128,7 +129,7 @@ class VPNHelper(
         try {
             val server = currentServer ?: throw Exception("Error: Server is null")
             val config = currentConfig ?: throw Exception("Error: Server config is null")
-            OpenVpnApi.startVpn(activity, config, server.country, server.ovpnUsername, server.ovpnPassword)
+            OpenVpnApi.startVpn(activity, config, server.country, "vpn", "vpn")
             isVpnStarted = true
         } catch (e: Exception) {
             e.printStackTrace()
@@ -169,7 +170,8 @@ class VPNHelper(
 
 sealed class VpnConnectionStatus(open val color: Int) {
     data class Downloading(override val color: Int = Color.CYAN) : VpnConnectionStatus(color)
-    data class Downloaded(override val color: Int = Color.YELLOW, val server: AppDatabase.VpnConfiguration, val config: String) : VpnConnectionStatus(color)
+    data class Downloaded(override val color: Int = Color.YELLOW, val server: VpnConfiguration, val config: String) : VpnConnectionStatus(color)
+    data class LoadingConfiguration(override val color: Int = Color.CYAN) : VpnConnectionStatus(color)
     data class Unknown(override val color: Int = Color.RED) : VpnConnectionStatus(color)
     data class Disconnected(override val color: Int = Color.RED) : VpnConnectionStatus(color)
     data class Connected(override val color: Int = Color.GREEN) : VpnConnectionStatus(color)
@@ -184,6 +186,6 @@ sealed class VpnConnectionStatus(open val color: Int) {
 
 sealed class VpnDialogUIState {
     object Loading : VpnDialogUIState()
-    data class Detail(val vpnConfigurations: List<AppDatabase.VpnConfiguration>) : VpnDialogUIState()
+    data class Detail(val vpnConfigurations: List<VpnConfiguration>) : VpnDialogUIState()
     data class Connected(val ip: String) : VpnDialogUIState()
 }

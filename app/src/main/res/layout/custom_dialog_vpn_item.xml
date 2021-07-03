@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:clickable="true"
-    android:focusable="true"
+    android:layout_height="wrap_content"
     android:background="?selectableItemBackground"
-    android:layout_height="wrap_content">
+    android:clickable="true"
+    android:focusable="true">
 
     <ImageView
         android:id="@+id/icon"
@@ -16,31 +16,60 @@
         android:layout_marginTop="15dp"
         android:layout_marginBottom="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tv_country"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@mipmap/ic_launcher" />
 
     <TextView
         android:id="@+id/tv_country"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
         android:textColor="?attr/colorTextLight"
         android:textSize="16sp"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="20dp"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tv_ip"
         app:layout_constraintStart_toEndOf="@id/icon"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Country" />
 
     <TextView
-        android:id="@id/tv_ip"
-        android:layout_marginStart="20dp"
+        android:id="@+id/tv_ip"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="10dp"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@id/tv_subtext"
+        app:layout_constraintEnd_toStartOf="@id/iv_premium_icon"
+        app:layout_constraintStart_toEndOf="@id/tv_country"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="192.168.1.1" />
+
+    <TextView
+        android:id="@+id/tv_subtext"
+        android:layout_width="0dp"
+        android:layout_marginTop="2dp"
+        android:textSize="13sp"
+        android:layout_height="wrap_content"
+        android:textColor="?attr/colorTextInverse"
+        android:layout_marginStart="20dp"
+        app:layout_constraintEnd_toStartOf="@id/iv_premium_icon"
         app:layout_constraintStart_toEndOf="@id/icon"
         app:layout_constraintTop_toBottomOf="@id/tv_country"
-        tools:text="192.168.1.1" />
+        tools:text="@string/vpn_item_subtext_placeholder" />
+
+    <ImageView
+        android:layout_marginEnd="15dp"
+        android:id="@+id/iv_premium_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_diamond"
+        android:tint="?attr/colorTextPremium"
+        tools:tint="@color/premium"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

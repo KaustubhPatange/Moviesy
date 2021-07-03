@@ -3,6 +3,7 @@ package com.kpstv.yts.di
 import android.content.Context
 import androidx.room.Room
 import com.kpstv.yts.data.db.database.*
+import com.kpstv.yts.vpn.db.VPNDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -128,4 +129,28 @@ object CastModule {
     @Singleton
     @Provides
     fun provideCastMovieDao(database: CastDatabase) = database.getCastMovieDao()
+}
+
+@Module
+@InstallIn(ApplicationComponent::class)
+object VpnModule {
+
+    @Singleton
+    @Provides
+    fun provideDatabase(
+        @ApplicationContext context: Context
+    ) : VPNDatabase {
+        return Room.databaseBuilder(
+            context,
+            VPNDatabase::class.java,
+            "vpn.db"
+        )
+            .fallbackToDestructiveMigration()
+            .fallbackToDestructiveMigrationOnDowngrade()
+            .build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideVpnDao(database: VPNDatabase) = database.getVPNDao()
 }

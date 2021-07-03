@@ -12,6 +12,7 @@
 /app/schemas
 /app/build
 /app/release
+app/vpn/build/
 /app/purchase
 /app/navigation
 .DS_Store

@@ -8,16 +8,21 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.kpstv.common_moviesy.extensions.enableDelayedTransition
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kpstv.common_moviesy.extensions.hide
+import com.kpstv.common_moviesy.extensions.invisible
 import com.kpstv.common_moviesy.extensions.show
 import com.kpstv.common_moviesy.extensions.viewBinding
+import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
-import com.kpstv.yts.data.models.AppDatabase
 import com.kpstv.yts.databinding.CustomDialogVpnBinding
 import com.kpstv.yts.databinding.CustomDialogVpnItemBinding
 import com.kpstv.yts.extensions.load
 import com.kpstv.yts.extensions.utils.FlagUtils
+import com.kpstv.yts.ui.helpers.InterstitialAdHelper
+import com.kpstv.yts.ui.helpers.PremiumHelper
+import com.kpstv.yts.ui.helpers.RewardAdHelper
+import com.kpstv.yts.vpn.db.VPNRepository
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.flow.collect
@@ -30,6 +35,7 @@ class VPNDialogFragment : DialogFragment(R.layout.custom_dialog_vpn) {
 
     private lateinit var adapter: Adapter
 
+    @Inject lateinit var rewardAdHelper: RewardAdHelper
     @Inject lateinit var flagUtils: FlagUtils
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,11 +58,32 @@ class VPNDialogFragment : DialogFragment(R.layout.custom_dialog_vpn) {
         adapter = Adapter(
             flagUtils = flagUtils,
             onItemClick = { server ->
-                vpnViewModel.connect(server)
-                Toasty.info(requireContext(), getString(R.string.attempt_connect_vpn)).show()
+               if (!AppInterface.IS_PREMIUM_UNLOCKED && server.premium) {
+                   MaterialAlertDialogBuilder(requireContext()).apply {
+                       setTitle("Watch Ad or Unlock Premium?")
+                       setMessage(getString(R.string.vpn_premium_text))
+                       setPositiveButton(getString(R.string.watch_ad)) { _, _ ->
+                           rewardAdHelper.showAd(requireActivity()) {
+                               connectToServer(server)
+                           }
+                       }
+                       setNegativeButton(getString(R.string.close), null)
+                       setNeutralButton(getString(R.string.unlock_premium)) { _, _ ->
+                           PremiumHelper.openPurchaseFragment(childFragmentManager)
+                       }
+                       show()
+                   }
+               } else {
+                   connectToServer(server)
+               }
             }
         )
         binding.detailLayout.vpnRecyclerView.adapter = adapter
+    }
+
+    private fun connectToServer(server: VpnConfiguration) {
+        vpnViewModel.connect(server)
+        Toasty.info(requireContext(), getString(R.string.attempt_connect_vpn)).show()
     }
 
     private fun setButtonListeners() {
@@ -83,6 +110,10 @@ class VPNDialogFragment : DialogFragment(R.layout.custom_dialog_vpn) {
                         binding.connectedLayout.root.hide()
                         binding.loadingLayout.root.hide()
                         binding.detailLayout.root.show()
+
+                        val date = uiState.vpnConfigurations.firstOrNull()?.expireTime ?: 0
+                        binding.detailLayout.tvDetailLastRefresh.text =
+                            getString(R.string.vpn_dialog_detail_update_placeholder, VPNRepository.formatExpireTime(date))
 
                         adapter.submitList(uiState.vpnConfigurations)
                     }
@@ -117,6 +148,7 @@ class VPNDialogFragment : DialogFragment(R.layout.custom_dialog_vpn) {
                     is VpnConnectionStatus.Waiting -> tvStatus.text = getString(R.string.status_wait)
                     is VpnConnectionStatus.Invalid -> tvStatus.text = getString(R.string.status_invalid)
                     is VpnConnectionStatus.GetConfig -> tvStatus.text = getString(R.string.status_get_config)
+                    is VpnConnectionStatus.LoadingConfiguration -> tvStatus.text = getString(R.string.status_load_config)
                     is VpnConnectionStatus.Unknown -> {}
                     else -> tvStatus.text = getString(R.string.status_unknown)
                 }
@@ -135,8 +167,8 @@ class VPNDialogFragment : DialogFragment(R.layout.custom_dialog_vpn) {
         }
     }
 
-    class Adapter(private val flagUtils: FlagUtils, private val onItemClick: (AppDatabase.VpnConfiguration) -> Unit)
-        : ListAdapter<AppDatabase.VpnConfiguration, Adapter.MainHolder>(diffUtil) {
+    class Adapter(private val flagUtils: FlagUtils, private val onItemClick: (VpnConfiguration) -> Unit)
+        : ListAdapter<VpnConfiguration, Adapter.MainHolder>(diffUtil) {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainHolder {
             return MainHolder(CustomDialogVpnItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         }
@@ -145,10 +177,13 @@ class VPNDialogFragment : DialogFragment(R.layout.custom_dialog_vpn) {
             val item = getItem(position)
             with(holder.binding) {
                 tvCountry.text = item.country
-                tvIp.text = item.ip
+                tvIp.text = root.context.getString(R.string.vpn_item_ip_placeholder, item.ip)
+                tvSubtext.text = root.context.getString(R.string.vpn_item_subtext_placeholder, item.sessions, item.upTime, item.speed)
+
+                if (!AppInterface.IS_PREMIUM_UNLOCKED && item.premium) ivPremiumIcon.show() else ivPremiumIcon.invisible()
 
                 val flagUrl = flagUtils.getMatchingFlagUrl(item.country)
-                if (flagUrl != null) icon.load(flagUrl)
+                if (flagUrl != null) icon.load(flagUrl) else icon.load(item.countryFlagUrl)
 
                 root.setOnClickListener { onItemClick.invoke(item) }
             }
@@ -156,9 +191,9 @@ class VPNDialogFragment : DialogFragment(R.layout.custom_dialog_vpn) {
 
         class MainHolder(val binding: CustomDialogVpnItemBinding): RecyclerView.ViewHolder(binding.root)
         companion object {
-            private val diffUtil = object: DiffUtil.ItemCallback<AppDatabase.VpnConfiguration>() {
-                override fun areItemsTheSame(oldItem: AppDatabase.VpnConfiguration, newItem: AppDatabase.VpnConfiguration) = oldItem === newItem
-                override fun areContentsTheSame(oldItem: AppDatabase.VpnConfiguration, newItem: AppDatabase.VpnConfiguration) = oldItem == newItem
+            private val diffUtil = object: DiffUtil.ItemCallback<VpnConfiguration>() {
+                override fun areItemsTheSame(oldItem: VpnConfiguration, newItem: VpnConfiguration) = oldItem === newItem
+                override fun areContentsTheSame(oldItem: VpnConfiguration, newItem: VpnConfiguration) = oldItem == newItem
             }
         }
     }

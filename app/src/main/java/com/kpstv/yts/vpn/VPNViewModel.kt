@@ -5,9 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.data.converters.AppDatabaseConverter
-import com.kpstv.yts.data.models.AppDatabase
 import com.kpstv.yts.extensions.utils.RetrofitUtils
-import kotlinx.coroutines.delay
+import com.kpstv.yts.vpn.db.VPNRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
@@ -15,17 +16,19 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 
 class VPNViewModel @ViewModelInject constructor(
+    private val repository: VPNRepository,
     private val retrofitUtils: RetrofitUtils
 ): ViewModel() {
     private var country: String = ""
     private var ip: String = ""
-    private val vpnConfigurations: ArrayList<AppDatabase.VpnConfiguration> = arrayListOf()
+
+    private val vpnConfigurations: ArrayList<VpnConfiguration> = arrayListOf()
 
     private val _showHover = MutableStateFlow(false)
     val showHover: StateFlow<Boolean> = _showHover
 
     private val _connectionStatus: MutableStateFlow<VpnConnectionStatus> =
-        MutableStateFlow(VpnConnectionStatus.Unknown())
+        MutableStateFlow(VpnConnectionStatus.LoadingConfiguration())
     val connectionStatus: StateFlow<VpnConnectionStatus> = _connectionStatus
 
     private val _connectionDetails = MutableStateFlow(ConnectionDetail())
@@ -35,7 +38,7 @@ class VPNViewModel @ViewModelInject constructor(
         MutableStateFlow(VpnDialogUIState.Loading)
     val dialogUiState: StateFlow<VpnDialogUIState> = _dialogUiState
 
-    var currentServer: AppDatabase.VpnConfiguration? = null
+    var currentServer: VpnConfiguration? = null
 
     init {
         viewModelScope.launch {
@@ -52,29 +55,33 @@ class VPNViewModel @ViewModelInject constructor(
     }
 
     fun initialize() {
-        viewModelScope.launch {
+        CoroutineScope(viewModelScope.coroutineContext + Dispatchers.IO).launch {
             initializeConfigs()
             initializeVPNConfigs()
         }
     }
 
-    fun connect(server: AppDatabase.VpnConfiguration) {
+    fun connect(server: VpnConfiguration) {
         currentServer = server
         viewModelScope.launch {
             _connectionStatus.emit(VpnConnectionStatus.Downloading())
-            val config = fetchServerConfig(server.ovpn)
-            if (config != null) {
-                _connectionStatus.emit(VpnConnectionStatus.Downloaded(server = server, config = config))
-                _dialogUiState.emit(VpnDialogUIState.Loading)
-            } else {
-                _connectionStatus.emit(VpnConnectionStatus.Invalid())
-            }
+            _connectionStatus.emit(VpnConnectionStatus.Downloaded(server = server, config = server.config))
+            _dialogUiState.emit(VpnDialogUIState.Loading)
         }
     }
 
     fun disconnect() {
         viewModelScope.launch {
             _connectionStatus.emit(VpnConnectionStatus.StopVpn())
+        }
+    }
+
+    fun resetDialogState() {
+        viewModelScope.launch {
+            if (vpnConfigurations.isNotEmpty())
+                _dialogUiState.emit(VpnDialogUIState.Detail(vpnConfigurations))
+            else
+                _dialogUiState.emit(VpnDialogUIState.Loading)
         }
     }
 
@@ -117,30 +124,24 @@ class VPNViewModel @ViewModelInject constructor(
         return null
     }
 
+
     private suspend fun initializeVPNConfigs() {
-        val response = retrofitUtils.makeHttpCallAsync("https://pastebin.com/raw/sZMaeX89") // TODO: AppInterface.APP_DATABASE_URL
-        if (response.isSuccessful) {
-            val json = response.body?.string()
-            response.close() // Always close
+        val appDatabaseResponse = retrofitUtils.makeHttpCallAsync(AppInterface.APP_DATABASE_URL)
+        if (appDatabaseResponse.isSuccessful) {
+            val json = appDatabaseResponse.body?.string()
+            appDatabaseResponse.close() // Always close
             AppDatabaseConverter.toAppDatabaseFromString(json)?.let { data ->
-                vpnConfigurations.clear()
-                vpnConfigurations.addAll(data.vpnConfigurations)
                 if (data.vpnAffectedCountries.contains(country)) {
                     _showHover.emit(true)
                 }
-                _dialogUiState.emit(VpnDialogUIState.Detail(data.vpnConfigurations))
             }
         }
-    }
 
-    private suspend fun fetchServerConfig(url: String): String? {
-        val response = retrofitUtils.makeHttpCallAsync(url)
-        if (response.isSuccessful) {
-            val body = response.body?.string()
-            response.close() // Always close the stream
-            return body
-        }
-        return null
+        val configurations = repository.fetch()
+        _connectionStatus.emit(VpnConnectionStatus.Disconnected())
+        vpnConfigurations.clear()
+        vpnConfigurations.addAll(configurations)
+        _dialogUiState.emit(VpnDialogUIState.Detail(configurations))
     }
 
     data class ConnectionDetail(

@@ -34,6 +34,7 @@ android {
 
         buildConfigField("String", "TMDB_API_KEY", "\"${gradleLocalProperties(rootDir).getProperty("tmdb_api_key")}\"")
         buildConfigField("String", "INTERSTITIAL_ID", "\"${gradleLocalProperties(rootDir).getProperty("interstitial_ad_id")}\"")
+        buildConfigField("String", "REWARD_AD_ID", "\"${gradleLocalProperties(rootDir).getProperty("reward_ad_id")}\"")
         buildConfigField("String", "GOOGLE_CLIENT_ID", "\"${gradleLocalProperties(rootDir).getProperty("google_client_id_web")}\"")
     }
 

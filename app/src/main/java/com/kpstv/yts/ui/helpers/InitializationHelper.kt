@@ -13,7 +13,8 @@ import javax.inject.Singleton
 @Singleton
 class InitializationHelper @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val interstitialAdHelper: InterstitialAdHelper
+    private val interstitialAdHelper: InterstitialAdHelper,
+    private val rewardAdHelper: RewardAdHelper
 ) {
 
     private var isInitialized: Boolean = false
@@ -25,6 +26,7 @@ class InitializationHelper @Inject constructor(
 
         MobileAds.initialize(context) {
             interstitialAdHelper.init()
+            rewardAdHelper.init()
         }
 
         AppWorker.schedule(context)

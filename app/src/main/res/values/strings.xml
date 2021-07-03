@@ -269,6 +269,7 @@
     <string name="status_wait">Waiting for server</string>
     <string name="status_invalid">Invalid configuration</string>
     <string name="status_get_config">Getting configuration</string>
+    <string name="status_load_config">Loading configurations</string>
     <string name="vpn_duration">Duration: %1$s</string>
     <string name="vpn_packet">Packet Received: %1$s second(s) ago</string>
     <string name="vpn_bytes_in">Bytes In: %1$s</string>
@@ -278,7 +279,12 @@
     <string name="toggle_vpn">Toggle VPN</string>
     <string name="vpn_disconnect">Disconnected successfully</string>
     <string name="vpn_error">Could not connect to the server</string>
-    <string name="vpn_connection_text">This might take a while to connect depending upon the server speed as well as the port</string>
+    <string name="vpn_connection_text">This process might take a while to complete depending upon your internet connection.</string>
     <string name="vpn">VPN</string>
-    <string name="vpn_text">Select server for a VPN connection. This will temporarily solve your issue when connecting to YTS server.</string>
+    <string name="vpn_text">Select server for a VPN connection. This will temporarily solve YTS connection issues.</string>
+    <string name="vpn_item_ip_placeholder">• %1$s</string>
+    <string name="vpn_item_subtext_placeholder">%1$s • %2$s • %3$s Mbps</string>
+    <string name="vpn_dialog_detail_update_placeholder">Next refresh: %1$s</string>
+    <string name="vpn_premium_text"><![CDATA[This server requires premium version of the app but you can watch a video advert to skip & connect to the server.]]></string>
+    <string name="watch_ad">Watch Ad</string>
 </resources>

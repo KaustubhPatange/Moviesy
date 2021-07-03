@@ -9,8 +9,6 @@ data class AppDatabase(
     val update: Update,
     @SerializedName("vpn_affected_countries")
     val vpnAffectedCountries: List<String>,
-    @SerializedName("vpn_configurations")
-    val vpnConfigurations: List<VpnConfiguration>
 ) {
     data class Update(
         val deprecatedVersionCode: Int,
@@ -31,13 +29,5 @@ data class AppDatabase(
     data class Yts(
         val base: String,
         val yify: String
-    )
-
-    data class VpnConfiguration(
-        val country: String,
-        val ovpn: String,
-        val ovpnPassword: String,
-        val ovpnUsername: String,
-        val ip: String
     )
 }

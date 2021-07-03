@@ -18,42 +18,5 @@
     },
     "vpn_affected_countries": [
         "IN"
-    ],
-    "vpn_configurations": [
-      {
-        "country": "Japan",
-        "ovpn": "https://pastebin.com/raw/1VhzaFa6",
-        "ovpnUsername": "vpn",
-        "ovpnPassword": "vpn",
-        "ip": "219.100.37.101"
-      },
-      {
-        "country": "Japan",
-        "ovpn": "https://pastebin.com/raw/Jp2KWWYN",
-        "ovpnUsername": "vpn",
-        "ovpnPassword": "vpn",
-        "ip": "59.133.155.60"
-      },
-      {
-        "country": "Korea",
-        "ovpn": "https://pastebin.com/raw/AUNttk1N",
-        "ovpnUsername": "vpn",
-        "ovpnPassword": "vpn",
-        "ip": "58.227.254.231"
-      },
-      {
-        "country": "United States",
-        "ovpn": "https://pastebin.com/raw/z9fnqjV3",
-        "ovpnUsername": "vpn",
-        "ovpnPassword": "vpn",
-        "ip": "207.148.91.158"
-      },
-      {
-        "country": "Indonesia",
-        "ovpn": "https://pastebin.com/raw/bfxnndzn",
-        "ovpnUsername": "vpn",
-        "ovpnPassword": "vpn",
-        "ip": "139.0.211.44"
-      }
     ]
 }
