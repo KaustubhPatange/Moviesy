@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Point
+import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.util.AttributeSet
 import android.view.*
@@ -26,6 +27,7 @@ interface HoverContainerController {
     fun addOnHoverClickListener(block: SimpleHoverListener)
     fun setOnHoverDismissed(block: SimpleHoverListener)
     fun isHoverClosed(): Boolean
+    fun getHoverLocation(): Rect
     fun resetHover()
     fun removeHover()
 }
@@ -64,7 +66,7 @@ class HoverContainer @JvmOverloads constructor(
     })
 
     init {
-        closeView.visibility = View.INVISIBLE
+        closeView.alpha = 0f
         addView(hoverHead)
         addView(closeView)
         setOnTouchListener(this)
@@ -90,6 +92,12 @@ class HoverContainer @JvmOverloads constructor(
 
     override fun removeHover() {
         removeHoverHead()
+    }
+
+    override fun getHoverLocation(): Rect {
+        val rect = Rect()
+        hoverHead.getHitRect(rect)
+        return rect
     }
 
     override fun addOnHoverClickListener(block: SimpleHoverListener) {
@@ -242,7 +250,8 @@ class HoverContainer @JvmOverloads constructor(
     }
 
     private fun showCloseView() {
-        closeView.visibility = View.VISIBLE
+        closeView.alpha = 1f
+        closeView.y = measuredHeight.toFloat()
         closeViewTranslationAnimator.setFloatValues(measuredHeight - measuredHeight / 6f)
         closeViewTranslationAnimator.start()
     }

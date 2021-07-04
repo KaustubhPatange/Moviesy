@@ -12,6 +12,7 @@ class AppPreference(context: Context) {
         private const val SHOULD_CHECK_PROXY = "should_check_proxy"
         private const val IS_FIRST_LAUNCH = "is_first_launch"
         private const val THEME_SETTING = "theme_setting"
+        private const val VPN_HELP_VIEW = "vpn_help_view"
     }
 
     private val pm = PreferenceManager.getDefaultSharedPreferences(context)
@@ -39,6 +40,9 @@ class AppPreference(context: Context) {
 
     fun getTheme() : ThemeHelper.AppTheme =
         ThemeHelper.AppTheme.valueOf(pm.getString(THEME_SETTING, ThemeHelper.AppTheme.DARK.toString())!!)
+
+    fun isVpnHelpShown(): Boolean = getBoolean(VPN_HELP_VIEW, false)
+    fun setVpnHelpShown(value: Boolean) = writeBoolean(VPN_HELP_VIEW, value)
 }
 
 fun Context.defaultPreference() =

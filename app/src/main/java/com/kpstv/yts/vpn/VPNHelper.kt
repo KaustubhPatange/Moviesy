@@ -8,7 +8,6 @@ import android.content.IntentFilter
 import android.graphics.Color
 import android.net.VpnService
 import androidx.activity.result.contract.ActivityResultContract
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -17,6 +16,8 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.kpstv.yts.R
+import com.kpstv.yts.defaultPreference
+import com.kpstv.yts.vpn.views.HelperView
 import com.kpstv.yts.vpn.views.HoverContainer
 import com.kpstv.yts.vpn.views.HoverContainerController
 import de.blinkt.openvpn.DisconnectVPNActivity
@@ -24,6 +25,7 @@ import de.blinkt.openvpn.OpenVpnApi
 import de.blinkt.openvpn.core.OpenVPNService
 import de.blinkt.openvpn.core.OpenVPNThread
 import es.dmoral.toasty.Toasty
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlin.reflect.KClass
 
@@ -37,6 +39,8 @@ class VPNHelper(
     private var isVpnStarted: Boolean = false
     private var currentServer: VpnConfiguration? = null
     private var currentConfig: String? = null
+
+    private val preferences by activity.defaultPreference()
 
     private val lifecycleObserver = object : DefaultLifecycleObserver {
         override fun onDestroy(owner: LifecycleOwner) {
@@ -75,6 +79,12 @@ class VPNHelper(
                     hoverController.resetHover()
                 } else {
                     hoverController.removeHover()
+                }
+
+                // show helper view
+                if (toShow && !preferences.isVpnHelpShown()) {
+                    delay(2000) // a delay to let view settle on the screen
+                    showHelperView()
                 }
             }
         }
@@ -154,6 +164,26 @@ class VPNHelper(
                 bytesOut = bytesOut
             )
             vpnViewModel.dispatchConnectionDetail(detail)
+        }
+    }
+
+    private var helperView: HelperView? = null
+    private fun showHelperView() {
+        if (helperView != null) return
+        val location = hoverController.getHoverLocation()
+        helperView = HelperView.showForTarget(
+             activity = activity,
+             rect = location,
+             title = activity.getString(R.string.vpn_help_title),
+             subText = activity.getString(R.string.vpn_help_subtext)
+        ).apply {
+            setOnTargetTouchListener {
+                onHoverClick.invoke(VPNDialogFragment::class)
+            }
+            setOnDismissListener {
+                helperView = null
+                preferences.setVpnHelpShown(true)
+            }
         }
     }
 
