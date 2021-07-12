@@ -55,7 +55,17 @@
 
     </LinearLayout>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:paddingStart="25dp"
+        android:paddingEnd="25dp"
+        android:textColor="@color/red"
+        android:text="@string/vpn_status_disconnect"/>
+
     <LinearLayout
+        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"

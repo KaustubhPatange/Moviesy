@@ -289,4 +289,5 @@
     <string name="watch_ad">Watch Ad</string>
     <string name="vpn_help_title">VPN Support</string>
     <string name="vpn_help_subtext">We have detected that you are facing YTS connectivity issues, so here is a built-in support for VPN to overcome it temporarily :)\n\nJust tap and select a server!</string>
+    <string name="vpn_status_disconnect">VPN service will be stopped when the app is closed.</string>
 </resources>
