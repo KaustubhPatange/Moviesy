@@ -43,12 +43,19 @@ class HelperView @JvmOverloads constructor(
         }
     }
 
-    private val paint = Paint().apply {
-        style = Paint.Style.FILL
+    private val backPaint = Paint().apply {
         isAntiAlias = true
         color = Color.BLACK
         alpha = 220
     }
+    private val frontPaint = Paint().apply {
+        color = Color.TRANSPARENT
+        xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_IN)
+    }
+
+    private var backgroundBitmap: Bitmap? = null
+    private var bitmapCanvas: Canvas? = null
+    private val blankPaint = Paint()
     private val path = Path()
     private val viewRect = Rect(100, 100, 200, 200)
     private val textView = TextView(context).apply {
@@ -75,7 +82,7 @@ class HelperView @JvmOverloads constructor(
 
     private val animator = ObjectAnimator.ofFloat(7f, 1f).apply {
         addUpdateListener {
-            paint.alpha = (it.animatedFraction * 220).toInt()
+            backPaint.alpha = (it.animatedFraction * 220).toInt()
             scale = it.animatedValue as Float
         }
         interpolator = FastOutSlowInInterpolator()
@@ -127,17 +134,19 @@ class HelperView @JvmOverloads constructor(
         dismissListener = block
     }
 
+    private val fullPath = Path()
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         val vWidth = viewRect.width().toFloat()
         val vHeight = viewRect.height().toFloat()
         path.reset()
+        fullPath.reset()
         path.addCircle(
             viewRect.left + vWidth / 2, viewRect.top + vHeight / 2,
             hypot(vWidth, vHeight) + 2.dp,
             Path.Direction.CW
         )
-        path.fillType = Path.FillType.INVERSE_EVEN_ODD
+        fullPath.addRect(0f, 0f, measuredWidth.toFloat(), measuredHeight.toFloat(), Path.Direction.CW)
 
         if (viewRect.bottom < measuredHeight / 2) {
             textView.y = measuredHeight / 2 + viewRect.bottom / 4f + (measuredHeight / 2 - viewRect.bottom).coerceAtMost(20.dp.toInt())
@@ -154,17 +163,24 @@ class HelperView @JvmOverloads constructor(
         button.measure(buttonSpec, buttonSpec)
         button.x = measuredWidth / 8f
         button.y = measuredHeight - 70.dp
+
+        if (backgroundBitmap == null) backgroundBitmap = Bitmap.createBitmap(measuredWidth, measuredHeight, Bitmap.Config.ARGB_8888)
+        if (bitmapCanvas == null) bitmapCanvas = Canvas(backgroundBitmap!!)
     }
 
     override fun onDraw(canvas: Canvas) {
-        canvas.withScale(
-            x = scale,
-            y = scale,
-            pivotX = viewRect.left + viewRect.width() / 2f,
-            pivotY = viewRect.top + viewRect.height() / 2f
-        ) {
-            canvas.drawPath(path, paint)
+        bitmapCanvas?.let { bitmapCanvas ->
+            bitmapCanvas.drawPath(fullPath, backPaint)
+            bitmapCanvas.withScale(
+                x = scale,
+                y = scale,
+                pivotX = viewRect.left + viewRect.width() / 2f,
+                pivotY = viewRect.top + viewRect.height() / 2f
+            ) {
+                bitmapCanvas.drawPath(path, frontPaint)
+            }
         }
+        backgroundBitmap?.let { canvas.drawBitmap(it, 0f, 0f, blankPaint) }
         super.onDraw(canvas)
     }
 

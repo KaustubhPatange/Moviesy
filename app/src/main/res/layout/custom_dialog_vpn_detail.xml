@@ -53,6 +53,8 @@
         android:overScrollMode="never"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
+    <include android:id="@+id/layout_gear_vpn" layout="@layout/layout_ad_gear_vpn"/>
+
     <FrameLayout
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"

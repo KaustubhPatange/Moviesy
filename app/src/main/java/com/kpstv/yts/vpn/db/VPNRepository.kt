@@ -57,7 +57,7 @@ class VPNRepository @Inject constructor(
             val table = doc.getElementById("vpngate_inner_contents_td").children().findLast { it.id() == "vg_hosts_table_id" }?.child(0) ?: return vpnConfigurations
             vpnConfigurations.clear()
 
-            val maxIteration = minOf(8, table.childrenSize())
+            val maxIteration = minOf(7, table.childrenSize())
             for (i in 1 until table.childrenSize()) {
 
                 if (vpnConfigurations.size >= maxIteration) return vpnConfigurations

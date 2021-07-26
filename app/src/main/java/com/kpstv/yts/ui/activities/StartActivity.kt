@@ -95,7 +95,7 @@ class StartActivity : AppCompatActivity(), FragmentNavigator.Transmitter, Librar
 
     private val errorObserver = Observer { error: Exception? ->
         error?.let {
-            AppUtils.showUnknownErrorDialog(this, error) { finish() }
+//            AppUtils.showUnknownErrorDialog(this, error) { finish() }
         }
     }
 

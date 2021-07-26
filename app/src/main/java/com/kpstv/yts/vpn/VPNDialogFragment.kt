@@ -18,6 +18,7 @@ import com.kpstv.yts.R
 import com.kpstv.yts.databinding.CustomDialogVpnBinding
 import com.kpstv.yts.databinding.CustomDialogVpnItemBinding
 import com.kpstv.yts.extensions.load
+import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.FlagUtils
 import com.kpstv.yts.ui.helpers.InterstitialAdHelper
 import com.kpstv.yts.ui.helpers.PremiumHelper
@@ -94,6 +95,9 @@ class VPNDialogFragment : DialogFragment(R.layout.custom_dialog_vpn) {
         }
         binding.connectedLayout.btnDisconnect.setOnClickListener {
             vpnViewModel.disconnect()
+        }
+        binding.detailLayout.layoutGearVpn.root.setOnClickListener {
+            AppUtils.launchUrlIntent(requireContext(), "https://play.google.com/store/apps/details?id=com.kpstv.vpn")
         }
     }
 
