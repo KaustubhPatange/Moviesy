@@ -5,7 +5,7 @@
         "url": "https://www.dropbox.com/s/rkx93m73y0l7bjg/Moviesy_v1.7.apk?dl=1"
     },
     "yts": {
-        "base": "https://yts.mx",
+        "base": "https://yts.rs",
         "yify": "https://yts-subs.com"
     },
     "tmdb": {
