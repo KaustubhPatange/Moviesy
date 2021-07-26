@@ -27,7 +27,7 @@ class AppInterface {
         private var TAG = "AppInterface"
 
         var YIFY_BASE_URL = "https://yts-subs.com"
-        var YTS_BASE_URL = "https://yts.rs"
+        var YTS_BASE_URL = "https://yts.mx"
         var YTS_BASE_API_URL = "$YTS_BASE_URL/api/v2/"
         var TMDB_BASE_URL = "https://api.themoviedb.org/3/"
         var TMDB_IMAGE_PREFIX = "https://image.tmdb.org/t/p/w500"
