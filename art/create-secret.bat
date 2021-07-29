@@ -2,10 +2,10 @@
 
 rd /s /q Work
 md Work
-xcopy ..\app\purchase Work\_tmp\purchase /E /C /I
-rd /s /q Work\_tmp\purchase\build
-rd /s /q Work\_tmp\purchase\src\androidTest
-rd /s /q Work\_tmp\purchase\src\test
+xcopy ..\app\purchase Work\_tmp\app\purchase /E /C /I
+rd /s /q Work\_tmp\app\purchase\build
+rd /s /q Work\_tmp\app\purchase\src\androidTest
+rd /s /q Work\_tmp\app\purchase\src\test
 
 tar -C Work\_tmp -cvzf Work\protect.tar.gz *
 

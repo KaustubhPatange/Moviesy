@@ -10,8 +10,10 @@ import com.kpstv.yts.BuildConfig
 import com.kpstv.yts.R
 import com.kpstv.yts.data.converters.AppDatabaseConverter
 import com.kpstv.yts.data.models.AppDatabase
+import com.kpstv.yts.data.models.Release
 import com.kpstv.yts.databinding.CustomPurchaseDialogBinding
 import com.kpstv.yts.extensions.SimpleCallback
+import com.kpstv.yts.interfaces.api.ReleaseApi
 import com.kpstv.yts.services.UpdateWorker
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -20,6 +22,7 @@ import javax.inject.Singleton
 @Singleton
 class UpdateUtils @Inject constructor(
     @ApplicationContext private val context: Context,
+    private val releaseApi: ReleaseApi,
     private val retrofitUtils: RetrofitUtils
 ) {
     /**
@@ -27,7 +30,7 @@ class UpdateUtils @Inject constructor(
      * we use a callback function.
      */
     fun check(
-        onUpdateAvailable: (AppDatabase.Update) -> Unit,
+        onUpdateAvailable: (Release) -> Unit,
         onVersionDeprecated: SimpleCallback,
         onUpdateNotFound: SimpleCallback? = null,
         onError: (Exception) -> Unit
@@ -37,9 +40,9 @@ class UpdateUtils @Inject constructor(
                 val updatePair = fetchUpdateDetails()
                 when {
                     updatePair.second -> {
-                        Coroutines.main { onUpdateAvailable.invoke(updatePair.first.update) }
+                        Coroutines.main { onUpdateAvailable.invoke(updatePair.first) }
                     }
-                    updatePair.first.update.deprecatedVersionCode == BuildConfig.VERSION_CODE -> Coroutines.main { onVersionDeprecated.invoke() }
+//                    updatePair.first.update.deprecatedVersionCode == BuildConfig.VERSION_CODE -> Coroutines.main { onVersionDeprecated.invoke() }
                     else -> Coroutines.main { onUpdateNotFound?.invoke() }
                 }
             } catch (e: Exception) {
@@ -47,26 +50,22 @@ class UpdateUtils @Inject constructor(
             }
         }
 
-    suspend fun checkAsync(): Pair<AppDatabase.Update, Boolean> {
+    suspend fun checkAsync(): Pair<Release, Boolean> {
         val details = fetchUpdateDetails()
-        return Pair(details.first.update, details.second)
+        return Pair(details.first, details.second)
     }
 
-    fun processUpdate(update: AppDatabase.Update) = with(context) {
-        UpdateWorker.schedule(applicationContext, update.url)
+    fun processUpdate(update: Release) = with(context) {
+        UpdateWorker.schedule(applicationContext, update.assets.firstOrNull { it.name.endsWith(".apk") }?.browserDownloadUrl ?: "")
     }
 
-    private suspend fun fetchUpdateDetails(): Pair<AppDatabase, Boolean> {
-        val response = retrofitUtils.makeHttpCallAsync(AppInterface.APP_DATABASE_URL)
-        if (response.isSuccessful) {
-            val appDatabase = AppDatabaseConverter
-                .toAppDatabaseFromString(response.body?.string())
+    private suspend fun fetchUpdateDetails(): Pair<Release, Boolean> {
+        val release = releaseApi.fetchRelease()
 
-            response.close() // Always close the stream
-            if (appDatabase == null) throw Exception("Failed to obtain details from the response")
-            return Pair(appDatabase, appDatabase.update.versionCode > BuildConfig.VERSION_CODE)
-        } else
-            throw Exception("Failed to retrieve app database")
+        val newVersion = release.tagName.replace("v", "").toFloat()
+        val currentVersion = BuildConfig.VERSION_NAME.toFloat()
+
+        return Pair(release, newVersion > currentVersion)
     }
 
     fun showUpdateDialog(context: Context, doOnUpdateClick: SimpleCallback): Unit =

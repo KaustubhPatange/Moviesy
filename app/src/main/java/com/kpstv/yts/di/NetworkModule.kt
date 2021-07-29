@@ -3,6 +3,7 @@ package com.kpstv.yts.di
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.extensions.utils.RetrofitUtils
 import com.kpstv.yts.interfaces.api.AppApi
+import com.kpstv.yts.interfaces.api.ReleaseApi
 import com.kpstv.yts.interfaces.api.TMdbApi
 import com.kpstv.yts.interfaces.api.YTSApi
 import dagger.Module
@@ -15,6 +16,17 @@ import javax.inject.Singleton
 @Module
 @InstallIn(ApplicationComponent::class)
 object NetworkModule {
+    @Provides
+    @Singleton
+    fun provideReleaseApi(
+        retrofitUtils: RetrofitUtils
+    ): ReleaseApi {
+        return retrofitUtils.getRetrofitBuilder()
+            .baseUrl(ReleaseApi.BASE_URL)
+            .build()
+            .create(ReleaseApi::class.java)
+    }
+
     @Provides
     @Singleton
     fun provideAppApi(
