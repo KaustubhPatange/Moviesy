@@ -39,12 +39,12 @@ jobs:
 
       - name: Extracting required modules
         run: |
-          echo "$PROTECT_MODULE" > module.tar.gz.b64
-          base64 -d -i module.tar.gz.b64 > ${{ github.workspace }}/module.tar.gz
+           echo "$PROTECT_MODULE" > module.tar.gz.b64
+           base64 -d -i module.tar.gz.b64 > ${{ github.workspace }}/module.tar.gz
 
-          tar -xzf module.tar.gz
-        env:
-          PROTECT_MODULE=${{ secrets.PROTECT_MODULE }}
+           tar -xzf module.tar.gz
+        env: 
+           PROTECT_MODULE=${{ secrets.PROTECT_MODULE }}
 
       # Fill the required local.properties
 
