@@ -1,4 +1,6 @@
 import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+import org.jetbrains.kotlin.konan.file.File
+import org.jetbrains.kotlin.konan.properties.loadProperties
 
 plugins {
     id(GradlePluginId.ANDROID_APPLICATION)
@@ -38,9 +40,20 @@ android {
         buildConfigField("String", "GOOGLE_CLIENT_ID", "\"${gradleLocalProperties(rootDir).getProperty("google_client_id_web")}\"")
     }
 
+    signingConfigs {
+        create(BuildType.RELEASE) {
+            val properties = File("${rootProject.projectDir}/key.properties").loadProperties()
+            storeFile = file(properties["signing.keyFile"] as String)
+            keyPassword = properties["signing.keyPassword"] as String
+            storePassword = properties["signing.storePassword"] as String
+            keyAlias = properties["signing.alias"] as String
+        }
+    }
+
     buildTypes {
         getByName(BuildType.RELEASE) {
             isMinifyEnabled = BuildTypeRelease.isMinifyEnabled
+            signingConfig = signingConfigs.getByName(BuildType.RELEASE)
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

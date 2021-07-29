@@ -16,83 +16,8 @@ on:
       - "index.html"
 jobs:
   buildJob:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v1
-        with:
-          java-version: 1.8
-      - run: chmod +x gradlew
-        
-      # Extracting required modules
-      
-      - name: Providing required modules
-        uses: RollyPeres/base64-to-path@v1
-        with:
-          filePath: ${{ github.workspace }}/module.tar.gz
-          encodedString: ${{ secrets.PROTECT_MODULE }}
-      - run: |
-          tar -xzf module.tar.gz
-          tar -xzf art/tools.tar.gz
-      
-      # Fill the required local.properties
-     
-      - name: Filling required local.properties
-        run: |
-          echo tmdb_api_key=${{ secrets.TMDB_API_KEY }} >> local.properties
-          echo google_client_id_web=${{ secrets.GOOGLE_CLIENT_WEB_ID }} >> local.properties
-      - name: Providing service.json
-        uses: RollyPeres/base64-to-path@v1
-        with:
-          filePath: ${{ github.workspace }}/app/google-services.json
-          encodedString: ${{ secrets.GOOGLE_JSON }}
-      
-      - name: Providing signing key
-        uses: RollyPeres/base64-to-path@v1
-        with:
-          filePath: ${{ github.workspace }}/key.jks
-          encodedString: ${{ secrets.KEY_JKS }}
-
-      - uses: actions/cache@v2
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-${{ github.job }}-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/buildSrc/**/*.kt') }}
-      
-      - name: Assemble & Sign
-        run: |
-          ./gradlew app:assembleRelease --stacktrace
-          ${{ github.workspace }}/zipalign.exe -v -p 4 app/build/outputs/apk/release/app-release-unsigned.apk app/build/outputs/apk/release/app-release-unsigned-aligned.apk
-          ${{ github.workspace }}/apksigner.bat sign --ks key.jks ${{ secrets.KEY_PARAMS }} --out app/release/app-release.apk app/build/outputs/apk/release/app-release-unsigned-aligned.apk
-
-      - name: Drafing a release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: vX.X
-          release_name: Year based title
-          draft: true
-
-      - name: Upload Release Asset
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./app/release/app-release.apk
-          asset_name: app-release_vX.X.apk
-          asset_content_type: application/octet-stream
-          
-          
-  draft_remove:
     runs-on: ubuntu-latest
     steps:
-      # Remove old release drafts by using the curl request for the available releases with draft flag
       - name: Remove Old Release Drafts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -103,16 +28,100 @@ jobs:
             | xargs -I '{}' \
           curl -X DELETE -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/$GITHUB_REPOSITORY/releases/{}
 
-#  notification:
-#    needs: [buildJob]
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Set outputs
-#        id: vars
-#        run: echo "::set-output name=sha_short::$(echo ${{ github.sha }} | cut -c -7)"
-#      - name: Sending complete notifications
-#        env:
-#          DISCORD_WEBHOOK: ${{ secrets.WEBHOOK }}
-#        uses: Ilshidur/action-discord@master
-#        with:
-#          args: "${{ github.event.repository.full_name }} with commit ${{ steps.vars.outputs.sha_short }} had a successful build!"
+      - uses: actions/checkout@v2
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - run: chmod +x gradlew
+
+      # Extracting required modules
+
+      - name: Extracting required modules
+        run: |
+          echo "$PROTECT_MODULE" > module.tar.gz.b64
+          base64 -d -i module.tar.gz.b64 > ${{ github.workspace }}/module.tar.gz
+
+          tar -xzf module.tar.gz
+        env: |
+          PROTECT_MODULE=${{ secrets.PROTECT_MODULE }}
+
+      # Fill the required local.properties
+
+      - name: Filling required local.properties
+        run: |
+          echo tmdb_api_key=${{ secrets.TMDB_API_KEY }} >> local.properties
+          echo google_client_id_web=${{ secrets.GOOGLE_CLIENT_WEB_ID }} >> local.properties
+
+      - name: Extracting properties
+        run: |
+          echo "tmdb_api_key=$TMDB_API_KEY" >> local.properties
+          echo "google_client_id_web=$GOOGLE_CLIENT_WEB_ID" >> local.properties
+
+          echo "$GOOGLE_JSON" > google-services.json.b64
+          base64 -d -i google-services.json.b64 > ${{ github.workspace }}/app/google-services.json
+        env: |
+          TMDB_API_KEY=${{ secrets.TMDB_API_KEY }}
+          GOOGLE_CLIENT_WEB_ID=${{ secrets.GOOGLE_CLIENT_WEB_ID }}
+          GOOGLE_JSON=${{ secrets.GOOGLE_JSON }}
+
+      - name: Extracting signing properties
+        run: |
+          echo "$KEY_JKS" > key.jks.b64
+          base64 -d -i key.jks.b64 > ${{ github.workspace }}/key.jks
+
+          echo "signing.alias=$SIGN_ALIAS" >> key.properties
+          echo "signing.storePassword=$SIGN_STORE_PASS" >> key.properties
+          echo "signing.keyPassword=$SIGN_KEY_PASS" >> key.properties
+          echo "signing.keyFile=${{ github.workspace }}/key.jks" >> key.properties
+        env: |
+          SIGN_ALIAS=${{ secrets.SIGN_ALIAS }}
+          SIGN_KEY_PASS=${{ secrets.SIGN_KEY_PASS }}
+          SIGN_STORE_PASS=${{ secrets.SIGN_STORE_PASS }}
+          KEY_JKS=${{ secrets.KEY_JKS }}
+
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-${{ github.job }}-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/buildSrc/**/*.kt') }}
+
+      - name: Assemble & Sign
+        run: |
+          ./gradlew app:assembleRelease --stacktrace
+
+      - name: Drafing a release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: vX.X
+          release_name: vX.X
+          draft: true
+
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./app/build/outputs/apk/release/app-release.apk
+          asset_name: app-release_vX.X.apk
+          asset_content_type: application/octet-stream
+
+  # draft_remove:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     # Remove old release drafts by using the curl request for the available releases with draft flag
+  #     - name: Remove Old Release Drafts
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       run: |
+  #         curl -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/$GITHUB_REPOSITORY/releases \
+  #           | tr '\r\n' ' ' \
+  #           | jq '.[] | select(.draft == true) | .id' \
+  #           | xargs -I '{}' \
+  #         curl -X DELETE -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/$GITHUB_REPOSITORY/releases/{}

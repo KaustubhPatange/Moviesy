@@ -22,3 +22,5 @@ google-services.json
 /captures
 .externalNativeBuild
 .cxx
+/art/Work
+key.properties
