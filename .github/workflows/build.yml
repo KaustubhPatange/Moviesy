@@ -54,7 +54,7 @@ jobs:
           echo "signing.alias=${{ secrets.SIGN_ALIAS }}" >> key.properties
           echo "signing.storePassword=${{ secrets.SIGN_STORE_PASS }}" >> key.properties
           echo "signing.keyPassword=${{ secrets.SIGN_KEY_PASS }}" >> key.properties
-          echo "signing.keyFile=${{ github.workspace }}\key.jks" >> key.properties
+          echo "signing.keyFile=D\:a\\Moviesy\\Moviesy\\key.jks" >> key.properties
 
       - uses: actions/cache@v2
         with:
