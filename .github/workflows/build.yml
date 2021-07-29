@@ -43,7 +43,7 @@ jobs:
           base64 -d -i module.tar.gz.b64 > ${{ github.workspace }}/module.tar.gz
 
           tar -xzf module.tar.gz
-        env: |
+        env:
           PROTECT_MODULE=${{ secrets.PROTECT_MODULE }}
 
       # Fill the required local.properties
@@ -60,7 +60,7 @@ jobs:
 
           echo "$GOOGLE_JSON" > google-services.json.b64
           base64 -d -i google-services.json.b64 > ${{ github.workspace }}/app/google-services.json
-        env: |
+        env:
           TMDB_API_KEY=${{ secrets.TMDB_API_KEY }}
           GOOGLE_CLIENT_WEB_ID=${{ secrets.GOOGLE_CLIENT_WEB_ID }}
           GOOGLE_JSON=${{ secrets.GOOGLE_JSON }}
@@ -74,7 +74,7 @@ jobs:
           echo "signing.storePassword=$SIGN_STORE_PASS" >> key.properties
           echo "signing.keyPassword=$SIGN_KEY_PASS" >> key.properties
           echo "signing.keyFile=${{ github.workspace }}/key.jks" >> key.properties
-        env: |
+        env:
           SIGN_ALIAS=${{ secrets.SIGN_ALIAS }}
           SIGN_KEY_PASS=${{ secrets.SIGN_KEY_PASS }}
           SIGN_STORE_PASS=${{ secrets.SIGN_STORE_PASS }}
