@@ -34,8 +34,11 @@ class ContinueWatcherHelper(private val context: Context, private val lifecycleO
     private val lock = Any()
 
     private val lifecycleObserver = object: DefaultLifecycleObserver {
-        override fun onDestroy(owner: LifecycleOwner) {
+        override fun onStop(owner: LifecycleOwner) {
             dataStoreHelper.cancel()
+            super.onStop(owner)
+        }
+        override fun onDestroy(owner: LifecycleOwner) {
             lifecycleOwner.lifecycle.removeObserver(this)
             super.onDestroy(owner)
         }
