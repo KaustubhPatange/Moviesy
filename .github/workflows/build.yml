@@ -29,53 +29,37 @@ jobs:
 
       - name: Extracting required modules
         run: |
-          echo "$PROTECT_MODULE" > module.tar.gz.b64
+          echo "${{ secrets.PROTECT_MODULE }}" > module.tar.gz.b64
           certutil -decode module.tar.gz.b64 ${{ github.workspace }}/module.tar.gz
           
           tar -xzf ${{ github.workspace }}/module.tar.gz
-        env:
-          PROTECT_MODULE: ${{ secrets.PROTECT_MODULE }}
 
       # Fill the required local.properties
-
-      - name: Filling required local.properties
+      
+      - name: Extracting properties
         run: |
           echo tmdb_api_key=${{ secrets.TMDB_API_KEY }} >> local.properties
           echo google_client_id_web=${{ secrets.GOOGLE_CLIENT_WEB_ID }} >> local.properties
-
-      - name: Extracting properties
-        run: |
-          echo "tmdb_api_key=$TMDB_API_KEY" >> local.properties
-          echo "google_client_id_web=$GOOGLE_CLIENT_WEB_ID" >> local.properties
           
           type local.properties
 
-          echo "$GOOGLE_JSON" > google-services.json.b64
+          echo "${{ secrets.GOOGLE_JSON }}" > google-services.json.b64
           certutil -decode google-services.json.b64 ${{ github.workspace }}/app/google-services.json
           
           dir
           cd app
           dir
           cd..
-        env:
-          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
-          GOOGLE_CLIENT_WEB_ID: ${{ secrets.GOOGLE_CLIENT_WEB_ID }}
-          GOOGLE_JSON: ${{ secrets.GOOGLE_JSON }}
 
       - name: Extracting signing properties
         run: |
-          echo "$KEY_JKS" > key.jks.b64
+          echo "${{ secrets.KEY_JKS }}" > key.jks.b64
           certutil -decode key.jks.b64 ${{ github.workspace }}/key.jks
 
-          echo "signing.alias=$SIGN_ALIAS" >> key.properties
-          echo "signing.storePassword=$SIGN_STORE_PASS" >> key.properties
-          echo "signing.keyPassword=$SIGN_KEY_PASS" >> key.properties
+          echo "signing.alias=${{ secrets.SIGN_ALIAS }}" >> key.properties
+          echo "signing.storePassword=${{ secrets.SIGN_STORE_PASS }}" >> key.properties
+          echo "signing.keyPassword=${{ secrets.SIGN_KEY_PASS }}" >> key.properties
           echo "signing.keyFile=${{ github.workspace }}/key.jks" >> key.properties
-        env:
-          SIGN_ALIAS: ${{ secrets.SIGN_ALIAS }}
-          SIGN_KEY_PASS: ${{ secrets.SIGN_KEY_PASS }}
-          SIGN_STORE_PASS: ${{ secrets.SIGN_STORE_PASS }}
-          KEY_JKS: ${{ secrets.KEY_JKS }}
 
       - uses: actions/cache@v2
         with:
