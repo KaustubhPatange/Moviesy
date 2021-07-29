@@ -50,6 +50,11 @@ jobs:
 
           echo "$GOOGLE_JSON" > google-services.json.b64
           certutil -decode google-services.json.b64 ${{ github.workspace }}/app/google-services.json
+          
+          dir
+          cd app
+          dir
+          cd..
         env:
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
           GOOGLE_CLIENT_WEB_ID: ${{ secrets.GOOGLE_CLIENT_WEB_ID }}
