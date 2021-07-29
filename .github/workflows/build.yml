@@ -32,7 +32,7 @@ jobs:
           echo "$PROTECT_MODULE" > module.tar.gz.b64
           certutil -decode module.tar.gz.b64 ${{ github.workspace }}/module.tar.gz
           
-          tar -xzf module.tar.gz
+          tar -xzf ${{ github.workspace }}/module.tar.gz
         env:
           PROTECT_MODULE: ${{ secrets.PROTECT_MODULE }}
 
