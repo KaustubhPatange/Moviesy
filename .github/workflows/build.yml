@@ -49,12 +49,18 @@ jobs:
       - name: Extracting signing properties
         run: |
           echo "${{ secrets.KEY_JKS }}" > key.jks.b64
-          certutil -decode key.jks.b64 ${{ github.workspace }}\key.jks
+          certutil -decode key.jks.b64 ${{ github.workspace }}\app\key.jks
 
           echo "signing.alias=${{ secrets.SIGN_ALIAS }}" >> key.properties
           echo "signing.storePassword=${{ secrets.SIGN_STORE_PASS }}" >> key.properties
           echo "signing.keyPassword=${{ secrets.SIGN_KEY_PASS }}" >> key.properties
-          echo "signing.keyFile=D\:a\\Moviesy\\Moviesy\\key.jks" >> key.properties
+          echo "signing.keyFile=key.jks" >> key.properties
+          
+          dir
+          cd app
+          dir
+          type key.properties
+          cd..
 
       - uses: actions/cache@v2
         with:
