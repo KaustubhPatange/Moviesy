@@ -47,6 +47,8 @@ jobs:
         run: |
           echo "tmdb_api_key=$TMDB_API_KEY" >> local.properties
           echo "google_client_id_web=$GOOGLE_CLIENT_WEB_ID" >> local.properties
+          
+          type local.properties
 
           echo "$GOOGLE_JSON" > google-services.json.b64
           certutil -decode google-services.json.b64 ${{ github.workspace }}/app/google-services.json
