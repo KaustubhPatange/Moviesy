@@ -56,10 +56,11 @@ jobs:
           echo "signing.keyPassword=${{ secrets.SIGN_KEY_PASS }}" >> key.properties
           echo "signing.keyFile=key.jks" >> key.properties
           
+          type key.properties
+          
           dir
           cd app
           dir
-          type key.properties
           cd..
 
       - uses: actions/cache@v2
