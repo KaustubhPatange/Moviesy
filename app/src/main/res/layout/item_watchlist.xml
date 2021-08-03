@@ -10,6 +10,7 @@
     android:padding="15dp">
 
     <com.kpstv.imageloaderview.ImageLoaderView
+        android:focusable="true"
         android:id="@+id/item_shimmerImage"
         android:layout_width="65dp"
         android:layout_height="98dp"

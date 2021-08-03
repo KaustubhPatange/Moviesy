@@ -8,6 +8,7 @@
     android:padding="7dp">
 
     <com.kpstv.imageloaderview.ImageLoaderView
+        android:focusable="true"
         android:id="@+id/mainImage"
         android:layout_width="120dp"
         android:layout_height="180dp"

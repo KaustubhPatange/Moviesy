@@ -55,6 +55,11 @@ class CastHelper {
         fun isCastingSupported(context: Context): Boolean {
             val resultCode = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(context)
             val uiModeManager = context.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
+            try {
+                CastContext.getSharedInstance(context)
+            } catch (e: Exception) {
+                return false
+            }
             if (resultCode != ConnectionResult.SUCCESS
                 || uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
                 return false
