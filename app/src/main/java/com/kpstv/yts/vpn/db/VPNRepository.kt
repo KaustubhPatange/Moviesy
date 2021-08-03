@@ -18,7 +18,12 @@ class VPNRepository @Inject constructor(
         private val dateFormatter = SimpleDateFormat("yyyyMMddHHmmss", Locale.US)
 
         fun formatExpireTime(expireTime: Long): String {
-            return dateFormatter.parse(expireTime.toString())?.toGMTString() ?: expireTime.toString()
+            return try {
+                dateFormatter.parse(expireTime.toString())?.toGMTString() ?: expireTime.toString()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                "Unknown"
+            }
         }
     }
 
