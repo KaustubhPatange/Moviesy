@@ -48,78 +48,82 @@ class VPNRepository @Inject constructor(
     private suspend fun fetchFromNetwork(): List<VpnConfiguration> {
         val vpnConfigurations = arrayListOf<VpnConfiguration>()
 
-        val vpnResponse = retrofitUtils.makeHttpCallAsync("https://www.vpngate.net/en")
-        if (vpnResponse.isSuccessful) {
+        try {
+            val vpnResponse = retrofitUtils.makeHttpCallAsync("https://www.vpngate.net/en")
+            if (vpnResponse.isSuccessful) {
 
-            val offsetDateTime = Calendar.getInstance().apply { add(Calendar.HOUR_OF_DAY, 7) }.time
-            val expiredTime = dateFormatter.format(offsetDateTime).toLong()
+                val offsetDateTime = Calendar.getInstance().apply { add(Calendar.HOUR_OF_DAY, 7) }.time
+                val expiredTime = dateFormatter.format(offsetDateTime).toLong()
 
-            val body = vpnResponse.body?.string()
-            vpnResponse.close() // close Stream
+                val body = vpnResponse.body?.string()
+                vpnResponse.close() // close Stream
 
-            val doc = Jsoup.parse(body)
+                val doc = Jsoup.parse(body)
 
-            val table = doc.getElementById("vpngate_inner_contents_td").children().findLast { it.id() == "vg_hosts_table_id" }?.child(0) ?: return vpnConfigurations
-            vpnConfigurations.clear()
+                val table = doc.getElementById("vpngate_inner_contents_td").children().findLast { it.id() == "vg_hosts_table_id" }?.child(0) ?: return vpnConfigurations
+                vpnConfigurations.clear()
 
-            val maxIteration = minOf(7, table.childrenSize())
-            for (i in 1 until table.childrenSize()) {
+                val maxIteration = minOf(7, table.childrenSize())
+                for (i in 1 until table.childrenSize()) {
 
-                if (vpnConfigurations.size >= maxIteration) return vpnConfigurations
+                    if (vpnConfigurations.size >= maxIteration) return vpnConfigurations
 
-                val tr = table.child(i)
+                    val tr = table.child(i)
 
-                if (tr.getElementsByClass("vg_table_header").size == 0) {
-                    val imageUrl = tr.child(0).child(0).attr("src").replace("../", "https://www.vpngate.net/")
-                    val country = tr.child(0).text()
+                    if (tr.getElementsByClass("vg_table_header").size == 0) {
+                        val imageUrl = tr.child(0).child(0).attr("src").replace("../", "https://www.vpngate.net/")
+                        val country = tr.child(0).text()
 
-                    if (country == "Reserved") continue
+                        if (country == "Reserved") continue
 
-                    // no more than 3 countries....
-                    if (vpnConfigurations.count { it.country == country } == 3) continue
+                        // no more than 3 countries....
+                        if (vpnConfigurations.count { it.country == country } == 3) continue
 
-                    val ip = ipRegex.find(tr.child(1).html())?.value ?: ""
+                        val ip = ipRegex.find(tr.child(1).html())?.value ?: ""
 
-                    val sessions = tr.child(2).child(0).child(0).text()
-                    val uptime = tr.child(2).child(2).text()
+                        val sessions = tr.child(2).child(0).child(0).text()
+                        val uptime = tr.child(2).child(2).text()
 
-                    val speed = tr.child(3).child(0).child(0).text()
+                        val speed = tr.child(3).child(0).child(0).text()
 
-                    if (speed == "0.00 Mbps") continue
+                        if (speed == "0.00 Mbps") continue
 
-                    val ovpnConfigElement = tr.child(6)
-                    if (ovpnConfigElement.childrenSize() == 0) continue
+                        val ovpnConfigElement = tr.child(6)
+                        if (ovpnConfigElement.childrenSize() == 0) continue
 
-                    val score = tr.child(tr.childrenSize() - 1).child(0).child(0).text()
-                        .replace(",","").toLong()
+                        val score = tr.child(tr.childrenSize() - 1).child(0).child(0).text()
+                            .replace(",","").toLong()
 
-                    val configUrl = "https://www.vpngate.net/en/" + ovpnConfigElement.child(0).attr("href")
+                        val configUrl = "https://www.vpngate.net/en/" + ovpnConfigElement.child(0).attr("href")
 
-                    val configResponse = retrofitUtils.makeHttpCallAsync(configUrl)
-                    if (configResponse.isSuccessful) {
-                        val configBody = configResponse.body?.string()
-                        configResponse.close() // Always close stream
+                        val configResponse = retrofitUtils.makeHttpCallAsync(configUrl)
+                        if (configResponse.isSuccessful) {
+                            val configBody = configResponse.body?.string()
+                            configResponse.close() // Always close stream
 
-                        val hrefElements = Jsoup.parse(configBody).getElementsByAttribute("href")
-                        val ovpnConfig =
-                            hrefElements.find { it.attr("href").contains(".ovpn") }?.attr("href") ?: continue
+                            val hrefElements = Jsoup.parse(configBody).getElementsByAttribute("href")
+                            val ovpnConfig =
+                                hrefElements.find { it.attr("href").contains(".ovpn") }?.attr("href") ?: continue
 
-                        val configDataResponse = retrofitUtils.makeHttpCallAsync("https://www.vpngate.net/$ovpnConfig")
-                        if (configDataResponse.isSuccessful) {
-                            val data = configDataResponse.body?.string() ?: continue
-                            configDataResponse.close() // Always close stream
-                            val vpnConfig = VpnConfiguration(
-                                formatCountry(country), imageUrl, ip, sessions, uptime, speed.replace("Mbps", "").trim(),
-                                data, score,
-                                expiredTime
-                            )
-                            vpnConfigurations.add(vpnConfig)
-                        } else continue
-                    } else {
-                        continue
+                            val configDataResponse = retrofitUtils.makeHttpCallAsync("https://www.vpngate.net/$ovpnConfig")
+                            if (configDataResponse.isSuccessful) {
+                                val data = configDataResponse.body?.string() ?: continue
+                                configDataResponse.close() // Always close stream
+                                val vpnConfig = VpnConfiguration(
+                                    formatCountry(country), imageUrl, ip, sessions, uptime, speed.replace("Mbps", "").trim(),
+                                    data, score,
+                                    expiredTime
+                                )
+                                vpnConfigurations.add(vpnConfig)
+                            } else continue
+                        } else {
+                            continue
+                        }
                     }
                 }
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
 
         return vpnConfigurations

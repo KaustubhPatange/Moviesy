@@ -34,7 +34,6 @@ import com.kpstv.yts.extensions.common.CustomMovieLayout
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.extensions.utils.GlideApp
 import com.kpstv.yts.extensions.utils.LangCodeUtils
-import com.kpstv.yts.extensions.views.ExtendedNestedScrollView
 import com.kpstv.yts.interfaces.listener.MovieListener
 import com.kpstv.yts.ui.activities.ImageViewActivity
 import com.kpstv.yts.ui.activities.PlayerActivity
@@ -215,8 +214,7 @@ class DetailFragment : ValueFragment(R.layout.fragment_detail), MovieListener {
                     drawableFrom(R.drawable.ic_favorite_yes).apply {
                         this?.setTint(colorFrom(R.color.colorAccent_Dark))
                     }
-            }
-            else {
+            } else {
                 binding.toolbar.menu?.getItem(0)?.icon =
                     drawableFrom(R.drawable.ic_favorite_no)
             }
@@ -249,7 +247,11 @@ class DetailFragment : ValueFragment(R.layout.fragment_detail), MovieListener {
                         setGenre(genre)
                         setOrderBy(YTSQuery.OrderBy.descending)
                     }.build()
-                    navViewModel.goToMore("${getString(R.string.genre_select)} $text", queryMap, add = true)
+                    navViewModel.goToMore(
+                        "${getString(R.string.genre_select)} $text",
+                        queryMap,
+                        add = true
+                    )
                 } else Toasty.error(requireContext(), "Genre $text does not exist").show()
             }
         })
@@ -263,21 +265,23 @@ class DetailFragment : ValueFragment(R.layout.fragment_detail), MovieListener {
             .into(object : CustomTarget<Bitmap>() {
                 override fun onLoadCleared(placeholder: Drawable?) {}
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    binding.root.enableDelayedTransition()
-                    binding.activityFinalPreviews.afYtPreviewImage.setImageBitmap(resource)
-                    Log.e(TAG, "Image Loaded")
-                    binding.activityFinalPreviews.afYtPreviewImage.setOnClickListener {
-                        Log.e(TAG, "OnClicked")
-                        if (::player.isInitialized) {
-                            player.loadVideo(movieDetail.yt_trailer_id, 0f)
-                            binding.activityFinalPreviews.youtubePlayerView.show()
-                        } else {
-                            binding.activityFinalPreviews.afYtPreviewPlay.hide()
-                            binding.activityFinalPreviews.afYtPreviewProgressBar.show()
+                    if (!isRemoving) {
+                        binding.root.enableDelayedTransition()
+                        binding.activityFinalPreviews.afYtPreviewImage.setImageBitmap(resource)
+                        Log.e(TAG, "Image Loaded")
+                        binding.activityFinalPreviews.afYtPreviewImage.setOnClickListener {
+                            Log.e(TAG, "OnClicked")
+                            if (::player.isInitialized) {
+                                player.loadVideo(movieDetail.yt_trailer_id, 0f)
+                                binding.activityFinalPreviews.youtubePlayerView.show()
+                            } else {
+                                binding.activityFinalPreviews.afYtPreviewPlay.hide()
+                                binding.activityFinalPreviews.afYtPreviewProgressBar.show()
+                            }
                         }
-                    }
 
-                    binding.activityFinalPreviews.afYtPreview.show()
+                        binding.activityFinalPreviews.afYtPreview.show()
+                    }
                 }
             })
 
@@ -285,17 +289,24 @@ class DetailFragment : ValueFragment(R.layout.fragment_detail), MovieListener {
             .into(object : CustomTarget<Bitmap>() {
                 override fun onLoadCleared(placeholder: Drawable?) {}
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    binding.activityFinalPreviews.shimmerFrame.hide()
+                    if (!isRemoving) {
+                        binding.activityFinalPreviews.shimmerFrame.hide()
 
-                    binding.activityFinalPreviews.afYtBannerImage.setImageBitmap(resource)
-                    binding.activityFinalPreviews.afYtBannerImage.visibility = View.VISIBLE
-                    binding.activityFinalPreviews.afYtBannerImage.setOnClickListener {
-                        val options = ActivityOptions.makeSceneTransitionAnimation(
-                            requireActivity(),
-                            binding.activityFinalPreviews.afYtBannerImage,
-                            "banner_photo"
-                        )
-                        ImageViewActivity.launch(requireContext(), movieDetail.medium_cover_image, movieDetail.large_cover_image, options.toBundle())
+                        binding.activityFinalPreviews.afYtBannerImage.setImageBitmap(resource)
+                        binding.activityFinalPreviews.afYtBannerImage.visibility = View.VISIBLE
+                        binding.activityFinalPreviews.afYtBannerImage.setOnClickListener {
+                            val options = ActivityOptions.makeSceneTransitionAnimation(
+                                requireActivity(),
+                                binding.activityFinalPreviews.afYtBannerImage,
+                                "banner_photo"
+                            )
+                            ImageViewActivity.launch(
+                                requireContext(),
+                                movieDetail.medium_cover_image,
+                                movieDetail.large_cover_image,
+                                options.toBundle()
+                            )
+                        }
                     }
                 }
             })
@@ -305,13 +316,19 @@ class DetailFragment : ValueFragment(R.layout.fragment_detail), MovieListener {
     private fun loadRecommendation() {
         val suggestionListener = SuggestionCallback(
             onComplete = { movies, tag, isMoreAvailable ->
-                val recommendLayout = CustomMovieLayout(requireContext(), getString(R.string.recommend))
+                val recommendLayout =
+                    CustomMovieLayout(requireContext(), getString(R.string.recommend))
                 recommendLayout.injectViewAt(binding.afSuggestionAddLayout)
                 recommendLayout.listenForClicks { view, movie ->
                     view.scaleInOut()
                     navViewModel.goToDetail(tmDbId = movie.movieId?.toString(), add = true)
                 }
-                recommendLayout.setupCallbacks(navViewModel, movies, "$tag/recommendations", isMoreAvailable)
+                recommendLayout.setupCallbacks(
+                    navViewModel,
+                    movies,
+                    "$tag/recommendations",
+                    isMoreAvailable
+                )
             },
             onFailure = { e ->
                 e.printStackTrace()
@@ -324,13 +341,19 @@ class DetailFragment : ValueFragment(R.layout.fragment_detail), MovieListener {
     private fun loadSimilar() {
         val suggestionListener = SuggestionCallback(
             onComplete = { movies, tag, isMoreAvailable ->
-                val similarLayout = CustomMovieLayout(requireContext(), getString(R.string.suggested))
+                val similarLayout =
+                    CustomMovieLayout(requireContext(), getString(R.string.suggested))
                 similarLayout.injectViewAt(binding.afSuggestionAddLayout)
                 similarLayout.listenForClicks { view, movie ->
                     view.scaleInOut()
                     navViewModel.goToDetail(tmDbId = movie.movieId?.toString(), add = true)
                 }
-                similarLayout.setupCallbacks(navViewModel, movies, "${movieDetail.imdb_code}/similar", isMoreAvailable)
+                similarLayout.setupCallbacks(
+                    navViewModel,
+                    movies,
+                    "${movieDetail.imdb_code}/similar",
+                    isMoreAvailable
+                )
             },
             onFailure = { e ->
                 e.printStackTrace()
@@ -343,7 +366,10 @@ class DetailFragment : ValueFragment(R.layout.fragment_detail), MovieListener {
         val castCallback = CastMoviesCallback(
             onComplete = { results ->
                 results.forEach {
-                    val movieLayout = CustomMovieLayout(requireContext(), "${getString(R.string.more_with)} ${it.name}")
+                    val movieLayout = CustomMovieLayout(
+                        requireContext(),
+                        "${getString(R.string.more_with)} ${it.name}"
+                    )
                     movieLayout.injectViewAt(binding.afMoreAddLayout)
                     movieLayout.listenForClicks { view, movie ->
                         view.scaleInOut()
@@ -425,7 +451,8 @@ class DetailFragment : ValueFragment(R.layout.fragment_detail), MovieListener {
     private fun initializeYoutubePlayer() {
         with(binding.activityFinalPreviews) {
             youtubePlayerView.enableAutomaticInitialization = false;
-            youtubePlayerView.initialize(object : YouTubePlayerListener by DelegatedYouTubePlayerListener {
+            youtubePlayerView.initialize(object :
+                YouTubePlayerListener by DelegatedYouTubePlayerListener {
                 override fun onCurrentSecond(youTubePlayer: YouTubePlayer, second: Float) {
                     youTubePlayerCurrentPosition = second
                 }
@@ -454,7 +481,8 @@ class DetailFragment : ValueFragment(R.layout.fragment_detail), MovieListener {
                         PlayerConstants.PlayerState.PAUSED -> buttonFullscreen.hide()
                         PlayerConstants.PlayerState.ENDED -> {
                             binding.activityFinalPreviews.afYtPreviewPlay.visibility = View.VISIBLE
-                            binding.activityFinalPreviews.afYtPreviewProgressBar.visibility = View.GONE
+                            binding.activityFinalPreviews.afYtPreviewProgressBar.visibility =
+                                View.GONE
                             binding.activityFinalPreviews.youtubePlayerView.visibility = View.GONE
                             binding.activityFinalPreviews.buttonFullscreen.visibility = View.GONE
                         }

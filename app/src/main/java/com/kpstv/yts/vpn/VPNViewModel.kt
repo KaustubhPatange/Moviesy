@@ -109,17 +109,21 @@ class VPNViewModel @ViewModelInject constructor(
     }
 
     private suspend fun initializeConfigs(): String? {
-        val response = retrofitUtils.makeHttpCallAsync("http://ip-api.com/json")
-        if (response.isSuccessful) {
-            val body = response.body?.string() ?: "{}"
-            response.close() // close
-            val json = JSONObject(body)
-            if (json.has("query")) {
-                ip = json.getString("query")
+        try {
+            val response = retrofitUtils.makeHttpCallAsync("http://ip-api.com/json")
+            if (response.isSuccessful) {
+                val body = response.body?.string() ?: "{}"
+                response.close() // close
+                val json = JSONObject(body)
+                if (json.has("query")) {
+                    ip = json.getString("query")
+                }
+                if (json.has("countryCode")) {
+                    country = json.getString("countryCode")
+                }
             }
-            if (json.has("countryCode")) {
-                country = json.getString("countryCode")
-            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
         return null
     }

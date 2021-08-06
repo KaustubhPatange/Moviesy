@@ -224,7 +224,7 @@ class SearchFragment : ValueFragment(R.layout.fragment_search) {
          *  to linear layout manager if there is only single match.
          */
         with(binding.activitySearchSingle) {
-            if (recyclerView.layoutManager !== gridLayoutManager)
+            if (recyclerView.layoutManager !is GridLayoutManager)
                 recyclerView.layoutManager = gridLayoutManager
             recyclerView.adapter = adapter
         }
