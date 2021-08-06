@@ -13,10 +13,12 @@ import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.navigation.FragmentNavigator
 import com.kpstv.navigation.autoChildElevation
 import com.kpstv.navigation.canFinish
+import com.kpstv.yts.AppPreference
 import com.kpstv.yts.BuildConfig
 import com.kpstv.yts.cast.CastHelper
 import com.kpstv.yts.data.db.localized.MainDao
 import com.kpstv.yts.databinding.ActivityStartBinding
+import com.kpstv.yts.defaultPreference
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.ui.fragments.*
 import com.kpstv.yts.ui.helpers.ActivityIntentHelper
@@ -39,6 +41,7 @@ class StartActivity : AppCompatActivity(), FragmentNavigator.Transmitter, Librar
     private val castHelper = CastHelper()
     private val mainCastHelper by lazy { MainCastHelper(this, lifecycle, castHelper) }
     private val vpnHelper by lazy { VPNHelper(this) { navigator.show(it) } }
+    private val appPreference by defaultPreference()
 
     private lateinit var navigator: FragmentNavigator
 
@@ -71,7 +74,8 @@ class StartActivity : AppCompatActivity(), FragmentNavigator.Transmitter, Librar
             mainCastHelper.setUpCastRelatedStuff()
         }
 
-        vpnHelper.initializeAndObserve()
+        if (appPreference.isVPNEnabled())
+            vpnHelper.initializeAndObserve()
        /* registerFragmentLifecycleForLogging { fragment, state ->
             if (BuildConfig.DEBUG) Log.e(fragment::class.simpleName, "=> $state")
         }*/

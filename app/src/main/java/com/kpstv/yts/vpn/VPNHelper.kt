@@ -107,6 +107,14 @@ class VPNHelper(
                 }
             }
         }
+        // observe vpn state
+        lifecycleScope.launchWhenStarted {
+            vpnViewModel.vpnHelperState.collect { state ->
+                if (state is VpnHelperState.DisableVpn) {
+                    preferences.setVpnHelpShown(false)
+                }
+            }
+        }
 
         vpnViewModel.initialize()
     }
@@ -218,4 +226,9 @@ sealed class VpnDialogUIState {
     object Loading : VpnDialogUIState()
     data class Detail(val vpnConfigurations: List<VpnConfiguration>) : VpnDialogUIState()
     data class Connected(val ip: String) : VpnDialogUIState()
+}
+
+sealed class VpnHelperState {
+    object None : VpnHelperState()
+    object DisableVpn : VpnHelperState()
 }

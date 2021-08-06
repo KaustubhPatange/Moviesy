@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
+import com.kpstv.yts.AppSettings.VPN_ENABLED_PREF
 import com.kpstv.yts.ui.helpers.ThemeHelper
 import java.io.File
 
@@ -43,6 +44,9 @@ class AppPreference(context: Context) {
 
     fun isVpnHelpShown(): Boolean = getBoolean(VPN_HELP_VIEW, false)
     fun setVpnHelpShown(value: Boolean) = writeBoolean(VPN_HELP_VIEW, value)
+
+    fun isVPNEnabled(): Boolean = getBoolean(VPN_ENABLED_PREF, true)
+    fun setVPNEnabled(value: Boolean) = writeBoolean(VPN_ENABLED_PREF, value)
 }
 
 fun Context.defaultPreference() =
@@ -180,4 +184,6 @@ object AppSettings {
 
     const val PREMIUM_PURCHASE_PREF = "premium_purchase_pref"
     const val SHOW_DOWNLOAD_TIP_PREF = "show_download_tip_pref"
+
+    const val VPN_ENABLED_PREF = "enable_vpn"
 }

@@ -22,6 +22,12 @@
         app:summary="@string/anonymous_summary"
         app:title="@string/anonymous_title" />
 
+    <SwitchPreferenceCompat
+        app:defaultValue="true"
+        app:key="enable_vpn"
+        app:summary="@string/vpn_summary"
+        app:title="@string/vpn_title" />
+
     <PreferenceCategory app:title="App">
         <SwitchPreferenceCompat
             app:defaultValue="true"

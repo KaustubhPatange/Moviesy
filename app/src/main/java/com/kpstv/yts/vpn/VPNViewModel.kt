@@ -11,6 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.json.JSONObject
@@ -26,6 +27,9 @@ class VPNViewModel @ViewModelInject constructor(
 
     private val _showHover = MutableStateFlow(false)
     val showHover: StateFlow<Boolean> = _showHover
+
+    private val _vpnHelperStateFlow : MutableStateFlow<VpnHelperState> = MutableStateFlow(VpnHelperState.None)
+    val vpnHelperState: StateFlow<VpnHelperState> = _vpnHelperStateFlow.asStateFlow()
 
     private val _connectionStatus: MutableStateFlow<VpnConnectionStatus> =
         MutableStateFlow(VpnConnectionStatus.LoadingConfiguration())
@@ -108,7 +112,7 @@ class VPNViewModel @ViewModelInject constructor(
         _connectionDetails.tryEmit(detail)
     }
 
-    private suspend fun initializeConfigs(): String? {
+    private suspend fun initializeConfigs() {
         try {
             val response = retrofitUtils.makeHttpCallAsync("http://ip-api.com/json")
             if (response.isSuccessful) {
@@ -125,7 +129,6 @@ class VPNViewModel @ViewModelInject constructor(
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        return null
     }
 
 
@@ -137,6 +140,8 @@ class VPNViewModel @ViewModelInject constructor(
             AppDatabaseConverter.toAppDatabaseFromString(json)?.let { data ->
                 if (data.vpnAffectedCountries.contains(country)) {
                     _showHover.emit(true)
+                } else {
+                    _vpnHelperStateFlow.tryEmit(VpnHelperState.DisableVpn)
                 }
             }
         }

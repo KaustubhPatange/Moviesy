@@ -6,12 +6,15 @@ import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import com.kpstv.yts.AppInterface
+import com.kpstv.yts.AppPreference
+import com.kpstv.yts.AppSettings
 import com.kpstv.yts.AppSettings.ANONYMOUS_TORRENT_DOWNLOAD_PREF
 import com.kpstv.yts.AppSettings.TMDB_BASE_URL_PREF
 import com.kpstv.yts.AppSettings.YIFY_BASE_URL_PREF
 import com.kpstv.yts.AppSettings.YTS_BASE_URL_PREF
 import com.kpstv.yts.R
 import com.kpstv.yts.extensions.SearchType
+import es.dmoral.toasty.Toasty
 
 class GeneralSettingsFragment : PreferenceFragmentCompat() {
     private val TAG = "GeneralSettingsFragment"
@@ -67,6 +70,11 @@ class GeneralSettingsFragment : PreferenceFragmentCompat() {
         suggestionType?.setDefaultValue(AppInterface.SUGGESTION_SEARCH_TYPE.name)
         suggestionType?.setOnPreferenceChangeListener { _, value ->
             AppInterface.SUGGESTION_SEARCH_TYPE = SearchType.valueOf(value.toString())
+            true
+        }
+
+        findPreference<SwitchPreferenceCompat>(AppSettings.VPN_ENABLED_PREF)?.setOnPreferenceClickListener {
+            Toasty.info(requireContext(), getString(R.string.restart_app)).show()
             true
         }
     }
