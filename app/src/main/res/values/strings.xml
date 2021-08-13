@@ -295,4 +295,5 @@
     <string name="vpn_title">Enable VPN</string>
     <string name="vpn_summary">Disable or enable built-in VPN to overcome YTS connection issues.</string>
     <string name="restart_app">Restart the app to take the effect!</string>
+    <string name="no_config_found">No VPN configurations found!</string>
 </resources>

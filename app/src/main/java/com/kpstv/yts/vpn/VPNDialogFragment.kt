@@ -119,7 +119,13 @@ class VPNDialogFragment : DialogFragment(R.layout.custom_dialog_vpn) {
                         binding.detailLayout.tvDetailLastRefresh.text =
                             getString(R.string.vpn_dialog_detail_update_placeholder, VPNRepository.formatExpireTime(date))
 
-                        adapter.submitList(uiState.vpnConfigurations)
+                        if (uiState.vpnConfigurations.isEmpty()) {
+                            binding.detailLayout.vpnRecyclerView.hide()
+                            binding.detailLayout.tvNoConfig.show()
+                        } else {
+                            binding.detailLayout.tvNoConfig.hide()
+                            adapter.submitList(uiState.vpnConfigurations)
+                        }
                     }
                     is VpnDialogUIState.Connected -> {
                         binding.loadingLayout.root.hide()

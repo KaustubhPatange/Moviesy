@@ -33,40 +33,58 @@
             android:textSize="13sp" />
 
         <TextView
-            android:layout_marginTop="10dp"
             android:id="@+id/tv_detail_last_refresh"
-            android:textColor="?attr/colorTextInverse"
-            android:textSize="12sp"
-            android:layout_gravity="center_vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="10dp"
+            android:textColor="?attr/colorTextInverse"
+            android:textSize="12sp"
             tools:text="@string/vpn_dialog_detail_update_placeholder" />
 
     </LinearLayout>
 
     <include layout="@layout/view_separator" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/vpn_recyclerView"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:overScrollMode="never"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        android:layout_height="wrap_content">
 
-    <include android:id="@+id/layout_gear_vpn" layout="@layout/layout_ad_gear_vpn"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/vpn_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:overScrollMode="never"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+        <TextView
+            android:id="@+id/tv_no_config"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/no_config_found"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:visibility="gone"
+            tools:visibility="visible" />
+    </FrameLayout>
+
+    <include
+        android:id="@+id/layout_gear_vpn"
+        layout="@layout/layout_ad_gear_vpn" />
 
     <FrameLayout
-        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_list_close"
-            android:layout_gravity="end"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="end"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"
             android:text="@string/close"

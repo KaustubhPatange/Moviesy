@@ -60,31 +60,11 @@ class FinalViewModel @ViewModelInject constructor(
         }
     }
 
-    fun fetchMovieUrl(movieListener: MovieListener, movieUrl: String) {
+    suspend fun fetchMovieUrl(movieListener: MovieListener, movieUrl: String) {
         movieListener.onStarted()
-        viewModelScope.launch {
-            val movieShort = ytsParser.parseMovieUrl(movieUrl)
-            if (movieShort?.movieId != null) {
-                val movieResult = getMovieDetailYTS(movieShort.movieId)
-                when(movieResult) {
-                    is MovieResult.Success -> {
-                        movieListener.onComplete(movieResult.data)
-                    }
-                    is MovieResult.Error -> {
-                        movieListener.onFailure(movieResult.exception)
-                    }
-                }
-            } else {
-                movieListener.onFailure(Exception("Failed to fetch the movie"))
-            }
-        }
-    }
-
-    fun getMovieDetailYTS(movieListener: MovieListener, movieId: Int) {
-        movieListener.onStarted()
-
-        viewModelScope.launch {
-            val movieResult = getMovieDetailYTS(movieId)
+        val movieShort = ytsParser.parseMovieUrl(movieUrl)
+        if (movieShort?.movieId != null) {
+            val movieResult = getMovieDetailYTS(movieShort.movieId)
             when(movieResult) {
                 is MovieResult.Success -> {
                     movieListener.onComplete(movieResult.data)
@@ -92,6 +72,22 @@ class FinalViewModel @ViewModelInject constructor(
                 is MovieResult.Error -> {
                     movieListener.onFailure(movieResult.exception)
                 }
+            }
+        } else {
+            movieListener.onFailure(Exception("Failed to fetch the movie"))
+        }
+    }
+
+    suspend fun getMovieDetailYTS(movieListener: MovieListener, movieId: Int) {
+        movieListener.onStarted()
+
+        val movieResult = getMovieDetailYTS(movieId)
+        when(movieResult) {
+            is MovieResult.Success -> {
+                movieListener.onComplete(movieResult.data)
+            }
+            is MovieResult.Error -> {
+                movieListener.onFailure(movieResult.exception)
             }
         }
     }
@@ -129,46 +125,43 @@ class FinalViewModel @ViewModelInject constructor(
         }
     }
 
-    fun getMovieDetailTMdb(movieListener: MovieListener, queryString: String) {
+    suspend fun getMovieDetailTMdb(movieListener: MovieListener, queryString: String) {
         movieListener.onStarted()
 
-        viewModelScope.launch {
-            try {
+        try {
+            /** Since the queryString is nothing but a TMDB Movie ID
+             * so we first need to get details of the TMDB movie to
+             * extract IMDB Id.
+             */
+            val responseMovie = tMdbApi.getMovie(queryString)
 
-                /** Since the queryString is nothing but a TMDB Movie ID
-                 * so we first need to get details of the TMDB movie to
-                 * extract IMDB Id.
+            val query = YTSQuery.ListMoviesBuilder().apply {
+                setQuery(responseMovie.imdbCode)
+                setLimit(1)
+            }.build()
+
+            /** Using IMDB Id we can query the ytsApi to filter movies
+             * and get the movie we wanted.
+             */
+            val response = ytsApi.listMovies(query).await()
+            if (response.data.movie_count > 0) {
+                val movie = response.data.movies?.get(0)!!
+                movieListener.onComplete(movie)
+
+                /** A patch that will modify movie and inject cast & director
                  */
-                val responseMovie = tMdbApi.getMovie(queryString)
-
-                val query = YTSQuery.ListMoviesBuilder().apply {
-                    setQuery(responseMovie.imdbCode)
-                    setLimit(1)
-                }.build()
-
-                /** Using IMDB Id we can query the ytsApi to filter movies
-                 * and get the movie we wanted.
-                 */
-                val response = ytsApi.listMovies(query).await()
-                if (response.data.movie_count > 0) {
-                    val movie = response.data.movies?.get(0)!!
-                    movieListener.onComplete(movie)
-
-                    /** A patch that will modify movie and inject cast & director
-                     */
-                    injectCastInfo(movie)
-                    if (movie.cast != null && movie.crew != null) {
-                        movieListener.onCastFetched(movie.cast!!, movie.crew!!)
-                    }
-
-                    movieRepository.saveMovie(movie)
-                } else movieListener.onFailure(MovieNotFoundException())
-            } catch (e: Exception) {
-                movieRepository.getMovieByTitleLong(queryString)?.let {
-                    movieListener.onComplete(it)
+                injectCastInfo(movie)
+                if (movie.cast != null && movie.crew != null) {
+                    movieListener.onCastFetched(movie.cast!!, movie.crew!!)
                 }
-                movieListener.onFailure(e)
+
+                movieRepository.saveMovie(movie)
+            } else movieListener.onFailure(MovieNotFoundException())
+        } catch (e: Exception) {
+            movieRepository.getMovieByTitleLong(queryString)?.let {
+                movieListener.onComplete(it)
             }
+            movieListener.onFailure(e)
         }
     }
 
