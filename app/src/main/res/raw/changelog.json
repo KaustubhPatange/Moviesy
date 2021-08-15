@@ -1,14 +1,10 @@
 {
-  "version": "1.7",
+  "version": "2.0.0",
   "summary": [
-    "<br/><h4>Added:</h4><br/>",
-    "• Continue watching feed to start an existing playback.<br/>",
-    "<br/><h4>Improved:</h4><br/>",
-    "• SSL error handling popups to minimal.<br/>",
-    "• Better handling of deeplinks within the app.<br/>",
-    "• Some animations and launch intents.<br/>",
+    "<br/><h4>Updated:</h4><br/>",
+    "• When VPN list is empty a message will be shown instead of nothing.<br/>",
     "<br/><h4>Fixed:</h4><br/>",
-    "• Some random crashes when app launches on specific devices.<br/>",
-    "• Light theme issues."
+    "• Issues with sublisting VPN & ViewBinding.<br/>",
+    "• Crashes due to incorrect resume of coroutine on different thread."
   ]
 }
