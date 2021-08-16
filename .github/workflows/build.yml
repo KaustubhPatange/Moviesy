@@ -56,6 +56,13 @@ jobs:
           echo "signing.keyPassword=${{ secrets.SIGN_KEY_PASS }}" >> key.properties
           echo "signing.keyFile=key.jks" >> key.properties
 
+      - name: Extracting version info
+        id: version
+        shell: pwsh
+        run: |
+          $tag = (findstr /L VERSION_NAME "${{ github.workspace }}\buildSrc\src\main\java\AndroidConfig.kt").Split("=")[1].Trim().Replace('"',"")
+          echo "::set-output name=TAG_NAME::$tag"
+
       - uses: actions/cache@v2
         with:
           path: |
@@ -73,8 +80,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: vX.X
-          release_name: vX.X
+          tag_name: v${{ steps.version.outputs.TAG_NAME }}
+          release_name: Day(th) Month Year
           draft: true
 
       - name: Upload Release Asset
@@ -85,7 +92,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./app/build/outputs/apk/release/app-release.apk
-          asset_name: app-release_vX.X.apk
+          asset_name: Moviesy_v${{ steps.version.outputs.TAG_NAME }}.apk
           asset_content_type: application/octet-stream
 
   draft_remove:
