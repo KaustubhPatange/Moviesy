@@ -87,23 +87,23 @@ class DriveHelper : SignInHelper() {
     private fun isDriveInitialized() = drive != null
 
     private fun signInToGoogleDrive() {
-        onSignInComplete = (init)
+        onSignInComplete = init
 
         init()
-        signIn()
+        signIn(onSignInComplete = onSignInComplete ?: { }, onSignInFailed = onSignInFailed ?: { })
     }
 
     private fun isPermissionNeededForGoogleDrive(): Boolean {
         if (!GoogleSignIn.hasPermissions(
-                GoogleSignIn.getLastSignedInAccount(fragment.requireContext()),
+                GoogleSignIn.getLastSignedInAccount(fragment?.requireContext()),
                 Scope(DriveScopes.DRIVE_APPDATA),
                 Scope(DriveScopes.DRIVE_FILE)
             )
         ) {
             GoogleSignIn.requestPermissions(
-                fragment,
+                fragment!!,
                 DRIVE_ACCESS_REQUEST_CODE,
-                GoogleSignIn.getLastSignedInAccount(fragment.requireContext()),
+                GoogleSignIn.getLastSignedInAccount(fragment?.requireContext()),
                 Scope(DriveScopes.DRIVE_APPDATA),
                 Scope(DriveScopes.DRIVE_FILE)
             )
@@ -129,6 +129,9 @@ class DriveHelper : SignInHelper() {
         if (!isAllAccessGranted()) // Wait till all sign in flow get's completed.
             return
 
+        val fragment = fragment
+        check(fragment != null) { }
+
         val workId = DriveWorker.schedule(fragment.requireContext(), Caller.STORE_DATA)
         val liveWorkData = WorkManager.getInstance(fragment.requireContext())
             .getWorkInfoByIdLiveData(workId)
@@ -148,6 +151,9 @@ class DriveHelper : SignInHelper() {
             return
 
         this.restoreWorkCallback = null
+
+        val fragment = fragment
+        check(fragment != null) { }
 
         val workId = DriveWorker.schedule(fragment.requireContext(), Caller.RESTORE_DATA)
         val liveWorkData = WorkManager.getInstance(fragment.requireContext())

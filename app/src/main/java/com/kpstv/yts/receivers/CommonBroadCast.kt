@@ -73,7 +73,7 @@ class CommonBroadCast : BroadcastReceiver() {
                    if (filePath != null) {
                        AppUtils.installApp(context, File(filePath))
                    } else {
-                       Toasty.error(context, context.getString(R.string.update_error))
+                       Toasty.error(context, context.getString(R.string.update_error)).show()
                    }
                 }
             }

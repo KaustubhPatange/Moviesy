@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
+import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.purchase.Options
@@ -22,6 +23,7 @@ import com.kpstv.yts.ui.helpers.PremiumHelper
 import com.kpstv.yts.ui.helpers.SignInHelper
 import com.kpstv.yts.ui.helpers.ThemeHelper
 import es.dmoral.toasty.Toasty
+import kotlinx.coroutines.launch
 
 class BottomSheetPurchase : ExtendedBottomSheetDialogFragment(R.layout.bottom_sheet_purchase) {
 
@@ -50,10 +52,15 @@ class BottomSheetPurchase : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
 
     private fun setMultiplePurchaseButtonClicks() {
         binding.customMultiplePurchase.buttonPaypal.setOnClickListener {
-            binding.purchaseLayout.invisible()
-            binding.customMultiplePurchaseLayout.hide()
-            binding.progressLayout.show()
-            signInHelper.signIn()
+            signInHelper.signIn(
+                onSignInComplete = { account ->
+                    binding.purchaseLayout.invisible()
+                    binding.customMultiplePurchaseLayout.hide()
+                    binding.progressLayout.show()
+
+                    checkout(account)
+                }
+            )
         }
         binding.customMultiplePurchase.buttonGpay.setOnClickListener {
             AppUtils.launchUrl(
@@ -62,6 +69,27 @@ class BottomSheetPurchase : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
                 ThemeHelper.isDarkVariantTheme()
             )
             dismiss()
+        }
+        binding.customMultiplePurchase.buttonRestore.setOnClickListener {
+            signInHelper.signIn(
+                onSignInComplete = { account ->
+                    lifecycleScope.launch {
+                        binding.progressLayout.show()
+                        binding.customMultiplePurchase.root.invisible()
+
+                        val result = PurchaseHelper.checkIfUserAlreadyExist(account.email!!, account.id!!)
+
+                        signInHelper.signOut()
+
+                        if (result) {
+                            proceedRequest()
+                        } else {
+                            Toasty.error(requireContext(), getString(R.string.no_premium_found)).show()
+                            dismiss()
+                        }
+                    }
+                }
+            )
         }
         binding.customMultiplePurchase.helpButton.setOnClickListener {
             AppUtils.launchUrlIntent(
@@ -125,15 +153,7 @@ class BottomSheetPurchase : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
     private fun initializeSignIn() {
         signInHelper = SignInHelper.Builder()
             .setParent(this)
-            .setOnSignInComplete {
-                checkout(it)
-            }
-            .setOnSignInFailed { e ->
-                Toasty.error(requireContext(), "Failed: ${signInHelper.parseErrorCode(e)}").show()
-                dismiss()
-            }
             .build()
-
         signInHelper.init()
     }
 }

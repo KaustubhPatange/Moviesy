@@ -57,8 +57,7 @@ object Notifications {
             val cancelIntent = Intent(this, CommonBroadCast::class.java).apply {
                 action = CommonBroadCast.STOP_UPDATE_WORKER
             }
-            val pendingIntent =
-                PendingIntent.getBroadcast(this, cancelRequestCode, cancelIntent, 0)
+            val pendingIntent = PendingIntent.getBroadcast(this, cancelRequestCode, cancelIntent, 0)
             val notification = NotificationCompat.Builder(this, getString(R.string.CHANNEL_ID_3))
                 .setContentTitle(fileName)
                 .setContentText("${CommonUtils.getSizePretty(progress.currentBytes, false)} / ${CommonUtils.getSizePretty(progress.totalBytes)}")

@@ -2,6 +2,8 @@ package com.kpstv.yts.ui.helpers
 
 import android.content.Intent
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -9,11 +11,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.Scope
 import com.google.android.gms.tasks.Task
-import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import com.kpstv.yts.BuildConfig
 import com.kpstv.yts.extensions.AccountCallback
 import com.kpstv.yts.extensions.ExceptionCallback
@@ -38,8 +35,8 @@ open class SignInHelper {
         const val DRIVE_ACCESS_REQUEST_CODE = 179
     }
 
-    internal lateinit var fragment: Fragment
-    private lateinit var mGoogleSignInClient: GoogleSignInClient
+    internal var fragment: Fragment? = null
+    private var mGoogleSignInClient: GoogleSignInClient? = null
     internal var onSignInComplete: AccountCallback? = null
     internal var onSignInFailed: ExceptionCallback? = null
 
@@ -48,16 +45,18 @@ open class SignInHelper {
 
         fun setParent(value: Fragment): Builder {
             signInHelper.fragment = value
-            return this
-        }
-
-        fun setOnSignInComplete(value: AccountCallback): Builder {
-            signInHelper.onSignInComplete = value
-            return this
-        }
-
-        fun setOnSignInFailed(value: ExceptionCallback?): Builder {
-            signInHelper.onSignInFailed = value
+            value.viewLifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
+                override fun onDestroy(owner: LifecycleOwner) {
+                    signInHelper.resetListeners()
+                    super.onDestroy(owner)
+                }
+            })
+            value.lifecycle.addObserver(object : DefaultLifecycleObserver {
+                override fun onDestroy(owner: LifecycleOwner) {
+                    signInHelper.resetAll()
+                    super.onDestroy(owner)
+                }
+            })
             return this
         }
 
@@ -65,6 +64,8 @@ open class SignInHelper {
     }
 
     fun init(signOut: Boolean = true, scope: List<Scope>? = null) {
+        val fragment = fragment
+        check(fragment != null) { }
         val gso =
             GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(BuildConfig.GOOGLE_CLIENT_ID)
@@ -73,15 +74,17 @@ open class SignInHelper {
 
         mGoogleSignInClient = GoogleSignIn.getClient(fragment.requireContext(), gso.build())
         if (signOut)
-            revokeUser()
+            signOut()
     }
 
-    private fun revokeUser() {
-        mGoogleSignInClient.signOut()
+    fun signOut() {
+        mGoogleSignInClient?.signOut()
     }
 
-    fun signIn() {
-        if (::fragment.isInitialized)
+    fun signIn(onSignInComplete: AccountCallback, onSignInFailed: ExceptionCallback = { it.printStackTrace() }) {
+        this.onSignInComplete = onSignInComplete
+        this.onSignInFailed = onSignInFailed
+        if (fragment != null)
             signInFragment()
         // TODO: Remaining stuff for Activity
     }
@@ -95,6 +98,8 @@ open class SignInHelper {
                 onSignInComplete?.invoke(account)
             } catch (e: ApiException) {
                 onSignInFailed?.invoke(e)
+            } finally {
+                resetListeners()
             }
         }
     }
@@ -107,7 +112,23 @@ open class SignInHelper {
 
 
     private fun signInFragment() {
+        val fragment = fragment
+        val mGoogleSignInClient = mGoogleSignInClient
+        check(fragment != null) { }
+        check(mGoogleSignInClient != null) { }
+
         val signInIntent = mGoogleSignInClient.signInIntent
         fragment.startActivityForResult(signInIntent, GOOGLE_SIGNIN_REQUEST_CODE)
+    }
+
+    internal fun resetListeners() {
+        onSignInComplete = null
+        onSignInFailed = null
+    }
+
+    internal fun resetAll() {
+        fragment = null
+        mGoogleSignInClient = null
+        resetListeners()
     }
 }

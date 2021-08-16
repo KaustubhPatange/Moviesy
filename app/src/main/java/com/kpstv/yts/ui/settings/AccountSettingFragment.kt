@@ -36,7 +36,24 @@ class AccountSettingFragment : PreferenceFragmentCompat() {
         initializeSignIn()
 
         findPreference<Preference>(SHOW_ACCOUNT_ID_PREF)?.setOnPreferenceClickListener {
-            signInHelper.signIn()
+            signInHelper.signIn(
+                onSignInComplete = { account ->
+                    val message = "Account Key: ${account.id}\nEmail: ${account.email}"
+                    AlertNoIconDialog.Companion.Builder(requireContext())
+                        .setTitle(getString(R.string.account_info))
+                        .setMessage(message)
+                        .setPositiveButton(getString(R.string.copy)) {
+                            (requireContext().getSystemService(CLIPBOARD_SERVICE) as ClipboardManager)
+                                .setPrimaryClip(ClipData.newPlainText("account_info", message))
+                            Toasty.info(requireContext(), getString(R.string.copy_clipboard)).show()
+                        }
+                        .setNegativeButton(getString(R.string.cancel)) { }
+                        .show()
+                },
+                onSignInFailed = { error ->
+                    Toasty.error(requireContext(), "Failed: ${signInHelper.parseErrorCode(error)}").show()
+                }
+            )
             true
         }
 
@@ -75,22 +92,6 @@ Email: ${jsonObject.getString("email")}""".trimIndent())
     private fun initializeSignIn() {
         signInHelper = SignInHelper.Builder()
             .setParent(this)
-            .setOnSignInComplete {
-                val message = "Account Key: ${it.id}\nEmail: ${it.email}"
-                AlertNoIconDialog.Companion.Builder(requireContext())
-                    .setTitle(getString(R.string.account_info))
-                    .setMessage(message)
-                    .setPositiveButton(getString(R.string.copy)) {
-                        (requireContext().getSystemService(CLIPBOARD_SERVICE) as ClipboardManager)
-                            .setPrimaryClip(ClipData.newPlainText("account_info", message))
-                        Toasty.info(requireContext(), getString(R.string.copy_clipboard)).show()
-                    }
-                    .setNegativeButton(getString(R.string.cancel)) { }
-                    .show()
-            }
-            .setOnSignInFailed { e ->
-                Toasty.error(requireContext(), "Failed: ${signInHelper.parseErrorCode(e)}").show()
-            }
             .build()
         signInHelper.init()
     }

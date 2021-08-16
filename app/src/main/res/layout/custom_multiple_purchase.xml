@@ -43,6 +43,16 @@
         android:layout_height="60dp"
         android:src="@drawable/premium_gpay"/>
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_restore"
+        android:layout_marginTop="15dp"
+        android:layout_marginHorizontal="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAllCaps="false"
+        android:text="@string/restore_purchase"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+
     <TextView
         android:clickable="true"
         android:focusable="true"
