@@ -133,12 +133,20 @@ object Notifications {
             action = CommonBroadCast.INSTALL_APK
             putExtra(CommonBroadCast.ARGUMENT_APK_FILE, file.absolutePath)
         }
+        val pendingIntent = PendingIntent.getBroadcast(this, getRandomNumberCode(), installIntent, 0)
 
         val notification = NotificationCompat.Builder(this, getString(R.string.CHANNEL_ID_2))
             .setContentTitle(getString(R.string.update_download))
             .setContentText(getString(R.string.update_install))
             .setSmallIcon(android.R.drawable.stat_sys_download_done)
-            .setContentIntent(PendingIntent.getBroadcast(this, getRandomNumberCode(), installIntent, 0))
+            .setContentIntent(pendingIntent)
+            .addAction(
+                NotificationCompat.Action(
+                    android.R.drawable.stat_sys_download_done,
+                    getString(R.string.update_install_button),
+                    pendingIntent
+                )
+            )
             .setAutoCancel(true)
 
         mgr.notify(UPDATE_NOTIFICATION_ID,  notification.build())
