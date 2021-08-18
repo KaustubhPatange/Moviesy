@@ -62,8 +62,8 @@ class UpdateUtils @Inject constructor(
     private suspend fun fetchUpdateDetails(): Pair<Release, Boolean> {
         val release = releaseApi.fetchRelease()
 
-        val newVersion = release.tagName.replace("v", "").toFloat()
-        val currentVersion = BuildConfig.VERSION_NAME.toFloat()
+        val newVersion = release.tagName.replace("v", "").replace(".","").toFloat()
+        val currentVersion = BuildConfig.VERSION_NAME.replace(".","").toFloat()
 
         return Pair(release, newVersion > currentVersion)
     }
