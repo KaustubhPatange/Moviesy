@@ -20,9 +20,9 @@ class YTSParser @Inject constructor(
 ) {
 
     private val client = retrofitUtils.getHttpBuilder()
-        .callTimeout(120, TimeUnit.SECONDS)
-        .connectTimeout(100, TimeUnit.SECONDS)
-        .readTimeout(100, TimeUnit.SECONDS)
+        .callTimeout(0, TimeUnit.SECONDS)
+        .connectTimeout(0, TimeUnit.SECONDS)
+        .readTimeout(0, TimeUnit.SECONDS)
         .build()
 
     /**

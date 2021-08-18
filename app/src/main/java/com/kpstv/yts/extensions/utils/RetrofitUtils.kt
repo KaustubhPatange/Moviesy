@@ -37,8 +37,8 @@ class RetrofitUtils @Inject constructor(
     fun getHttpBuilder(): OkHttpClient.Builder {
         return OkHttpClient.Builder()
             .addInterceptor(interceptor)
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
+            .connectTimeout(0, TimeUnit.SECONDS)
+            .readTimeout(0, TimeUnit.SECONDS)
     }
 
     /**
