@@ -146,7 +146,7 @@ class MainFragment : ValueFragment(R.layout.fragment_main), FragmentNavigator.Tr
                     AppUtils.doOnVersionDeprecated(requireContext())
                 },
                 onError = {
-                    Toasty.error(requireContext(), "Failed: ${it.message}").show()
+                    Toasty.error(requireContext(), "Update check failed: ${it.message}").show()
                 }
             )
         }

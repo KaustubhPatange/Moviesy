@@ -5,7 +5,7 @@ object AndroidConfig {
     const val BUILD_TOOLS_VERSION = "29.0.3"
 
     // TODO: Always change version code & name during release
-    const val VERSION_CODE = 12
+    const val VERSION_CODE = 13
     const val VERSION_NAME = "2.0.1"
 
     const val ID = "com.kpstv.yts"
