@@ -12,6 +12,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.work.WorkManager
 import com.kpstv.common_moviesy.extensions.invisible
+import com.kpstv.purchase.PurchaseHelper
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppSettings
 import com.kpstv.yts.R
@@ -145,6 +146,7 @@ class PremiumHelper {
             onPremiumActivated: SimpleCallback? = null,
             onNoPremiumFound: SimpleCallback? = null
         ): Unit = with(context) {
+            PurchaseHelper.ensurePremium(context) // This will run before the workmanager, expected to quickly check for premium
             val requestId = AutoPurchaseWorker.schedule(this)
             WorkManager.getInstance(this).getWorkInfoByIdLiveData(requestId)
                 .observe(lifecycleOwner, Observer {

@@ -24,6 +24,7 @@ class AutoPurchaseWorker @WorkerInject constructor(
 ) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result {
+        PurchaseHelper.ensurePremium(appContext
         if (!AppInterface.IS_PREMIUM_UNLOCKED) {
             val purchaseJSON = PremiumHelper.getPurchaseHistoryJSON()
             if (purchaseJSON != null) {

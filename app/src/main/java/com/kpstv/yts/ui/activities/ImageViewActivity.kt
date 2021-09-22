@@ -11,6 +11,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.kpstv.common_moviesy.extensions.*
 import com.kpstv.yts.databinding.ActivityImageViewBinding
+import com.kpstv.yts.extensions.load
 import com.kpstv.yts.extensions.utils.GlideApp
 
 class ImageViewActivity : AppCompatActivity() {
@@ -41,8 +42,16 @@ class ImageViewActivity : AppCompatActivity() {
             onBackPressed()
         }
 
-        GlideApp.with(this).load(intent.extras?.getString(CURRENT_IMAGE_URL))
-            .into(binding.photoView)
+        binding.photoView.load(
+            uri = intent.extras?.getString(CURRENT_IMAGE_URL),
+            onSuccess = { bm ->
+                binding.photoView.setImageBitmap(bm)
+                loadHighResImage()
+            }
+        )
+    }
+
+    private fun loadHighResImage() {
         GlideApp.with(this).asBitmap().load(intent.extras?.getString(HIGH_IMAGE_URL))
             .into(object: CustomTarget<Bitmap>() {
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
