@@ -165,6 +165,7 @@ dependencies {
     implementation(LibraryDependency.HILT_WORK_MANAGER)
     implementation(LibraryDependency.AUTOBINDINGS)
     implementation(LibraryDependency.IMAGELOADERVIEW)
+    implementation(LibraryDependency.APP_UPDATER)
 
     implementation(LibraryDependency.NAVIGATOR)
     implementation(LibraryDependency.NAVIGATOR_EXTENSIONS)

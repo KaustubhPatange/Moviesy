@@ -60,6 +60,7 @@ private object LibraryVersion {
     const val DATASTORE_PREFERENCES = "1.0.0-beta01"
     const val VIEWPAGER2 = "1.0.0"
     const val DYNAMIC_ANIMATION = "1.0.0-alpha03"
+    const val APP_UPDATER = "1.1"
 }
 
 object LibraryDependency {
@@ -142,4 +143,5 @@ object LibraryDependency {
     const val DATASTORE_PREFERENCES = "androidx.datastore:datastore-preferences:${LibraryVersion.DATASTORE_PREFERENCES}"
     const val VIEWPAGER2 = "androidx.viewpager2:viewpager2:${LibraryVersion.VIEWPAGER2}"
     const val DYNAMIC_ANIMATION = "androidx.dynamicanimation:dynamicanimation-ktx:${LibraryVersion.DYNAMIC_ANIMATION}"
+    const val APP_UPDATER = "io.github.kaustubhpatange:app-updater:${LibraryVersion.APP_UPDATER}"
 }
