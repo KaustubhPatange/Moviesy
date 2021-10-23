@@ -1,12 +1,8 @@
 {
-  "version": "2.0.1",
+  "version": "2.0.2",
   "summary": [
-    "<br/><h4>Added:</h4><br/>",
-    "• Ability to restore purchase (premium) within the app.<br/>",
-    "<br/><h4>Updated:</h4><br/>",
-    "• Download notification will now show additional Install button.<br/>",
     "<br/><h4>Fixed:</h4><br/>",
-    "• Built-in updater issue which won't automatically update apps.<br/>",
-    "• Crashes due to socket timeout for devices with slow internet connection."
+    "• Proper loading of high-res image in Details.<br/>",
+    "• Auto check for premium at app start"
   ]
 }
