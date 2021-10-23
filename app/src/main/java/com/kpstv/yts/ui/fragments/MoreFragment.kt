@@ -24,6 +24,7 @@ import com.kpstv.common_moviesy.extensions.applyTopInsets
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.navigation.BaseArgs
 import com.kpstv.navigation.ValueFragment
+import com.kpstv.navigation.getKeyArgs
 import com.kpstv.yts.R
 import com.kpstv.yts.adapters.CustomPagedAdapter
 import com.kpstv.yts.data.converters.QueryConverter

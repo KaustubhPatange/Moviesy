@@ -70,6 +70,7 @@
                 android:textSize="12sp" />
 
             <Button
+                android:foregroundTint="?colorPrimary"
                 android:id="@+id/item_size"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -14,9 +14,7 @@ import com.kpstv.common_moviesy.extensions.applyTopInsets
 import com.kpstv.common_moviesy.extensions.hide
 import com.kpstv.common_moviesy.extensions.show
 import com.kpstv.common_moviesy.extensions.viewBinding
-import com.kpstv.navigation.BaseArgs
-import com.kpstv.navigation.FragmentNavigator
-import com.kpstv.navigation.ValueFragment
+import com.kpstv.navigation.*
 import com.kpstv.yts.AppSettings
 import com.kpstv.yts.R
 import com.kpstv.yts.adapters.LibraryDownloadAdapter
@@ -124,10 +122,7 @@ class LibraryFragment : ValueFragment(R.layout.fragment_library), FragmentNaviga
         }
         libraryViewModel.selectedMovieId.observe(viewLifecycleOwner) { model ->
             if (model == null) {
-                getSimpleNavigator().pop()
-               /* childFragmentManager.findFragmentByTag(BOTTOM_SHEET_DOWNLOAD_TAG)?.let { frag ->
-                    if (frag is BottomSheetLibraryDownload) frag.dismiss()
-                }*/
+                simpleNavigator.pop()
             } else {
                 adapterOnClickListener(model)
             }
@@ -160,7 +155,7 @@ class LibraryFragment : ValueFragment(R.layout.fragment_library), FragmentNaviga
             BottomSheetLibraryDownload.Args(PlaybackType.LOCAL, model)
         }
 
-        getSimpleNavigator().show(BottomSheetLibraryDownload::class, args)
+        simpleNavigator.show(BottomSheetLibraryDownload::class, args)
     }
 
     private fun adapterOnMoreListener(innerView: View, model: Model.response_download) {

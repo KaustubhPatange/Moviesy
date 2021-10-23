@@ -21,6 +21,7 @@ import com.kpstv.common_moviesy.extensions.*
 import com.kpstv.common_moviesy.extensions.utils.CommonUtils
 import com.kpstv.navigation.BaseArgs
 import com.kpstv.navigation.ValueFragment
+import com.kpstv.navigation.getKeyArgs
 import com.kpstv.yts.AppInterface
 import com.kpstv.yts.R
 import com.kpstv.yts.adapters.GenreAdapter
@@ -404,7 +405,7 @@ class DetailFragment : ValueFragment(R.layout.fragment_detail), MovieListener {
                 mediumImageCover = movieDetail.medium_cover_image,
                 movieId = movieDetail.id
             )
-            getSimpleNavigator().show(BottomSheetDownload::class, args)
+            simpleNavigator.show(BottomSheetDownload::class, args)
         }
     }
 
