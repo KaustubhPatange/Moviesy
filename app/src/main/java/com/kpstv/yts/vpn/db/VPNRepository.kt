@@ -34,7 +34,7 @@ class VPNRepository @Inject constructor(
             return local
         }
         val network = fetchFromNetwork()
-        val sorted = network.sortedByDescending { it.speed.toFloat() }.subList(0, minOf(3, network.size)).map {
+        val sorted = network.sortedByDescending { it.speed.replace(",", "").toFloat() }.subList(0, minOf(3, network.size)).map {
             it.copy(premium = true)
         }.union(network).distinctBy { it.ip }
         vpnDao.insertAll(sorted)

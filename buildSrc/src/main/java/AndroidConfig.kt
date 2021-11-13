@@ -5,8 +5,8 @@ object AndroidConfig {
     const val BUILD_TOOLS_VERSION = "29.0.3"
 
     // TODO: Always change version code & name during release
-    const val VERSION_CODE = 14
-    const val VERSION_NAME = "2.0.2"
+    const val VERSION_CODE = 15
+    const val VERSION_NAME = "2.0.3"
 
     const val ID = "com.kpstv.yts"
 //    const val TEST_INSTRUMENTATION_RUNNER = "android.support.test.runner.AndroidJUnitRunner"
