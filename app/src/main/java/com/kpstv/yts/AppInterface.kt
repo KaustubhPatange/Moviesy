@@ -48,6 +48,7 @@ class AppInterface {
         var DOWNLOAD_CONNECTION_TIMEOUT = 100
         var MOVIE_SPAN_DIFFERENCE = 3
         var QUERY_SPAN_DIFFERENCE = 6
+        var QUERY_SPAN_DIFFERENCE_UPCOMING = 1
         var CUSTOM_LAYOUT_YTS_SPAN = 8
         const val MOVIE_FETCH_SIZE = 10
         var IS_PREMIUM_UNLOCKED = false
@@ -55,6 +56,7 @@ class AppInterface {
         var SUGGESTION_SEARCH_TYPE = SearchType.TMDB
 
         const val FEATURED_QUERY = "movies=featured&client=yts"
+        const val UPCOMING_QUERY = "movies=upcoming&client=yts"
 
         const val TORRENT_NOT_SUPPORTED = "com.kpstv.yts.TORRENT_NOT_SUPPORTED"
         const val MODEL_UPDATE = "com.kpstv.yts.MODEL_UPDATE"

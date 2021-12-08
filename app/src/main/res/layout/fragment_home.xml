@@ -88,23 +88,29 @@
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.tabs.TabLayout
-                app:tabTextAppearance="?android:textAppearanceSmall"
-                android:layout_marginStart="25dp"
-                app:tabMode="scrollable"
-                app:tabRippleColor="@android:color/transparent"
-                android:background="?colorForeground"
                 android:id="@+id/tabLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:background="?colorForeground"
+                app:tabMode="scrollable"
+                app:tabRippleColor="@android:color/transparent"
+                app:tabTextAppearance="?android:textAppearanceSmall">
 
                 <com.google.android.material.tabs.TabItem
-                    android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
-                    android:text="@string/charts"/>
+                    android:layout_height="wrap_content"
+                    android:text="@string/charts" />
+
                 <com.google.android.material.tabs.TabItem
-                    android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
-                    android:text="@string/categories"/>
+                    android:layout_height="wrap_content"
+                    android:text="@string/upcoming" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/categories" />
 
             </com.google.android.material.tabs.TabLayout>
         </LinearLayout>

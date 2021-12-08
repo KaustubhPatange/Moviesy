@@ -45,7 +45,8 @@ class HomeFragment : ValueFragment(R.layout.fragment_home), FragmentNavigator.Na
             override val tabLayoutId: Int = R.id.tabLayout
             override val tabNavigationFragments: List<KClass<out Fragment>> = listOf(
                 ChartsFragment::class,
-                GenreFragment::class
+                UpcomingFragment::class,
+                GenreFragment::class,
             )
             override val fragmentNavigationTransition: Animation = Animation.SlideHorizontally
             override val fragmentViewRetentionType: ViewRetention = ViewRetention.RETAIN

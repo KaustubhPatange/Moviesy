@@ -174,6 +174,7 @@ dependencies {
 
     implementation(LibraryDependency.DATASTORE_PREFERENCES)
     implementation(LibraryDependency.VIEWPAGER2)
+    implementation(LibraryDependency.ROUND_CORNER_PROGRESSBAR)
 
     implementation(LibraryDependency.GOOGLE_HTTPCLIENT_API) {
         exclude(group = GradlePluginId.APACHE_HTTP)
@@ -183,12 +184,14 @@ dependencies {
         exclude(group = GradlePluginId.APACHE_HTTP)
     }
     implementation(LibraryDependency.GUAVA_CONFLICT)
+    implementation(LibraryDependency.EPOXY_CORE)
 
     kapt(LibraryDependency.AUTOBINDINGS_COMPILER)
     kapt(LibraryDependency.GLIDE_COMPILER)
     kapt(LibraryDependency.HILT_COMPILER)
     kapt(LibraryDependency.HILT_VIEWODEL_COMPILER)
     kapt(LibraryDependency.ROOM_COMPILER_KAPT)
+    kapt(LibraryDependency.EPOXY_COMPILER)
 
     //debugImplementation(TestLibraryDependency.ANDROID_DEBUG_DB)
     //debugImplementation(TestLibraryDependency.STETHO)

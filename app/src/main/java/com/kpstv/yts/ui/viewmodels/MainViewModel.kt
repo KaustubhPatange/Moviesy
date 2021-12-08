@@ -4,11 +4,9 @@ import android.util.Log
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
-import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.yts.AppInterface.Companion.CUSTOM_LAYOUT_YTS_SPAN
 import com.kpstv.yts.AppInterface.Companion.FEATURED_QUERY
 import com.kpstv.yts.AppInterface.Companion.MainDateFormatter
-import com.kpstv.yts.AppInterface.Companion.QUERY_SPAN_DIFFERENCE
 import com.kpstv.yts.data.converters.QueryConverter
 import com.kpstv.yts.data.db.localized.MainDao
 import com.kpstv.yts.data.db.repository.DownloadRepository
@@ -183,23 +181,6 @@ class MainViewModel @ViewModelInject constructor(
     }
 
     private suspend fun isFetchNeeded(queryString: String): Boolean {
-        try {
-            val movieModel = repository.getMoviesByQuery(queryString)
-            movieModel?.also {
-                val currentCalender = Calendar.getInstance()
-                currentCalender.add(Calendar.HOUR, -QUERY_SPAN_DIFFERENCE)
-                val currentSpan = MainDateFormatter.format(
-                    currentCalender.time
-                ).toLong()
-                return if (currentSpan > movieModel.time) {
-                    repository.deleteMovie(movieModel)
-                    true
-                } else false
-            }
-            return true
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return true
-        }
+        return ytsParser.isMovieFetchNeeded(queryString, repository)
     }
 }

@@ -61,6 +61,8 @@ private object LibraryVersion {
     const val VIEWPAGER2 = "1.0.0"
     const val DYNAMIC_ANIMATION = "1.0.0-alpha03"
     const val APP_UPDATER = "1.1"
+    const val EPOXY = "4.6.3"
+    const val ROUND_CORNER_PROGRESSBAR = "2.1.2"
 }
 
 object LibraryDependency {
@@ -144,4 +146,7 @@ object LibraryDependency {
     const val VIEWPAGER2 = "androidx.viewpager2:viewpager2:${LibraryVersion.VIEWPAGER2}"
     const val DYNAMIC_ANIMATION = "androidx.dynamicanimation:dynamicanimation-ktx:${LibraryVersion.DYNAMIC_ANIMATION}"
     const val APP_UPDATER = "io.github.kaustubhpatange:app-updater:${LibraryVersion.APP_UPDATER}"
+    const val EPOXY_CORE = "com.airbnb.android:epoxy:${LibraryVersion.EPOXY}"
+    const val EPOXY_COMPILER = "com.airbnb.android:epoxy-processor:${LibraryVersion.EPOXY}"
+    const val ROUND_CORNER_PROGRESSBAR = "com.akexorcist:round-corner-progress-bar:${LibraryVersion.ROUND_CORNER_PROGRESSBAR}"
 }

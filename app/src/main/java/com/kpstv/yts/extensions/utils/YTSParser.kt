@@ -1,18 +1,20 @@
 package com.kpstv.yts.extensions.utils
 
-import android.util.Log
 import androidx.core.text.isDigitsOnly
 import com.kpstv.common_moviesy.extensions.await
 import com.kpstv.yts.AppInterface
+import com.kpstv.yts.data.db.localized.MainDao
 import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.data.models.Result
 import com.kpstv.yts.data.models.Subtitle
 import com.kpstv.yts.extensions.errors.SSLHandshakeException
 import okhttp3.Request
 import org.jsoup.Jsoup
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.collections.ArrayList
 
 @Singleton
 class YTSParser @Inject constructor(
@@ -44,6 +46,70 @@ class YTSParser @Inject constructor(
             val link = elements[i].attr("href").toString()
             parseMovieUrl(link)?.let { list.add(it) }
         }
+        return list
+    }
+
+    /**
+     * Fetch upcoming movies
+     */
+    suspend fun fetchUpcomingMovies(): ArrayList<MovieShort> {
+        val list = ArrayList<MovieShort>()
+        val response =
+            client.newCall(Request.Builder().url(AppInterface.YTS_BASE_URL).build()).await()
+        if (response.code == 525) throw SSLHandshakeException("Could not establish successful connection with server")
+        if (!response.isSuccessful) return list
+
+        val doc = Jsoup.parse(response.body?.string())
+        response.close() // Always close the response when not needed
+
+        val homeMovies = doc.getElementsByClass("home-movies")?.firstOrNull { it.html().contains(">Upcoming YIFY Movies ") }
+            ?.child(1)?.children() ?: return arrayListOf()
+
+        for (i in 0 until homeMovies.size) {
+            val element = homeMovies[i]
+
+            var url: String? = null
+            var imDbCode: String? = null
+            var rating = 0.0
+
+            val bannerElement = element.getElementsByClass("browse-movie-link").firstOrNull() ?: continue
+            val targetUrl = bannerElement.attr("href")
+            if (targetUrl.contains("yts")) {
+                url = targetUrl
+            } else if (targetUrl.contains("imdb.com")) {
+                imDbCode = targetUrl.split("/")[4]
+            }
+
+            val ratingElement = element.getElementsByClass("rating")?.firstOrNull()
+            if (ratingElement != null) {
+                rating = ratingElement.text().split("/")[0].trim().toDouble()
+            }
+
+            val imageElement = element.getElementsByClass("img-responsive")?.firstOrNull() ?: continue
+            val imageUrl = AppInterface.YTS_BASE_URL + imageElement.attr("src")
+
+            val titleElement = element.getElementsByClass("browse-movie-title")?.firstOrNull() ?: continue
+            val title = titleElement.text()
+
+            val yearElement = element.getElementsByClass("browse-movie-year")?.firstOrNull() ?: continue
+            val year = yearElement.text().split("\\s".toRegex())[0].trim().toInt()
+            val progressItem = yearElement.text().replace(year.toString(), "").trim()
+            val progressValue = yearElement.getElementsByTag("progress")?.firstOrNull()?.attr("value")?.toInt() ?: continue
+
+            val movieShort = MovieShort(
+                url = url,
+                imdbCode = imDbCode,
+                title = title,
+                rating = rating,
+                bannerUrl = imageUrl,
+                year = year,
+                progress = MovieShort.Progress(progressItem, progressValue),
+                runtime = 0
+            )
+
+            list.add(movieShort)
+        }
+
         return list
     }
 
@@ -170,6 +236,27 @@ class YTSParser @Inject constructor(
             Result.success(link)
         } catch (e: Exception) {
             Result.error(e)
+        }
+    }
+
+    suspend fun isMovieFetchNeeded(identifier: String, repository: MainDao): Boolean {
+        try {
+            val movieModel = repository.getMoviesByQuery(identifier)
+            movieModel?.also {
+                val currentCalender = Calendar.getInstance()
+                currentCalender.add(Calendar.HOUR, -AppInterface.QUERY_SPAN_DIFFERENCE_UPCOMING)
+                val currentSpan = AppInterface.MainDateFormatter.format(
+                    currentCalender.time
+                ).toLong()
+                return if (currentSpan > movieModel.time) {
+                    repository.deleteMovie(movieModel)
+                    true
+                } else false
+            }
+            return true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return true
         }
     }
 }

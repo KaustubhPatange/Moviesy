@@ -64,6 +64,7 @@
     <string name="watchlist">Watchlist</string>
     <string name="library">Library</string>
     <string name="charts">Charts</string>
+    <string name="upcoming">Upcoming</string>
     <string name="categories">Categories</string>
     <string name="remove_watchlist">Removed from your watchlist</string>
     <string name="undo">Undo</string>
@@ -299,4 +300,7 @@
     <string name="no_config_found">No VPN configurations found!</string>
     <string name="restore_purchase">Restore purchase</string>
     <string name="no_premium_found">No premium associated with this account found!</string>
+    <string name="upcoming_movies">Upcoming Movies</string>
+    <string name="coming_soon">Coming soon</string>
+    <string name="upcoming_subtext">%1$s • %2$s/10</string>
 </resources>

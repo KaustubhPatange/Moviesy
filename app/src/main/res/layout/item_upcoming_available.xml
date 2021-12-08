@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:padding="15dp">
+
+    <com.kpstv.imageloaderview.ImageLoaderView
+        android:id="@+id/item_shimmerImage"
+        android:layout_width="80dp"
+        android:layout_height="120dp"
+        android:focusable="true"
+        app:corner_radius="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:overlay_drawable="@drawable/ic_play_circle"
+        app:overlay_drawable_padding="5dp"
+        app:shimmering="true" />
+
+    <TextView
+        android:id="@+id/item_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:textColor="?colorTextLight"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/item_shimmerImage"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/af_title" />
+
+    <TextView
+        android:id="@+id/item_subText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/google_sans_regular"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/item_shimmerImage"
+        app:layout_constraintTop_toBottomOf="@id/item_title"
+        tools:text="2013" />
+
+    <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
+        android:id="@+id/item_progress"
+        android:layout_width="0dp"
+        android:layout_height="15dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="50dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/item_shimmerImage"
+        app:layout_constraintTop_toBottomOf="@id/item_subText"
+        app:rcBackgroundColor="?colorControlHighlight"
+        app:rcBackgroundPadding="2dp"
+        app:rcMax="100"
+        app:rcProgressColor="?colorAccent"
+        app:rcRadius="20dp"
+        tools:rcProgress="20" />
+
+    <!--        <ProgressBar-->
+    <!--            android:id="@+id/item_progress"-->
+    <!--            style="@style/Widget.AppCompat.ProgressBar.Horizontal"-->
+    <!--            android:layout_width="0dp"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginStart="15dp"-->
+    <!--            android:layout_marginTop="20dp"-->
+    <!--            android:layout_marginEnd="50dp"-->
+    <!--            android:background="@drawable/background_progress"-->
+    <!--            android:minHeight="0dp"-->
+    <!--            android:scaleY="2.0"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            app:layout_constraintStart_toEndOf="@id/item_shimmerImage"-->
+    <!--            app:layout_constraintTop_toBottomOf="@id/item_subText"-->
+    <!--            tools:progress="20" />-->
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_coming_soon"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="?colorTextPremium"
+        android:minHeight="0dp"
+        android:text="@string/coming_soon"
+        android:textAllCaps="false"
+        android:textSize="11sp"
+        app:cornerRadius="20dp"
+        app:elevation="0dp"
+        app:layout_constraintStart_toEndOf="@id/item_quality"
+        app:layout_constraintTop_toBottomOf="@id/item_progress"
+        tools:backgroundTint="@color/premium" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/item_quality"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="?colorAccent"
+        android:enabled="false"
+        android:minWidth="0dp"
+        android:textAllCaps="false"
+        android:textColor="?colorTextLight"
+        android:textSize="11sp"
+        app:cornerRadius="20dp"
+        app:elevation="0dp"
+        app:layout_constraintStart_toEndOf="@id/item_shimmerImage"
+        app:layout_constraintTop_toBottomOf="@id/item_progress"
+        tools:text="2160p Web" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,8 +13,10 @@ data class MovieShort(
     val runtime: Int,
     val imdbCode: String? = null,
     @SerializedName("medium_cover_image")
-    val bannerUrl: String
+    val bannerUrl: String,
+    val progress: Progress? = null
 ) : Serializable {
+    data class Progress(val forQuality: String, val progress: Int)
     companion object {
         fun from(data: TmDbMovie) = MovieShort(
             movieId = data.movieId,
