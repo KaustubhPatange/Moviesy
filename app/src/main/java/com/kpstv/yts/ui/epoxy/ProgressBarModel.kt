@@ -1,4 +1,4 @@
-package com.kpstv.yts.ui.controllers
+package com.kpstv.yts.ui.epoxy
 
 import android.view.View
 import com.airbnb.epoxy.EpoxyHolder

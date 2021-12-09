@@ -4,17 +4,16 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.navigation.ValueFragment
 import com.kpstv.yts.R
 import com.kpstv.yts.databinding.FragmentUpcomingBinding
-import com.kpstv.yts.ui.controllers.upcoming.UpcomingController
+import com.kpstv.yts.ui.epoxy.upcoming.UpcomingController
 import com.kpstv.yts.ui.viewmodels.StartViewModel
 import com.kpstv.yts.ui.viewmodels.UpcomingUiState
 import com.kpstv.yts.ui.viewmodels.UpcomingViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import es.dmoral.toasty.Toasty
 
 @AndroidEntryPoint
 class UpcomingFragment : ValueFragment(R.layout.fragment_upcoming), HomeFragment.Callbacks {
@@ -32,18 +31,18 @@ class UpcomingFragment : ValueFragment(R.layout.fragment_upcoming), HomeFragment
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.swipeRefreshLayout.setOnRefreshListener {
-            fetchMovies(forceRefresh = true)
+            fetchUpcomingMovies(forceRefresh = true)
         }
         binding.rvEpoxy.setControllerAndBuildModels(controller)
 
-        fetchMovies()
+        fetchUpcomingMovies()
     }
 
-    private fun fetchMovies(forceRefresh: Boolean = false) {
+    private fun fetchUpcomingMovies(forceRefresh: Boolean = false) {
         viewModel.fetchUpcomingMovies(forceRefresh).observe(viewLifecycleOwner) { state ->
             when(state) {
                 UpcomingUiState.Loading -> {
-                    binding.swipeRefreshLayout.isRefreshing = true
+//                    binding.swipeRefreshLayout.isRefreshing = true
                 }
                 is UpcomingUiState.Success -> {
                     binding.swipeRefreshLayout.isRefreshing = false
@@ -51,6 +50,7 @@ class UpcomingFragment : ValueFragment(R.layout.fragment_upcoming), HomeFragment
                 }
                 UpcomingUiState.Error -> {
                     binding.swipeRefreshLayout.isRefreshing = false
+                    Toasty.error(requireContext(), getString(R.string.error_refresh_upcoming)).show()
                 }
             }
         }

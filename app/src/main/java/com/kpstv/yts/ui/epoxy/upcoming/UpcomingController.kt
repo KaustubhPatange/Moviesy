@@ -1,13 +1,18 @@
-package com.kpstv.yts.ui.controllers.upcoming
+package com.kpstv.yts.ui.epoxy.upcoming
 
 import android.content.Context
 import com.airbnb.epoxy.EpoxyController
+import com.kpstv.yts.R
 import com.kpstv.yts.data.models.MovieShort
+import com.kpstv.yts.defaultPreference
 import com.kpstv.yts.extensions.utils.AppUtils
-import com.kpstv.yts.ui.controllers.progressBar
+import com.kpstv.yts.ui.epoxy.customTip
+import com.kpstv.yts.ui.epoxy.progressBar
 import java.util.concurrent.CopyOnWriteArrayList
 
 class UpcomingController(private val context: Context, private val goToDetail: (movieUrl: String) -> Unit) : EpoxyController() {
+
+    private val appPreference by context.defaultPreference()
 
     private val upcomingModels: CopyOnWriteArrayList<MovieShort> = CopyOnWriteArrayList()
 
@@ -19,11 +24,19 @@ class UpcomingController(private val context: Context, private val goToDetail: (
 
     override fun buildModels() = with(context) context@{
         val goToDetail = goToDetail
+        val appPreference =  appPreference
 
-//        upcomingTitle {
-//            id("upcoming-movies")
-//            title(getString(R.string.upcoming_movies))
-//        }
+        if (!appPreference.isUpcomingTipShown()) {
+            customTip {
+                id("upcoming-tip")
+                title(getString(R.string.upcoming_tip_title))
+                message(getString(R.string.upcoming_tip_text))
+                clickListener {
+                    appPreference.setUpcomingTipShown(true)
+                    this@UpcomingController.requestModelBuild()
+                }
+            }
+        }
 
         if (upcomingModels.isNotEmpty()) {
             for (upcomingModel in upcomingModels) {

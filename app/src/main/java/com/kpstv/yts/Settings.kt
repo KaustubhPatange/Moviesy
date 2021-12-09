@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
+import com.kpstv.yts.AppSettings.UPCOMING_TIP_PREF
 import com.kpstv.yts.AppSettings.VPN_ENABLED_PREF
 import com.kpstv.yts.ui.helpers.ThemeHelper
 import java.io.File
@@ -47,6 +48,9 @@ class AppPreference(context: Context) {
 
     fun isVPNEnabled(): Boolean = getBoolean(VPN_ENABLED_PREF, true)
     fun setVPNEnabled(value: Boolean) = writeBoolean(VPN_ENABLED_PREF, value)
+
+    fun isUpcomingTipShown(): Boolean = getBoolean(UPCOMING_TIP_PREF, false)
+    fun setUpcomingTipShown(value: Boolean) = writeBoolean(UPCOMING_TIP_PREF, value)
 }
 
 fun Context.defaultPreference() =
@@ -186,4 +190,6 @@ object AppSettings {
     const val SHOW_DOWNLOAD_TIP_PREF = "show_download_tip_pref"
 
     const val VPN_ENABLED_PREF = "enable_vpn"
+
+    const val UPCOMING_TIP_PREF = "upcoming_tip_pref"
 }

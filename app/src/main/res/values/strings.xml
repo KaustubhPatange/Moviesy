@@ -303,4 +303,7 @@
     <string name="upcoming_movies">Upcoming Movies</string>
     <string name="coming_soon">Coming soon</string>
     <string name="upcoming_subtext">%1$s • %2$s/10</string>
+    <string name="error_refresh_upcoming">Could not refresh the upcoming list</string>
+    <string name="upcoming_tip_title">Pull to refresh</string>
+    <string name="upcoming_tip_text">Upcoming movie status are updated on a frequent basis which is why you should pull down to refresh to keep them updated.\n\nThey are also sporadically updated within every 1 hour.</string>
 </resources>

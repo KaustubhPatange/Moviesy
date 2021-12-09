@@ -1,6 +1,5 @@
-package com.kpstv.yts.ui.controllers.upcoming
+package com.kpstv.yts.ui.epoxy.upcoming
 
-import android.graphics.drawable.GradientDrawable
 import android.view.View
 import com.airbnb.epoxy.EpoxyAttribute
 import com.airbnb.epoxy.EpoxyHolder
