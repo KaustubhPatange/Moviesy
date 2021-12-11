@@ -534,7 +534,7 @@ class DownloadService : IntentService("blank") {
         LocalBroadcastManager.getInstance(context).unregisterReceiver(localBroadcastReceiver)
 
         pendingJobs.clear()
-        if (torrentStream.isStreaming) torrentStream.stopStream()
+        if (::torrentStream.isInitialized && torrentStream.isStreaming) torrentStream.stopStream()
         wakeLock?.release()
         notificationManager.cancel(FOREGROUND_ID);
 
