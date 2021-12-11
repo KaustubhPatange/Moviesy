@@ -33,8 +33,6 @@ class AccountSettingFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.account_preference, rootKey)
 
-        initializeSignIn()
-
         findPreference<Preference>(SHOW_ACCOUNT_ID_PREF)?.setOnPreferenceClickListener {
             signInHelper.signIn(
                 onSignInComplete = { account ->
@@ -61,6 +59,11 @@ class AccountSettingFragment : PreferenceFragmentCompat() {
             sendErrorEmailPayment()
             true
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        initializeSignIn()
     }
 
     private fun sendErrorEmailPayment() {
