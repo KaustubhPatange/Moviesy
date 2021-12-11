@@ -192,7 +192,7 @@ class YTSParser @Inject constructor(
                 Request.Builder().url("${AppInterface.YIFY_BASE_URL}/movie-imdb/${imDbCode}")
                     .build()
             ).await()
-
+            if (!response.isSuccessful) throw RuntimeException("Response not successful")
             val subtitles = Jsoup.parse(response.body?.string()).getElementsByClass("high-rating")
             response.close() // Always close the response when not needed
 
@@ -228,7 +228,7 @@ class YTSParser @Inject constructor(
             val response = client.newCall(
                 Request.Builder().url(endPoint).build()
             ).await()
-
+            if (!response.isSuccessful) throw RuntimeException("Response not successful")
             val link = Jsoup.parse(response.body?.string()).getElementsByClass("download-subtitle")[0]
                 .attr("href").toString();
 

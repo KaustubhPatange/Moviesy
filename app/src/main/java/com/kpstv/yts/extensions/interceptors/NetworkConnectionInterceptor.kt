@@ -14,8 +14,8 @@ class NetworkConnectionInterceptor @Inject constructor(
     @ApplicationContext private val context: Context
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
-        if (!isOnline())
-            throw NoInternetException("Make sure you have an active data connection") // TODO;
+//        if (!isOnline())
+//            throw NoInternetException("Make sure you have an active data connection")
         return chain.proceed(chain.request())
     }
 
