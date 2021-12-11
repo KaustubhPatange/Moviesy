@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
@@ -68,7 +69,11 @@ class ContinueWatcherHelper(private val context: Context, private val lifecycleO
                         }.start()
                 }
                 watcher?.let {
-                    val bitmap = BitmapFactory.decodeStream(imageCacheFile.inputStream())
+                    val bitmap = if (imageCacheFile.exists()) {
+                        BitmapFactory.decodeStream(imageCacheFile.inputStream())
+                    } else {
+                        Bitmap.createBitmap(intArrayOf(Color.BLACK), 50, 50, Bitmap.Config.ARGB_8888)
+                    }
                     val pixel = bitmap.getPixel(0,bitmap.height - 50)
                     if (ColorUtils.calculateLuminance(pixel) < 0.25) {
                         binding.tvTitle.setTextColor(context.colorFrom(R.color.text_light))
