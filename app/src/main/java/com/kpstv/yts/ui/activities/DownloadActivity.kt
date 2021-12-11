@@ -329,9 +329,10 @@ class DownloadActivity : AppCompatActivity() {
 
             adapter.setCloseClickListener(object : JobQueueAdapter.CloseClickListener {
                 override fun onClick(model: Torrent, pos: Int) {
-                    models.removeAt(pos)
+                    if (models.lastIndex >= pos) {
+                        models.removeAt(pos)
+                    }
                     adapter.notifyItemRemoved(pos)
-
                 }
             })
 
