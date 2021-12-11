@@ -1,6 +1,7 @@
 package com.kpstv.yts.ui.settings
 
 import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -39,10 +40,14 @@ class StorageSettingFragment : PreferenceFragmentCompat() {
         storagePreference = findPreference(STORAGE_LOCATION_PREF)
         storagePreference?.summary = AppInterface.STORAGE_LOCATION.path
         storagePreference?.setOnPreferenceClickListener {
-            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
-                flags = Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+            try {
+                val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
+                    flags = Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                }
+                startActivityForResult(intent, STORAGE_REQUEST)
+            } catch (e: ActivityNotFoundException) {
+                Toasty.error(requireContext(), getString(R.string.no_action)).show()
             }
-            startActivityForResult(intent, STORAGE_REQUEST)
             true
         }
 

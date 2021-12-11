@@ -123,6 +123,7 @@ class ContinueWatcherHelper(private val context: Context, private val lifecycleO
             }
         }
         isSaved = true
+        bitmap.recycle()
     }
 
     data class Watcher(val movieId: Int, val title: String, val lastPosition: Int)
