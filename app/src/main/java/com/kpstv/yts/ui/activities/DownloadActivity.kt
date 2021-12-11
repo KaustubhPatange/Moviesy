@@ -117,9 +117,12 @@ class DownloadActivity : AppCompatActivity() {
         pauseAdapter.setOnMoreListener = { v, model, i ->
             val popupMenu = PopupMenu(this, v)
             popupMenu.inflate(R.menu.activity_download_pause_menu)
-            popupMenu.setOnMenuItemClickListener {
-                handlePauseMenu(it, model, i)
-                return@setOnMenuItemClickListener true
+            popupMenu.setOnMenuItemClickListener { item ->
+                if (item != null) {
+                    handlePauseMenu(item, model, i)
+                    return@setOnMenuItemClickListener true
+                }
+                return@setOnMenuItemClickListener false
             }
             popupMenu.show()
         }
