@@ -12,6 +12,7 @@ import com.kpstv.yts.extensions.ProgressStreamer
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.interfaces.api.AppApi
 import java.io.File
+import java.util.*
 
 class UpdateWorker @WorkerInject constructor(
     @Assisted context: Context,
@@ -63,15 +64,16 @@ class UpdateWorker @WorkerInject constructor(
             ) // Run synchronously on a background thread
 
             Log.e(TAG, "Work done")
-            Result.success()
+            Result.success(workDataOf(OUTPUT_FILE_PATH to file.absolutePath))
         } else
             Result.failure()
     }
 
     companion object {
+        const val OUTPUT_FILE_PATH = "moviesy_app_update_work:output_file"
         private const val APP_UPDATE_WORK = "moviesy_app_update_work"
 
-        fun schedule(context: Context, updateUri: String) {
+        fun schedule(context: Context, updateUri: String) : UUID {
             val constraints = Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
@@ -87,6 +89,8 @@ class UpdateWorker @WorkerInject constructor(
 
             WorkManager.getInstance(context)
                 .enqueueUniqueWork(APP_UPDATE_WORK, ExistingWorkPolicy.KEEP, updateWork)
+
+            return updateWork.id
         }
 
         fun stop(context: Context) {

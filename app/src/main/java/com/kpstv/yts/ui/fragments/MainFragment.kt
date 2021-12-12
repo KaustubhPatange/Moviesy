@@ -131,9 +131,9 @@ class MainFragment : ValueFragment(R.layout.fragment_main), FragmentNavigator.Tr
         if (!isUpdateChecked) {
             isUpdateChecked = true
             updateUtils.check(
-                onUpdateAvailable = {
+                onUpdateAvailable = { release ->
                     updateUtils.showUpdateDialog(requireContext()) {
-                        updateUtils.processUpdate(it)
+                        updateUtils.processUpdate(update = release, lifecycleOwner = viewLifecycleOwner, rootView = requireView())
                         Toasty.info(requireContext(), getString(R.string.update_download_text)).show()
                     }
                 },

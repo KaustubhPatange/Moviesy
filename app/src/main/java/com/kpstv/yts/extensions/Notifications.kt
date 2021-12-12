@@ -129,10 +129,7 @@ object Notifications {
     }
 
     fun sendDownloadCompleteNotification(context: Context, file: File) = with(context) {
-        val installIntent = Intent(this, CommonBroadCast::class.java).apply {
-            action = CommonBroadCast.INSTALL_APK
-            putExtra(CommonBroadCast.ARGUMENT_APK_FILE, file.absolutePath)
-        }
+        val installIntent = CommonBroadCast.getInstallApkIntent(context, file.absolutePath)
         val pendingIntent = PendingIntent.getBroadcast(this, getRandomNumberCode(), installIntent, 0)
 
         val notification = NotificationCompat.Builder(this, getString(R.string.CHANNEL_ID_2))

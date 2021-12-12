@@ -29,9 +29,16 @@ class CommonBroadCast : BroadcastReceiver() {
     companion object {
         const val STOP_UPDATE_WORKER = "com.kpstv.actions.stop_update_worker"
         const val STOP_CAST_SERVICE = "com.kpstv.actions.stop_cast_service"
-        const val INSTALL_APK = "com.kpstv.actions.install_apk"
 
-        const val ARGUMENT_APK_FILE = "apk_file_argument"
+        private const val INSTALL_APK = "com.kpstv.actions.install_apk"
+        private const val ARGUMENT_APK_FILE = "apk_file_argument"
+
+        fun getInstallApkIntent(context: Context, filePath: String) : Intent = with(context) {
+            Intent(this, CommonBroadCast::class.java).apply {
+                action = INSTALL_APK
+                putExtra(ARGUMENT_APK_FILE, filePath)
+            }
+        }
     }
 
     @Inject lateinit var updateUtils: UpdateUtils

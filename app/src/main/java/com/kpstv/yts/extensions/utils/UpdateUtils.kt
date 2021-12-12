@@ -1,8 +1,15 @@
 package com.kpstv.yts.extensions.utils
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
+import android.view.View
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.LifecycleOwner
+import androidx.room.Update
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
+import com.google.android.material.snackbar.Snackbar
 import com.kpstv.common_moviesy.extensions.Coroutines
 import com.kpstv.common_moviesy.extensions.show
 import com.kpstv.yts.AppInterface
@@ -14,8 +21,10 @@ import com.kpstv.yts.data.models.Release
 import com.kpstv.yts.databinding.CustomPurchaseDialogBinding
 import com.kpstv.yts.extensions.SimpleCallback
 import com.kpstv.yts.interfaces.api.ReleaseApi
+import com.kpstv.yts.receivers.CommonBroadCast
 import com.kpstv.yts.services.UpdateWorker
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -55,8 +64,22 @@ class UpdateUtils @Inject constructor(
         return Pair(details.first, details.second)
     }
 
-    fun processUpdate(update: Release) = with(context) {
-        UpdateWorker.schedule(applicationContext, update.assets.firstOrNull { it.name.endsWith(".apk") }?.browserDownloadUrl ?: "")
+    fun processUpdate(update: Release, lifecycleOwner: LifecycleOwner, rootView: View) = with(context) {
+        val uniqueId = UpdateWorker.schedule(applicationContext, update.assets.firstOrNull { it.name.endsWith(".apk") }?.browserDownloadUrl ?: "")
+        WorkManager.getInstance(context).getWorkInfoByIdLiveData(uniqueId).observe(lifecycleOwner) { workInfo ->
+            if (workInfo.state == WorkInfo.State.SUCCEEDED) {
+                val fileString = workInfo.outputData.getString(UpdateWorker.OUTPUT_FILE_PATH) ?: return@observe
+
+                var snackbar: Snackbar? = null
+                snackbar = Snackbar.make(rootView, getString(R.string.update_download_complete), Snackbar.LENGTH_INDEFINITE)
+                    .setAction(getString(R.string.update_install_button)) {
+                        val intent = CommonBroadCast.getInstallApkIntent(this, fileString)
+                        sendBroadcast(intent)
+                        snackbar?.dismiss()
+                    }
+                snackbar.show()
+            }
+        }
     }
 
     private suspend fun fetchUpdateDetails(): Pair<Release, Boolean> {

@@ -233,6 +233,7 @@
     <string name="update">Update</string>
     <string name="stream">Streaming</string>
     <string name="update_download">Moviesy Update downloaded</string>
+    <string name="update_download_complete">New update is downloaded!</string>
     <string name="update_install">Tap to install the it</string>
     <string name="update_install_button">Install</string>
     <string name="update_error">Error while updating the app</string>
