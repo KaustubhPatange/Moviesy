@@ -71,6 +71,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:backgroundTint="?colorTextPremium"
+        android:drawableLeft="@drawable/ic_imdb_black"
         android:minHeight="0dp"
         android:text="@string/coming_soon"
         android:textAllCaps="false"
