@@ -21,6 +21,7 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.kpstv.common_moviesy.extensions.applyBottomInsets
 import com.kpstv.common_moviesy.extensions.applyTopInsets
+import com.kpstv.common_moviesy.extensions.toPx
 import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.navigation.BaseArgs
 import com.kpstv.navigation.ValueFragment
@@ -29,9 +30,9 @@ import com.kpstv.yts.R
 import com.kpstv.yts.adapters.CustomPagedAdapter
 import com.kpstv.yts.data.converters.QueryConverter
 import com.kpstv.yts.databinding.FragmentMoreBinding
+import com.kpstv.yts.extensions.GridAutoSpacingItemDecoration
 import com.kpstv.yts.extensions.MovieBase
 import com.kpstv.yts.extensions.YTSQuery
-import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.ui.viewmodels.MoreViewModel
 import com.kpstv.yts.ui.viewmodels.StartViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,6 +40,7 @@ import es.dmoral.toasty.Toasty
 import kotlinx.android.parcel.Parcelize
 import kotlinx.android.synthetic.main.custom_alert_buttons.view.*
 import kotlinx.android.synthetic.main.custom_alert_filter.view.*
+import kotlinx.android.synthetic.main.fragment_more.*
 import kotlinx.android.synthetic.main.item_chip.view.*
 
 // Some of the old implementation do exist.
@@ -72,7 +74,18 @@ class MoreFragment : ValueFragment(R.layout.fragment_more) {
         setToolbar()
         binding.amChipLayout.applyBottomInsets(pad = true)
         binding.swipeRefreshLayout.isEnabled = false
-        binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 3) // Can you make this dynamic
+        val containerWidth = resources.displayMetrics.widthPixels
+        val childWidth = toPx(110f)
+        val spanCount = GridAutoSpacingItemDecoration.calculateSpanCount(containerWidth, childWidth, toPx(5f))
+        binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), spanCount)
+        binding.recyclerView.addItemDecoration(
+            GridAutoSpacingItemDecoration(
+                containerWidth = containerWidth,
+                childWidth = childWidth,
+                spanCount = spanCount,
+                includeEdge = true
+            )
+        )
 
         movieBase = MovieBase.valueOf(fragArgs.movieBaseString)
         endPoint = fragArgs.endPoint

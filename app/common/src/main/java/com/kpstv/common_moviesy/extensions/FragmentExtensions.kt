@@ -12,3 +12,5 @@ fun Fragment.rootParentFragment(): Fragment {
     val fragment = parentFragment
     return fragment?.rootParentFragment() ?: this
 }
+
+fun Fragment.toPx(dp: Float) : Int = requireContext().toPx(dp)

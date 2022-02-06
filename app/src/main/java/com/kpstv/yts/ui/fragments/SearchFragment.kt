@@ -28,6 +28,7 @@ import com.kpstv.yts.data.CustomDataSource
 import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.data.models.Result
 import com.kpstv.yts.databinding.FragmentSearchBinding
+import com.kpstv.yts.extensions.GridAutoSpacingItemDecoration
 import com.kpstv.yts.extensions.MovieBase
 import com.kpstv.yts.extensions.SuggestionCallback
 import com.kpstv.yts.extensions.YTSQuery
@@ -65,7 +66,6 @@ class SearchFragment : ValueFragment(R.layout.fragment_search) {
 
     private val TAG = javaClass.simpleName
 
-    private val gridLayoutManager by lazy { GridLayoutManager(requireContext(), 3) } // Calculate it somehow
     private val linearLayoutManager by lazy { LinearLayoutManager(requireContext()) } // Calculate it somehow
     private val adaptiveSearchHelper by lazy {
         AdaptiveSearchHelper(requireContext(), viewLifecycleOwner)
@@ -224,8 +224,21 @@ class SearchFragment : ValueFragment(R.layout.fragment_search) {
          *  to linear layout manager if there is only single match.
          */
         with(binding.activitySearchSingle) {
-            if (recyclerView.layoutManager !is GridLayoutManager && recyclerView.layoutManager !== gridLayoutManager)
+            if (recyclerView.layoutManager !is GridLayoutManager) {
+                val containerWidth = resources.displayMetrics.widthPixels - toPx(5f)
+                val childWidth = toPx(110f)
+                val spanCount = GridAutoSpacingItemDecoration.calculateSpanCount(containerWidth, childWidth, toPx(5f))
+                val gridLayoutManager = GridLayoutManager(requireContext(), spanCount)
                 recyclerView.layoutManager = gridLayoutManager
+                recyclerView.addItemDecoration(
+                    GridAutoSpacingItemDecoration(
+                        containerWidth = containerWidth,
+                        childWidth = childWidth,
+                        spanCount = spanCount,
+                        includeEdge = true
+                    )
+                )
+            }
             recyclerView.adapter = adapter
         }
 

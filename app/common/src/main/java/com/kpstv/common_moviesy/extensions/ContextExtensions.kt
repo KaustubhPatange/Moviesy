@@ -25,6 +25,8 @@ fun Context.loadFont(@FontRes id: Int): Typeface? {
     return null
 }
 
+fun Context.toPx(dp: Float) : Int = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.displayMetrics).toInt()
+
 @ColorInt
 fun Context.getColorAttr(@AttrRes id: Int, @ColorInt fallbackColor: Int = 0): Int {
     if (theme == null) {

@@ -45,6 +45,8 @@
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:overScrollMode="never"
+            android:clipToPadding="false"
             android:padding="5dp" />
 
         <LinearLayout

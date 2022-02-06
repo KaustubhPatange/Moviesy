@@ -8,6 +8,8 @@ import com.kpstv.yts.data.models.MovieShort
 import com.kpstv.yts.data.models.Result
 import com.kpstv.yts.data.models.Subtitle
 import com.kpstv.yts.extensions.errors.SSLHandshakeException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.Request
 import org.jsoup.Jsoup
 import java.util.*
@@ -30,12 +32,12 @@ class YTSParser @Inject constructor(
     /**
      * Fetch featured movies
      */
-    suspend fun fetchFeaturedMovies(): ArrayList<MovieShort> {
+    suspend fun fetchFeaturedMovies(): ArrayList<MovieShort> = withContext(Dispatchers.IO) start@{
         val list = ArrayList<MovieShort>()
         val response =
             client.newCall(Request.Builder().url(AppInterface.YTS_BASE_URL).build()).await()
         if (response.code == 525) throw SSLHandshakeException("Could not establish successful connection with server")
-        if (!response.isSuccessful) return list
+        if (!response.isSuccessful) return@start list
 
         val doc = Jsoup.parse(response.body?.string())
         val elements = doc.getElementsByClass("browse-movie-link")
@@ -46,24 +48,24 @@ class YTSParser @Inject constructor(
             val link = elements[i].attr("href").toString()
             parseMovieUrl(link)?.let { list.add(it) }
         }
-        return list
+        return@start list
     }
 
     /**
      * Fetch upcoming movies
      */
-    suspend fun fetchUpcomingMovies(): ArrayList<MovieShort> {
+    suspend fun fetchUpcomingMovies(): ArrayList<MovieShort> = withContext(Dispatchers.IO) start@{
         val list = ArrayList<MovieShort>()
         val response =
             client.newCall(Request.Builder().url(AppInterface.YTS_BASE_URL).build()).await()
         if (response.code == 525) throw SSLHandshakeException("Could not establish successful connection with server")
-        if (!response.isSuccessful) return list
+        if (!response.isSuccessful) return@start list
 
         val doc = Jsoup.parse(response.body?.string())
         response.close() // Always close the response when not needed
 
         val homeMovies = doc.getElementsByClass("home-movies")?.firstOrNull { it.html().contains(">Upcoming YIFY Movies ") }
-            ?.child(1)?.children() ?: return arrayListOf()
+            ?.child(1)?.children() ?: return@start arrayListOf()
 
         for (i in 0 until homeMovies.size) {
             val element = homeMovies[i]
@@ -110,7 +112,7 @@ class YTSParser @Inject constructor(
             list.add(movieShort)
         }
 
-        return list
+        return@start list
     }
 
     /**
