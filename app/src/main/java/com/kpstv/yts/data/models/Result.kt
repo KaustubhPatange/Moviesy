@@ -6,6 +6,8 @@ sealed class Result<out T> {
 
     object Empty: Result<Nothing>()
 
+    fun getOrNull() : T? = if (this is Success) this.data else null
+
     companion object {
         /**
          * Return [Success] with [data] to emit.

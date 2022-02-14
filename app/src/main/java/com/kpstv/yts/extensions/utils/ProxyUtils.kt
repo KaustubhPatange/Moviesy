@@ -9,6 +9,7 @@ import com.kpstv.yts.AppInterface
 import com.kpstv.yts.AppPreference
 import com.kpstv.yts.AppSettings
 import com.kpstv.yts.data.converters.AppDatabaseConverter
+import com.kpstv.yts.data.models.Result
 import com.kpstv.yts.extensions.errors.SSLHandshakeException
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.*
@@ -48,35 +49,42 @@ class ProxyUtils @Inject constructor(
      */
     private suspend fun checkAsync() {
         Log.e(TAG, "Checking for proxy")
-        val response = retrofitUtils.makeHttpCallAsync(AppInterface.APP_DATABASE_URL)
-        if (response.isSuccessful) {
-            val appDatabase =
-                AppDatabaseConverter.toAppDatabaseFromString(response.body?.string())
-            response.close() // Close response for memory leaks
-            appDatabase?.yts?.let { yts ->
-                AppInterface.YTS_BASE_URL = yts.base
-                AppInterface.YTS_BASE_API_URL = "${AppInterface.YTS_BASE_URL}/api/v2/"
-                AppInterface.YIFY_BASE_URL = yts.yify
-            }
-            appDatabase?.tmdb?.let { tmdb ->
-                AppInterface.TMDB_BASE_URL = tmdb.base
-                AppInterface.TMDB_IMAGE_PREFIX = tmdb.image
-                AppInterface.TMDB_API_KEY = tmdb.apiKey
-            }
-            appDatabase?.misc?.let { misc ->
-                AppInterface.SUGGESTION_URL = misc.suggestionApi
-            }
+        val result = retrofitUtils.makeHttpCallAsync(AppInterface.APP_DATABASE_URL)
+        if (result is Result.Success) {
+            val response = result.data
+            if (response.isSuccessful) {
+                val appDatabase =
+                    AppDatabaseConverter.toAppDatabaseFromString(response.body?.string())
+                response.close() // Close response for memory leaks
+                appDatabase?.yts?.let { yts ->
+                    AppInterface.YTS_BASE_URL = yts.base
+                    AppInterface.YTS_BASE_API_URL = "${AppInterface.YTS_BASE_URL}/api/v2/"
+                    AppInterface.YIFY_BASE_URL = yts.yify
+                }
+                appDatabase?.tmdb?.let { tmdb ->
+                    AppInterface.TMDB_BASE_URL = tmdb.base
+                    AppInterface.TMDB_IMAGE_PREFIX = tmdb.image
+                    AppInterface.TMDB_API_KEY = tmdb.apiKey
+                }
+                appDatabase?.misc?.let { misc ->
+                    AppInterface.SUGGESTION_URL = misc.suggestionApi
+                }
 
-            AppSettings.writeSettings(context)
+                AppSettings.writeSettings(context)
 
-            Log.e(TAG, "Checking for YTS proxy again!")
-            val testResponse = retrofitUtils.makeHttpCallAsync("${AppInterface.YTS_BASE_API_URL}list_movies.json")
-            if (testResponse.code == 525) throw SSLHandshakeException("The app couldn't connect to server")
-            if (!testResponse.isSuccessful) throw Exception("Updated proxy is invalid. If you see this message, contact developer to update proxies manually!")
-            testResponse.close() // Close response for memory leaks
+                Log.e(TAG, "Checking for YTS proxy again!")
+                val testResponse = retrofitUtils.makeHttpCallAsync("${AppInterface.YTS_BASE_API_URL}list_movies.json").getOrNull() ?: return
 
-            AppPreference(context).setShouldCheckProxy(false)
-        } else
-            throw Exception("Failed to retrieve app database")
+                if (testResponse.code == 525) throw SSLHandshakeException("The app couldn't connect to server")
+                if (!testResponse.isSuccessful) throw Exception("Updated proxy is invalid. If you see this message, contact developer to update proxies manually!")
+                testResponse.close() // Close response for memory leaks
+
+                AppPreference(context).setShouldCheckProxy(false)
+
+                return
+            }
+        }
+
+        throw Exception("Failed to retrieve app database")
     }
 }

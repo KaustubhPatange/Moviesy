@@ -84,14 +84,18 @@ class HistoryRepository @Inject constructor(
     private suspend fun getGoogleSuggestions(text: String): List<String> {
         val list = ArrayList<String>()
 
-        val response = retrofitUtils.makeHttpCallAsync("${AppInterface.SUGGESTION_URL}$text")
-        val json = response.body?.string()
-        response.body?.close() // Always close the stream
+        val result = retrofitUtils.makeHttpCallAsync("${AppInterface.SUGGESTION_URL}$text")
+        if (result is Result.Success) {
+            val response = result.data
+            
+            val json = response.body?.string()
+            response.body?.close() // Always close the stream
 
-        if (json?.isNotEmpty() == true) {
-            val jsonArray = JSONArray(json).getJSONArray(1)
-            for (i in 0 until jsonArray.length())
-                list.add(jsonArray.getString(i))
+            if (json?.isNotEmpty() == true) {
+                val jsonArray = JSONArray(json).getJSONArray(1)
+                for (i in 0 until jsonArray.length())
+                    list.add(jsonArray.getString(i))
+            }
         }
 
         return list

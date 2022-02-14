@@ -49,7 +49,7 @@ class VPNRepository @Inject constructor(
         val vpnConfigurations = arrayListOf<VpnConfiguration>()
 
         try {
-            val vpnResponse = retrofitUtils.makeHttpCallAsync("https://www.vpngate.net/en")
+            val vpnResponse = retrofitUtils.makeHttpCallAsync("https://www.vpngate.net/en").getOrNull() ?: return vpnConfigurations
             if (vpnResponse.isSuccessful) {
 
                 val offsetDateTime = Calendar.getInstance().apply { add(Calendar.HOUR_OF_DAY, 7) }.time
@@ -96,8 +96,8 @@ class VPNRepository @Inject constructor(
 
                         val configUrl = "https://www.vpngate.net/en/" + ovpnConfigElement.child(0).attr("href")
 
-                        val configResponse = retrofitUtils.makeHttpCallAsync(configUrl)
-                        if (configResponse.isSuccessful) {
+                        val configResponse = retrofitUtils.makeHttpCallAsync(configUrl).getOrNull()
+                        if (configResponse?.isSuccessful == true) {
                             val configBody = configResponse.body?.string()
                             configResponse.close() // Always close stream
 
@@ -105,7 +105,7 @@ class VPNRepository @Inject constructor(
                             val ovpnConfig =
                                 hrefElements.find { it.attr("href").contains(".ovpn") }?.attr("href") ?: continue
 
-                            val configDataResponse = retrofitUtils.makeHttpCallAsync("https://www.vpngate.net/$ovpnConfig")
+                            val configDataResponse = retrofitUtils.makeHttpCallAsync("https://www.vpngate.net/$ovpnConfig").getOrNull() ?: continue
                             if (configDataResponse.isSuccessful) {
                                 val data = configDataResponse.body?.string() ?: continue
                                 configDataResponse.close() // Always close stream

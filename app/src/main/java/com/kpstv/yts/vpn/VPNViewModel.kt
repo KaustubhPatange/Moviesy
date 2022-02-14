@@ -114,7 +114,7 @@ class VPNViewModel @ViewModelInject constructor(
 
     private suspend fun initializeConfigs() {
         try {
-            val response = retrofitUtils.makeHttpCallAsync("http://ip-api.com/json")
+            val response = retrofitUtils.makeHttpCallAsync("http://ip-api.com/json").getOrNull() ?: return
             if (response.isSuccessful) {
                 val body = response.body?.string() ?: "{}"
                 response.close() // close
@@ -133,7 +133,7 @@ class VPNViewModel @ViewModelInject constructor(
 
 
     private suspend fun initializeVPNConfigs() {
-        val appDatabaseResponse = retrofitUtils.makeHttpCallAsync(AppInterface.APP_DATABASE_URL)
+        val appDatabaseResponse = retrofitUtils.makeHttpCallAsync(AppInterface.APP_DATABASE_URL).getOrNull() ?: return
         if (appDatabaseResponse.isSuccessful) {
             val json = appDatabaseResponse.body?.string()
             appDatabaseResponse.close() // Always close

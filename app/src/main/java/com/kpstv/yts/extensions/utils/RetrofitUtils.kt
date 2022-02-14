@@ -5,12 +5,15 @@ import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterF
 import com.kpstv.common_moviesy.extensions.await
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import com.kpstv.yts.data.models.Result
 
 /**
  * A class made for my project "Moviesy" https://github.com/KaustubhPatange/Moviesy
@@ -55,7 +58,12 @@ class RetrofitUtils @Inject constructor(
         return client.build()
     }
 
-    suspend fun makeHttpCallAsync(url: String) =
-        getHttpClient()
-            .newCall(Request.Builder().url(url).build()).await()
+    suspend fun makeHttpCallAsync(url: String): Result<Response> {
+       return try {
+           val result = getHttpClient().newCall(Request.Builder().url(url).build()).await()
+           Result.success(result)
+        } catch (e: IOException) {
+           Result.error(e)
+        }
+    }
 }
