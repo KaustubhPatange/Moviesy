@@ -1,15 +1,7 @@
 {
-  "version": "2.0.4",
+  "version": "2.0.5",
   "summary": [
-    "<br/><h4>Added:</h4><br/>",
-    "• Upcoming movies section.<br/>",
     "<br/><h4>Fixed:</h4><br/>",
-    "• Account setting crash due to incorrect initialization of Google Sign-in client.<br/>",
-    "• Issues due to no internet connection.<br/>",
-    "• Download out of bounds exception when cancelling.<br/>",
-    "• Crash when continue watch doesn't load the image after clearing cache.<br/>",
-    "• Crash on device where SAF is not supported.<br/>",
-    "• Crash when download is about to start & is quickly cancelled.<br/>",
-    "• Popup menu item could be null.<br/>"
+    "• Crash when app is launched with no internet connection.<br/>"
   ]
 }
