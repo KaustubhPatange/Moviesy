@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="15dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="@string/paypal_layout_title"
+        android:textColor="?colorAccent" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:text="@string/paypal_layout_text"
+        android:textColor="?colorTextLight" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:hint="@string/paypal_layout_hint">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_transaction_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="13sp" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_proceed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="@string/proceed"
+            android:textAllCaps="false" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_close"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/close"
+            android:textAllCaps="false" />
+    </FrameLayout>
+
+</LinearLayout>

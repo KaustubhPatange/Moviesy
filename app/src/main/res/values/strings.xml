@@ -307,4 +307,9 @@
     <string name="error_refresh_upcoming">Could not refresh the upcoming list</string>
     <string name="upcoming_tip_title">Pull to refresh</string>
     <string name="upcoming_tip_text">Upcoming movie status are updated on a frequent basis which is why you should pull down to refresh to keep them updated.\n\nThey are also sporadically updated within every 1 hour.</string>
+    <string name="paypal_layout_title">Looks like we were not able to find a purchase associated with this account.</string>
+    <string name="paypal_layout_text">But if you\'ve paid using PayPal you can follow right through by entering the transaction Id below.</string>
+    <string name="paypal_layout_hint">PayPal Transaction Id, eg: 1234567890ABCDEFG</string>
+    <string name="proceed">Proceed</string>
+    <string name="error_transaction_id">Transaction ID is not in the correct format</string>
 </resources>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="?colorForeground"
     android:orientation="vertical">
 
@@ -34,9 +34,9 @@
 
     <RelativeLayout
         android:id="@+id/custom_multiple_purchase_layout"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         tools:visibility="visible">
 
         <include
@@ -79,7 +79,7 @@
             android:layout_height="1dp"
             android:background="?colorSeparator" />
 
-        <include layout="@layout/custom_purchase_list"/>
+        <include layout="@layout/custom_purchase_list" />
 
         <TextView
             android:id="@+id/purchaseButton"
@@ -95,5 +95,10 @@
             android:textColor="?colorTextLight"
             android:textSize="18sp" />
     </LinearLayout>
+
+    <include
+        android:id="@+id/custom_transaction_layout"
+        layout="@layout/custom_transaction_layout"
+        android:visibility="gone" />
 
 </FrameLayout>

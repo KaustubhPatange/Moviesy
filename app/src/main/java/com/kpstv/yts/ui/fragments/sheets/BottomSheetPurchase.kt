@@ -18,12 +18,15 @@ import com.kpstv.yts.extensions.views.ExtendedBottomSheetDialogFragment
 import com.kpstv.common_moviesy.extensions.hide
 import com.kpstv.common_moviesy.extensions.invisible
 import com.kpstv.common_moviesy.extensions.show
+import com.kpstv.yts.databinding.CustomTransactionLayoutBinding
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.ui.helpers.PremiumHelper
 import com.kpstv.yts.ui.helpers.SignInHelper
 import com.kpstv.yts.ui.helpers.ThemeHelper
 import es.dmoral.toasty.Toasty
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class BottomSheetPurchase : ExtendedBottomSheetDialogFragment(R.layout.bottom_sheet_purchase) {
 
@@ -73,6 +76,8 @@ class BottomSheetPurchase : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
         binding.customMultiplePurchase.buttonRestore.setOnClickListener {
             signInHelper.signIn(
                 onSignInComplete = { account ->
+                    setCustomTransactionLayout(account.email!!, account.id!!)
+
                     lifecycleScope.launch {
                         binding.progressLayout.show()
                         binding.customMultiplePurchase.root.invisible()
@@ -85,7 +90,11 @@ class BottomSheetPurchase : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
                             proceedRequest()
                         } else {
                             Toasty.error(requireContext(), getString(R.string.no_premium_found)).show()
-                            dismiss()
+
+                            // Show transaction Layout
+                            binding.customTransactionLayout.root.show()
+                            binding.customMultiplePurchase.root.hide()
+                            binding.progressLayout.hide()
                         }
                     }
                 }
@@ -96,6 +105,31 @@ class BottomSheetPurchase : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
                 requireContext(),
                 getString(R.string.payment_help_url)
             )
+        }
+    }
+
+    private fun setCustomTransactionLayout(email: String, accountId: String) = with(binding.customTransactionLayout) {
+        btnClose.setOnClickListener { dismiss() }
+        btnProceed.setOnClickListener {
+            binding.customTransactionLayout.root.invisible()
+            binding.progressLayout.show()
+
+            val transactionId = etTransactionId.text?.toString() ?: ""
+            val isMatched = "[\\d\\w]{17}".toRegex().matches(transactionId)
+            if (transactionId.isNotEmpty() && isMatched) {
+                lifecycleScope.launch {
+                    val result = PurchaseHelper.verifyAndActiveUser(transactionId, email, accountId)
+                    result.fold(
+                        onSuccess = { proceedRequest() },
+                        onFailure = { error ->
+                            Toasty.error(requireContext(), error.message ?: "Unknown error").show()
+                            dismiss()
+                        }
+                    )
+                }
+            } else {
+                Toasty.error(requireContext(), getString(R.string.error_transaction_id)).show()
+            }
         }
     }
 
