@@ -114,7 +114,7 @@ class BottomSheetPurchase : ExtendedBottomSheetDialogFragment(R.layout.bottom_sh
             binding.customTransactionLayout.root.invisible()
             binding.progressLayout.show()
 
-            val transactionId = etTransactionId.text?.toString() ?: ""
+            val transactionId = etTransactionId.text?.toString()?.trim() ?: ""
             val isMatched = "[\\d\\w]{17}".toRegex().matches(transactionId)
             if (transactionId.isNotEmpty() && isMatched) {
                 lifecycleScope.launch {
