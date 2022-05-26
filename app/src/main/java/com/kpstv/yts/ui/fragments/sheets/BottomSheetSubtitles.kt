@@ -89,12 +89,20 @@ class BottomSheetSubtitles : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
                 if (result.list.isNotEmpty()) {
                     subtitleModels = result.list
 
-                    adapter = SubtitleAdapter(requireContext(), flagUtils, subtitleModels) { subtitle, i ->
-                        /** @Admob Show ad first and then download subtitles */
-                        interstitialAdHelper.showAd(viewLifecycleOwner) {
-                            parseSubtitle(subtitle, i)
+                    adapter = SubtitleAdapter(
+                        context = requireContext(),
+                        flagUtils = flagUtils,
+                        models = subtitleModels,
+                        listener = { subtitle, i ->
+                            /** @Admob Show ad first and then download subtitles */
+                            interstitialAdHelper.showAd(viewLifecycleOwner) {
+                                parseSubtitle(subtitle, i)
+                            }
+                        },
+                        longListener = { subtitle, _ ->
+                            AppUtils.shareUrl(requireActivity(), subtitle.fetchEndpoint)
                         }
-                    }
+                    )
 
                     recyclerView_subtitles.setHasFixedSize(true)
                     recyclerView_subtitles.adapter = adapter
@@ -255,7 +263,8 @@ class BottomSheetSubtitles : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
         val context: Context,
         private val flagUtils: FlagUtils,
         var models: List<Subtitle>,
-        val listener: AdapterOnSingleClick<Subtitle>
+        val listener: AdapterOnSingleClick<Subtitle>,
+        val longListener: AdapterOnSingleClick<Subtitle>,
     ) : RecyclerView.Adapter<SubtitleAdapter.SubtitleHolder>() {
 
         override fun onBindViewHolder(holder: SubtitleHolder, i: Int) {
@@ -286,7 +295,7 @@ class BottomSheetSubtitles : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
 
             if (model.isDownload) {
                 holder.progressBar.visibility = View.VISIBLE
-                holder.itemLikes.visibility = View.GONE
+                holder.itemLikes.visibility = View.INVISIBLE
             } else {
                 holder.progressBar.visibility = View.GONE
                 holder.itemLikes.visibility = View.VISIBLE
@@ -300,6 +309,11 @@ class BottomSheetSubtitles : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
 
             holder.mainCard.setOnClickListener {
                 listener.invoke(model, i)
+            }
+
+            holder.mainCard.setOnLongClickListener call@{
+                longListener.invoke(model, i)
+                return@call true
             }
         }
 

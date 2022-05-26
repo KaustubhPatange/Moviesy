@@ -1,5 +1,6 @@
 package com.kpstv.yts.extensions.utils
 
+import android.util.Base64
 import androidx.core.text.isDigitsOnly
 import com.kpstv.common_moviesy.extensions.await
 import com.kpstv.yts.AppInterface
@@ -231,10 +232,15 @@ class YTSParser @Inject constructor(
                 Request.Builder().url(endPoint).build()
             ).await()
             if (!response.isSuccessful) throw RuntimeException("Response not successful")
-            val link = Jsoup.parse(response.body?.string()).getElementsByClass("download-subtitle")[0]
-                .attr("href").toString();
+            val element = Jsoup.parse(response.body?.string()).getElementsByClass("download-subtitle")[0]
+            // trace links
+            var link = element.attr("href").toString()
+            if (link.isEmpty()) {
+                link =  Base64.decode(element.attr("data-link").toString(), Base64.DEFAULT).toString(charset = Charsets.UTF_8)
+            }
 
             response.close()
+            if (link.isEmpty()) throw Exception("Subtitle URL is empty")
             Result.success(link)
         } catch (e: Exception) {
             Result.error(e)
