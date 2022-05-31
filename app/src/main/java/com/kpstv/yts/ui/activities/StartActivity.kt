@@ -19,6 +19,7 @@ import com.kpstv.yts.cast.CastHelper
 import com.kpstv.yts.data.db.localized.MainDao
 import com.kpstv.yts.databinding.ActivityStartBinding
 import com.kpstv.yts.defaultPreference
+import com.kpstv.yts.extensions.AbstractNavigationOptionsExtensions.consume
 import com.kpstv.yts.extensions.utils.AppUtils
 import com.kpstv.yts.ui.fragments.*
 import com.kpstv.yts.ui.helpers.ActivityIntentHelper
@@ -94,7 +95,7 @@ class StartActivity : AppCompatActivity(), FragmentNavigator.Transmitter, Librar
     override fun getCastHelper(): CastHelper = castHelper
 
     private val navigationObserver = Observer { navOptions: StartViewModel.NavigationOption? ->
-        navOptions?.let { navigator.navigateTo(navOptions.clazz, navOptions.options) }
+        navOptions?.consume { navigator.navigateTo(navOptions.clazz, navOptions.options) }
     }
 
     private val errorObserver = Observer { error: Exception? ->

@@ -14,7 +14,8 @@
         "apiKey": "dbaba3594e59e4ff47c003b2ddb82c2a"
     },
     "misc": {
-        "suggestionApi": "https://suggestqueries.google.com/complete/search?ds=yt&client=firefox&q="
+        "suggestionApi": "https://suggestqueries.google.com/complete/search?ds=yt&client=firefox&q=",
+        "easterEggUri": "https://youtu.be/dQw4w9WgXcQ"
     },
     "vpn_affected_countries": [
         "IN"

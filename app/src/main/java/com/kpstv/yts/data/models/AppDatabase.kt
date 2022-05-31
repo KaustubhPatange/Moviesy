@@ -17,7 +17,8 @@ data class AppDatabase(
     )
 
     data class Misc(
-        val suggestionApi: String
+        val suggestionApi: String,
+        val easterEggUri: String
     )
 
     data class Tmdb(

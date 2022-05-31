@@ -39,6 +39,7 @@ class AppInterface {
             "https://raw.githubusercontent.com/KaustubhPatange/Moviesy/master/app/src/main/ic_launcher-playstore.png"
         var SUGGESTION_URL =
             "https://suggestqueries.google.com/complete/search?ds=yt&client=firefox&q="
+        var EASTER_EGG_URL = "https://youtu.be/dQw4w9WgXcQ"
         var STORAGE_LOCATION =
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
         var STREAM_LOCATION = "torrents"

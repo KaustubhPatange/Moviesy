@@ -68,6 +68,7 @@ class ProxyUtils @Inject constructor(
                 }
                 appDatabase?.misc?.let { misc ->
                     AppInterface.SUGGESTION_URL = misc.suggestionApi
+                    AppInterface.EASTER_EGG_URL = misc.easterEggUri
                 }
 
                 AppSettings.writeSettings(context)

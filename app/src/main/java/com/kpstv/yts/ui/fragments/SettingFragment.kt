@@ -17,6 +17,7 @@ import com.kpstv.common_moviesy.extensions.viewBinding
 import com.kpstv.navigation.*
 import com.kpstv.yts.R
 import com.kpstv.yts.databinding.FragmentSettingsBinding
+import com.kpstv.yts.extensions.AbstractNavigationOptionsExtensions.consume
 import com.kpstv.yts.ui.activities.StartActivity
 import com.kpstv.yts.ui.helpers.ThemeHelper.registerForThemeChange
 import com.kpstv.yts.ui.settings.*
@@ -57,9 +58,7 @@ class SettingFragment : ValueFragment(R.layout.fragment_settings), FragmentNavig
     }
 
     private val navigationObserver = Observer { options: SettingNavViewModel.NavigationOption? ->
-        options?.let { opt ->
-            navigator.navigateTo(opt.clazz, opt.options)
-        }
+        options?.consume { navigator.navigateTo(options.clazz, options.options) }
     }
 
     private fun setToolbar() {

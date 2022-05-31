@@ -42,7 +42,6 @@
             android:value="ca-app-pub-1164424526503510~6985155768" />
         <activity
             android:name=".ui.activities.StartActivity"
-            android:screenOrientation="portrait"
             android:launchMode="singleTop"
             android:theme="@style/StartTheme.Splash">
             <intent-filter>

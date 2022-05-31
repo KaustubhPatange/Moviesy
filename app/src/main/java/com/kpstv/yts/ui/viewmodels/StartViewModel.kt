@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.kpstv.navigation.*
+import com.kpstv.yts.extensions.AbstractNavigationOption
 import com.kpstv.yts.extensions.MovieBase
 import com.kpstv.yts.ui.activities.StartActivity
 import com.kpstv.yts.ui.fragments.DetailFragment
@@ -83,5 +84,5 @@ class StartViewModel : ViewModel() {
     data class NavigationOption(
         val clazz: KClass<out Fragment>,
         val options: FragmentNavigator.NavOptions
-    )
+    ) : AbstractNavigationOption()
 }

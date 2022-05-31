@@ -158,6 +158,7 @@ object AppSettings {
             putString(YIFY_BASE_URL_PREF, AppInterface.YIFY_BASE_URL)
             putString(TMDB_BASE_URL_PREF, AppInterface.TMDB_BASE_URL)
             putBoolean(ANONYMOUS_TORRENT_DOWNLOAD_PREF, AppInterface.ANONYMOUS_TORRENT_DOWNLOAD)
+            putString(EASTER_EGG_URL_PREF, AppInterface.EASTER_EGG_URL)
         }.apply()
     }
 
@@ -165,6 +166,7 @@ object AppSettings {
     const val IS_DARK_THEME_PREF = "is_dark_theme_pref"
     const val COUNTRY_FLAG_JSON_URL_PREF = "country_flag_json_url_pref"
     const val SUGGESTION_URL_PREF = "suggestion_url_pref"
+    const val EASTER_EGG_URL_PREF = "easter_egg_url_pref"
     const val TMDB_API_KEY_PREF = "tmdb_api_key_pref"
     const val DOWNLOAD_TIMEOUT_SECOND_PREF = "download_timeout_second_pref"
     const val DOWNLOAD_CONNECTION_TIMEOUT_PREF = "download_connection_timeout_pref"
