@@ -73,6 +73,7 @@ jobs:
       - name: Assemble & Sign
         run: |
           ./gradlew app:assembleRelease --stacktrace
+          ./gradlew app:generateChangelog
 
       - name: Drafing a release
         id: create_release
@@ -82,6 +83,7 @@ jobs:
         with:
           tag_name: v${{ steps.version.outputs.TAG_NAME }}
           release_name: Day(th) Month Year
+          body_path: ${{ github.workspace }}\app\build\changelog.md
           draft: true
 
       - name: Upload Release Asset

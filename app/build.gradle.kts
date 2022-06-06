@@ -202,3 +202,5 @@ dependencies {
     androidTestImplementation(TestLibraryDependency.JUNIT_TEST_EXT)
     androidTestImplementation(TestLibraryDependency.ESPRESSO_CORE)
 }
+
+apply(from = "${project.rootDir}/gradle/changelog.gradle.kts")
