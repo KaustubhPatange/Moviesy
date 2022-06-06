@@ -1,7 +1,15 @@
 {
-  "version": "2.0.5",
+  "version": "2.0.6",
   "summary": [
+    "<br/><h4>Added:</h4><br/>",
+    "• Option to share link to subtitles.<br/>",
+    "• Way to restore purchase through PayPal transaction ID.<br/>",
+    "• Support for Large screen devices (enabled rotation).<br/>",
     "<br/><h4>Fixed:</h4><br/>",
-    "• Crash when app is launched with no internet connection.<br/>"
+    "• Issue where subtitles are not downloading.<br/>",
+    "• Attempt to fix crash due to initialization of Google Play services.<br/>",
+    "• Crash when app is closed when Search screen is opened.<br/>",
+    "• Silent crash where torrent movie download was failing.<br/>",
+    "• Issues with activating purchase while restoring.<br/>"
   ]
 }

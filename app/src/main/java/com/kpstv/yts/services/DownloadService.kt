@@ -12,12 +12,12 @@ import android.os.PowerManager.WakeLock
 import android.text.Html
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.github.se_bastiaan.torrentstream.StreamStatus
 import com.github.se_bastiaan.torrentstream.TorrentOptions
 import com.github.se_bastiaan.torrentstream.TorrentStream
 import com.github.se_bastiaan.torrentstream.listeners.TorrentListener
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.kpstv.common_moviesy.extensions.utils.FileUtils
 import com.kpstv.yts.AppInterface.Companion.ANONYMOUS_TORRENT_DOWNLOAD
@@ -33,7 +33,6 @@ import com.kpstv.yts.AppInterface.Companion.STORAGE_LOCATION
 import com.kpstv.yts.AppInterface.Companion.TORRENT_NOT_SUPPORTED
 import com.kpstv.yts.AppInterface.Companion.formatDownloadSpeed
 import com.kpstv.yts.R
-import com.kpstv.yts.adapters.HistoryModel
 import com.kpstv.yts.data.db.repository.DownloadRepository
 import com.kpstv.yts.data.db.repository.PauseRepository
 import com.kpstv.yts.data.models.Torrent
@@ -44,7 +43,6 @@ import com.kpstv.yts.extensions.utils.AppUtils.Companion.getVideoDuration
 import com.kpstv.yts.extensions.utils.AppUtils.Companion.saveImageFromUrl
 import com.kpstv.yts.receivers.CommonBroadCast
 import com.kpstv.yts.ui.activities.DownloadActivity
-import com.kpstv.yts.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 import java.text.SimpleDateFormat
@@ -71,6 +69,7 @@ class DownloadService : IntentService("blank") {
     private var pendingJobs = ArrayList<Torrent>()
     private var currentModel: com.github.se_bastiaan.torrentstream.Torrent? = null
     private var currentTorrentModel: Torrent? = null
+    private var currentTorrentStreamData: TorrentStreamData? = null
     private lateinit var context: Context
     private var wakeLock: WakeLock? = null
     private lateinit var notificationManager: NotificationManager
@@ -83,6 +82,8 @@ class DownloadService : IntentService("blank") {
     private var lastProgress: Float? = 0f
 
     private val SHOW_LOG_FROM_THIS_CLASS = true
+
+    data class TorrentStreamData(val saveLocation: File?, val videoFile: File?)
 
     init {
         setIntentRedelivery(true)
@@ -230,6 +231,7 @@ class DownloadService : IntentService("blank") {
             override fun onStreamPrepared(torrent: com.github.se_bastiaan.torrentstream.Torrent?) {
                 updateNotification(model, torrent, true)
                 currentModel = torrent
+                currentTorrentStreamData = TorrentStreamData(torrent?.saveLocation, torrent?.videoFile)
                 DS_LOG("=> Preparing Job: ${torrent?.saveLocation}")
                 lastProgress = 0f
                 totalGap = getCurrentTimeSecond()
@@ -246,6 +248,7 @@ class DownloadService : IntentService("blank") {
             }
 
             override fun onStreamStarted(torrent: com.github.se_bastiaan.torrentstream.Torrent?) {
+                currentModel = torrent
                 DS_LOG("=> Stream Started")
             }
 
@@ -310,6 +313,7 @@ class DownloadService : IntentService("blank") {
     private fun onClear() {
         currentModel = null
         currentTorrentModel = null
+        currentTorrentStreamData = null
     }
 
     fun updateNotification(
@@ -420,25 +424,28 @@ class DownloadService : IntentService("blank") {
         try {
             if (!isError) {
 
+                val saveLocation = currentTorrentStreamData?.saveLocation ?: currentModel?.saveLocation
+                val videoFile = currentTorrentStreamData?.videoFile ?: currentModel?.videoFile
+
                 /** Save details of file in database. */
-                val imagePath = File(currentModel?.saveLocation, "banner.png")
+                val imagePath = File(saveLocation, "banner.png")
                 saveImageFromUrl(model.banner_url, imagePath)
 
                 val todayDate = SimpleDateFormat("yyyy-MM-dd")
                     .format(Calendar.getInstance().time)
 
-                val movieSize = getVideoDuration(this, currentModel?.videoFile!!)
+                val movieSize = getVideoDuration(this, videoFile!!)
                     .takeUnless { it == null } ?: 0L
 
                 val downloadResponse = Model.response_download(
                     title = model.title,
                     imagePath = imagePath.path,
-                    downloadPath = currentModel?.saveLocation?.path,
+                    downloadPath = saveLocation?.path,
                     size = model.size,
                     date_downloaded = todayDate,
                     hash = model.hash,
                     total_video_length = movieSize,
-                    videoPath = currentModel?.videoFile?.path,
+                    videoPath = videoFile.path,
                     movieId = currentTorrentModel?.movieId,
                     imdbCode = currentTorrentModel?.imdbCode
                 )
@@ -446,7 +453,7 @@ class DownloadService : IntentService("blank") {
                 downloadRepository.saveDownload(downloadResponse)
 
                 /** Save a detail.json file. */
-                val detailPath = File(currentModel?.saveLocation, "details.json")
+                val detailPath = File(saveLocation, "details.json")
                 detailPath.writeText(Gson().toJson(downloadResponse))
 
                 /** Send download complete notification */
@@ -457,6 +464,8 @@ class DownloadService : IntentService("blank") {
             }
         } catch (e: Exception) {
             /** Something unexpected occurred. */
+            e.printStackTrace()
+            FirebaseCrashlytics.getInstance().recordException(e)
             Log.e(TAG, "Download failed for ${model.title} due to ${e.message}", e)
             Notifications.sendDownloadFailedNotification(this, model.title)
         }

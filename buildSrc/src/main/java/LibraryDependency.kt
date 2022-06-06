@@ -49,7 +49,7 @@ private object LibraryVersion {
     const val GUAVA_CONFLICT = "9999.0-empty-to-avoid-conflict-with-guava"
     const val CAOC = "2.3.0"
     const val FIREBASE_AUTH = "19.3.2"
-    const val FIREBASE_BOM = "26.1.0"
+    const val FIREBASE_BOM = "30.0.0"
     const val AUTOBINDINGS = "1.1-alpha16"
     const val APP_STARTUP = "1.0.0"
     const val IMAGELOADERVIEW = "0.7-beta04"

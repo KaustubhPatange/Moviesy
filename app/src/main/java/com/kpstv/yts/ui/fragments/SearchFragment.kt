@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
@@ -125,6 +126,7 @@ class SearchFragment : ValueFragment(R.layout.fragment_search) {
     }
 
     override fun onViewStateChanged(viewState: ViewState) {
+        if (isViewDestroying()) return
         if (viewState == ViewState.FOREGROUND) {
             binding.searchEditText.showKeyboard()
             binding.itemClose.hide()

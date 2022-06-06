@@ -6,7 +6,7 @@ object AndroidConfig {
 
     // TODO: Always change version code & name during release
     const val VERSION_CODE = 17
-    const val VERSION_NAME = "2.0.5"
+    const val VERSION_NAME = "2.0.6"
 
     const val ID = "com.kpstv.yts"
 //    const val TEST_INSTRUMENTATION_RUNNER = "android.support.test.runner.AndroidJUnitRunner"

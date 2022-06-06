@@ -180,10 +180,10 @@ class LibraryFragment : ValueFragment(R.layout.fragment_library), FragmentNaviga
                             val f = File(model.downloadPath!!)
                             if (f.exists()) {
                                 f.deleteRecursive()
-                                viewModel.removeDownload(model.hash)
                             } else {
                                 Toasty.error(requireContext(), getString(R.string.error_path_exist), Toasty.LENGTH_SHORT).show()
                             }
+                            viewModel.removeDownload(model.hash)
                         }
                     }.show()
                 }

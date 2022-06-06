@@ -1,7 +1,7 @@
 private object GradlePluginVersion {
     const val KOTLIN = CoreVersion.KOTLIN
     const val ANDROID_GRADLE = "4.1.1"
-    const val GOOGLE_SERVICE = "4.3.8"
+    const val GOOGLE_SERVICE = "4.3.10"
     const val SAFE_ARGS = CoreVersion.JETPACK_NAVIGATION
     const val HILT = "2.33-beta"
     const val CRASHLYTICS = "2.4.1"
