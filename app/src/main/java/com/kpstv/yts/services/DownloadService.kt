@@ -272,6 +272,7 @@ class DownloadService : IntentService("blank") {
                 }
                 totalGap = getCurrentTimeSecond()
                 isCurrentProgressUpdated = true
+                currentModel = torrent
                 lastProgress = status?.progress
             }
 
@@ -280,6 +281,7 @@ class DownloadService : IntentService("blank") {
                 e: Exception?
             ) {
                 DS_LOG("=> Stream Error")
+                currentModel = torrent
                 isJobCompleted = true
                 isError = true
             }
@@ -506,13 +508,13 @@ class DownloadService : IntentService("blank") {
 
     private fun saveInterruptDownloads() {
         val model = currentTorrentModel
-        val currentTorrent = currentModel
-        if (model != null && currentTorrent != null) {
+        val saveLocation = currentTorrentStreamData?.saveLocation?.path ?: currentModel?.saveLocation?.path
+        if (model != null && saveLocation != null) {
             pauseRepository.savePauseModel(
                 Model.response_pause(
                     job = TorrentJob.from(model),
                     hash = model.hash,
-                    saveLocation = currentTorrent.saveLocation.path,
+                    saveLocation = saveLocation,
                     torrent = model
                 )
             )
