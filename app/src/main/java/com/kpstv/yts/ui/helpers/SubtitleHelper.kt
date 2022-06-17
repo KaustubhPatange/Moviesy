@@ -97,9 +97,10 @@ class SubtitleHelper {
 
     private fun applySubtitleFilter(title: String, f: File?): Boolean {
         if (f == null) return false
-        val fileName = f.name.removeSpecialCharacters()
+        val formattedTitle = title.replace("[\\s-]".toRegex(), ".")
+        val fileName = f.name.removeSpecialCharacters().replace("-",".")
         return (fileName.contains(title) ||
-                fileName.contains(title.replace("\\s".toRegex(), "."))) &&
+                fileName.contains(formattedTitle) || fileName.contains(formattedTitle.toLowerCase())) &&
                 f.extension.toLowerCase(Locale.ROOT) == "srt"
     }
 

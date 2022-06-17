@@ -67,6 +67,8 @@ class BottomSheetSubtitles : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
     private var hasSpanish = false
     private var hasArabic = false
 
+    private val currentDownloads = hashMapOf<Long, Int>() // Download Id to subtitle index from subtitleModels.
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.recyclerViewSubtitles.layoutManager = LinearLayoutManager(context)
@@ -78,6 +80,8 @@ class BottomSheetSubtitles : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             fetchSubtitles()
         }
+
+        requireContext().registerReceiver(downloadCompleteReceiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
     }
 
     private suspend fun fetchSubtitles() {
@@ -196,56 +200,12 @@ class BottomSheetSubtitles : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
         super.onDismiss(dialog)
     }
 
-    private fun downloadSubtitle(model: Subtitle, downloadLink: String, i: Int) {
-
+    private fun downloadSubtitle(model: Subtitle, downloadLink: String, index: Int) {
         val tempLocation = File(context?.externalCacheDir, imdb_code)
         if (!tempLocation.exists()) tempLocation.mkdirs()
 
-        val temporarySaveZipLocation = File(tempLocation, "${model.text}.zip")
+        val temporarySaveZipLocation = File(tempLocation, "${model.getMD5Text()}.zip")
         if (temporarySaveZipLocation.exists()) temporarySaveZipLocation.delete()
-
-        /** Registering broadcast receiver for listening afterDownload complete event */
-
-        val onComplete: BroadcastReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context?, intent: Intent?) {
-                if (temporarySaveZipLocation.exists()) {
-
-                    val nameOfDownload = model.getDownloadFileName()
-
-                    SUBTITLE_LOCATION.mkdirs()
-
-                    temporarySaveZipLocation.unzip(tempLocation)
-
-                    if (temporarySaveZipLocation.exists()) temporarySaveZipLocation.delete()
-
-                    if (tempLocation.listFiles()?.isNotEmpty() == true) {
-                        tempLocation.listFiles()?.get(0)?.renameTo(
-                            File(
-                                SUBTITLE_LOCATION,
-                                nameOfDownload
-                            )
-                        )
-
-                    } else throw Throwable("File does not exist")
-
-                    Toast.makeText(context, "${model.text} download complete!", Toast.LENGTH_SHORT)
-                        .show()
-                    model.isDownload = false
-                    adapter.notifyItemChanged(i)
-
-                    FileUtils.deleteRecursive(tempLocation)
-
-                    context?.unregisterReceiver(this)
-                } else {
-                    Toasty.error(context!!, "Failed to download subtitles!").show()
-                }
-            }
-        }
-
-        requireContext().registerReceiver(
-            onComplete,
-            IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
-        )
 
         /*** Making a request to download manager */
 
@@ -255,9 +215,61 @@ class BottomSheetSubtitles : ExtendedBottomSheetDialogFragment(R.layout.bottom_s
         request.setDestinationUri(Uri.fromFile(temporarySaveZipLocation))
 
         val manager = context?.getSystemService(DOWNLOAD_SERVICE) as DownloadManager
-        manager.enqueue(request)
+        val requestId = manager.enqueue(request)
+
+        currentDownloads[requestId] = index
     }
 
+    private val downloadCompleteReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (this@BottomSheetSubtitles.isViewDestroying()) return
+            val requestId = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1) ?: -1L
+            if (requestId == -1L) return
+
+            val index = currentDownloads.remove(requestId) ?: return
+            val model = subtitleModels[index]
+
+            val tempLocation = File(context?.externalCacheDir, imdb_code)
+            val temporarySaveZipLocation = File(tempLocation, "${model.getMD5Text()}.zip")
+            if (temporarySaveZipLocation.exists()) {
+                val nameOfDownload = model.getDownloadFileName()
+
+                SUBTITLE_LOCATION.mkdirs()
+
+                temporarySaveZipLocation.unzip(tempLocation)
+
+                if (temporarySaveZipLocation.exists()) temporarySaveZipLocation.delete()
+
+                if (tempLocation.listFiles()?.isNotEmpty() == true) {
+                    tempLocation.listFiles()?.get(0)?.renameTo(
+                        File(
+                            SUBTITLE_LOCATION,
+                            nameOfDownload
+                        )
+                    )
+
+                } else throw Throwable("File does not exist")
+
+                Toast.makeText(context, "${model.getDownloadFileName()} download complete!", Toast.LENGTH_SHORT)
+                    .show()
+                model.isDownload = false
+                adapter.notifyItemChanged(index)
+
+                FileUtils.deleteRecursive(tempLocation)
+            } else {
+                Toasty.error(context!!, "Failed to download subtitles!").show()
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        requireContext().unregisterReceiver(downloadCompleteReceiver)
+        if (currentDownloads.isNotEmpty()) {
+            val manager = context?.getSystemService(DOWNLOAD_SERVICE) as DownloadManager
+            manager.remove(*currentDownloads.keys.toLongArray())
+        }
+        super.onDestroyView()
+    }
 
     class SubtitleAdapter(
         val context: Context,

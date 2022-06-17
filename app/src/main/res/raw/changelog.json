@@ -2,6 +2,8 @@
   "version": "2.0.6",
   "summary": [
     "<br/><h4>Fixed:</h4><br/>",
-    "• Issue where torrent is crashing when saving state of interrupted downloads.<br/>"
+    "• Issue where torrent is crashing when saving state of interrupted downloads.<br/>",
+    "• Subtitle not downloading due to long file name.<br/>",
+    "• Downloaded subtitles not showing in the app.<br/>"
   ]
 }
