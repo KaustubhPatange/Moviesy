@@ -193,7 +193,7 @@ dependencies {
     kapt(LibraryDependency.ROOM_COMPILER_KAPT)
     kapt(LibraryDependency.EPOXY_COMPILER)
 
-    //debugImplementation(TestLibraryDependency.ANDROID_DEBUG_DB)
+    // debugImplementation(TestLibraryDependency.ANDROID_DEBUG_DB)
     //debugImplementation(TestLibraryDependency.STETHO)
    // debugImplementation(TestLibraryDependency.LEAK_CANARY) // TODO: Some memory leaks need to fixed but are in won't fix mode
 
