@@ -28,7 +28,7 @@ private object LibraryVersion {
     const val BLURRY = "3.0.0"
     const val JSOUP = "1.13.1"
     const val YOUTUBE_PLAYER = "10.0.5"
-    const val TORRENT = "2.5.0"
+    const val TORRENT = "3.0.0"
     const val CAFEBAR = "1.3.1"
     const val LOCALBROADCAST = "1.0.0"
     const val PHOTOVIEW = "2.0.0"

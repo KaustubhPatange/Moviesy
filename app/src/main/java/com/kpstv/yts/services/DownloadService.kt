@@ -260,7 +260,7 @@ class DownloadService : IntentService("blank") {
                     updateNotification(model, torrent, false, status)
                     DS_LOG(
                         "=> Progress: ${status?.progress}, Download queue: ${torrent?.torrentHandle?.downloadQueue?.size}, " +
-                                "Piece availability: ${torrent?.torrentHandle?.pieceAvailability?.size}, " +
+                                "Piece availability: ${torrent?.torrentHandle?.pieceAvailability()?.size}, " +
                                 "Piece size: ${torrent?.torrentHandle?.torrentFile()
                                     ?.numPieces()}, " +
                                 "Pieces to prepare: ${torrent?.piecesToPrepare}"
@@ -341,7 +341,7 @@ class DownloadService : IntentService("blank") {
                 model.banner_url,
                 status.progress.toInt(),
                 status.seeds,
-                status.downloadSpeed,
+                status.downloadSpeed.toFloat(),
                 0,
                 torrent?.torrentHandle?.torrentFile()?.totalSize(),
                 true,
@@ -360,15 +360,14 @@ class DownloadService : IntentService("blank") {
 
         /** Update the notification channel */
 
-        var speed = status?.downloadSpeed
-        speed ?: kotlin.run { speed = 0f }
+        val speed = status?.downloadSpeed ?: 0
 
         var progress = status?.progress
         progress ?: kotlin.run { progress = 0f }
 
         setContentIntent(model, torrentJob)
 
-        val speedString = formatDownloadSpeed(speed as Float)
+        val speedString = formatDownloadSpeed(speed.toFloat())
 
         val notificationBuilder =
             NotificationCompat.Builder(context, getString(R.string.CHANNEL_ID_1))
